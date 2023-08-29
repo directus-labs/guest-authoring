@@ -1,0 +1,55 @@
+name: Blog Post Proposal
+description: Submit an idea to write for our developer blog
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to submit an idea for our developer blog. Please wait for us to approve it before you start.
+  - type: textarea
+    id: idea
+    attributes:
+      label: What is your idea?
+      description: Give us as much detail as possible.
+    validations:
+      required: true
+  - type: textarea
+    id: key-objectives
+    attributes:
+      label: What are the key takeaways from your post?
+      description: Provide they key things the reader will learn. Even if you're proposing an end-to-end project, think about what skills you're teaching that will be more-widely applicable. 
+    validations:
+      required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: What type of post is this?
+      description: What version of our software are you running?
+      options:
+        - Getting Started With Directus and {Language/Framework/Environment}
+        - Full Project Build with Directus
+        - Extension-Building Guide
+        - Tips, Tricks, or Best Practice
+        - Self-Hosting Guide
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: country
+    attributes:
+      label: Country of residence
+      description: Being a US-based company, there are some countries we just can't work with. Asking this question upfront allows us to identify this before anyone spends time writing.
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Terms & Conditions
+      options:
+        - label: You understand that submitting this form does not mean we accept your proposal. We will accept proposals at our discretion. 
+          required: true
+        - label: You understand that to be paid you will need to generate an invoice to us once the final draft of your work is completed. 
+          required: true
+        - label: You understand that you will grant us an unlimited license to post and promote your work as part of this program. You may repost, but using our copy as the canonical source.
+          required: true
+     - label: You are aged 18 or over.
+          required: true
