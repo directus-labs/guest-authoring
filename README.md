@@ -1,4 +1,4 @@
-## ⚠️ Please do not open PRs without an agreed-upon issue first. It will be closed without review. ⚠️
+## ⚠️ Do not open PRs without an approved issue first. It will be closed without review. ⚠️
 
 # Directus Guest Author Program
 
