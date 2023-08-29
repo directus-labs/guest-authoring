@@ -24,7 +24,7 @@ body:
     id: type
     attributes:
       label: What type of post is this?
-      description: What version of our software are you running?
+      description: This helps us understand the rough structure and effort needed.
       options:
         - Getting Started With Directus and {Language/Framework/Environment}
         - Full Project Build with Directus
