@@ -1,5 +1,6 @@
 name: Blog Post Proposal
 description: Submit an idea to write for our developer blog
+assignees: phazonoverload
 body:
   - type: markdown
     attributes:
