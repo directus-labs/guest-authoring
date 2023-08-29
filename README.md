@@ -1,4 +1,6 @@
-## ⚠️ Do not open PRs without an approved issue first. It will be closed without review. ⚠️
+> [!WARNING]
+> Do not open PRs without an approved issue first. It will be closed without review.
+
 
 # Directus Guest Author Program
 
