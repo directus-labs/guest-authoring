@@ -49,6 +49,8 @@ console.log('Hello, World'); // [!code ++]
 
 ### Images
 
+Make sure images are in your post's directory.
+
 All images must have alt text. Alt text is a brief description of what is happening in an image, used by screen readers for those with vision difficulties as well as search engines. Consider what is important to highlight to a user who may not be able to see the graphic. 
 
 Screenshots should be captured in the highest-quality possible, as images (by default) are displayed in articles at the full width of the article.
