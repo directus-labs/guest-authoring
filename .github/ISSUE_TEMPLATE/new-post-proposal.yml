@@ -51,5 +51,5 @@ body:
           required: true
         - label: You understand that you will grant us an unlimited license to post and promote your work as part of this program. You may repost, but using our copy as the canonical source.
           required: true
-     - label: You are aged 18 or over.
+        - label: You are aged 18 or over.
           required: true
