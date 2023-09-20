@@ -6,8 +6,6 @@ author:
   avatar\_file\_name: 'craig.jpg'
 ---
 
-// TODO: https://github.com/directus-community/guest-authoring/issues/3#issuecomment-1713626667
-
 ## You are standing in an open field…
 
 [AIVenture][1] hark's back to the days of text-based adventure games such at [Zork][2] and [Hitchhiker’s Guide to the Galaxy][3] but with a modern AI twist. The game uses Directus Flows and user registration along with the [directus-extension-ai-pack][4] extension to create a low-code game engine offering players a unique story-telling experience.
@@ -19,12 +17,12 @@ So that AIVenture can store game progress across devices individual users need t
 
 As Directus already has user management and authentication baked in AIVenture is able to harness the API to create users. When users sign up they are assigned a custom “player” role that gives them permissions to reach a single Directus Flow game endpoint.
 
-To avoid the game sign-up process being spammed with fake email addresses we require that a player’s email address is validated. Although there isn’t specifically an email validation workflow available in Directus, there is a [user invite procedure][7]. Behind the scenes when a player signs up to AIVenture we are actually generating a user **invite** in DIrectus. This does not give access to the game until it has been accepted via a link in the player’s email - which is effectively the same as an email validation process.
+To avoid the game sign-up process being spammed with fake email addresses we require that a player’s email address is validated. Although there isn’t specifically an email validation workflow available in Directus, there is a [user invite procedure][7]. Behind the scenes when a player signs up to AIVenture we are actually generating a user **invite** in Directus. This does not give access to the game until it has been accepted via a link in the player’s email - which is effectively the same as an email validation process.
 
 The emails sent to players are customised by directly editing the [liquid][8] template [files][9] provided by Directus. Only upon successfully completing the invite procedure does a user get provided with an active Directus user account and can hence access the game.
 
 ## Tracking OpenAI Tokens
-AIVenture uses the [directus-extension-ai-pack][10] extension to interact with Open AI’s **Chat Completion API** within Directus Flows. The extension requires minimal setup before allowing chat prompts to be sent to to Open AI and have responses returned for further processing in our flows.
+AIVenture uses the [directus-extension-ai-pack][10] extension to interact with Open AI’s **Chat Completion API** within Directus Flows. The extension requires minimal setup before allowing chat prompts to be sent to Open AI and have responses returned for further processing in our flows.
 
 Chat GPT charges the API account owner for usage via [tokens][11] allocated by the length of your prompts and the resulting responses. In order to keep Open AI bills under control AIVenture allocates daily, per user, token limits on a player’s progress through the game as well as a hard limit that indicates the game needs to reach a conclusion.
 
@@ -60,7 +58,7 @@ In AIVenture all this logic is represented in Directus Flows. However with the l
 
 Creating a game engine in Directus Flows has the potential to become excessively large and unmaintainable very quickly without some strict architectural decisions. 
 
-We keep flows as small and functionally isolated components. Think of these flows as you would Classes in your application. We then have a central or main flow that triggers are sub-flows. This is a powerful and important architecture for our game engine design as it allows us to compartmentalise logic, keeping our main flow clean and readable and making testing easier. 
+We keep flows as small and functionally isolated components. Think of these flows as you would Classes in your application. We then have a central or main flow that triggers our sub-flows. This is a powerful and important architecture for our game engine design as it allows us to compartmentalise logic, keeping our main flow clean and readable and making testing easier. 
 
 Let’s see what this looks like in Directus. First, we set up a flow called “SubCommand”. Our one important configuration for this flow is to select “Another flow” as the trigger set up - this will allow us to trigger this sub flow from within our parent and receive the resulting data. All our flow logic for our subcommand can now be added, being sure to return the required data.
 
@@ -83,7 +81,7 @@ In AIVenture we use this sub-flow technique extensively wherever we feel we have
 
 ### No turning back
 
-While Directus Flows are powerful enough to develop an entire game engine with no code, it still does have some limitations that we need to be conscious of while planning our data flow. One such limitation is that flows only allow branching to and from one input or 2 outputs (success or failure). If we are not careful this can result in the need for duplicated operations within our flows.
+While Directus Flows are powerful enough to develop an entire game engine with no code, it still does have some limitations that we need to be conscious of while planning our data flow. One such limitation is that flows only allow branching to and from one input and 2 outputs (success or failure). If we are not careful this can result in the need for duplicated operations within our flows.
 
 Let’s take the example of creating our end game state. Ideally this would mean our game engine flow changes only slightly from this:
 
@@ -121,10 +119,10 @@ Our flow contains the 5 steps our game logic requires from above, but it has bee
 ```ts
 module.exports = async function(data) {
 	if (data.game.endGame) {
-        data.prompt = data.prompt + " End the game."
-    }
-    
-    return data
+		data.prompt = data.prompt + " End the game."
+	}
+	
+	return data
 }
 ```
 
