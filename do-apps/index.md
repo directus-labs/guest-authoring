@@ -4,9 +4,7 @@ title: 'Deploy to Digital Ocean Apps'
 
 description: 'Launch Directus on DigitalOcean App Platform: Easy, fast deployment for efficient data management in the cloud'
 
-author:
-
-name: 'Matthew Ruffino'
+author_name: 'Matthew Ruffino'
 
 avatar_file_name: '1676510086127.jpg'
 
@@ -51,7 +49,8 @@ If you are configuring for production (which we are in this post), you will need
 - ### Create a Spaces Object Storage
 	File uploads are not persistant unless you have an external volume. With apps platform, that would be using the Spaces Object Storage which works very similiarly to S3. You can setup storage by visiting this [here](https://cloud.digitalocean.com/spaces).
 
-
+## Create The App
+![Go to apps and click create](1.jpg)
 
 <!-- ## Your Sections Here -->
 
