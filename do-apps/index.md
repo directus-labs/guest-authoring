@@ -22,14 +22,14 @@ Directus has quickly become a big part of my life in such a short amount of time
 
 And today, I am proud to be able to share that passion with you, to help you learn how to "quickly" deploy Directus onto the Digital Ocean App Platform. Using DO Apps will create a fresh build of Directus for you with any extensions you want to add by simply editing the included Dockerfile. 
 
-Now you might be thinking why would I want to use the DO App Platform? Well it's a fully managed solution. You do not have to worry about any underlying infrastructure and it can auto-scale automatically to keep your backend running smoothly.
+Now you might be thinking why would I want to use the DO App Platform? Well it's a fully managed solution. You do not have to worry about any underlying infrastructure and it can auto-scale automatically to keep your backend running smoothly. You can use it for quick development or for full production use. 
 
   
 
 ## Before You Start
 You will need to decide if you are wanting to deploy for development or for production. As this will change the way you configure your app and possibly database. 
 
-If you configuring for development, you do not need a redis server or managed database. (you can attach a development database during configuration steps that can be upgraded to a managed one at a later time)
+If you configuring for development environment, you do not need a redis server or managed database. You can attach a development database during configuration steps that can be upgraded to a managed one at a later time. You would only need redis if you plan to have your dev environment clustered. 
 
 If you are configuring for production (which we are in this post), you will need to setup a managed database and redis droplet. 
 
@@ -62,9 +62,74 @@ You when you reach this page you will see a random generated name for your app. 
 You will also be able to edit the plan for your app (how many containers and how powerful) and also to attach a managed DO database.
 
 ![enter image description here](4.jpg)
-First let's select the managed database you created. While you don't have to "attach" your managed db to the app, it's a best practice as you don't have to worry about any firewall/allow list settings. You can also view the system resources from the same panel.
+First let's select the managed database you created. While you don't have to "attach" your managed db to the app, it's a best practice as you don't have to worry about any firewall/allow list settings. You can also view the system resources from the same panel. Select your cluster, database and user here.
+
+![enter image description here](edit.jpg)
+This is where you can define what resources you want to have as a base layer for your backend. If you have 2 or more containers, than redis is required. You can have as many containers are you like. 
+
+![enter image description here](5.jpg)
+This is where you can insert all the [environment variables](https://docs.directus.io/self-hosted/config-options.html) for Directus. There is a lot to  choose from, but the below should be enough to get your started. Make sure to fill everything out as needed. Using the bulk-editor is a much easier process, and you can edit these variables or add new ones at anytime. 
+
+    KEY=enterakey
+    SECRET=enterasecret
+    DB_CLIENT=pg
+    DB_HOST=dbhost
+    DB_PORT=25060
+    DB_DATABASE=your_db
+    DB_USER=doadmin
+    DB_PASSWORD=dbpass
+    DB_SSL__CA=""
+    STORAGE_LOCATIONS=digitalocean
+	STORAGE_DIGITALOCEAN_DRIVER=s3
+	STORAGE_DIGITALOCEAN_KEY="yourstoragekey"
+	STORAGE_DIGITALOCEAN_SECRET="yoursecret"
+	STORAGE_DIGITALOCEAN_ENDPOINT="endpointurl"
+	STORAGE_DIGITALOCEAN_BUCKET="bucketname"
+	STORAGE_DIGITALOCEAN_REGION="selectedregion"
+	REDIS_HOST="hostip"
+	REDIS_PORT=6379
+	REDIS_PASSWORD="redis-password"
+	CACHE_ENABLED=true
+	CACHE_STORE=redis
+	CACHE_AUTO_PURGE=true
+	MESSENGER_STORE=redis
+	SYNCHRONIZATION_STORE=redis
+    PUBLIC_URL=${APP_URL}
+    ADMIN_EMAIL=youradmin@mail.com
+    ADMIN_PASSWORD=myfirstadminpassword
+
+For your KEY & SECRET you can generate one easily here: [generate-secret.vercel.app/32](https://generate-secret.vercel.app/32)
+For your DB connection settings, you can either use DO's built-in variables or define your own. To learn more about which ones you can use with DO, you can find that [here](https://docs.digitalocean.com/products/app-platform/how-to/use-environment-variables/). You will also need to include the CA cert which can be found with the database connection settings.
+
+![enter image description here](6.jpg)
+Now you can define the name of your app and if you want to include it into a DO project. (a DO project is an easy way to keep multiple resources tagged together)
+
+Next it will you show a quick review of all everything we have configured. Go ahead and click on Create App. This will now start the build and deployment.
+
+## Deployment
+![enter image description here](7.jpg)
+Now all you need to do is sit back and wait while your custom Directus app is built and deployed. DO will cache your newly built image so it can be used to create new container during any auto-scaling. 
+
+![enter image description here](8.jpg)
+After the build is complete, you should see the deployment begin. This will start Directus and runs it's bootstrap process and test that the backend is operational. If all goes well you will be greeted with a successful deployment.
+
+![enter image description here](9.jpg)
+
+![enter image description here](10.jpg)
+This is now your app dashboard. You can see the health of your app. You can see recent deployments, force new ones and more. You will also see your generated app url. If you want to add a new url, all you need to do is go to the settings tab and add it there. SSL is taken care of for you!
 <!-- ## Your Sections Here -->
 
   
 
 ## Summary
+In summary, this is a very high level guide to get you to quickly deploy Directus as a DO App. If you are already ingrained into the Digital Ocean product line, this the App Platform is a great choice to host your backend while utilizing the rest of what Digital Ocean has to offer.
+
+A few things to note:
+
+ - Any changes made to the Environment Variables will instantly trigger a new build and deployment
+ - Any changes made to the Dockerfile in your repo will instantly trigger a new build and deployment
+ - Your backend will NEVER go down during a new build and deployment. Even if the build fails, it will auto fallback to the last healthy image.
+ - As long as you are using Storage and Managed DB, you will never lose any data if you stop the app and want to migrate in the future.
+
+
+I hope you were able to learn what was needed to get yourself up and running. If you have any questions you can find me in the Directus Discord and I would be glad to help. 
