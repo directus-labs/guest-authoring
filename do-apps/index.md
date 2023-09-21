@@ -14,26 +14,22 @@ avatar_file_name: '1676510086127.jpg'
 
 ## Introduction
 
-  
+Directus has quickly become an integral part of my life. My quest for the best backend evolved into a passion-filled journey, introducing Directus to everyone I know and integrating it into as many projects as possible.
 
-Directus has quickly become a big part of my life in such a short amount of time. What began as a journey for finding the best backend turned into an passion-filled adventure introducing  it to everyone I know and using it  everywhere I can.
+Today, I'm thrilled to guide you through deploying Directus on the Digital Ocean App Platform quickly. With DO Apps, you can generate a fresh Directus build, complete with any desired extensions, by merely adjusting the included Dockerfile. 
 
-  
-
-And today, I am proud to be able to share that passion with you, to help you learn how to "quickly" deploy Directus onto the Digital Ocean App Platform. Using DO Apps will create a fresh build of Directus for you with any extensions you want to add by simply editing the included Dockerfile. 
-
-Now you might be thinking why would I want to use the DO App Platform? Well it's a fully managed solution. You do not have to worry about any underlying infrastructure and it can auto-scale automatically to keep your backend running smoothly. You can use it for quick development or for full production use. 
+You might wonder, "Why should I opt for the DO App Platform?" The answer lies in its seamless management. There's no underlying infrastructure to fuss about, and it auto-scales to maintain smooth backend operations, making it ideal for both quick development and full-fledged production.
 
   
 
 ## Before You Start
-You will need to decide if you are wanting to deploy for development or for production. As this will change the way you configure your app and possibly database. 
+Determine whether you're deploying for development or production, as it affects app and database configurations.
 
-If you configuring for development environment, you do not need a redis server or managed database. You can attach a development database during configuration steps that can be upgraded to a managed one at a later time. You would only need redis if you plan to have your dev environment clustered. 
+For a development environment, you don't require a redis server or managed database. You can add a development database during setup, which you can later upgrade. Redis is only necessary for clustered dev environments.
 
-If you are configuring for production (which we are in this post), you will need to setup a managed database and redis droplet. 
+For production deployment (our focus in this guide), you'll need a managed database and a Redis droplet.
 
-You will also need to fork my [repo](https://github.com/BlackDahlia313/directus-docker-do) that includes a Dockerfile you can customize  to your own needs.
+Moreover, fork my [repository](https://github.com/BlackDahlia313/directus-docker-do) that provides a customizable Dockerfile.
 
 - ### Create Managed DB
 
@@ -122,14 +118,14 @@ This is now your app dashboard. You can see the health of your app. You can see 
   
 
 ## Summary
-In summary, this is a very high level guide to get you to quickly deploy Directus as a DO App. If you are already ingrained into the Digital Ocean product line, this the App Platform is a great choice to host your backend while utilizing the rest of what Digital Ocean has to offer.
+This guide offers a swift walkthrough for deploying Directus on DO App. If you're familiar with Digital Ocean's products, its App Platform is an excellent backend hosting choice, complemented by the platform's robust features.
 
-A few things to note:
+Key takeaways:
 
- - Any changes made to the Environment Variables will instantly trigger a new build and deployment
- - Any changes made to the Dockerfile in your repo will instantly trigger a new build and deployment
- - Your backend will NEVER go down during a new build and deployment. Even if the build fails, it will auto fallback to the last healthy image.
- - As long as you are using Storage and Managed DB, you will never lose any data if you stop the app and want to migrate in the future.
+ - Modifying Environment Variables or the Dockerfile triggers immediate rebuilds and deployments.
+ - Deployments are seamless, with zero downtime. Failed builds revert to the last successful version.
+ - With Storage and Managed DB, your data remains secure, even if you halt the app for future migration.
 
+For queries or assistance, find me on the Directus Discord. I'm here to help! 
 
-I hope you were able to learn what was needed to get yourself up and running. If you have any questions you can find me in the Directus Discord and I would be glad to help. 
+-onelove
