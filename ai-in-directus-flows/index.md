@@ -42,7 +42,7 @@ If the player reaches their daily limit, no more Chat GPT prompts can be sent to
 
 Once the total game token limit is reached the prompt sent to Chat GPT is modified such that the next responses will include a satisfying conclusion to the game currently in progress.
 
-## The game engine
+## The Game Engine
 The [AIVenture][14] game engine is responsible for:
 
 1. Providing initial context to Chat GPT (eg. “You are a text adventure game writer…”).
