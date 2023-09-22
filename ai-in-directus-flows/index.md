@@ -38,7 +38,7 @@ The ChatGPT API returns a token count with each response, however this was origi
 
 Each prompt/response combination is stored in a Directus collection and various query filters and aggregators are used to provide the game engine with the total number of tokens used by a player in a day and the total tokens used for the current game.
 
-If the player reaches their daily limit, no more Chat GPT prompts can be sent to the API and the game will prompt you to wait until tomorrow before being able to progress.
+If the player reaches their daily limit, no more prompts can be sent to the API and the game will prompt them to wait until tomorrow before being able to progress.
 
 Once the total game token limit is reached, the prompt sent to ChatGPT is modified such that the next responses will include a satisfying conclusion to the game currently in progress.
 
