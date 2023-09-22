@@ -58,7 +58,7 @@ In AIVenture, all of this logic is represented in Directus Flows. However with t
 
 Creating a game engine in Directus Flows has the potential to become excessively large and unmaintainable very quickly without some strict architectural decisions. 
 
-We keep flows as small and functionally isolated components. Think of these flows as you would Classes in your application. We then have a central or main flow that triggers our sub-flows. This is a powerful and important architecture for our game engine design as it allows us to compartmentalise logic, keeping our main flow clean and readable and making testing easier. 
+We keep flows as small and functionally-isolated components. Think of these flows as you would Classes in your application. A central (or 'main') flow triggers our sub-flows. This is a powerful and important architecture for our game engine design as it allows us to compartmentalize logic, keeping our main flow clean and readable and making testing easier. 
 
 Let’s see what this looks like in Directus. First, we set up a flow called “SubCommand”. Our one important configuration for this flow is to select “Another flow” as the trigger set up - this will allow us to trigger this sub flow from within our parent and receive the resulting data. All our flow logic for our subcommand can now be added, being sure to return the required data.
 
