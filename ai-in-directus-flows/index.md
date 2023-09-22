@@ -79,7 +79,7 @@ If we make a request to our main flow we will see a response from our subcommand
 
 In AIVenture, we use this sub-flow technique extensively wherever we feel we have a self-contained functional component such as interacting with Chat GPT API, calculating token usage or processing user input.
 
-### No turning back
+### Branching Logic With Only Two Paths
 
 While Directus Flows are powerful enough to develop an entire game engine with no code, it still does have some limitations that we need to be conscious of while planning our data flow. One such limitation is that flows only allow branching to and from one input and 2 outputs (success or failure). If we are not careful this can result in the need for duplicated operations within our flows.
 
