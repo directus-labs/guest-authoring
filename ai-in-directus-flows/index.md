@@ -40,7 +40,7 @@ Each prompt/response combination is stored in a Directus collection and various 
 
 If the player reaches their daily limit, no more Chat GPT prompts can be sent to the API and the game will prompt you to wait until tomorrow before being able to progress.
 
-Once the total game token limit is reached the prompt sent to Chat GPT is modified such that the next responses will include a satisfying conclusion to the game currently in progress.
+Once the total game token limit is reached, the prompt sent to ChatGPT is modified such that the next responses will include a satisfying conclusion to the game currently in progress.
 
 ## The Game Engine
 The [AIVenture][14] game engine is responsible for:
