@@ -54,7 +54,7 @@ The [AIVenture][14] game engine is responsible for:
 
 In AIVenture, all of this logic is represented in Directus Flows. However with the large number of operations required we need to plan our flow architecture carefully to avoid unnecessarily complicating our game engine flow.
 
-### Managing complex flows.
+### Managing Complex Flows
 
 Creating a game engine in Directus Flows has the potential to become excessively large and unmaintainable very quickly without some strict architectural decisions. 
 
