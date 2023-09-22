@@ -22,7 +22,7 @@ To avoid the game sign-up process being spammed with fake email addresses we req
 The emails sent to players are customised by directly editing the [liquid][8] template [files][9] provided by Directus. Only upon successfully completing the invite procedure does a user get provided with an active Directus user account and can hence access the game.
 
 ## Tracking OpenAI Tokens
-AIVenture uses the [directus-extension-ai-pack][10] extension to interact with Open AI’s **Chat Completion API** within Directus Flows. The extension requires minimal setup before allowing chat prompts to be sent to Open AI and have responses returned for further processing in our flows.
+AIVenture uses the [directus-extension-ai-pack][10] extension to interact with OpenAI’s **Chat Completion API** within Directus Flows. The extension requires minimal setup before allowing chat prompts to be sent to OpenAI and have responses returned for further processing in our flows.
 
 OpenAI charges the API account owner for usage via [tokens][11] allocated by the length of your prompts and the resulting responses. In order to keep OpenAI bills under control, AIVenture allocates daily, per user, token limits on a player’s progress through the game as well as a hard limit that indicates the game needs to reach a conclusion.
 
