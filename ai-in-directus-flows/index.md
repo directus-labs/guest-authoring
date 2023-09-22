@@ -26,7 +26,7 @@ AIVenture uses the [directus-extension-ai-pack][10] extension to interact with O
 
 OpenAI charges the API account owner for usage via [tokens][11] allocated by the length of your prompts and the resulting responses. In order to keep OpenAI bills under control, AIVenture allocates daily, per user, token limits on a player’s progress through the game as well as a hard limit that indicates the game needs to reach a conclusion.
 
-The Chat GPT API returns a token count with each response, however this was originally not passed on by [directus-extension-ai-pack][12]. Luckily, the extension is open-source and [a small PR later][13] we were able to access the Chat GPT usage data in our flow:
+The ChatGPT API returns a token count with each response, however this was originally not passed on by [directus-extension-ai-pack][12]. Luckily, the extension is open-source and [a small PR later][13] we were able to access the Chat GPT usage data in our flow:
 
 ```json
 "usage": {
