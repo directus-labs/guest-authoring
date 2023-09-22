@@ -1,5 +1,5 @@
 ---
-title: 'No code AI with Directus Flows'
+title: 'Building AIVenture - An AI-Powered Game With Directus'
 description: ‘Learn how AIVenture used Directus Flows to create a low-code, AI based, text-adventure game engine in the style of the classic Zork games.’
 author:
   name: 'Craig Harman'
