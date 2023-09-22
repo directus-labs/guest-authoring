@@ -19,7 +19,7 @@ As Directus already has user management and authentication baked in, AIVenture i
 
 To avoid the game sign-up process being spammed with fake email addresses, we require that a player’s email address is validated. Although there isn’t specifically an email validation workflow available in Directus, there is a [user invite procedure][7]. Behind the scenes when a player signs up to AIVenture we are actually generating a user **invite** in Directus. This does not give access to the game until it has been accepted via a link in the player’s email - which is effectively the same as an email validation process.
 
-The emails sent to players are customised by directly editing the [liquid][8] template [files][9] provided by Directus. Only upon successfully completing the invite procedure does a user get provided with an active Directus user account and can hence access the game.
+The emails sent to players are customised by directly editing the [liquid][8] template [files][9] provided by Directus. Once a user accepts their invite, they are provided with an active Directus user account and can access the game.
 
 ## Tracking OpenAI Tokens
 AIVenture uses the [directus-extension-ai-pack][10] extension to interact with OpenAI’s **Chat Completion API** within Directus Flows. The extension requires minimal setup before allowing chat prompts to be sent to OpenAI and have responses returned for further processing in our flows.
