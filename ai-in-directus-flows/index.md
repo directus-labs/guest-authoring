@@ -52,7 +52,7 @@ The [AIVenture][14] game engine is responsible for:
 5. Providing a satisfactory end game state.
 6. State management for games in progress.
 
-In AIVenture all this logic is represented in Directus Flows. However with the large number of operations required we need to plan our flow architecture carefully to avoid unnecessarily complicating our game engine flow.
+In AIVenture, all of this logic is represented in Directus Flows. However with the large number of operations required we need to plan our flow architecture carefully to avoid unnecessarily complicating our game engine flow.
 
 ### Managing complex flows.
 
