@@ -24,7 +24,7 @@ The emails sent to players are customised by directly editing the [liquid][8] te
 ## Tracking OpenAI Tokens
 AIVenture uses the [directus-extension-ai-pack][10] extension to interact with Open AI’s **Chat Completion API** within Directus Flows. The extension requires minimal setup before allowing chat prompts to be sent to Open AI and have responses returned for further processing in our flows.
 
-Chat GPT charges the API account owner for usage via [tokens][11] allocated by the length of your prompts and the resulting responses. In order to keep Open AI bills under control AIVenture allocates daily, per user, token limits on a player’s progress through the game as well as a hard limit that indicates the game needs to reach a conclusion.
+OpenAI charges the API account owner for usage via [tokens][11] allocated by the length of your prompts and the resulting responses. In order to keep OpenAI bills under control, AIVenture allocates daily, per user, token limits on a player’s progress through the game as well as a hard limit that indicates the game needs to reach a conclusion.
 
 The Chat GPT API returns a token count with each response, however this was originally not passed on by [directus-extension-ai-pack][12]. Luckily, the extension is open-source and [a small PR later][13] we were able to access the Chat GPT usage data in our flow:
 
