@@ -17,7 +17,7 @@ So that AIVenture can store game progress across devices, individual users need 
 
 As Directus already has user management and authentication baked in, AIVenture is able to harness the API to create users. When users sign up, they are assigned a custom “player” role that gives them permissions to reach a single Directus Flow game endpoint.
 
-To avoid the game sign-up process being spammed with fake email addresses we require that a player’s email address is validated. Although there isn’t specifically an email validation workflow available in Directus, there is a [user invite procedure][7]. Behind the scenes when a player signs up to AIVenture we are actually generating a user **invite** in Directus. This does not give access to the game until it has been accepted via a link in the player’s email - which is effectively the same as an email validation process.
+To avoid the game sign-up process being spammed with fake email addresses, we require that a player’s email address is validated. Although there isn’t specifically an email validation workflow available in Directus, there is a [user invite procedure][7]. Behind the scenes when a player signs up to AIVenture we are actually generating a user **invite** in Directus. This does not give access to the game until it has been accepted via a link in the player’s email - which is effectively the same as an email validation process.
 
 The emails sent to players are customised by directly editing the [liquid][8] template [files][9] provided by Directus. Only upon successfully completing the invite procedure does a user get provided with an active Directus user account and can hence access the game.
 
