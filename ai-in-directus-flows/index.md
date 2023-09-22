@@ -77,7 +77,7 @@ If we make a request to our main flow we will see a response from our subcommand
 }
 ```
 
-In AIVenture we use this sub-flow technique extensively wherever we feel we have a self-contained functional component such as interacting with Chat GPT API, calculating token usage or processing user input.
+In AIVenture, we use this sub-flow technique extensively wherever we feel we have a self-contained functional component such as interacting with Chat GPT API, calculating token usage or processing user input.
 
 ### No turning back
 
