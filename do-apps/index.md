@@ -54,7 +54,7 @@ DigitalOcean offers hosted [databases](https://cloud.digitalocean.com/databases)
 
 ## Create a Redis Droplet
 
-If you are setting up a production environment, you should now set up a Redis droplet for synchronization across containers. Follow this [DigitalOcean tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-20-04). If you allready have an existing Redis server, you can use that.
+If you are setting up a production environment, you should now set up a Redis droplet for synchronization across containers. Follow this [DigitalOcean tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-20-04). If you already have an existing Redis server, you can use that.
 
 Directus currently does not support clustered Redis. If this changes, this process will become easier as this setup will be able to utilize DO's Managed Redis service.
 
