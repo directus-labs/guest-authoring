@@ -112,7 +112,7 @@ For generating your `KEY` and `SECRET`, you can use [this tool](https://generate
 
 For database connection settings, you can either utilize DigitalOcean's predefined variables or use the connection settings found on the managed database page. If you wish to delve deeper into Digital Ocean's environment variables, consult their [documentation](https://docs.digitalocean.com/products/app-platform/how-to/use-environment-variables/). Additionally, don't forget to incorporate the CA certificate, available within the database connection settings.
 
-Once you've reviewed your configurations and confirmed everything's in order, proceed by clicking "Create App". This action kickstarts the building and deployment phase.
+Once you've reviewed your configurations and confirmed everything's in order, proceed by clicking **Create App**. This action kickstarts the building and deployment phase.
 
 ## Deploy Your Project
 
