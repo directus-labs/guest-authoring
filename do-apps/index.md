@@ -58,7 +58,7 @@ If you are setting up a production environment, you should now set up a Redis dr
 
 Directus currently does not support clustered Redis. If this changes, this process will become easier as this setup will be able to utilize DO's Managed Redis service.
 
-## Setup DigitalOcean Spaces Object Storage**:
+## Setup DigitalOcean Spaces Object Storage:
 
 Persistent file uploads requires an external storage volume. On the DigitalOcean App Platform, this means using the Spaces Object Storage, which has a S3-compatible API. 
 
