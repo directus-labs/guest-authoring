@@ -26,17 +26,18 @@ avatar_file_name: '1676510086127.jpg'
 
 ## Introduction
 
-  
+Hello Everybody!
 
-Directus has become a central part of my technological journey. My exploration for the ultimate backend has led me to embrace the rabbit passionately. Now, I'm excited to help you deploy Directus on the Digital Ocean App Platform efficiently. With DO Apps, creating a new Directus setup, inclusive of any extensions you might want, is a breeze with a simple Dockerfile.
+My name is Matthew Ruffino and I have been doing web dev for well over 18 years now. (scary to think about) But in my time I have learned and used alot of different methods, languages and frameworks to acheive success for my clients. But in my time, I have never seen anything like this for backends.
 
-  
+Directus has become a cornerstone of my tech stack. In my pursuit of the ideal backend, Directus continues to hit every single checkbox required for mine and my clients needs. What started as only initial testing, has expanded quickly my use of Directus to serve multiple clients across many significant projects in a very short time span. You get a rabbit and you get a rabbit! Everybody gets a rabbit!
 
-You might be thinking, "Why choose the DO App Platform?" Its ease of management is a key reason. With no underlying infrastructure to worry about and automatic scaling, it's perfect for both rapid development and full-scale production. If you already ingrained into the DO product line, than this is a great choice for you.
+In all seriousness though, today, I have been invited to guide you through deploying Directus on the Digital Ocean App Platform. With DO Apps, you can effortlessly establish a Directus environment, tailored with any extensions you require, using just a Dockerfile.
 
-  
+You might be thinking, "Why choose the DO App Platform?" It's ease of management is a key reason. With no underlying infrastructure to worry about and automatic scaling, it's perfect for both rapid development and full-scale production. If you find yourself already ingrained into the DO product line, than this is a great choice for you.
 
-If you are looking for something that requires absolutely no setup, with automatic rolling updates than look not further than [Directus Cloud.](https://directus.io/pricing/cloud)
+
+##### On the otherhand: If you are looking for something that is more "hands off" and requires zero setup or knowledge on infrastrcture, than look not further than [Directus Cloud.](https://directus.io/pricing/cloud) as they provide the easiet way to deploy, upgrade and backup your Directus backend.
 
   
 
@@ -48,11 +49,11 @@ There are required parts to run Directus within the DO App platform. I will give
 
   
 
-- Managed DB -- You will need a DB for Directus. This can be hosted within DO or outside.
+- **Managed DB** -- You will need a DB for Directus. This can be hosted within DO or outside.
 
-- Redis Droplet -- If you plan to have a clustered app, you will need to setup a Redis droplet to be able to synchronize across multiple instances. (you will be soon be able to use managed redis from DO)
+- **Redis Droplet** -- If you plan to have a clustered app, you will need to setup a Redis droplet to be able to synchronize across multiple instances. (you will be soon be able to use managed redis from DO)
 
-- DO Spaces -- This is needed for your files to be uploaded and remain persistant. This follows the same S3 protocol as Amazon S3. You can use any storage provider that Directus officially supports.
+- **DO Spaces** -- This is needed for your files to be uploaded and remain persistant. This follows the same S3 protocol as Amazon S3. You can use any storage provider that Directus officially supports.
 
   
 
@@ -226,7 +227,7 @@ Post build completion, the deployment process takes the stage. This phase initia
 
   
 
-Upon entering the application dashboard, you'll encounter a comprehensive view of your application's health. It provides insights into recent deployments, facilitates forced deployments, and more. Prominently displayed is your generated application URL. If you ever feel the need to append a fresh URL, navigate to the settings tab. As an added convenience, SSL certification is already managed for you.
+Upon entering the application dashboard, you'll encounter a comprehensive view of your application's health. It provides insights into recent deployments, facilitates forced deployments, and more. Prominently displayed is your generated application URL. If you want to use a custom URL for your backend, navigate to the settings tab add one. As an added convenience, SSL certs are already managed for you.
 
   
 
@@ -234,7 +235,7 @@ Upon entering the application dashboard, you'll encounter a comprehensive view o
 
   
 
-This manual provides an uncomplicated route to deploying Directus on the DO App Platform. If you're acquainted with Digital Ocean's offerings, you'll find its App Platform an impeccable choice for backend hosting, further enriched by the myriad features the platform delivers.
+This guide offers a straightforward path to deploying Directus on the DO App Platform. For those familiar or already ingrained with Digital Ocean, the App Platform is a great choice to host your backend.
 
   
 
@@ -244,13 +245,13 @@ This manual provides an uncomplicated route to deploying Directus on the DO App 
 
 - Any alterations to the Environment Variables or Dockerfile activate instantaneous re-builds and deployments.
 
-- All deployments are executed smoothly, devoid of any downtime. Any unsuccessful builds will default back to the last triumphant version.
+- All deployments are executed with zero-downtime. Any unsuccessful builds will default back to the lastest successful deployment.
 
-- Your data's integrity is preserved with Storage and Managed DB, ensuring your data's safety even if you decide to suspend the app for subsequent migrations.
+- Your data's integrity is preserved with Object Storage and Managed DB, ensuring your data's safety if you decide to suspend the app for subsequent migrations to another service provider.
 
   
 
-Should any questions or hurdles arise, feel free to reach out to me on the Directus Discord platform. I'm always here to assist!
+Should any questions or hurdles arise, feel free to reach out to me on the official Directus Discord. I'm always here to assist!
 
   
 
