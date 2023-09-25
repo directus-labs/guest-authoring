@@ -37,7 +37,7 @@ In all seriousness though, today, I have been invited to guide you through deplo
 You might be thinking, "Why choose the DO App Platform?" It's ease of management is a key reason. With no underlying infrastructure to worry about and automatic scaling, it's perfect for both rapid development and full-scale production. If you find yourself already ingrained into the DO product line, than this is a great choice for you.
 
 
-##### On the otherhand: If you are looking for something that is more "hands off" and requires zero setup or knowledge on infrastrcture, than look not further than [Directus Cloud.](https://directus.io/pricing/cloud) as they provide the easiet way to deploy, upgrade and backup your Directus backend.
+##### On the otherhand: If you are looking for something that is more "hands off" and requires zero setup or knowledge on infrastrcture, than look no further than [Directus Cloud.](https://directus.io/pricing/cloud) as they provide the easiet way to deploy, upgrade and backup your Directus backend.
 
   
 
@@ -153,29 +153,29 @@ There are required parts to run Directus within the DO App platform. I will give
 
 1. Navigate to the apps section and click "Create App".
 
-2. On the subsequent page, link the repo that you forked earlier. Connect your account to GitHub to access your repository.
+2. On the subsequent page, link the repo that you created or forked earlier. Connect your account to GitHub/Gitlab to access your repository.
 
-3. You'll encounter a page with an auto-generated name for your app. You should see the name of your forked repository below. This setup is recognized as a web service, fitting for Directus.
+3. You'll encounter a page with an auto-generated name for your app. You should see the name of your repository below. This setup is recognized as a web service, which is fitting for Directus.
 
 4. Adjust the app's plan to your requirements, including the number of containers and their capabilities. Here, you can also connect your managed DO database.
 
-5. Opt for the managed database you crafted earlier. Attaching the database to the app is a recommended best practice, ensuring smooth firewall and security settings. Then, select your database cluster and user.
+5. Remember, If you're running two or more containers, Redis becomes a necessity.
 
-6. Define the base resources you desire for your backend. If you're running two or more containers, Redis becomes a necessity.
+6. Opt for the managed database you crafted earlier. Attaching the database to the app is a recommended best practice, ensuring smooth firewall and security settings. Then, select your database cluster and user.
 
 7. Input the necessary [environment variables](https://docs.directus.io/self-hosted/config-options.html) for Directus. A set of basic variables will help you get started, but ensure you complete all necessary fields. The bulk editor simplifies this task, and you can always return to edit or add more variables later.
 
   
   
 
-	    KEY=enterakey
-	    SECRET=enterasecret
-	    DB_CLIENT=pg
-	    DB_HOST=dbhost    
-	    DB_PORT=25060   
-	    DB_DATABASE=your_db 
-	    DB_USER=doadmin
-	    DB_PASSWORD=dbpass
+	    KEY="enterakey"
+	    SECRET="enterasecret"
+	    DB_CLIENT="pg"
+	    DB_HOST="dbhost"  
+	    DB_PORT="25060" 
+	    DB_DATABASE="your_db"
+	    DB_USER="doadmin"
+	    DB_PASSWORD="dbpass"
 	    DB_SSL__CA=""
 	    STORAGE_LOCATIONS=digitalocean
 	    STORAGE_DIGITALOCEAN_DRIVER=s3
@@ -185,17 +185,17 @@ There are required parts to run Directus within the DO App platform. I will give
 	    STORAGE_DIGITALOCEAN_BUCKET="bucketname"
 	    STORAGE_DIGITALOCEAN_REGION="selectedregion"
 	    REDIS_HOST="hostip"
-	    REDIS_PORT=6379
+	    REDIS_PORT="6379"
 	    REDIS_PASSWORD="redis-password"
-	    CACHE_ENABLED=true  
-	    CACHE_STORE=redis  
-	    CACHE_AUTO_PURGE=true
-	    MESSENGER_STORE=redis
-	    SYNCHRONIZATION_STORE=redis
+	    CACHE_ENABLED="true"
+	    CACHE_STORE="redis"
+	    CACHE_AUTO_PURGE="true"
+	    MESSENGER_STORE="redis"
+	    SYNCHRONIZATION_STORE="redis"
 	    PUBLIC_URL=${APP_URL}
     
-	    ADMIN_EMAIL=youradmin@mail.com
-	    ADMIN_PASSWORD=myfirstadminpassword
+	    ADMIN_EMAIL="youradmin@mail.com"
+	    ADMIN_PASSWORD="myfirstadminpassword"
 
   
 
@@ -203,7 +203,7 @@ There are required parts to run Directus within the DO App platform. I will give
 
   
 
-8. For database connection settings, you have two options. You can either utilize Digital Ocean's predefined variables or stipulate your own. If you wish to delve deeper into Digital Ocean's environment variables, consult their [documentation](https://docs.digitalocean.com/products/app-platform/how-to/use-environment-variables/). Additionally, don't forget to incorporate the CA certificate, available within the database connection settings.
+8. For database connection settings, you have two options. You can either utilize Digital Ocean's predefined variables or use the connection settings found on the managed db page. If you wish to delve deeper into Digital Ocean's environment variables, consult their [documentation](https://docs.digitalocean.com/products/app-platform/how-to/use-environment-variables/). Additionally, don't forget to incorporate the CA certificate, available within the database connection settings.
 
   
 
