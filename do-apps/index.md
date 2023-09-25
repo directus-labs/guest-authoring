@@ -104,7 +104,7 @@ ADMIN_EMAIL="admin@example.com"
 ADMIN_PASSWORD="hunter2"
 ```
 
-:::info Random key & Secret
+:::info Random Value Generator
 
 For generating your `KEY` and `SECRET`, you can use [this tool](https://generate-secret.vercel.app/32).
 
