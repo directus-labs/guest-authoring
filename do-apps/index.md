@@ -1,258 +1,133 @@
-  
-
-  
-
 ---
-
-  
-
-  
-
-  
-
-title: 'Deploy to Digital Ocean Apps'
-
+title: 'Deploy Directus to DigitalOcean with Docker'
 description: 'Launch Directus on DigitalOcean App Platform: Easy, fast deployment for efficient data management in the cloud'
-
 author_name: 'Matthew Ruffino'
-
 avatar_file_name: '1676510086127.jpg'
-
-  
-
 ---
 
-  
+In this post, I will guide you through deploying Directus on the DigitalOcean (DO) App Platform. With DO Apps, you can effortlessly establish a Directus environment using just a Dockerfile. This post will guide you through a more advanced setup with a separate persistent database, file storage, and cluster synchronization. 
 
-## Introduction
+DigitalOcean is a well-loved cloud hosting provider with automatic scaling. It's perfect for both rapid development and full-scale production, and if you find yourself already ingrained into the DO product line, then this is a great choice for you.
 
-Hello Everybody!
-
-My name is Matthew Ruffino and I have been doing web dev for well over 18 years now. (scary to think about) But in my time I have learned and used alot of different methods, languages and frameworks to acheive success for my clients. But in my time, I have never seen anything like this for backends.
-
-Directus has become a cornerstone of my tech stack. In my pursuit of the ideal backend, Directus continues to hit every single checkbox required for mine and my clients needs. What started as only initial testing, has expanded quickly my use of Directus to serve multiple clients across many significant projects in a very short time span. You get a rabbit and you get a rabbit! Everybody gets a rabbit!
-
-In all seriousness though, today, I have been invited to guide you through deploying Directus on the Digital Ocean App Platform. With DO Apps, you can effortlessly establish a Directus environment, tailored with any extensions you require, using just a Dockerfile.
-
-You might be thinking, "Why choose the DO App Platform?" It's ease of management is a key reason. With no underlying infrastructure to worry about and automatic scaling, it's perfect for both rapid development and full-scale production. If you find yourself already ingrained into the DO product line, than this is a great choice for you.
-
-
-##### On the otherhand: If you are looking for something that is more "hands off" and requires zero setup or knowledge on infrastrcture, than look no further than [Directus Cloud.](https://directus.io/pricing/cloud) as they provide the easiet way to deploy, upgrade and backup your Directus backend.
-
+Of course, it becomes your responsibility to maintain your set up. If you are looking for something that is more "hands off" and requires zero setup or knowledge on infrastructure, then check out [Directus Cloud](https://directus.io/pricing/cloud). This is hosting provided by the team who build Directus, and is the easiest way to deploy, upgrade, and backup your Directus project.
   
 
 ## Before You Start
 
-  
+As well as the DigitalOcean app that runs Directus, there are several additional requirements to run a production Directus project within the DO App platform:
+
+- **Managed Database** — You will need a database for Directus. This can be hosted either within the DO ecosystem, or externally.
+- **Redis Droplet** — If you plan to have a clustered app, you will need to setup a Redis droplet to be able to synchronize across multiple instances.
+- **DigitalOcean Spaces** — Directus supports any S3-compatible storage for files, and DO Spaces is exactly this.
 
-There are required parts to run Directus within the DO App platform. I will give a brief list and what they are used for.
+You may not need a Redis droplet in development, but a clustered environment is something you may need to consider as your application scales.
 
-  
+## Create a Dockerfile Repository
 
-- **Managed DB** -- You will need a DB for Directus. This can be hosted within DO or outside.
+DigitalOcean can deploy an application from a Dockerfile hosted in a GitHub or GitLab repository. Create a new repositry, and create a single file called `Dockerfile`:
 
-- **Redis Droplet** -- If you plan to have a clustered app, you will need to setup a Redis droplet to be able to synchronize across multiple instances. (you will be soon be able to use managed redis from DO)
+```
+# syntax=docker/dockerfile:1.4
+FROM directus/directus:10.6.2
+USER root
+RUN corepack enable \
+&& corepack prepare pnpm@8.7.6 --activate \
+&& chown node:node /directus
+EXPOSE 8055
+USER node
+CMD : \
+&& node /directus/cli.js bootstrap \
+&& node /directus/cli.js start;
+```
 
-- **DO Spaces** -- This is needed for your files to be uploaded and remain persistant. This follows the same S3 protocol as Amazon S3. You can use any storage provider that Directus officially supports.
+- It's recommended to specify a version of the Directus image. If this is omitted, the latest version will always be used, which could cause errors if there are any breaking changes. You can update the version here to update Directus.
+- Corepack is enabled as it allows us to use the pnpm package manager (used by Directus) without installing it.
+- Chown gives the proper permissions needed for node to access the files.
+- Port 8055 is exposed, which DigitalOcean will read and handle automatically during deployment. 
+- The bootstrap command is run to pull info from the ENV to either install the database (if it's empty) or migrate it to the latest version (if it already exists and has missing migrations).
 
-  
+## Create a Managed Database
 
--  **Determine Your Deployment Purpose**: Are you setting up for development or production? This will dictate your app and database configurations.
+If you've already got an existing database, you don't have to create a new one now and can move on to the next section. 
 
--  **Development Environment**: No need for a Redis server or managed database. Just add a development database during setup, which can be upgraded later. Redis is only for clustered dev environments.
+DigitalOcean offers hosted [databases](https://cloud.digitalocean.com/databases). Create a new one (I recommend starting with PostgreSQL) and take note of the connection details.
 
--  **Production Deployment (our focus)**: You'll require a managed database and a Redis droplet.
+## Create a Redis Droplet
 
-  
+If you are setting up a production environment, you should now set up a Redis droplet for synchronization across containers. Follow this [DigitalOcean tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-20-04). If you allready have an existing Redis server, you can use that.
 
--  **Build your Dockerfile Repository**: Get the customizable Dockerfile from my [repository](https://github.com/BlackDahlia313/directus-docker-do) or build your own below.
+Directus currently does not support clustered Redis. If this changes, this process will become easier as this setup will be able to utilize DO's Managed Redis service.
 
-  
+## Setup DigitalOcean Spaces Object Storage**:
 
--  **Extensions**: You can easily incorporate new extensions into Directus by tweaking the Dockerfile.
+Persistent file uploads requires an external storage volume. On the DigitalOcean App Platform, this means using the Spaces Object Storage, which has a S3-compatible API. 
 
-  
+[Set up DigitalOcean Spaces here](https://cloud.digitalocean.com/spaces).
 
-### Steps to Set Up Infrastructure
+## Create a Directus App
 
-  
+1. In your DigitalOcean dashboard, navigate to the Apps section and click **Create App**.
+2. Link the repository with your Dockerfile that you created earlier. You may need to connect your account to GitHub/GitLab to access your repository.
+3. You'll encounter a page with an auto-generated name for your app. You should see the name of your repository below. This setup is recognized as a web service, which is suitable for Directus.
+4. Adjust the app's plan to your requirements, including the number of containers and their capabilities. 
+5. Connect to the managed database you crafted earlier. Attaching the database to the app is a recommended best practice, ensuring smooth firewall and security settings. Then, select your database cluster and user.
+6. Input the necessary [environment variables](https://docs.directus.io/self-hosted/config-options.html) for Directus. A set of basic variables will help you get started, but ensure you complete all necessary fields. The bulk editor simplifies this task, and you can always return to edit or add more variables later.
 
-1.  **Create Dockerfile repo**:
+```
+KEY="randomly-generated-key"
+SECRET="randomly-generated-secret"
+DB_CLIENT="pg"
+DB_HOST="dbhost"  
+DB_PORT="25060" 
+DB_DATABASE="your_db"
+DB_USER="doadmin"
+DB_PASSWORD="dbpass"
+DB_SSL__CA=""
+STORAGE_LOCATIONS=digitalocean
+STORAGE_DIGITALOCEAN_DRIVER=s3
+STORAGE_DIGITALOCEAN_KEY="your-storage-key"
+STORAGE_DIGITALOCEAN_SECRET="your-storage-secret"
+STORAGE_DIGITALOCEAN_ENDPOINT="your-storage-endpoint-url"
+STORAGE_DIGITALOCEAN_BUCKET="your-storage-bucket-name"
+STORAGE_DIGITALOCEAN_REGION="your-storage-region"
+REDIS_HOST="host-ip"
+REDIS_PORT="6379"
+REDIS_PASSWORD="redis-password"
+CACHE_ENABLED="true"
+CACHE_STORE="redis"
+CACHE_AUTO_PURGE="true"
+MESSENGER_STORE="redis"
+SYNCHRONIZATION_STORE="redis"
+PUBLIC_URL=${APP_URL}
 
-- First we must create our Dockerfile. This is very easy and can be hosted in Github or Gitlab.
+ADMIN_EMAIL="admin@example.com"
+ADMIN_PASSWORD="hunter2"
+```
 
-- Create a new repo (name it anything), than in the root of the new repo, create a blank Dockerfile.
+:::info Random key & Secret
 
-- Below is an example Dockerfile that you can use. After creating the file. Hit commit the change to your repo! Also while we are here, Let's break it down so you can see what we are doing within the dockerfile.
-	- We use corepack as it allows us to use pnpm which is the package manager we are using with Directus.
-	- We enabled 8.7.6 of pnpm as its the latest version of this writing.
-	- We pull the latest version of Directus in FROM. You can pick a specific version by looking at the available tags [here](https://hub.docker.com/r/directus/directus/tags). (this is also how you update Directus)
-	- Chown gives the proper permissions needed for node to access the files
-	- We expose port 8055 for Directus, DO Apps can read this and handles this automatically for us during deployment.
-	- The RUN command allows us to bake in any extensions we want to include. Make sure to include a && and than include your install command for the extension. I have included [Directus Extension Field Actions](https://github.com/utomic-media/directus-extension-field-actions) and [Flows Manager](https://github.com/baguse/directus-extension-flow-manager) extensions as an example.
-	- The bootstrap command is ran first to pull info from the ENV to either install the database (if it's empty) or migrate it to the latest version (if it already exists and has missing migrations).
-	- The start command is now ran to start Directus!🎉
+For generating your `KEY` and `SECRET`, you can use [this tool](https://generate-secret.vercel.app/32).
 
+:::
 
+For database connection settings, you can either utilize DigitalOcean's predefined variables or use the connection settings found on the managed database page. If you wish to delve deeper into Digital Ocean's environment variables, consult their [documentation](https://docs.digitalocean.com/products/app-platform/how-to/use-environment-variables/). Additionally, don't forget to incorporate the CA certificate, available within the database connection settings.
 
-  
-  
+Once you've reviewed your configurations and confirmed everything's in order, proceed by clicking "Create App". This action kickstarts the building and deployment phase.
 
-			# syntax=docker/dockerfile:1.4
+## Deploy Your Project
 
-			## Black Dahlia was here
-			####################################################################################################
-			## Create Your Directus Production Image
+During this step, all that's left for you is to patiently wait as your tailored Directus application undergoes construction and deployment. Digital Ocean will cache the image you've just built, ensuring it's available for spawning new containers during any auto-scaling events.  
 
-			FROM directus/directus
-			USER root
-			RUN corepack enable \
-			&& corepack prepare pnpm@8.7.6 --activate \
+After the build, the deployment process takes the stage. This phase initializes Directus, oversees its bootstrap operations, and verifies the backend's functionality. If everything transpires without a hitch, you'll witness a successful deployment notification.
 
-			# Currently required, we'll probably address this in the base image in future release
-
-			&& chown node:node /directus
-			EXPOSE 8055
-			USER node
-
-			RUN pnpm install directus-extension-field-actions && pnpm install directus-extension-flow-manager && pnpm config set auto-install-peers true
-			CMD : \
-			&& node /directus/cli.js bootstrap \
-			&& node /directus/cli.js start \
-			;
-
-  
-  
-
-##### Note: By choosing a version for Directus in your dockerfile, you can "version control" your backend to prevent accidental upgrades. If you leave the tag as it is above in the example dockerfile, it will always pull the latest version of Directus that is available. Anytime your deployment sees a commit, a build will automatically be ran for your App.
-  
-
-2.  **Create Managed DB**:
-
-- Start with a managed Postgres DB. Navigate to the [Databases](https://cloud.digitalocean.com/databases) page and follow the instructions. If you've already got a database, move on to the next step.
-
-  
-
-3.  **Create Redis Droplet**:
-
-- Establish a Redis droplet for synchronization across containers. Follow this [tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-20-04). If you have an existing external Redis server, that works too.
-
-- As Directus evolves its Redis support, this process will become even more straightforward in the future as we will be able to use DO's Managed Redis service.
-
-  
-
-4.  **Setup Spaces Object Storage**:
-
-- Persistent file uploads require external volume. On the apps platform, this means using the Spaces Object Storage, similar to S3. Set it up [here](https://cloud.digitalocean.com/spaces).
-
-  
-
-## Create The App
-
-  
-
-1. Navigate to the apps section and click "Create App".
-
-2. On the subsequent page, link the repo that you created or forked earlier. Connect your account to GitHub/Gitlab to access your repository.
-
-3. You'll encounter a page with an auto-generated name for your app. You should see the name of your repository below. This setup is recognized as a web service, which is fitting for Directus.
-
-4. Adjust the app's plan to your requirements, including the number of containers and their capabilities. Here, you can also connect your managed DO database.
-
-5. Remember, If you're running two or more containers, Redis becomes a necessity.
-
-6. Opt for the managed database you crafted earlier. Attaching the database to the app is a recommended best practice, ensuring smooth firewall and security settings. Then, select your database cluster and user.
-
-7. Input the necessary [environment variables](https://docs.directus.io/self-hosted/config-options.html) for Directus. A set of basic variables will help you get started, but ensure you complete all necessary fields. The bulk editor simplifies this task, and you can always return to edit or add more variables later.
-
-  
-  
-
-	    KEY="enterakey"
-	    SECRET="enterasecret"
-	    DB_CLIENT="pg"
-	    DB_HOST="dbhost"  
-	    DB_PORT="25060" 
-	    DB_DATABASE="your_db"
-	    DB_USER="doadmin"
-	    DB_PASSWORD="dbpass"
-	    DB_SSL__CA=""
-	    STORAGE_LOCATIONS=digitalocean
-	    STORAGE_DIGITALOCEAN_DRIVER=s3
-	    STORAGE_DIGITALOCEAN_KEY="yourstoragekey"
-	    STORAGE_DIGITALOCEAN_SECRET="yoursecret"
-	    STORAGE_DIGITALOCEAN_ENDPOINT="endpointurl"
-	    STORAGE_DIGITALOCEAN_BUCKET="bucketname"
-	    STORAGE_DIGITALOCEAN_REGION="selectedregion"
-	    REDIS_HOST="hostip"
-	    REDIS_PORT="6379"
-	    REDIS_PASSWORD="redis-password"
-	    CACHE_ENABLED="true"
-	    CACHE_STORE="redis"
-	    CACHE_AUTO_PURGE="true"
-	    MESSENGER_STORE="redis"
-	    SYNCHRONIZATION_STORE="redis"
-	    PUBLIC_URL=${APP_URL}
-    
-	    ADMIN_EMAIL="youradmin@mail.com"
-	    ADMIN_PASSWORD="myfirstadminpassword"
-
-  
-
-##### For generating your KEY & SECRET, you can use this tool: [generate-secret.vercel.app/32](https://generate-secret.vercel.app/32).
-
-  
-
-8. For database connection settings, you have two options. You can either utilize Digital Ocean's predefined variables or use the connection settings found on the managed db page. If you wish to delve deeper into Digital Ocean's environment variables, consult their [documentation](https://docs.digitalocean.com/products/app-platform/how-to/use-environment-variables/). Additionally, don't forget to incorporate the CA certificate, available within the database connection settings.
-
-  
-
-	##### Moving forward, you'll have the opportunity to designate a name for your application. You can also decide whether to integrate it into a DO project. For those unfamiliar, a DO project is a handy tool to collectively label and manage multiple resources.
-
-  
-
-9. Once you've reviewed your configurations and confirmed everything's in order, proceed by clicking "Create App". This action kickstarts the building and deployment phase.
-
-  
-
-## Deployment
-
-  
-
-During this step, all that's left for you is to patiently wait as your tailored Directus application undergoes construction and deployment. Digital Ocean will cache the image you've just built, ensuring it's available for spawning new containers during any auto-scaling events.
-
-  
-
-Post build completion, the deployment process takes the stage. This phase initializes Directus, oversees its bootstrap operations, and verifies the backend's functionality. If everything transpires without a hitch, you'll witness a successful deployment notification.
-
-  
-
-Upon entering the application dashboard, you'll encounter a comprehensive view of your application's health. It provides insights into recent deployments, facilitates forced deployments, and more. Prominently displayed is your generated application URL. If you want to use a custom URL for your backend, navigate to the settings tab add one. As an added convenience, SSL certs are already managed for you.
-
-  
+Upon entering the application dashboard, you'll encounter a comprehensive view of your application's health. It provides insights into recent deployments, facilitates forced deployments, and more. Prominently displayed is your generated application URL. If you want to use a custom URL for your backend, navigate to the settings tab and add one. As an added convenience, SSL certificatess are already managed for you.
 
 ## Summary
 
-  
+This guide offers a path to deploying Directus on the DigitalOcean App Platform. For those familiar or already ingrained with DO, the App Platform is a great choice to host your project.
 
-This guide offers a straightforward path to deploying Directus on the DO App Platform. For those familiar or already ingrained with Digital Ocean, the App Platform is a great choice to host your backend.
+Any alterations to the environment variables or Dockerfile automatically triggers re-builds and deployments. All deployments are executed with zero-downtime and any unsuccessful builds will default back to the lastest successful deployment. Your data's integrity is preserved with Spaces object storage and your managed database, ensuring your data's safety if you decide to suspend the app for subsequent migrations to another service provider.
 
-  
+I have been doing web dev for well over 18 years now. While I have learned and used a lot of different methods, languages, and frameworks to acheive success for my clients. In my pursuit of the ideal backend, Directus continues to hit every single checkbox required for mine and my clients needs and has become a cornerstone of my tech stack. I hope this guide helps you get started and have many successful projects!
 
-**Key Highlights**:
-
-  
-
-- Any alterations to the Environment Variables or Dockerfile activate instantaneous re-builds and deployments.
-
-- All deployments are executed with zero-downtime. Any unsuccessful builds will default back to the lastest successful deployment.
-
-- Your data's integrity is preserved with Object Storage and Managed DB, ensuring your data's safety if you decide to suspend the app for subsequent migrations to another service provider.
-
-  
-
-Should any questions or hurdles arise, feel free to reach out to me on the official Directus Discord. I'm always here to assist!
-
-  
-
--onelove
+Should any questions or hurdles arise, feel free to ask questions on the [official Directus Discord](https://directus.chat). We're always here to help!
