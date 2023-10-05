@@ -21,7 +21,7 @@ First, events that help us **debug errors**. These should contain information wh
 
 The second type of events provides transactional data about the application state. Consider a scenario where we periodically import participants from an event ticketing app. In such cases, we want to track whether the import process started, the number of participants successfully imported, any import failures, and the reasons behind those failures. Event logs are instrumental in answering these questions without having to look at flow revisions.
 
-Furthermore, instead of sending email notifications directly from the location where an event occurs, we establish a separate workflow that listens for specific event types. This decoupling of alerting from our core business logic provides several advantages. It allows us to easily switch notification channels or transition to an external monitoring solution when the need arises, offering greater flexibility and adaptability in our alerting system.
+Instead of sending email notifications directly from the location where an event occurs, we can also establish a separate workflow that listens for specific event types. Decoupling alerting from our core business logic provides allows us to easily switch notification channels or transition to an external monitoring solution when the need arises, offering greater flexibility and adaptability in our alerting system.
 
 ## Before we start
 You will need a Directus project running - either using Directus Cloud or by Self Hosting. Also, you need to configure email transport.
