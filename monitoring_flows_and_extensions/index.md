@@ -194,7 +194,7 @@ In this case we would log an error, if the required email is missing in one the 
 
 ![How to trigger a log event. Select trigger flow operation, use Create log event as flow, and pass event_name, context_id, execution_id, and meta as JS object](trigger_log_event.png "")
 
-We can store events but still need a way to receive notifications. Additionally, we might only want to receive a subset of the events we create. Let's build a notification Flow that hooks onto created events and sends emails for the events we are interested in.
+We can store events but still need a way to receive notifications. Additionally, we might only want to receive a subset of the events we create. Let's build a notification Flow that is triggered by created events and sends emails for the events we are interested in.
 
 ![A Flow that listens on the create event_logs hook and sends out an email if an event with one of the given names was created](notify_on_event.png "")
 
