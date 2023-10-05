@@ -10,7 +10,9 @@ Directus offers a flexible and extensible foundation for creating a wide range o
 There's lots of benefits to monitoring - gaining insights into the flow of data in your application, easier debugging when things go wrong, and a convenient way to send out multi-channel notifications when certain events occur.
 
 ## Event Monitoring vs Activity Logs and Revisions
- In the context of Directus, activity logs allow us to identify changes on a per-collection item basis, providing a trail to retrace the execution of workflows and view the input/output of operations. On the other hand, event logs focus on tracking specific pieces of data. The difference in granularity between activity tracking and event logging makes them complement each other. For instance, in a monitoring pipeline, when a specific event triggers an alert, we can use revisions to trace back the execution flow to analyze the context.
+In the context of Directus, activity logs allow us to identify changes on a per-item basis, providing a trail to retrace the execution of workflows and view the input/output of operations, while event logs focus on tracking specific pieces of data. 
+
+The difference in granularity between activity tracking and event logging makes them complementary. For instance, in a monitoring pipeline, when a specific event triggers an alert, revisions can be used to trace the execution flow and analyze the context.
 
 ## What events do we want to log?
 There are two main categories of events that serve different purposes.
