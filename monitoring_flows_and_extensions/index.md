@@ -329,6 +329,6 @@ function liquifyMeta(meta: Object) {
 </details>
 
 ## Summary
-While this setup is straightforward, it serves as a foundational step for monitoring your application. Typically, you would externalize your monitoring to avoid impacting your production database. However, if your workload is relatively small, this approach remains a viable solution, as you won't require any third-party services.
+This setup serves as a foundational step for monitoring your application. Typically, you would externalize your monitoring to avoid impacting your production database. However, if your workload is relatively small, this approach is a viable solution, as you won't require any third-party services.
 
 With this configuration in place, you have the option to create an insights panel to enhance your data analysis. Additionally, you can revamp the notification process by customizing the default email template or adding more templates based on the event's name.
