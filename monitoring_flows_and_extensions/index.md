@@ -1,5 +1,5 @@
 ---
-title: 'Monitoring Flows & Extensions'
+title: 'Building a Monitoring Pipeline For Flows And Extensions'
 description: 'We build a logging and monitoring pipeline for Directus applications without using any third-party dependencies.'
 author:
   name: 'Daniel Band'
