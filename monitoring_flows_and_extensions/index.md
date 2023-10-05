@@ -7,10 +7,7 @@ author:
 ---
 Directus offers a flexible and extensible foundation for creating a wide range of applications. However, to address more complex use cases such as "Backend as a Service" or "Internal Apps", it's important to develop a strategy for monitoring your application's health.
 
-What benefits does monitoring give us:
-- Insights into the flow of data
-- Makes a production application debuggable
-- Allows us to listen to events and send out notifications via different channels
+There's lots of benefits to monitoring - gaining insights into the flow of data in your application, easier debugging when things go wrong, and a convenient way to send out multi-channel notifications when certain events occur.
 
 ## How is event monitoring different from activity logs and revision?
  In the context of Directus, activity logs allow us to identify changes on a per-collection item basis, providing a trail to retrace the execution of workflows and view the input/output of operations. On the other hand, event logs focus on tracking specific pieces of data. The difference in granularity between activity tracking and event logging makes them complement each other. For instance, in a monitoring pipeline, when a specific event triggers an alert, we can use revisions to trace back the execution flow to analyze the context.
