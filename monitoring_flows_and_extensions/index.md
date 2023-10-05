@@ -69,7 +69,7 @@ The flow expects the following input payload:
 Before we create the final event payload we set the current timestamp for our event and merge the meta keys together in case they are passed as array. 
 
 ```
-:::info Be carefull
+:::info Be careful
 
 Passing an array in which a key is contained multiple times will override all keys with the last entry.
 
