@@ -23,7 +23,7 @@ The second type of events provides transactional data about the application stat
 
 Instead of sending email notifications directly from the location where an event occurs, we can also establish a separate workflow that listens for specific event types. Decoupling alerting from our core business logic provides allows us to easily switch notification channels or transition to an external monitoring solution when the need arises, offering greater flexibility and adaptability in our alerting system.
 
-## Before we start
+## Before We Start
 You will need a Directus project running - either using Directus Cloud or by Self Hosting. Also, you need to configure email transport.
 
 After that, start by creating the following collections and fields:
