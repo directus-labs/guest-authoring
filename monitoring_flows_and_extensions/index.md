@@ -17,7 +17,7 @@ The difference in granularity between activity tracking and event logging makes 
 ## What You Should Log
 There are two main categories of events that serve different purposes.
 
-First, events that help us debug errors. These should contain information what, when and where something went wrong, accompanied by metadata to make the job of debugging easier. 
+First, events that help us **debug errors**. These should contain information what, when, and where something went wrong, accompanied by metadata to make debugging easier. 
 
 The second type of events provides transactional data about the application state. Consider a scenario where we periodically import participants from an event ticketing app. In such cases, we want to track whether the import process started, the number of participants successfully imported, any import failures, and the reasons behind those failures. Event logs are instrumental in answering these questions without having to look at flow revisions.
 
