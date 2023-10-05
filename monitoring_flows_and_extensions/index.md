@@ -14,7 +14,7 @@ In the context of Directus, activity logs allow us to identify changes on a per-
 
 The difference in granularity between activity tracking and event logging makes them complementary. For instance, in a monitoring pipeline, when a specific event triggers an alert, revisions can be used to trace the execution flow and analyze the context.
 
-## What events do we want to log?
+## What You Should Log
 There are two main categories of events that serve different purposes.
 
 First, events that help us debug errors. These should contain information what, when and where something went wrong, accompanied by metadata to make the job of debugging easier. 
