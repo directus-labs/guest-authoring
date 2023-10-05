@@ -5,7 +5,7 @@ author:
   name: 'Daniel Band'
   avatar_file_name: 'daniel.jpg'
 ---
-Directus offers a flexible and extensible foundation for creating a wide range of applications. However, to address more complex use cases such as Backend as a Service or internal applications, we will develope a strategy for monitoring the application's state in this article.
+Directus offers a flexible and extensible foundation for creating a wide range of applications. However, to address more complex use cases such as "Backend as a Service" or "Internal Apps", it's important to develop a strategy for monitoring your application's health.
 
 What benefits does monitoring give us:
 - Insights into the flow of data
