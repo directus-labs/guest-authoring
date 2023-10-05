@@ -41,15 +41,11 @@ log_events
 - event_date (Type: timestamp, Interface: Datetime)
 - meta: (Type: json, Interface: Code)
 
-**event_name** is a resource identfier with a common meaning accross all events. It can be specific (triggered only at one location) or generic (triggered from multiple locations) with added meta data. For example, a generic event *ressource-not-found* could be enriched with the meta data *collection: string, id: any*, while an event *import-participants-failed* is a specific locator.
-
-**context** identifies the location where the event takes place. While the **event_name** is reusable, the **context** should be distinct. We can build context hierachies, e.g. to locate events in subflows. The event *import-participants-failed* could be in the **context** (flow) *import-participants*. For this article we stick with a simple string input.
-
-**execution_id** is a grouping identifier. For each execution within a **context**, all events share the same identifier. This gives us the possibility to look at the event from a broader perspective. 
-
-**event_date** is a unix timestamp, which is set when the event is triggered, before it's inserted into the database.
-
-**meta** is a JSON object, holding all additional information. 
+- **event_name** is a resource identifier with a common meaning across all events. It can be specific (triggered only at one location) or generic (triggered from multiple locations) with added meta data. For example, a generic event *resource-not-found* could be enriched with the meta data *collection: string, id: any*, while an event *import-participants-failed* is a specific locator.
+- **context** identifies the location where the event takes place. While the **event_name** is reusable, the **context** should be distinct. We can build context hierarchies, e.g. to locate events in subflows. The event *import-participants-failed* could be in the **context** (flow) *import-participants*. For this article we stick with a string input.
+- **execution_id** is a grouping identifier. For each execution within a **context**, all events share the same identifier. This gives us the possibility to look at the event from a broader perspective. 
+- **event_date** is a unix timestamp, which is set when the event is triggered, before it's inserted into the database.
+- **meta** is a JSON object, holding all additional information. 
 
 ## Create a Monitoring and Logging Pipeline
 With our collection setup, let's create a trigger Flow whose purpose is to set the event date and merge all metadata. This flow will be triggered by other flows each time we want to log an event.
