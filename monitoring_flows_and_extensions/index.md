@@ -51,7 +51,7 @@ log_events
 
 **meta** is a JSON object, holding all additional information. 
 
-## Create a monitoring & logging pipeline
+## Create a Monitoring and Logging Pipeline
 With our collection setup, let's create a trigger Flow whose purpose is to set the event date and merge all metadata. This flow will be triggered by other flows each time we want to log an event.
 
 ![A Flow which creates event logs](create_event_log.png "")
