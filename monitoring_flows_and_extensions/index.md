@@ -19,12 +19,12 @@ There are two main categories of events that serve different purposes.
 
 First, events that help us **debug errors**. These should contain information what, when, and where something went wrong, accompanied by metadata to make debugging easier. 
 
-The second type of events provides transactional data about the application state. Consider a scenario where we periodically import participants from an event ticketing app. In such cases, we want to track whether the import process started, the number of participants successfully imported, any import failures, and the reasons behind those failures. Event logs are instrumental in answering these questions without having to look at flow revisions.
+The second type of events provides **analytical data** about the application state. Consider a scenario where we periodically import participants from an event ticketing app. In such cases, we want to track whether the import process started, the number of participants successfully imported, any import failures, and the reasons behind those failures. Event logs are instrumental in answering these questions without having to look at flow revisions.
 
 Instead of sending email notifications directly from the location where an event occurs, we can also establish a separate workflow that listens for specific event types. Decoupling alerting from our core business logic provides allows us to easily switch notification channels or transition to an external monitoring solution when the need arises, offering greater flexibility and adaptability in our alerting system.
 
 ## Before We Start
-You will need a Directus project running - either using Directus Cloud or by Self Hosting. Also, you need to configure email transport.
+You will need a Directus project running - either using Directus Cloud or by Self Hosting. Also, you might need to [configure email transport](https://docs.directus.io/self-hosted/config-options.html#email) if you are self-hosting Directus.
 
 After that, start by creating the following collections and fields:
 
@@ -33,7 +33,7 @@ participants:
 - name: (Type: string, Interface: Input)
 - email: (Type: string, Interface: Input, required)
 
-log_events
+log_events:
 - id (Primary key: generated uuid)
 - event_name (Type: string, Interface: Input)
 - context: (Type: string, Interface: Input)
@@ -41,6 +41,7 @@ log_events
 - event_date (Type: timestamp, Interface: Datetime)
 - meta: (Type: json, Interface: Code)
 
+The fields of the table **log_events** need a short explanation:
 - **event_name** is a resource identifier with a common meaning across all events. It can be specific (triggered only at one location) or generic (triggered from multiple locations) with added meta data. For example, a generic event *resource-not-found* could be enriched with the meta data *collection: string, id: any*, while an event *import-participants-failed* is a specific locator.
 - **context** identifies the location where the event takes place. While the **event_name** is reusable, the **context** should be distinct. We can build context hierarchies, e.g. to locate events in subflows. The event *import-participants-failed* could be in the **context** (flow) *import-participants*. For this article we stick with a string input.
 - **execution_id** is a grouping identifier. For each execution within a **context**, all events share the same identifier. This gives us the possibility to look at the event from a broader perspective. 
