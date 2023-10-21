@@ -14,13 +14,13 @@ This guide covers setting up Docker, configuring Docker Compose, using Nginx as 
 
 ## Prerequisites
 
-1. A Directus Project: Have a local Directus project ready to deploy. If you don't have one, you can follow the [Directus Quickstart Guide][quickstart] to create a new project.
+1. **A Directus Project:** Prepare a local Directus project for deployment. Follow the [Directus Quickstart Guide][quickstart] if you need to create a new project.
 
-2. Ubuntu Server: Ensure you have access to an Ubuntu server preferably via SSH. You can get a server from a cloud hosting provider like DigitalOcean, Linode, or AWS. Then configure your local machine to access the server via SSH.
+2. **Ubuntu Server (Version 20.04 or 22.04):** Access an Ubuntu server via SSH. Obtain one from cloud providers like DigitalOcean, Linode, or AWS. Configure SSH access from your local machine.
 
-3. Domain Name: Have a registered domain name with access to DNS settings.
+3. **Domain Name:** Register a domain name and have access to its DNS settings.
 
-4. Basic Command-Line Skills: Have basic knowledge of the Linux command line. And familiarity with commands like `scp` (SCP is used to upload files to the server) and `vi` (vi is used to edit files on the server).
+4. **Basic Command-Line Skills:** Familiarity with Linux command line, including commands like `scp` for file upload and `vi` for file editing.
 
 ## Upload Your Local Directus Application Folder to the Server
 
@@ -76,6 +76,8 @@ Please replace _/path/to/your/local/directus/folder_ with the actual path to you
 
 Also, replace `username` with your server's username and `server_ip` with your server's public IP address.
 
+![Image 6][image-6]
+
 :::info Database Note
 
 Note that the database used in this tutorial is SQLite. For other types of databases like MySQL and PostgreSQL, you might have to create a database dump and export the dump to your remote server.
@@ -98,7 +100,7 @@ sudo apt upgrade -y
 
 ## Installing Docker and Docker Compose
 
-To install Docker and Docker Compose, run the following commands:
+To install Docker, run the following commands:
 
 ```bash
 sudo apt install docker.io -y
@@ -107,6 +109,23 @@ sudo systemctl enable docker
 ```
 
 This install Docker and enable the docker service.
+To check if docker is running, run:
+
+```bash
+sudo systemctl status docker
+```
+
+To install Docker Compose, run the following commands:
+
+```bash
+sudo apt install docker-compose -y
+```
+
+To verify that the installation was successful, you can run:
+
+```bash
+docker-compose --version
+```
 
 ## Run your Directus Application
 
@@ -124,9 +143,25 @@ cd /path/to/your/directus/folder
 sudo docker-compose up
 ```
 
+![Image 11][image-11]
+
 On first run this will pull the docker image from the registry and then start your Directus application.
 
 Your application should now be accessible at `http://your_server_ip:8055`.
+![Image 2][image-2]
+
+:::info Error Debugging
+
+If you encounter any error e.g `SQLITE_CANTOPEN: unable to open database file`, it is probably due to permission issues. You can try running this command to fix it:
+
+```bash
+sudo chown -R $USER:$USER /path/to/your/directus/folder
+
+```
+
+More info about this error in this [issue][issue]
+
+:::
 
 ## Running the Docker Container as a Background Service
 
@@ -168,6 +203,14 @@ ExecStop=/usr/bin/docker-compose down
 WantedBy=multi-user.target
 ```
 
+:::info
+
+You can get the full path to you directory by running the command `pwd` in the project directory on your server and copy the output.
+
+![Image 10][image-10]
+
+:::
+
 Save the file and exit the editor.
 
 Let's step through the service file:
@@ -205,7 +248,9 @@ Run the following command to check the status of the service:
 sudo systemctl status directus.service
 ```
 
-You can also check your application at `http://your_server_ip:8055`.
+![Image 7][image-7]
+
+You can also confirm if your application is still running at `http://your_server_ip:8055`.
 
 ## Configuring DNS Settings for Your Domain
 
@@ -215,9 +260,17 @@ Configuring DNS settings for your domain is a crucial step in making your Direct
 
 2. Locate DNS Management or Domain Settings: Inside your domain registrar's dashboard, look for options like "DNS Management," "Domain Settings," or "Domain Management." These names might vary based on the registrar's interface.
 
+![Image 8][image-8]
+
 3. Add a DNS Record for Your Subdomain: Create a new DNS record to point your subdomain (e.g., directus.exampledomain.com) to your server's public IP address. Depending on the registrar, you may need to choose the record type, which is usually an "A" record for IPv4 addresses. Enter your server's public IP address in the designated field.
 
+![Image 5][image-5]
+
 4. Save the changes: After adding the DNS record, save the changes. DNS propagation might take some time, ranging from a few minutes to a few hours. During this period, the DNS changes will propagate across the internet, making your subdomain accessible.
+
+You can confirm your changes by visiting the application by visiting `http://directus.exampledomain.com:8055`.
+
+![Image 4][image-4]
 
 ## Setting Up Nginx as a Reverse Proxy
 
@@ -241,18 +294,18 @@ Add the following configurations, replacing `directus.exampledomain.com` with yo
 
 ```nginx
 server {
-listen 80;
-server_name directus.exampledomain.com;
+  listen 80;
+  server_name directus.exampledomain.com;
 
 
-location / {
-proxy_pass http://localhost:8055;
-proxy_http_version 1.1;
-proxy_set_header Upgrade $http_upgrade;
-proxy_set_header Connection 'upgrade';
-proxy_set_header Host $host;
-proxy_cache_bypass $http_upgrade;
-}
+  location / {
+    proxy_pass http://localhost:8055;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+  }
 }
 ```
 
@@ -296,7 +349,9 @@ And restart Nginx:
 sudo systemctl restart nginx
 ```
 
-Now you should be able to access your Directus application at `http://directus.exampledomain.com`.
+Now you should be able to access your Directus application without adding the port at `http://directus.exampledomain.com`.
+
+![Image 1][image-1]
 
 ## Securing Your Application with SSL (Optional but Recommended)
 
@@ -318,12 +373,16 @@ Certbot will interactively guide you through the setup process.
 
 Ensure you select the option to redirect HTTP traffic to HTTPS when prompted. Certbot will automatically configure Nginx to use the SSL certificate.
 
+![Image 9][image-9]
+
 :::info Renew certificate
 
 Also ensure to renew the certificate before it expires to maintain a secure connection.
 :::
 
-3. Verify SSL Configuration: After the setup is complete, visit your Directus application using `https://directus.exampledomain.com` in a web browser. You should see a padlock icon indicating a secure SSL connection.
+3. Verify SSL Configuration: After the setup is complete, visit your Directus application using `https://directus.exampledomain.com` in a web browser. You should see a padlock icon indicating a secure SSL connection and be automatically redirected from `http` to `https`.
+
+![Image 3][image-3]
 
 ## Summary
 
@@ -333,3 +392,15 @@ Should you have any questions or encounter issues, feel free to refer back to th
 
 [chat]: https://directus.chat 'Directus Community Chat'
 [quickstart]: https://docs.directus.io/getting-started/quickstart.html 'Directus Quickstart'
+[issue]: https://github.com/directus/directus/discussions/17823#discussioncomment-5395649
+[image-1]: app_domain_without_port_insecure.png
+[image-2]: app_insecure_with_port.png
+[image-3]: app_with_domain_secure.png
+[image-4]: app_with_domain_with_port_insecure.png
+[image-5]: configure_a_records.png
+[image-6]: copy_file_to_server.png
+[image-7]: directus_service_status.png
+[image-8]: dns_management_dashboard.png
+[image-9]: http_https_redirect.png
+[image-10]: pwd.png
+[image-11]: running_docker_compose.png
