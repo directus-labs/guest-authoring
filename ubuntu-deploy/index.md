@@ -14,13 +14,13 @@ This guide covers setting up Docker, configuring Docker Compose, using Nginx as 
 
 ## Prerequisites
 
-1. **A Directus Project**: Have a local Directus project ready to deploy. If you don't have one, you can follow the [Directus Quickstart Guide](https://docs.directus.io/getting-started/quickstart.html) to create a new project.
+1. A Directus Project: Have a local Directus project ready to deploy. If you don't have one, you can follow the [Directus Quickstart Guide][quickstart] to create a new project.
 
-1. **Ubuntu Server**: Ensure you have access to an Ubuntu server preferably via SSH. You can get a server from a cloud hosting provider like DigitalOcean, Linode, or AWS. Then configure your local machine to access the server via SSH.
+2. Ubuntu Server: Ensure you have access to an Ubuntu server preferably via SSH. You can get a server from a cloud hosting provider like DigitalOcean, Linode, or AWS. Then configure your local machine to access the server via SSH.
 
-1. **Domain Name**: Have a registered domain name with access to DNS settings.
+3. Domain Name: Have a registered domain name with access to DNS settings.
 
-1. **Basic Command-Line Skills**: Have basic knowledge of the Linux command line. And familiarity with commands like `scp` (SCP is used to upload files to the server) and `vi` (vi is used to edit files on the server).
+4. Basic Command-Line Skills: Have basic knowledge of the Linux command line. And familiarity with commands like `scp` (SCP is used to upload files to the server) and `vi` (vi is used to edit files on the server).
 
 ## Upload Your Local Directus Application Folder to the Server
 
@@ -166,7 +166,9 @@ ExecStop=/usr/bin/docker-compose down
 WantedBy=multi-user.target
 ```
 
-Save the file and exit the editor. Let's step through it:
+Save the file and exit the editor.
+
+Let's step through the service file:
 
 - [Unit] Section:
 
@@ -207,13 +209,13 @@ You can also check your application at `http://your_server_ip:8055`.
 
 Configuring DNS settings for your domain is a crucial step in making your Directus application accessible to users over the internet. Here's how to do it:
 
-1. **Access Your Domain Registrar's Website**: Log in to the website of your domain registrar, where you initially purchased or registered your domain name. This is where you manage your domain settings.
+1. Access Your Domain Registrar's Website: Log in to the website of your domain registrar, where you initially purchased or registered your domain name. This is where you manage your domain settings.
 
-2. **Locate DNS Management or Domain Settings**: Inside your domain registrar's dashboard, look for options like "DNS Management," "Domain Settings," or "Domain Management." These names might vary based on the registrar's interface.
+2. Locate DNS Management or Domain Settings: Inside your domain registrar's dashboard, look for options like "DNS Management," "Domain Settings," or "Domain Management." These names might vary based on the registrar's interface.
 
-3. **Add a DNS Record for Your Subdomain**: Create a new DNS record to point your subdomain (e.g., directus.exampledomain.com) to your server's public IP address. Depending on the registrar, you may need to choose the record type, which is usually an "A" record for IPv4 addresses. Enter your server's public IP address in the designated field.
+3. Add a DNS Record for Your Subdomain: Create a new DNS record to point your subdomain (e.g., directus.exampledomain.com) to your server's public IP address. Depending on the registrar, you may need to choose the record type, which is usually an "A" record for IPv4 addresses. Enter your server's public IP address in the designated field.
 
-4. **Save the changes**: After adding the DNS record, save the changes. DNS propagation might take some time, ranging from a few minutes to a few hours. During this period, the DNS changes will propagate across the internet, making your subdomain accessible.
+4. Save the changes: After adding the DNS record, save the changes. DNS propagation might take some time, ranging from a few minutes to a few hours. During this period, the DNS changes will propagate across the internet, making your subdomain accessible.
 
 ## Setting Up Nginx as a Reverse Proxy
 
@@ -256,23 +258,23 @@ This simply forward the request to the domain to the Directus application runnin
 
 Let's step through the config file:
 
-- **listen 80**: Listens for incoming connections on port 80, the default for HTTP traffic.
+- listen 80: Listens for incoming connections on port 80, the default for HTTP traffic.
 
-- **server_name directus.exampledomain.com**: Matches requests to this domain.
+- server_name directus.exampledomain.com: Matches requests to this domain.
 
-- **location / { ... }**: Handles all requests for directus.exampledomain.com.
+- location / { ... }: Handles all requests for directus.exampledomain.com.
 
-- **proxy_pass http://localhost:8055**: Forwards requests to the Directus application.
+- proxy_pass http://localhost:8055: Forwards requests to the Directus application.
 
-- **proxy_http_version 1.1**: Uses the HTTP/1.1 protocol for Nginx-proxy communication.
+- proxy_http_version 1.1: Uses the HTTP/1.1 protocol for Nginx-proxy communication.
 
-- **proxy_set_header Upgrade $http_upgrade**: Essential for WebSocket connections.
+- proxy_set_header Upgrade $http_upgrade: Essential for WebSocket connections.
 
-- **proxy_set_header Connection 'upgrade'**: Indicates connection upgrade.
+- proxy_set_header Connection 'upgrade': Indicates connection upgrade.
 
-- **proxy_set_header Host $host**: Sends original host information to the server.
+- proxy_set_header Host $host: Sends original host information to the server.
 
-- **proxy_cache_bypass $http_upgrade**: Bypasses caching for WebSockets.
+- proxy_cache_bypass $http_upgrade: Bypasses caching for WebSockets.
 
 To test the Nginx configuration files for syntax errors, you can use the following command:
 
@@ -298,13 +300,13 @@ Now you should be able to access your Directus application at `http://directus.e
 
 Securing your application with SSL (Secure Sockets Layer) encryption is highly recommended to protect data transmitted between your users and your server. Let's Encrypt offers free SSL certificates, and here's how to set it up for your Directus application:
 
-1. **Install Certbot**: On your server, run the following commands to install Certbot and the Certbot Nginx plugin:
+1. Install Certbot: On your server, run the following commands to install Certbot and the Certbot Nginx plugin:
 
 ```bash
 sudo apt install certbot python3-certbot-nginx -y
 ```
 
-2. **Obtain an SSL Certificate**: Run Certbot with the --nginx option, specifying your domain (directus.exampledomain.com in this case):
+2. Obtain an SSL Certificate: Run Certbot with the --nginx option, specifying your domain (directus.exampledomain.com in this case):
 
 ```bash
 sudo certbot --nginx -d directus.exampledomain.com
@@ -319,14 +321,13 @@ Ensure you select the option to redirect HTTP traffic to HTTPS when prompted. Ce
 Also ensure to renew the certificate before it expires to maintain a secure connection.
 :::
 
-3. **Verify SSL Configuration**: After the setup is complete, visit your Directus application using `https://directus.exampledomain.com` in a web browser. You should see a padlock icon indicating a secure SSL connection.
-
-By following these steps, you have configured DNS settings to point your subdomain to your server and secured your Directus application with SSL encryption, enhancing both accessibility and security.
+3. Verify SSL Configuration: After the setup is complete, visit your Directus application using `https://directus.exampledomain.com` in a web browser. You should see a padlock icon indicating a secure SSL connection.
 
 ## Summary
 
 This tutorial guided you through hosting a Directus application on an Ubuntu server, covering essential steps like Docker setup, firewall configuration, and SSL encryption. By following these instructions, you've ensured a secure, accessible, and continuously running environment for your Directus project.
 
-Should you have any questions or encounter issues, feel free to refer back to this guide or seek assistance from the [community][chat]. Happy hosting!
+Should you have any questions or encounter issues, feel free to refer back to this guide or seek assistance from the [directus community][chat]. Happy hosting!
 
 [chat]: https://directus.chat 'Directus Community Chat'
+[quickstart]: https://docs.directus.io/getting-started/quickstart.html 'Directus Quickstart'
