@@ -124,7 +124,9 @@ cd /path/to/your/directus/folder
 sudo docker-compose up
 ```
 
-This will start your Directus application and make it accessible at `http://your_server_ip:8055`.
+On first run this will pull the docker image from the registry and then start your Directus application.
+
+Your application should now be accessible at `http://your_server_ip:8055`.
 
 ## Running the Docker Container as a Background Service
 
@@ -146,7 +148,7 @@ Create a file named _directus.service_ in the _/etc/systemd/system/_ directory:
 sudo vi /etc/systemd/system/directus.service
 ```
 
-Add the following content, updating the `WorkingDirectory` to your Directus project directory containing your _docker-compose.yml_ file:
+Add the following content, updating the `WorkingDirectory` to your Directus project directory containing the _docker-compose.yml_ file:
 
 ```plaintext
 [Unit]
