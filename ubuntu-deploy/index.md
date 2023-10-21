@@ -148,6 +148,7 @@ sudo docker-compose up
 On first run this will pull the docker image from the registry and then start your Directus application.
 
 Your application should now be accessible at `http://your_server_ip:8055`.
+
 ![Image 2][image-2]
 
 :::info Error Debugging
@@ -205,7 +206,7 @@ WantedBy=multi-user.target
 
 :::info
 
-You can get the full path to you directory by running the command `pwd` in the project directory on your server and copy the output.
+You can get the full path to you directory by running the command `pwd` in the project directory on your server and copying the output.
 
 ![Image 10][image-10]
 
