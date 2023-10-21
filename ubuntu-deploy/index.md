@@ -8,7 +8,7 @@ author:
 
 ## Introduction
 
-In this tutorial, you will learn how to deploy a directus application within a Docker container on an Ubuntu Linux server and connect it to a custom domain, such as `https://directus.exampledomain.com`.
+In this tutorial, you will learn how to deploy a Directus application within a Docker container on an Ubuntu Linux server and connect it to a custom domain, such as `https://directus.exampledomain.com`.
 
 This guide covers setting up Docker, configuring Docker Compose, using Nginx as a reverse proxy, and securing your application with SSL. Additionally, you'll discover how to run the application as a background service, ensuring seamless operation and easy management.
 
@@ -16,7 +16,7 @@ This guide covers setting up Docker, configuring Docker Compose, using Nginx as 
 
 1. **A Directus Project:** Prepare a local Directus project for deployment. Follow the [Directus Quickstart Guide][quickstart] if you need to create a new project.
 
-2. **Ubuntu Server (Version 20.04 or 22.04):** Access an Ubuntu server via SSH. Obtain one from cloud providers like DigitalOcean, Linode, or AWS. Configure SSH access from your local machine.
+2. **Ubuntu Server (Version 20.04 or 22.04):** Access an Ubuntu server via SSH. Obtain one from cloud providers like Azure, DigitalOcean, Linode, or AWS. Configure SSH access from your local machine.
 
 3. **Domain Name:** Register a domain name and have access to its DNS settings.
 
@@ -24,7 +24,7 @@ This guide covers setting up Docker, configuring Docker Compose, using Nginx as 
 
 ## Upload Your Local Directus Application Folder to the Server
 
-Assuming you have a local directus folder structure that looks like this:
+Assuming you have a local Directus folder structure that looks like this:
 
 ```plaintext
 ├── database
@@ -266,7 +266,7 @@ Configuring DNS settings for your domain is a crucial step in making your Direct
 
 3. Add a DNS Record for Your Subdomain: Create a new DNS record to point your subdomain (e.g., directus.exampledomain.com) to your server's public IP address. Depending on the registrar, you may need to choose the record type, which is usually an "A" record for IPv4 addresses. Enter your server's public IP address in the designated field.
 
-![A record configuration][image-5]
+![A record domain configuration][image-5]
 
 4. Save the changes: After adding the DNS record, save the changes. DNS propagation might take some time, ranging from a few minutes to a few hours. During this period, the DNS changes will propagate across the internet, making your subdomain accessible.
 
@@ -321,7 +321,7 @@ Let's step through the config file:
 
 - location / { ... }: Handles all requests for directus.exampledomain.com.
 
-- proxy_pass http://localhost:8055: Forwards requests to the Directus application.
+- proxy_pass `http://localhost:8055`: Forwards requests to the Directus application.
 
 - proxy_http_version 1.1: Uses the HTTP/1.1 protocol for Nginx-proxy communication.
 
@@ -396,14 +396,14 @@ Should you have any questions or encounter issues, feel free to refer back to th
 [chat]: https://directus.chat 'Directus Community Chat'
 [quickstart]: https://docs.directus.io/getting-started/quickstart.html 'Directus Quickstart'
 [issue]: https://github.com/directus/directus/discussions/17823#discussioncomment-5395649
-[image-1]: app_domain_without_port_insecure.png
-[image-2]: app_insecure_with_port.png
-[image-3]: app_with_domain_secure.png
-[image-4]: app_with_domain_with_port_insecure.png
-[image-5]: configure_a_records.png
-[image-6]: copy_file_to_server.png
-[image-7]: directus_service_status.png
-[image-8]: dns_management_dashboard.png
-[image-9]: http_https_redirect.png
-[image-10]: pwd.png
-[image-11]: running_docker_compose.png
+[image-1]: ./app_domain_without_port_insecure.png
+[image-2]: ./app_insecure_with_port.png
+[image-3]: ./app_with_domain_secure.png
+[image-4]: ./app_with_domain_with_port_insecure.png
+[image-5]: ./configure_a_records.png
+[image-6]: ./copy_file_to_server.png
+[image-7]: ./directus_service_status.png
+[image-8]: ./dns_management_dashboard.png
+[image-9]: ./http_https_redirect.png
+[image-10]: ./pwd.png
+[image-11]: ./running_docker_compose.png
