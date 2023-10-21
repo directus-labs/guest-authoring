@@ -327,6 +327,6 @@ By following these steps, you have configured DNS settings to point your subdoma
 
 This tutorial guided you through hosting a Directus application on an Ubuntu server, covering essential steps like Docker setup, firewall configuration, and SSL encryption. By following these instructions, you've ensured a secure, accessible, and continuously running environment for your Directus project.
 
-Should you have any questions or encounter issues, feel free to refer back to this guide or seek assistance from the [community][1]. Happy hosting!
+Should you have any questions or encounter issues, feel free to refer back to this guide or seek assistance from the [community][chat]. Happy hosting!
 
-[1] : https://directus.chat
+[chat]: https://directus.chat 'Directus Community Chat'
