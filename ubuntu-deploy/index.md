@@ -76,11 +76,12 @@ Please replace _/path/to/your/local/directus/folder_ with the actual path to you
 
 Also, replace `username` with your server's username and `server_ip` with your server's public IP address.
 
-![Image 6][image-6]
+![Copying files over to the server][image-6]
 
 :::info Database Note
 
 Note that the database used in this tutorial is SQLite. For other types of databases like MySQL and PostgreSQL, you might have to create a database dump and export the dump to your remote server.
+
 :::
 
 ## Preparing Your Ubuntu Server
@@ -143,13 +144,13 @@ cd /path/to/your/directus/folder
 sudo docker-compose up
 ```
 
-![Image 11][image-11]
+![Running docker compose][image-11]
 
 On first run this will pull the docker image from the registry and then start your Directus application.
 
 Your application should now be accessible at `http://your_server_ip:8055`.
 
-![Image 2][image-2]
+![Directus application accessed with the server ip at port 8055][image-2]
 
 :::info Error Debugging
 
@@ -208,7 +209,7 @@ WantedBy=multi-user.target
 
 You can get the full path to you directory by running the command `pwd` in the project directory on your server and copying the output.
 
-![Image 10][image-10]
+![print working directory(pwd) command][image-10]
 
 :::
 
@@ -249,7 +250,7 @@ Run the following command to check the status of the service:
 sudo systemctl status directus.service
 ```
 
-![Image 7][image-7]
+![Directus service status][image-7]
 
 You can also confirm if your application is still running at `http://your_server_ip:8055`.
 
@@ -261,17 +262,17 @@ Configuring DNS settings for your domain is a crucial step in making your Direct
 
 2. Locate DNS Management or Domain Settings: Inside your domain registrar's dashboard, look for options like "DNS Management," "Domain Settings," or "Domain Management." These names might vary based on the registrar's interface.
 
-![Image 8][image-8]
+![DNS management dashboard][image-8]
 
 3. Add a DNS Record for Your Subdomain: Create a new DNS record to point your subdomain (e.g., directus.exampledomain.com) to your server's public IP address. Depending on the registrar, you may need to choose the record type, which is usually an "A" record for IPv4 addresses. Enter your server's public IP address in the designated field.
 
-![Image 5][image-5]
+![A record configuration][image-5]
 
 4. Save the changes: After adding the DNS record, save the changes. DNS propagation might take some time, ranging from a few minutes to a few hours. During this period, the DNS changes will propagate across the internet, making your subdomain accessible.
 
 You can confirm your changes by visiting the application by visiting `http://directus.exampledomain.com:8055`.
 
-![Image 4][image-4]
+![Directus application accessed by the domain at port 8055][image-4]
 
 ## Setting Up Nginx as a Reverse Proxy
 
@@ -352,7 +353,7 @@ sudo systemctl restart nginx
 
 Now you should be able to access your Directus application without adding the port at `http://directus.exampledomain.com`.
 
-![Image 1][image-1]
+![Directus application accessed at the domain but insecure][image-1]
 
 ## Securing Your Application with SSL (Optional but Recommended)
 
@@ -374,7 +375,7 @@ Certbot will interactively guide you through the setup process.
 
 Ensure you select the option to redirect HTTP traffic to HTTPS when prompted. Certbot will automatically configure Nginx to use the SSL certificate.
 
-![Image 9][image-9]
+![HTTP to HTTPS redirect with certbot][image-9]
 
 :::info Renew certificate
 
@@ -384,7 +385,7 @@ Also ensure to renew the certificate before it expires to maintain a secure conn
 
 3. Verify SSL Configuration: After the setup is complete, visit your Directus application using `https://directus.exampledomain.com` in a web browser. You should see a padlock icon indicating a secure SSL connection and be automatically redirected from `http` to `https`.
 
-![Image 3][image-3]
+![Secured Directus application][image-3]
 
 ## Summary
 
@@ -399,10 +400,10 @@ Should you have any questions or encounter issues, feel free to refer back to th
 [image-2]: app_insecure_with_port.png
 [image-3]: app_with_domain_secure.png
 [image-4]: app_with_domain_with_port_insecure.png
-[image-5]: configure_a_records.png 'Domain A record configuration'
+[image-5]: configure_a_records.png
 [image-6]: copy_file_to_server.png
-[image-7]: directus_service_status.png 'Directus service status'
-[image-8]: dns_management_dashboard.png 'DNS management dashboard'
-[image-9]: http_https_redirect.png 'HTTP to HTTPS redirect'
+[image-7]: directus_service_status.png
+[image-8]: dns_management_dashboard.png
+[image-9]: http_https_redirect.png
 [image-10]: pwd.png
-[image-11]: running_docker_compose.png 'Running docker compose'
+[image-11]: running_docker_compose.png
