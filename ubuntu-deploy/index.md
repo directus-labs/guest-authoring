@@ -127,7 +127,7 @@ To verify that the installation was successful, you can run:
 docker-compose --version
 ```
 
-## Run your Directus Application
+## Start your Directus Application
 
 Run these commands to allow incoming traffic on port 8055:
 
@@ -136,7 +136,7 @@ sudo ufw allow 8055/tcp
 sudo ufw enable
 ```
 
-Run your Directus application using Docker Compose:
+Start your Directus application using Docker Compose:
 
 ```bash
 cd /path/to/your/directus/folder
@@ -378,6 +378,7 @@ Ensure you select the option to redirect HTTP traffic to HTTPS when prompted. Ce
 :::info Renew certificate
 
 Also ensure to renew the certificate before it expires to maintain a secure connection.
+
 :::
 
 3. Verify SSL Configuration: After the setup is complete, visit your Directus application using `https://directus.exampledomain.com` in a web browser. You should see a padlock icon indicating a secure SSL connection and be automatically redirected from `http` to `https`.
@@ -397,10 +398,10 @@ Should you have any questions or encounter issues, feel free to refer back to th
 [image-2]: app_insecure_with_port.png
 [image-3]: app_with_domain_secure.png
 [image-4]: app_with_domain_with_port_insecure.png
-[image-5]: configure_a_records.png
+[image-5]: configure_a_records.png 'Domain A record configuration'
 [image-6]: copy_file_to_server.png
-[image-7]: directus_service_status.png
-[image-8]: dns_management_dashboard.png
-[image-9]: http_https_redirect.png
+[image-7]: directus_service_status.png 'Directus service status'
+[image-8]: dns_management_dashboard.png 'DNS management dashboard'
+[image-9]: http_https_redirect.png 'HTTP to HTTPS redirect'
 [image-10]: pwd.png
-[image-11]: running_docker_compose.png
+[image-11]: running_docker_compose.png 'Running docker compose'
