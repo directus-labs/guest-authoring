@@ -1,6 +1,6 @@
 ---
 title: 'Hosting a Directus Application on an Ubuntu Server'
-description: '120-160 characters'
+description: 'Learn how to host a Directus application on Ubuntu server with Docker, Nginx, and SSL encryption. A step-by-step guide for seamless deployment and security.'
 author:
   name: 'Yusuf Akorede'
   avatar_file_name: 'add-to-directory'
@@ -8,7 +8,7 @@ author:
 
 ## Introduction
 
-In this tutorial, you will learn how to deploy a directus application within a Docker container on an Ubuntu Linux server and connect it to a custom domain, such as https://directus.exampledomain.com.
+In this tutorial, you will learn how to deploy a directus application within a Docker container on an Ubuntu Linux server and connect it to a custom domain, such as `https://directus.exampledomain.com`.
 
 This guide covers setting up Docker, configuring Docker Compose, using Nginx as a reverse proxy, and securing your application with SSL. Additionally, you'll discover how to run the application as a background service, ensuring seamless operation and easy management.
 
@@ -16,7 +16,7 @@ This guide covers setting up Docker, configuring Docker Compose, using Nginx as 
 
 1. **A Directus Project**: Have a local Directus project ready to deploy. If you don't have one, you can follow the [Directus Quickstart Guide](https://docs.directus.io/getting-started/quickstart.html) to create a new project.
 
-1. **Ubuntu Server**: Ensure you have access to an Ubuntu server preferably via SSH. You can get a server from a cloud hosting provider like DigitalOcean, Linode, or AWS.
+1. **Ubuntu Server**: Ensure you have access to an Ubuntu server preferably via SSH. You can get a server from a cloud hosting provider like DigitalOcean, Linode, or AWS. Then configure your local machine to access the server via SSH.
 
 1. **Domain Name**: Have a registered domain name with access to DNS settings.
 
@@ -39,22 +39,22 @@ And the _docker-compose.yml_ file looks somewhat like this:
 ```yaml
 version: '3'
 services:
-directus:
-image: directus/directus:latest
-ports:
-  - 8055:8055
-volumes:
-  - ./database:/directus/database
-  - ./uploads:/directus/uploads
-  - ./extensions:/directus/extensions
-environment:
-KEY: 'replace-with-random-value'
-SECRET: 'replace-with-random-value'
-ADMIN_EMAIL: 'admin@example.com'
-ADMIN_PASSWORD: 'd1r3ctu5'
-DB_CLIENT: 'sqlite3'
-DB_FILENAME: '/directus/database/data.db'
-WEBSOCKETS_ENABLED: 1
+  directus:
+    image: directus/directus:latest
+    ports:
+      - 8055:8055
+    volumes:
+      - ./database:/directus/database
+      - ./uploads:/directus/uploads
+      - ./extensions:/directus/extensions
+    environment:
+      KEY: 'replace-with-random-value'
+      SECRET: 'replace-with-random-value'
+      ADMIN_EMAIL: 'admin@example.com'
+      ADMIN_PASSWORD: 'd1r3ctu5'
+      DB_CLIENT: 'sqlite3'
+      DB_FILENAME: '/directus/database/data.db'
+      WEBSOCKETS_ENABLED: 1
 # Add your other settings
 ```
 
@@ -89,7 +89,7 @@ Access your Ubuntu server from you local machine terminal via SSH:
 ssh username@server_ip
 ```
 
-And in your server terminal, run the following commands:
+In your server terminal, run the following commands:
 
 ```bash
 sudo apt update
@@ -107,6 +107,113 @@ sudo systemctl enable docker
 ```
 
 This install Docker and enable the docker service.
+
+## Run your Directus Application
+
+Run these commands to allow incoming traffic on port 8055:
+
+```bash
+sudo ufw allow 8055/tcp
+sudo ufw enable
+```
+
+Run your Directus application using Docker Compose:
+
+```bash
+cd /path/to/your/directus/folder
+sudo docker-compose up
+```
+
+This will start your Directus application and make it accessible at `http://your_server_ip:8055`.
+
+## Running the Docker Container as a Background Service
+
+Running your application like above is fine, but it will stop running when you close the terminal.
+
+To ensure your application runs in the background and restarts automatically, you can create a systemd service.
+
+:::info What is Systemd?
+
+Systemd is a system and service manager for Linux operating systems. It provides a standard process for controlling the startup, management, and monitoring of services and applications. It is usually defined by a configuration file usually ending with the _.service_ extension.
+
+:::
+
+### Create a Systemd Service File
+
+Create a file named _directus.service_ in the _/etc/systemd/system/_ directory:
+
+```bash
+sudo vi /etc/systemd/system/directus.service
+```
+
+Add the following content, updating the `WorkingDirectory` to your Directus project directory containing your _docker-compose.yml_ file:
+
+```plaintext
+[Unit]
+Description=Directus Docker Service
+Requires=docker.service
+After=docker.service
+
+
+[Service]
+Restart=always
+WorkingDirectory=/path/to/your/directory-containing-docker-compose
+ExecStart=/usr/bin/docker-compose up
+ExecStop=/usr/bin/docker-compose down
+
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Save the file and exit the editor. Let's step through it:
+
+- [Unit] Section:
+
+  - Description: Description of the systemd service.
+  - Requires: Dependency on the Docker service.
+  - After: Starts after the Docker service.
+
+- [Service] Section:
+
+  - Restart=always: The service restarts automatically on exit.
+  - WorkingDirectory: Path to the directory containing the docker-compose.yml file.
+  - ExecStart: Command to start Docker containers.
+  - ExecStop: Command to stop Docker containers.
+
+- [Install] Section:
+  - WantedBy=multi-user.target: Service enabled on reaching the multi-user state.
+
+### Enable and Start the Service
+
+Enable the service to start on boot, and then start the service:
+
+```bash
+sudo systemctl enable directus.service
+sudo systemctl start directus.service
+```
+
+Now, your dockerized Directus application is running as a background service and will automatically restart in case of failures or system reboots.
+
+Run the following command to check the status of the service:
+
+```bash
+sudo systemctl status directus.service
+```
+
+You can also check your application at `http://your_server_ip:8055`.
+
+## Configuring DNS Settings for Your Domain
+
+Configuring DNS settings for your domain is a crucial step in making your Directus application accessible to users over the internet. Here's how to do it:
+
+1. **Access Your Domain Registrar's Website**: Log in to the website of your domain registrar, where you initially purchased or registered your domain name. This is where you manage your domain settings.
+
+2. **Locate DNS Management or Domain Settings**: Inside your domain registrar's dashboard, look for options like "DNS Management," "Domain Settings," or "Domain Management." These names might vary based on the registrar's interface.
+
+3. **Add a DNS Record for Your Subdomain**: Create a new DNS record to point your subdomain (e.g., directus.exampledomain.com) to your server's public IP address. Depending on the registrar, you may need to choose the record type, which is usually an "A" record for IPv4 addresses. Enter your server's public IP address in the designated field.
+
+4. **Save the changes**: After adding the DNS record, save the changes. DNS propagation might take some time, ranging from a few minutes to a few hours. During this period, the DNS changes will propagate across the internet, making your subdomain accessible.
 
 ## Setting Up Nginx as a Reverse Proxy
 
@@ -145,7 +252,9 @@ proxy_cache_bypass $http_upgrade;
 }
 ```
 
-### Directives Explanation:
+This simply forward the request to the domain to the Directus application running at `localhost` port `8055`.
+
+Let's step through the config file:
 
 - **listen 80**: Listens for incoming connections on port 80, the default for HTTP traffic.
 
@@ -183,17 +292,7 @@ And restart Nginx:
 sudo systemctl restart nginx
 ```
 
-## Configuring DNS Settings for Your Domain
-
-Configuring DNS settings for your domain is a crucial step in making your Directus application accessible to users over the internet. Here's a detailed guide on how to do it:
-
-1. **Access Your Domain Registrar's Website**: Log in to the website of your domain registrar, where you initially purchased or registered your domain name. This is where you manage your domain settings.
-
-2. **Locate DNS Management or Domain Settings**: Inside your domain registrar's dashboard, look for options like "DNS Management," "Domain Settings," or "Domain Management." These names might vary based on the registrar's interface.
-
-3. **Add a DNS Record for Your Subdomain**: Create a new DNS record to point your subdomain (e.g., directus.exampledomain.com) to your server's public IP address. Depending on the registrar, you may need to choose the record type, which is usually an "A" record for IPv4 addresses. Enter your server's public IP address in the designated field.
-
-4. **Save the changes**: After adding the DNS record, save the changes. DNS propagation might take some time, ranging from a few minutes to a few hours. During this period, the DNS changes will propagate across the internet, making your subdomain accessible.
+Now you should be able to access your Directus application at `http://directus.exampledomain.com`.
 
 ## Securing Your Application with SSL (Optional but Recommended)
 
@@ -215,93 +314,19 @@ Certbot will interactively guide you through the setup process.
 
 Ensure you select the option to redirect HTTP traffic to HTTPS when prompted. Certbot will automatically configure Nginx to use the SSL certificate.
 
-```
-Also ensure to renew the certificate before it expires to maintain a secure connection.
-```
+:::info Renew certificate
 
-3. **Verify SSL Configuration**: After the setup is complete, visit your Directus application using https://directus.exampledomain.com in a web browser. You should see a padlock icon indicating a secure SSL connection.
+Also ensure to renew the certificate before it expires to maintain a secure connection.
+:::
+
+3. **Verify SSL Configuration**: After the setup is complete, visit your Directus application using `https://directus.exampledomain.com` in a web browser. You should see a padlock icon indicating a secure SSL connection.
 
 By following these steps, you have configured DNS settings to point your subdomain to your server and secured your Directus application with SSL encryption, enhancing both accessibility and security.
 
-## Running the Docker Container as a Background Service
-
-To ensure your application runs in the background and restarts automatically, you can create a systemd service.
-
-Systemd is a system and service manager for Linux operating systems. It provides a standard process for controlling the startup, management, and monitoring of services and applications. It is usually defined by a configuration file usually ending with the _.service_ extension.
-
-### Create a Systemd Service File
-
-Create a file named _directus.service_ in the _/etc/systemd/system/_ directory:
-
-```bash
-sudo vi /etc/systemd/system/directus.service
-```
-
-Add the following content, updating the path to your Directus project directory containing your _docker-compose.yml_ file:
-
-```plaintext
-[Unit]
-Description=Directus Docker Service
-Requires=docker.service
-After=docker.service
-
-
-[Service]
-Restart=always
-WorkingDirectory=/path/to/your/directory-containing-docker-compose
-ExecStart=/usr/bin/docker-compose up
-ExecStop=/usr/bin/docker-compose down
-
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Save the file and exit the editor.
-
-### Explanation:
-
-- [Unit] Section:
-
-  - Description: Description of the systemd service.
-  - Requires: Dependency on the Docker service.
-  - After: Starts after the Docker service.
-
-- [Service] Section:
-
-  - Restart=always: The service restarts automatically on exit.
-  - WorkingDirectory: Path to the directory containing the docker-compose.yml file.
-  - ExecStart: Command to start Docker containers.Directives
-  - ExecStop: Command to stop Docker containers.
-
-- [Install] Section:
-  - WantedBy=multi-user.target: Service enabled on reaching the multi-user state.
-
-### Enable and Start the Service
-
-Enable the service to start on boot, and then start the service:
-
-```bash
-sudo systemctl enable directus.service
-sudo systemctl start directus.service
-```
-
-Now, your dockerized Directus application is running as a background service and will automatically restart in case of failures or system reboots.
-
-Run the following command to check the status of the service:
-
-```bash
-sudo systemctl status directus.service
-```
-
-## Access Your Application
-
-Once DNS settings propagate (which might take some time), you can securely access your Dockerized backend application at **https://directus.exampledomain.com**.
-
-Congratulations! You have successfully and securely hosted your Dockerized backend application on your Ubuntu server, linked it to a custom domain, and ensured continuous operation as a background service.
-
-## Conclusion
-
-By following this guide, you have set up a robust, secure, and easily manageable hosting environment for your directus application. Should you have any questions or encounter issues, feel free to refer back to this guide or seek assistance from the community. Happy coding!
-
 ## Summary
+
+This tutorial guided you through hosting a Directus application on an Ubuntu server, covering essential steps like Docker setup, firewall configuration, and SSL encryption. By following these instructions, you've ensured a secure, accessible, and continuously running environment for your Directus project.
+
+Should you have any questions or encounter issues, feel free to refer back to this guide or seek assistance from the [community][1]. Happy hosting!
+
+[1] : https://directus.chat
