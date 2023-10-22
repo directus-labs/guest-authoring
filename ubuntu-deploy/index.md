@@ -20,7 +20,7 @@ This guide covers setting up Docker, configuring Docker Compose, using Nginx as 
 
 3. **Domain Name:** Register a domain name and have access to its DNS settings. This is crucial for the domain to resolve to your Ubuntu server
 
-4. **Basic Command-Line Skills:** Basic familiarity with Linux command line operations, including file uploads using `scp` and editing files with `vi`.
+4. **Basic Command-Line Skills:** Basic familiarity with Linux command-line operations, including file uploads using `scp` and editing files with `vi`.
 
 ## Upload Your Local Directus Application Folder to the Server
 
@@ -76,7 +76,9 @@ Replace _/path/to/your/local/directus/folder_ with the actual local path of your
 
 Also, replace `username` with your server's username and `server_ip` with your server's public IP address.
 
-![Copying files over to the server][image-6]
+In the example below, I am copying the whole Directus folder to the home directory(`~`) of my server.
+
+![Copying files to the server][image-6]
 
 :::info Database Note
 
@@ -86,7 +88,7 @@ Note that the database used in this tutorial is SQLite. For other types of datab
 
 ## Preparing Your Ubuntu Server
 
-Access your Ubuntu server from you local machine terminal via SSH:
+Access your Ubuntu server from your local machine terminal via SSH:
 
 ```bash
 ssh username@server_ip
@@ -111,8 +113,8 @@ sudo systemctl start docker
 sudo systemctl enable docker
 ```
 
-This installs Docker and enables the docker service.
-To check if docker is running, run:
+This installs Docker and enables the Docker service.
+To check if Docker is running, run:
 
 ```bash
 sudo systemctl status docker
@@ -381,7 +383,7 @@ Ensure you select the option to redirect HTTP traffic to HTTPS when prompted. Ce
 
 :::info Renew certificate
 
-Also ensure to renew the certificate before it expires to maintain a secure connection.
+Also, ensure to renew the certificate before it expires to maintain a secure connection.
 
 :::
 
