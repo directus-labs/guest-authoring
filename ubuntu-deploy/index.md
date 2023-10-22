@@ -14,13 +14,13 @@ This guide covers setting up Docker, configuring Docker Compose, using Nginx as 
 
 ## Prerequisites
 
-1. **A Directus Project:** Prepare a local Directus project for deployment. Follow the [Directus Quickstart Guide][quickstart] if you need to create a new project.
+1. **A Directus Project:** Prepare a local Directus project for deployment. Follow the [Directus quickstart guide][quickstart] if you need to create a new project.
 
 2. **Ubuntu Server (Version 20.04 or 22.04):** Access an Ubuntu server via SSH. Obtain one from cloud providers like Azure, DigitalOcean, Linode, or AWS. Configure SSH access from your local machine.
 
-3. **Domain Name:** Register a domain name and have access to its DNS settings.
+3. **Domain Name:** Register a domain name and have access to its DNS settings. This is crucial for the domain to resolve to your Ubuntu server
 
-4. **Basic Command-Line Skills:** Familiarity with Linux command line, including commands like `scp` for file upload and `vi` for file editing.
+4. **Basic Command-Line Skills:** Basic familiarity with Linux command line operations, including file uploads using `scp` and editing files with `vi`.
 
 ## Upload Your Local Directus Application Folder to the Server
 
@@ -72,7 +72,7 @@ From your local machine terminal, run:
 scp -r /path/to/your/local/directus/folder username@server_ip:/path/to/your/remote/folder
 ```
 
-Please replace _/path/to/your/local/directus/folder_ with the actual path to your local Directus application folder, and _/path/to/your/remote/folder_ with the corresponding path on your server.
+Replace _/path/to/your/local/directus/folder_ with the actual local path of your Directus application directory, and _/path/to/your/remote/folder_ with the respective path on your server.
 
 Also, replace `username` with your server's username and `server_ip` with your server's public IP address.
 
@@ -99,6 +99,8 @@ sudo apt update
 sudo apt upgrade -y
 ```
 
+This command updates and upgrades all existing packages to their latest versions.
+
 ## Installing Docker and Docker Compose
 
 To install Docker, run the following commands:
@@ -109,7 +111,7 @@ sudo systemctl start docker
 sudo systemctl enable docker
 ```
 
-This install Docker and enable the docker service.
+This installs Docker and enables the docker service.
 To check if docker is running, run:
 
 ```bash
@@ -146,7 +148,7 @@ sudo docker-compose up
 
 ![Running docker compose][image-11]
 
-On first run this will pull the docker image from the registry and then start your Directus application.
+On the initial run, Docker will fetch the necessary image from the registry before launching your Directus application.
 
 Your application should now be accessible at `http://your_server_ip:8055`.
 
@@ -357,7 +359,7 @@ Now you should be able to access your Directus application without adding the po
 
 ## Securing Your Application with SSL (Optional but Recommended)
 
-Securing your application with SSL (Secure Sockets Layer) encryption is highly recommended to protect data transmitted between your users and your server. [Let's Encrypt][let-encrypt] offers free SSL certificates, and here's how to set it up for your Directus application:
+Implementing SSL (Secure Sockets Layer) encryption is crucial for safeguarding data transmitted between your users and the server. [Let's Encrypt][let-encrypt] offers free SSL certificates, and here's how to set it up for your Directus application:
 
 1. Install Certbot: On your server, run the following commands to install Certbot and the Certbot Nginx plugin:
 
@@ -391,7 +393,7 @@ Also ensure to renew the certificate before it expires to maintain a secure conn
 
 This tutorial guided you through hosting a Directus application on an Ubuntu server, covering essential steps like Docker setup, firewall configuration, and SSL encryption. By following these instructions, you've ensured a secure, accessible, and continuously running environment for your Directus project.
 
-Should you have any questions or encounter issues, feel free to refer back to this guide or seek assistance from the [directus community][chat]. Happy hosting!
+If you have any questions or encounter difficulties, don't hesitate to revisit this guide or seek support from the [Directus community][chat]. Happy hosting!
 
 [chat]: https://directus.chat 'Directus Community Chat'
 [quickstart]: https://docs.directus.io/getting-started/quickstart.html 'Directus Quickstart'
