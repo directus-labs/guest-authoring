@@ -38,17 +38,30 @@ but actual implementation look a bit more complex
 ## Setup in Directus side
 Directus collection (_collection1_ in this sample project) have these fields:
 
-_calendar_event_id_ - type text, where google calendar event id will be saved (automatically)
+`calendar_event_id` - type text, where google calendar event id will be saved (automatically)
 
-_calendar_event_start_ - type timestamp, where event start date is
+`calendar_event_start` - type timestamp, where event start date is
 
-_calendar_event_end_ - type timestamp, where event end date is
+`calendar_event_end` - type timestamp, where event end date is
 
-_name_ - type text, where event title is
+`name` - type text, where event title is
 
-_description_ - type text, where event description is
+`description` - type text, where event description is
 
 These fields are required, names could be changed, types should not be changed
+
+
+
+### Info Boxes
+
+Info boxes can be added to provide additional context that enrich the reader's knowledge. Use a code block with the below markdown syntax to add an info box. Info Boxes are not required to have a successful article.
+
+```
+Funny thing to note:
+
+You can write markdown in the box. Make sure there's a space above and below paragraphs. 
+
+```
 
 
 now a Flows.
