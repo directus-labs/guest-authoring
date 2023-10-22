@@ -10,9 +10,9 @@ author:
 something something
 
 ## Before You Start
-You will need a Directus project - check out quickstart guide if you don't already have one. You will also need Google Account
+You will need a Directus project - check out [quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one. You will also need Google Account
 
-For this particular syncing project I have used simple scheme. Directus collection (_collection1_) have these fields:
+Directus collection (_collection1_ in this sample project) have these fields:
 
 _calendar_event_id_ - type text, where google calendar event id will be saved (automatically)
 
@@ -24,7 +24,7 @@ _name_ - type text, where event title is
 
 _description_ - type text, where event description is
 
-
+These fields are required, names could be changed, types should not be changed
 
 ## Scheme
 on the high level
@@ -33,21 +33,14 @@ on the high level
 but actual implementation look a bit more complex (or messy)
 ![directus_gcalendar_shapes__23-10-22 19 16 17](https://github.com/yureckey/guest-authoring/assets/535466/5e982006-8de8-4e97-ba93-92132be551bb)
 
-1 - description
+1 - Flow set to react on create/update events in our _collection1_. Another flow set to react on delete events. Both sends signal to our Google Apps Script webapp (2).
 
-2 - description
+3 - same webapp (but different function) sends signals to another Directus Flow, that creates/updates/deletes items in collection1 accordingly (4).
 
-3 - description
+5 - Google Calendar can send push notification when event added/updated/deleted, those notifications can be recieved directly by Google Apps Script webapp, but webapp cannot read request headers, so proxy Directus Flow (6) is used to modify request and send to webapp with parameters in body (7).
 
-4 - description
+8 - Google Apps Script have additional functions (cron to renew notifications, function to stop notifications, etc)
 
-5 - description
-
-6 - description
-
-7 - description
-
-8 - description
 
 Let's dive in.
 
