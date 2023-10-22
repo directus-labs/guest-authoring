@@ -55,7 +55,7 @@ services:
       DB_CLIENT: 'sqlite3'
       DB_FILENAME: '/directus/database/data.db'
       WEBSOCKETS_ENABLED: 1
-# Add your other settings
+      # Add your other settings
 ```
 
 :::info Security Note
@@ -321,17 +321,17 @@ Let's step through the config file:
 
 - location / { ... }: Handles all requests for directus.exampledomain.com.
 
-- proxy_pass `http://localhost:8055`: Forwards requests to the Directus application.
+  - proxy_pass `http://localhost:8055`: Forwards requests to the Directus application.
 
-- proxy_http_version 1.1: Uses the HTTP/1.1 protocol for Nginx-proxy communication.
+  - proxy_http_version 1.1: Uses the HTTP/1.1 protocol for Nginx-proxy communication.
 
-- proxy_set_header Upgrade $http_upgrade: Essential for WebSocket connections.
+  - proxy_set_header Upgrade $http_upgrade: Essential for WebSocket connections.
 
-- proxy_set_header Connection 'upgrade': Indicates connection upgrade.
+  - proxy_set_header Connection 'upgrade': Indicates connection upgrade.
 
-- proxy_set_header Host $host: Sends original host information to the server.
+  - proxy_set_header Host $host: Sends original host information to the server.
 
-- proxy_cache_bypass $http_upgrade: Bypasses caching for WebSockets.
+  - proxy_cache_bypass $http_upgrade: Bypasses caching for WebSockets.
 
 To test the Nginx configuration files for syntax errors, you can use the following command:
 
@@ -357,7 +357,7 @@ Now you should be able to access your Directus application without adding the po
 
 ## Securing Your Application with SSL (Optional but Recommended)
 
-Securing your application with SSL (Secure Sockets Layer) encryption is highly recommended to protect data transmitted between your users and your server. Let's Encrypt offers free SSL certificates, and here's how to set it up for your Directus application:
+Securing your application with SSL (Secure Sockets Layer) encryption is highly recommended to protect data transmitted between your users and your server. [Let's Encrypt][let-encrypt] offers free SSL certificates, and here's how to set it up for your Directus application:
 
 1. Install Certbot: On your server, run the following commands to install Certbot and the Certbot Nginx plugin:
 
@@ -383,7 +383,7 @@ Also ensure to renew the certificate before it expires to maintain a secure conn
 
 :::
 
-3. Verify SSL Configuration: After the setup is complete, visit your Directus application using `https://directus.exampledomain.com` in a web browser. You should see a padlock icon indicating a secure SSL connection and be automatically redirected from `http` to `https`.
+3. Verify SSL Configuration: After the setup is complete, visit your Directus application using `https://directus.exampledomain.com` in a web browser. You should see a padlock icon indicating a secure SSL connection. You should also be automatically redirected from `http` to `https`.
 
 ![Secured Directus application][image-3]
 
@@ -396,6 +396,7 @@ Should you have any questions or encounter issues, feel free to refer back to th
 [chat]: https://directus.chat 'Directus Community Chat'
 [quickstart]: https://docs.directus.io/getting-started/quickstart.html 'Directus Quickstart'
 [issue]: https://github.com/directus/directus/discussions/17823#discussioncomment-5395649
+[let-encrypt]: https://letsencrypt.org
 [image-1]: ./app_domain_without_port_insecure.png
 [image-2]: ./app_insecure_with_port.png
 [image-3]: ./app_with_domain_secure.png
