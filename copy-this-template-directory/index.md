@@ -53,3 +53,5 @@ text **text**, **text**. With [link](https://www.google.com/), text
  - [x] check1
  - [x] check2
  - [x] check3
+
+![This is an alt text.](/copy-this-template-directory/image_profile3_cr.jpg "This is a sample image.")
