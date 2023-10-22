@@ -10,9 +10,21 @@ author:
 something something
 
 ## Before You Start
-something something
-something something something something
-<!-- ## Your Sections Here -->
+You will need a Directus project - check out quickstart guide if you don't already have one. You will also need Google Account
+
+For this particular syncing project I have used simple scheme. Directus collection (_collection1_) have these fields:
+
+_calendar_event_id_ - type text, where google calendar event id will be saved (automatically)
+
+_calendar_event_start_ - type timestamp, where event start date is
+
+_calendar_event_end_ - type timestamp, where event end date is
+
+_name_ - type text, where event title is
+
+_description_ - type text, where event description is
+
+
 
 ## Scheme
 on the high level
@@ -22,14 +34,22 @@ but actual implementation look a bit more complex (or messy)
 ![directus_gcalendar_shapes__23-10-22 19 16 17](https://github.com/yureckey/guest-authoring/assets/535466/5e982006-8de8-4e97-ba93-92132be551bb)
 
 1 - description
+
 2 - description
+
 3 - description
+
 4 - description
+
 5 - description
+
 6 - description
+
 7 - description
+
 8 - description
 
+Let's dive in.
 
 
 ## Summary
