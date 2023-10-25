@@ -90,7 +90,7 @@ First is the secret word our Flows will use to check that incoming data is from 
 
 **now a Flows.**
 
-### Flow "webhook_proxy4calendar"
+### Flow "Google Calendar event Proxy"
 As I mentioned - it's not very straightforward to organize stream of updates from Google Calendar with Google Apps Script.
 We will use [push notifications](https://developers.google.com/calendar/api/guides/push) that will call our published Google Apps Script when there is changes in calendar. The catch though, these push notifications provide data within Header but for incoming requests Google Apps Script can't read headers, only body. That's why we will use Directus Flow as simple proxy, it's webhook url will be registered as address for push notifications, it will receive data, save header as body and sent it to our published Google Apps Script.
 
@@ -116,22 +116,70 @@ Request body:
 ```
 
 note that {{$trigger.headers}} is not quoted!
- 
+
+After you save this Flow, copy resulting webhook url somewhere.
+
 |  
  
-### Flow "collection1_delete_2GCalendar"
+### Flow "Send delete event to Google Calendar"
+
+![whole flow](/copy-this-template-directory/directus_flow_2_full_.png "whole flow")
+
 send data to Google Apps Script with Delete data
-something something 
- 
+
+![trigger node](/copy-this-template-directory/directus_flow_2_01_.png "trigger node")
+
+Trigger - Event Hook
+
+make sure that you have same config:
+
+Type - Filter(Blocking)
+
+Scope - items.delete
+
+Collections - collection of your choice
+
+Response - data of last operation
+
+which goes into "Read data" node:
+
+![node 02](/copy-this-template-directory/directus_flow_2_02_.png "node 02")
+
+IDs edit raw value to:
+```js
+[
+    "{{$trigger.payload[0]}}"
+]
+```
+Query is empty
+
+node goes into "Webhook / Request URL" node:
+
+![node 03](/copy-this-template-directory/directus_flow_2_03_.png "node 03")
+
+url is `{{$env.GCALENDARHOOKURL}}` - actuall value in the environment variable will be set after Google Apps Script is published.
+
+Request body:
+```js
+{
+  "data": {{$last}},
+  "action": "delete",
+  "pass": "{{$env.GCALENDARHOOKSECRET}}"
+}
+
+```
+
+note that {{$last}} is not quoted!
+
 |
  
-### Flow "after_collection1_CreateUpdate"
+### Flow "Send create/update event to Google Calendar"
 this is auto trigger that will call Google App Script
 something something 
 
 |
 
-### Flow "webhookFromGCalendar2Coll1"
+### Flow "Process events from Google Calendar"
 create/update/delete Collection1 item from incoming hook parameters. Called from Google Apps script
 something something 
 
