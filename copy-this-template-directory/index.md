@@ -182,7 +182,7 @@ Processing of Create / Update is more complicated than Delete, cause after we se
 
 Trigger - Event Hook
 
-![trigger node](/copy-this-template-directory/directus_flow_3_01_.png "trigger node")
+![trigger node](/copy-this-template-directory/directus_flow_3_01.png "trigger node")
 
 make sure that you have same config:
 
@@ -194,6 +194,65 @@ Collections - collection of your choice
 
 Response - data of last operation
 
+![node 02](/copy-this-template-directory/directus_flow_3_02.png "node 02")
+
+node config.
+
+it goes into Something
+
+![node 03](/copy-this-template-directory/directus_flow_3_03.png "node 03")
+
+node config.
+
+it goes into Something
+
+![node 04](/copy-this-template-directory/directus_flow_3_04.png "node 04")
+
+node config.
+
+it goes into Something
+
+![node 05](/copy-this-template-directory/directus_flow_3_05.png "node 05")
+
+node config.
+
+it goes into Something
+
+![node 06](/copy-this-template-directory/directus_flow_3_06.png "node 06")
+
+node config.
+
+it goes into Something
+
+![node 07](/copy-this-template-directory/directus_flow_3_07.png "node 07")
+
+node config.
+
+it goes into Something
+
+![node 08](/copy-this-template-directory/directus_flow_3_08.png "node 08")
+
+node config.
+
+it goes into Something
+
+![node 09](/copy-this-template-directory/directus_flow_3_09.png "node 09")
+
+node config.
+
+it goes into Something
+
+![node 10](/copy-this-template-directory/directus_flow_3_10.png "node 10")
+
+node config.
+
+it goes into Something
+
+![node 11](/copy-this-template-directory/directus_flow_3_11.png "node 11")
+
+node config.
+
+it goes into Something
 
 |
 
@@ -231,5 +290,3 @@ text **text**, **text**. With [link](https://www.google.com/), text
  - [x] check1
  - [x] check2
  - [x] check3
-
-![This is an alt text.](/copy-this-template-directory/image_profile3_cr.jpg "This is a sample image.")
