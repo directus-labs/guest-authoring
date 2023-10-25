@@ -258,10 +258,97 @@ it goes into Something
 
 ### Flow "Process events from Google Calendar"
 create / update / delete Collection1 item from incoming hook parameters. Called from Google Apps script
-something something 
+
+part 1
+
+![whole flow](/copy-this-template-directory/directus_flow_4_full_1_.png "whole flow")
+
+
+part 2
+
+![whole flow](/copy-this-template-directory/directus_flow_4_full_2_.png "whole flow")
+
+Trigger - Event Hook
+
+![trigger node](/copy-this-template-directory/directus_flow_4_01.png "trigger node")
+
+make sure that you have same config:
+
+Type - Async
+
+Scope - items.create, items.update
+
+Collections - collection of your choice
+
+Response - data of last operation
+
+![node 02](/copy-this-template-directory/directus_flow_4_02.png "node 02")
+
+node config.
+
+it goes into Something
+
+![node 03](/copy-this-template-directory/directus_flow_4_03.png "node 03")
+
+node config.
+
+it goes into Something
+
+![node 04](/copy-this-template-directory/directus_flow_4_04.png "node 04")
+
+node config.
+
+it goes into Something
+
+![node 05](/copy-this-template-directory/directus_flow_4_05.png "node 05")
+
+node config.
+
+it goes into Something
+
+![node 06](/copy-this-template-directory/directus_flow_4_06.png "node 06")
+
+node config.
+
+it goes into Something
+
+![node 07](/copy-this-template-directory/directus_flow_4_07.png "node 07")
+
+node config.
+
+it goes into Something
+
+![node 08](/copy-this-template-directory/directus_flow_4_08.png "node 08")
+
+node config.
+
+it goes into Something
+
+![node 09](/copy-this-template-directory/directus_flow_4_09.png "node 09")
+
+node config.
+
+it goes into Something
+
+![node 10](/copy-this-template-directory/directus_flow_4_10.png "node 10")
+
+node config.
+
+it goes into Something
+
+![node 11](/copy-this-template-directory/directus_flow_4_11.png "node 11")
+
+node config.
+
+it goes into Something
+
+![node 11](/copy-this-template-directory/directus_flow_4_12.png "node 12")
+
+node config.
 
 
 |
+
 
 
 ## Setup in Google side
