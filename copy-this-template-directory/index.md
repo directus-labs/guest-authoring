@@ -123,13 +123,13 @@ After you save this Flow, copy resulting webhook url somewhere.
  
 ### Flow "Send delete event to Google Calendar"
 
+Processing of Delete event is a bit different from processing of Create / Update (next flow). It should be set to blocking, cause we need to "intercept" delete command and read item data - we need to know id of Google Calendar event, so we can send it to Published Google Apps Script.
+
 ![whole flow](/copy-this-template-directory/directus_flow_2_full_.png "whole flow")
 
-send data to Google Apps Script with Delete data
+Trigger - Event Hook
 
 ![trigger node](/copy-this-template-directory/directus_flow_2_01_.png "trigger node")
-
-Trigger - Event Hook
 
 make sure that you have same config:
 
@@ -159,6 +159,8 @@ node goes into "Webhook / Request URL" node:
 
 url is `{{$env.GCALENDARHOOKURL}}` - actuall value in the environment variable will be set after Google Apps Script is published.
 
+Method is Post
+
 Request body:
 ```js
 {
@@ -174,13 +176,29 @@ note that {{$last}} is not quoted!
 |
  
 ### Flow "Send create/update event to Google Calendar"
-this is auto trigger that will call Google App Script
-something something 
+Processing of Create / Update is more complicated than Delete, cause after we sent this event info, we might receive id of Google Calendar Event that was created and we must update current Directus item with this id. This operation is not blocking. 
+
+![whole flow](/copy-this-template-directory/directus_flow_3_full_.png "whole flow")
+
+Trigger - Event Hook
+
+![trigger node](/copy-this-template-directory/directus_flow_3_01_.png "trigger node")
+
+make sure that you have same config:
+
+Type - Async
+
+Scope - items.create, items.update
+
+Collections - collection of your choice
+
+Response - data of last operation
+
 
 |
 
 ### Flow "Process events from Google Calendar"
-create/update/delete Collection1 item from incoming hook parameters. Called from Google Apps script
+create / update / delete Collection1 item from incoming hook parameters. Called from Google Apps script
 something something 
 
 
