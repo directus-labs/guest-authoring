@@ -94,14 +94,37 @@ First is the secret word our Flows will use to check that incoming data is from 
 As I mentioned - it's not very straightforward to organize stream of updates from Google Calendar with Google Apps Script.
 We will use [push notifications](https://developers.google.com/calendar/api/guides/push) that will call our published Google Apps Script when there is changes in calendar. The catch though, these push notifications provide data within Header but for incoming requests Google Apps Script can't read headers, only body. That's why we will use Directus Flow as simple proxy, it's webhook url will be registered as address for push notifications, it will receive data, save header as body and sent it to our published Google Apps Script.
 
+![whole flow](/copy-this-template-directory/directus_flow_1_full_.png "whole flow")
 
 
+this is the trigger node, webhook:
+
+![trigger node](/copy-this-template-directory/directus_flow_1_01_.png "trigger node")
+
+
+which goes into "Webhook / Request URL" node:
+
+![request node](/copy-this-template-directory/directus_flow_1_02_.png "request node")
+
+url is `{{$env.GCALENDARHOOKURL}}` - actuall value in the environment variable will be set after Google Apps Script is published.
+
+Request body:
+```
+{
+"headers": {{$trigger.headers}}
+}
+```
+
+note that {{$trigger.headers}} is not quoted!
+ 
+  
+ 
 ### Flow "collection1_delete_2GCalendar"
 send data to Google Apps Script with Delete data
 something something 
-
-
-
+ 
+ 
+ 
 ### Flow "after_collection1_CreateUpdate"
 this is auto trigger that will call Google App Script
 something something 
