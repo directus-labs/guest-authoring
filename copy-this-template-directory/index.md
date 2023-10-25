@@ -91,7 +91,8 @@ First is the secret word our Flows will use to check that incoming data is from 
 **now a Flows.**
 
 ### Flow "webhook_proxy4calendar"
-proxy that was registered as Google Event Channel address, sent data to Apps Script
+As I mentioned - it's not very straightforward to organize stream of updates from Google Calendar with Google Apps Script.
+We will use [push notifications](https://developers.google.com/calendar/api/guides/push) that will call our published Google Apps Script when there is changes in calendar. The catch though, these push notifications provide data within Header but for incoming requests Google Apps Script can't read headers, only body. That's why we will use Directus Flow as simple proxy, it's webhook url will be registered as address for push notifications, it will receive data, save header as body and sent it to our published Google Apps Script.
 
 
 
