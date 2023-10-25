@@ -12,12 +12,13 @@ Directus allows broad range of customization and extensibility. In this project 
 ```
 Google Apps Script, eh?
 
-Allow me a citation from google site:
+Allow me a citation from official docs https://developers.google.com/apps-script/overview:
 "Google Apps Script is a rapid application development platform that makes it fast and easy to create business applications
 that integrate with Google Workspace. You write code in modern JavaScript and have access to built-in libraries for favorite
 Google Workspace applications like Gmail, Calendar, Drive, and more.
 There's nothing to install—we give you a code editor right in your browser, and your scripts run on Google's servers."
 
+And my personal opinion:
 It's free, it's powerfull, it's easy to use, have great docs, it have good resources quota, it have access to almost
 all the things you can do in Gmail / Doc / Drive / Spreadsheet / Slide / Forms / Calendar.
 
@@ -36,6 +37,15 @@ on the high level it might look simple
 ![](/copy-this-template-directory/directus_gcalendar_shapes_highlevel.svg "high level interactions scheme overview")
 
 but actual implementation look a bit more complex
+
+```
+Sources of complexity:
+- For proper syncing, we need to have some id that is shared between Directus item and Google Calendar event.
+This will be id of google event, saved as additional field in Directus item. So, in Flows there will be actions to update this id 
+with the value from Google Apps Script, and also actions to search Directus item by this id.
+- it's not very straightforward to organize stream of updates from Google Calendar.
+```
+
 ![](/copy-this-template-directory/directus_gcalendar_shapes__23-10-22%2019.16.17.svg "detailed interactions scheme overview")
 
 1 - Flow set to react on create/update events in our _collection1_. Another flow set to react on delete events. Both sends signal to our Google Apps Script webapp (2).
@@ -66,20 +76,43 @@ Directus collection (_collection1_ in this sample project) have these fields:
 These fields are required, names could be changed, types should not be changed
 
 
+In the Flows we will use environment variables.
+[docs](https://docs.directus.io/self-hosted/config-options.html)
 
-### Info Boxes
+`GCALENDARHOOKSECRET=supersecretpass`
 
-Info boxes can be added to provide additional context that enrich the reader's knowledge. Use a code block with the below markdown syntax to add an info box. Info Boxes are not required to have a successful article.
+`GCALENDARHOOKURL=https://script.google.com/macros/s/xxxx/exec`
 
-```
-Funny thing to note:
+First is the secret word our Flows will use to check that incoming data is from our trusted script, and second is the actual URL of published google apps script, you will acquire it later. In order to Flows to have access to variables, they need to be listed in another variable:
 
-You can write markdown in the box. Make sure there's a space above and below paragraphs. 
-
-```
+`FLOWS_ENV_ALLOW_LIST=GCALENDARHOOKSECRET,GCALENDARHOOKURL`
 
 
-now a Flows.
+**now a Flows.**
+
+### Flow "webhook_proxy4calendar"
+proxy that was registered as Google Event Channel address, sent data to Apps Script
+
+
+
+### Flow "collection1_delete_2GCalendar"
+send data to Google Apps Script with Delete data
+something something 
+
+
+
+### Flow "after_collection1_CreateUpdate"
+this is auto trigger that will call Google App Script
+something something 
+
+
+
+### Flow "webhookFromGCalendar2Coll1"
+create/update/delete Collection1 item from incoming hook parameters. Called from Google Apps script
+something something 
+
+
+
 
 
 ## Setup in Google side
