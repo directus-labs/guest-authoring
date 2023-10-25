@@ -7,17 +7,32 @@ author:
 ---
 
 ## Introduction
-Wouldn't it be great to be able to sync items in Directus collection with Google Calendar Events???
+Directus allows broad range of customization and extensibility. In this project we will create full two-way syncing between items in Directus collection and Google Calendar Events. So, when user create/update/delete item in Directus collection, corresponding event in Google Calendar will be created/updated/deleted. And vice versa, when user create/update/delete event in Google Calendar, corresponding item will be created/updated/deleted in Directus collection. On Directus side we will use Flows and on Google side we will use Google Apps Script.
+
+```
+Google Apps Script, eh?
+
+Allow me a citation from google site:
+"Google Apps Script is a rapid application development platform that makes it fast and easy to create business applications
+that integrate with Google Workspace. You write code in modern JavaScript and have access to built-in libraries for favorite
+Google Workspace applications like Gmail, Calendar, Drive, and more.
+There's nothing to install—we give you a code editor right in your browser, and your scripts run on Google's servers."
+
+It's free, it's powerfull, it's easy to use, have great docs, it have good resources quota, it have access to almost
+all the things you can do in Gmail / Doc / Drive / Spreadsheet / Slide / Forms / Calendar.
+
+```
+
 
 ## Before You Start
 You will need a Directus project - check out [quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one. You will also need Google Account.
 
 **This project implementation limits:**
-it is not supporting Directus Bulk operations. I only developed and tested on single item being created/updated/deleted.
+it is not supporting Directus Bulk operations. I only developed and tested it for single item being created/updated/deleted.
 
 
 ## Interactions Scheme
-on the high level it looks simple
+on the high level it might look simple
 ![](/copy-this-template-directory/directus_gcalendar_shapes_highlevel.svg "high level interactions scheme overview")
 
 but actual implementation look a bit more complex
