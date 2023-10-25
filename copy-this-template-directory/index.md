@@ -109,34 +109,34 @@ which goes into "Webhook / Request URL" node:
 url is `{{$env.GCALENDARHOOKURL}}` - actuall value in the environment variable will be set after Google Apps Script is published.
 
 Request body:
-```
+```js
 {
-"headers": {{$trigger.headers}}
+  "headers": {{$trigger.headers}}
 }
 ```
 
 note that {{$trigger.headers}} is not quoted!
  
-  
+|  
  
 ### Flow "collection1_delete_2GCalendar"
 send data to Google Apps Script with Delete data
 something something 
  
- 
+|
  
 ### Flow "after_collection1_CreateUpdate"
 this is auto trigger that will call Google App Script
 something something 
 
-
+|
 
 ### Flow "webhookFromGCalendar2Coll1"
 create/update/delete Collection1 item from incoming hook parameters. Called from Google Apps script
 something something 
 
 
-
+|
 
 
 ## Setup in Google side
