@@ -36,11 +36,11 @@ Important! We need the domain localhost:8055 here only for local development. Wh
 
 Next, fill in the **Attribute Statements**. Note that although it is labelled as optional, it is critical to fill in at least the email attribute for authentication to work. The attributes will look like this:
 
-| Name       | Name format | Description                                                                                                                                                                      |
-|------------|-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| email      | Basic       | An important field by which Directus will match the email from our Okta account with the email in our app                                                                        |
-| first_name | Basic       | The field by which Directus will match the first name from the Okta account with the first name in our app. Add it if we want the user's first name to be pre-filled in the app. |
-| last_name  | Basic       | The field by which Directus will match the last name from the Okta account with the last name in our app. Add it if we want the user's last name to be pre-filled in the app.    |
+| Name       | Name format | Value          | Description                                                                                                                                                                      |
+|------------|-------------|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| email      | Basic       | user.email     | An important field by which Directus will match the email from our Okta account with the email in our app                                                                        |
+| first_name | Basic       | user.firstName | The field by which Directus will match the first name from the Okta account with the first name in our app. Add it if we want the user's first name to be pre-filled in the app. |
+| last_name  | Basic       | user.lastName  | The field by which Directus will match the last name from the Okta account with the last name in our app. Add it if we want the user's last name to be pre-filled in the app.    |
 
 
 Let's leave the rest of the parameters at this step as defaults. As a result, we will get parameters like these:
