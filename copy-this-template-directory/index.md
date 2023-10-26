@@ -203,7 +203,7 @@ Request body:
 &nbsp; 
  
 ### Flow "Send create/update event to Google Calendar"
-Processing of Create / Update is more complicated than Delete, cause after we send this event info, we might receive the id of the Google Calendar Event that was created and we must update the current Directus item with this ID. This operation is not blocking. 
+Processing of Create / Update is more complicated than Delete, cause after we send this event info, we might receive the ID of the Google Calendar Event that was created and we must update the current Directus item with this ID. This operation is not blocking. 
 
 ![whole flow](/copy-this-template-directory/directus_flow_3_full_.png "whole flow")
 
@@ -265,7 +265,7 @@ Query is empty
 
 key - **request_webhook_update**
 
-url is `{{$env.GCALENDARHOOKURL}}` - actual value in the environment variable will be set after Google Apps Script is published.
+URL is `{{$env.GCALENDARHOOKURL}}` - the actual value in the environment variable will be set after Google Apps Script is published.
 
 Method is Post
 
@@ -309,7 +309,7 @@ Rules:
 
 ![node 06](/copy-this-template-directory/directus_flow_3_06.png "node 06")
 
-Collection - collection of your choice
+Collection - a collection of your choice
 
 IDs (edit raw value):
 ```js
@@ -325,7 +325,7 @@ Payload:
 }
 ```
 
-> make sure that you are using same key (here it's "request_webhook_update") as you set in node 4
+> Make sure that you are using the same key (here it's "request_webhook_update") as you set in node 4
 
 Query is empty
 
@@ -374,7 +374,7 @@ module.exports = async function(data) {
 
 key - **request_webhook_create**
 
-url is `{{$env.GCALENDARHOOKURL}}` - actual value in the environment variable will be set after Google Apps Script is published.
+URL is `{{$env.GCALENDARHOOKURL}}` - the actual value in the environment variable will be set after Google Apps Script is published.
 
 Method is Post
 
@@ -418,7 +418,7 @@ Rules:
 
 ![node 11](/copy-this-template-directory/directus_flow_3_11.png "node 11")
 
-Collection - collection of your choice
+Collection - a collection of your choice
 
 IDs (edit raw value):
 ```js
@@ -434,7 +434,7 @@ Payload:
 }
 ```
 
-> make sure that you are using same key (here it's "request_webhook_create") as you set in node 9
+> Make sure that you are using the same key (here it's "request_webhook_create") as you set in node 9
 
 Query is empty
 
@@ -444,11 +444,11 @@ Query is empty
 
 ### Flow "Process events from Google Calendar"
 
-This is a webhook, called from Google Apps script when event created / updated / deleted in Google Calendar.
+This is a webhook, called from Google Apps script when an event is created / updated / deleted in Google Calendar.
 
 Collection1 item will be Created / Updated / Deleted from incoming hook parameters.
 
-This flow is a bit wide, so screenshot is split in two.
+This flow is a bit wide, so the screenshot is split in two.
 
 
 part 1
@@ -477,7 +477,7 @@ Response Body - Data of Last Operation
 
 - Node 2 - "Condition"
   
-simple gatekeeper - check that password from incoming parameter is same as saved in Environment Variable
+simple gatekeeper - check that the password from the incoming parameter is the same as saved in the Environment Variable
 
 ![node 02](/copy-this-template-directory/directus_flow_4_02.png "node 02")
 
@@ -500,7 +500,7 @@ Rules:
 
 - Node 3 - "Condition"
 
-determine from incoming paramenter, if Directus item need to be created
+determine from the incoming parameter, if a Directus item needs to be created
 
 ![node 03](/copy-this-template-directory/directus_flow_4_03.png "node 03")
 
@@ -525,7 +525,7 @@ Rules:
 
 ![node 04](/copy-this-template-directory/directus_flow_4_04.png "node 04")
 
-Collection - collection of your choice
+Collection - a collection of your choice
 
 Permissions - full access
 
@@ -553,7 +553,7 @@ Key - **item_read**
 
 Permisssions - Full Access 
 
-Collection - collection of your choice
+Collection - a collection of your choice
 
 IDs is empty
 
@@ -573,7 +573,7 @@ Query:
 
 - Node 6 - "Condition"
 
-if such item is found (then proceed to actions delete/update, oherwise - create new item (for update action))
+if such an item is found (then proceed to actions delete/update, otherwise - create a new item (for update action))
 
 ![node 06](/copy-this-template-directory/directus_flow_4_06.png "node 06")
 
@@ -591,7 +591,7 @@ Rules:
 
 - Node 7 - "Condition"
 
-determine from incoming paramenter, if Directus item need to be deleted
+determine from the incoming parameter, if a Directus item needs to be deleted
 
 ![node 07](/copy-this-template-directory/directus_flow_4_07.png "node 07")
 
@@ -617,7 +617,7 @@ Rules:
 
 Permisssions - Full Access 
 
-Collection - collection of your choice
+Collection - a collection of your choice
 
 IDs (edit raw value):
 ```js
@@ -625,7 +625,7 @@ IDs (edit raw value):
     "{{item_read[0].id}}"
 ]
 ```
-> make sure that you are using same key (here it's "item_read") as you set in node 5
+> Make sure that you are using the same key (here it's "item_read") as you set in node 5
 
 Query is empty
 
@@ -636,7 +636,7 @@ Query is empty
 
 ![node 09](/copy-this-template-directory/directus_flow_4_09.png "node 09")
 
-Collection - collection of your choice
+Collection - a collection of your choice
 
 Permissions - Full Access
 
@@ -658,7 +658,7 @@ Payload:
 }
 ```
 
-> make sure that you are using same key (here it's "item_read") as you set in node 5
+> Make sure that you are using the same key (here it's "item_read") as you set in node 5
 
 Query is empty
 
@@ -667,7 +667,7 @@ Query is empty
 
 - Node 10 - "Condition"
 
-The flow is in the branch "item not found". So, if action was to Update item, then create item is required (in next node)
+The flow is in the branch "item not found". So, if the action was to Update an item, then creating item is required (in the next node)
 
 ![node 10](/copy-this-template-directory/directus_flow_4_10.png "node 10")
 
@@ -691,7 +691,7 @@ Rules:
 
 ![node 11](/copy-this-template-directory/directus_flow_4_11.png "node 11")
 
-Collection - collection of your choice
+Collection - a collection of your choice
 
 Permissions - full access
 
@@ -713,10 +713,10 @@ Payload:
 
 ![node 12](/copy-this-template-directory/directus_flow_4_12.png "node 12")
 
-if there was error during operation. This node is not necessary
+if there was an error during operation. This node is not necessary
 
 
-After you save this Flow, copy resulting webhook url somewhere.
+After you save this Flow, copy the resulting webhook URL somewhere.
 
 ***
 
@@ -725,17 +725,17 @@ After you save this Flow, copy resulting webhook url somewhere.
 
 ## Setup in Google side
 
-[Google Apps Script](https://developers.google.com/apps-script/overview) is usually enabled by default, but if you are using Google Workspace within organization, your Admin might disable Google Apps Script.
+[Google Apps Script](https://developers.google.com/apps-script/overview) is usually enabled by default, but if you are using Google Workspace within the organization, your Admin might disable Google Apps Script.
 
-Google Apps Script can be created as dedicated file (Drive → New → More → Google Apps Script).
+Google Apps Script can be created as a dedicated file (Drive → New → More → Google Apps Script).
 
-But for this project we will use Script within Spreadsheet. That way it is easier to use spreadsheet for config and for logging.
+But for this project, we will use Script within Spreadsheet. That way it is easier to use a spreadsheet for config and for logging.
 
-For quicker setup, please use [this spreadsheet template copy](https://docs.google.com/spreadsheets/d/1QSKNNqRbpVBW1OAYg_8kWOCbK4RAM8FwAL8D701LEdY/copy), it have script inside.
+For quicker setup, please use [this spreadsheet template copy](https://docs.google.com/spreadsheets/d/1QSKNNqRbpVBW1OAYg_8kWOCbK4RAM8FwAL8D701LEdY/copy), it has script inside.
 
-In yours spreadsheet copy, open menu Extensions → Apps Script. It will open Script Editor.
+In your spreadsheet copy, open the menu Extensions → Apps Script. It will open Script Editor.
 
-Click button "Deploy" → New Deployment
+Click the button "Deploy" → New Deployment
 
 Web app
 
@@ -745,7 +745,7 @@ Who has access - Anyone
 
 Click Deploy, then "Authorize Access". Choose your account and then click "Allow"
 
-Some users (usually, users not within organization) will see a scary looking
+Some users (usually, users not within the organization) will see a scary-looking
 
 "Google hasn’t verified this app
 The app is requesting access to sensitive info in your Google Account. Until the developer (your email) verifies this app with Google, you shouldn't use it."
