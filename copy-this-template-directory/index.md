@@ -666,7 +666,7 @@ Query is empty
 
 - Node 10 - "Condition"
 
-if action was to Update item, but we are in a branch for not found item - so, create item is required
+The flow is in the branch "item not found". So, if action was to Update item, then create item is required (in next node)
 
 ![node 10](/copy-this-template-directory/directus_flow_4_10.png "node 10")
 
