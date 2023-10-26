@@ -77,12 +77,13 @@ Directus collection (_collection1_ in this sample project) have these fields:
 
 `description` - type text, where event description is
 
+> `timestamp` type is available when field is created in Advanced Mode. Could be Datetime type used instead? It might work, but since it doesn't have timezone info, you must ensure that your Directus and Google Calendar have same timezone setting.
+
 These fields are required, names could be changed, types should not be changed
 
 &nbsp; 
 
-In the Flows we will use environment variables.
-[docs](https://docs.directus.io/self-hosted/config-options.html)
+In the Flows we will use [environment variables](https://docs.directus.io/self-hosted/config-options.html). Please add these two environment variables:
 
 `GCALENDARHOOKSECRET=supersecretpass`
 
@@ -278,7 +279,7 @@ Request body:
 
 ```
 
-> note that {{item_read_updated}} is not quoted!
+> note that {{$last}} is not quoted!
 
 ***
 
@@ -386,7 +387,7 @@ Request body:
 }
 ```
 
-> note that {{payload_transformed}} is not quoted!
+> note that {{$last}} is not quoted!
   
 
 ***
