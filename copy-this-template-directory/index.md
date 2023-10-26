@@ -88,6 +88,13 @@ First is the secret word our Flows will use to check that incoming data is from 
 `FLOWS_ENV_ALLOW_LIST=GCALENDARHOOKSECRET,GCALENDARHOOKURL`
 
 
+___ : three consecutive underscores
+
+--- : three consecutive dashes
+
+*** : three consecutive asterisks
+
+
 **now a Flows.**
 
 ### Flow "Google Calendar event Proxy"
