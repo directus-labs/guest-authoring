@@ -631,38 +631,89 @@ Query is empty
 
 ***
 
-- Node 9 - "X"
+- Node 9 - "Update Data"
 
 ![node 09](/copy-this-template-directory/directus_flow_4_09.png "node 09")
 
-node config.
+Collection - collection of your choice
+
+Permissions - Full Access
+
+IDs (edit raw value):
+```js
+[
+    "{{item_read[0].id}}"
+]
+```
+
+Payload:
+```js
+{
+    "calendar_event_id": "{{$trigger.body.data.calendar_event_id}}",
+    "calendar_event_start": "{{$trigger.body.data.calendar_event_start}}",
+    "calendar_event_end": "{{$trigger.body.data.calendar_event_end}}",
+    "name": "{{$trigger.body.data.name}}",
+    "description": "{{$trigger.body.data.description}}"
+}
+```
+
+> make sure that you are using same key (here it's "item_read") as you set in node 5
+
+Query is empty
 
 
 ***
 
-- Node 10 - "X"
+- Node 10 - "Condition"
+
+if action was to Update item, but we are in a branch for not found item - so, create item is required
 
 ![node 10](/copy-this-template-directory/directus_flow_4_10.png "node 10")
 
-node config.
+Rules:
+```js
+{
+    "$trigger": {
+        "body": {
+            "action": {
+                "_eq": "update"
+            }
+        }
+    }
+}
+```
 
 
 ***
 
-- Node 11 - "X"
+- Node 11 - "Create Data"
 
 ![node 11](/copy-this-template-directory/directus_flow_4_11.png "node 11")
 
-node config.
+Collection - collection of your choice
+
+Permissions - full access
+
+Payload:
+```js
+{
+    "calendar_event_id": "{{$trigger.body.data.calendar_event_id}}",
+    "calendar_event_start": "{{$trigger.body.data.calendar_event_start}}",
+    "calendar_event_end": "{{$trigger.body.data.calendar_event_end}}",
+    "name": "{{$trigger.body.data.name}}",
+    "description": "{{$trigger.body.data.description}}"
+}
+```
 
 
 ***
 
-- Node 12 - "X"
+- Node 12 - "Transform Payload"
 
 ![node 12](/copy-this-template-directory/directus_flow_4_12.png "node 12")
 
-node config.
+if there was error during operation. This node is not necessary
+
 
 After you save this Flow, copy resulting webhook url somewhere.
 
