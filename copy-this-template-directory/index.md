@@ -724,20 +724,43 @@ After you save this Flow, copy resulting webhook url somewhere.
 
 
 ## Setup in Google side
-something something something something
-something something 
+
+[Google Apps Script](https://developers.google.com/apps-script/overview) is usually enabled by default, but if you are using Google Workspace within organization, your Admin might disable Google Apps Script.
+
+Google Apps Script can be created as dedicated file (Drive → New → More → Google Apps Script).
+
+But for this project we will use Script within Spreadsheet. That way it is easier to use spreadsheet for config and for logging.
+
+For quicker setup, please use [this spreadsheet template copy](https://docs.google.com/spreadsheets/d/1QSKNNqRbpVBW1OAYg_8kWOCbK4RAM8FwAL8D701LEdY/copy), it have script inside.
+
+In yours spreadsheet copy, open menu Extensions → Apps Script. It will open Script Editor.
+
+Click button "Deploy" → New Deployment
+
+Web app
+
+Execute as - Me (info@flowmata.com)
+
+Who has access - Anyone
+
+Click Deploy, then "Authorize Access". Choose your account and then click "Allow"
+
+Some users (usually, users not within organization) will see a bit scary looking "This App is not Verified by Google" - then you should click "Continue anyway"
+
+Web app
+URL
+https://script.google.com/macros/s/AKfycbxabMEaxAV5J-8JNehR-gvRQDvWtTxt-2WjkFGgZsej1tAX37lPY29YAb-eoNQUnAj2/exec
+Copy
 
 &nbsp; 
 
 ### Google Apps Script 
-something something something something
-something something 
+
 
 &nbsp; 
 
-### deploy Google Apps Script 
-something something something something
-something something 
+### Deploy Google Apps Script 
+
 
 &nbsp; 
 
