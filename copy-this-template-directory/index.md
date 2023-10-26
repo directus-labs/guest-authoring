@@ -24,6 +24,7 @@ all the things you can do in Gmail / Doc / Drive / Spreadsheet / Slide / Forms /
 
 ```
 
+&nbsp; 
 
 ## Before You Start
 You will need a Directus project - check out [quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one. You will also need Google Account.
@@ -31,6 +32,7 @@ You will need a Directus project - check out [quickstart guide](https://docs.dir
 **This project implementation limits:**
 it is not supporting Directus Bulk operations. I only developed and tested it for single item being created/updated/deleted.
 
+&nbsp; 
 
 ## Interactions Scheme
 on the high level it might look simple
@@ -56,9 +58,11 @@ with the value from Google Apps Script, and also actions to search Directus item
 
 8 - Google Apps Script have additional functions (cron to renew notifications, function to stop notifications, etc)
 
+&nbsp; 
 
 **Let's dive in.**
 
+&nbsp; 
 
 ## Setup in Directus side
 Directus collection (_collection1_ in this sample project) have these fields:
@@ -75,6 +79,7 @@ Directus collection (_collection1_ in this sample project) have these fields:
 
 These fields are required, names could be changed, types should not be changed
 
+&nbsp; 
 
 In the Flows we will use environment variables.
 [docs](https://docs.directus.io/self-hosted/config-options.html)
@@ -87,11 +92,13 @@ First is the secret word our Flows will use to check that incoming data is from 
 
 `FLOWS_ENV_ALLOW_LIST=GCALENDARHOOKSECRET,GCALENDARHOOKURL`
 
+&nbsp; 
 
 **now a Flows.**
 
 There are 4 Flows. For each Flow I'll show overview picture and then each node screen with config also as text, so you can copy-paste it.
 
+&nbsp; 
 
 ### Flow "Google Calendar event Proxy"
 
@@ -126,8 +133,8 @@ Request body:
 
 After you save this Flow, copy resulting webhook url somewhere.
 
-|  
- 
+&nbsp; 
+
 ### Flow "Send delete event to Google Calendar"
 
 Processing of Delete event is a bit different from processing of Create / Update (next flow). It should be set to blocking, cause we need to "intercept" delete command and read item data - we need to know id of Google Calendar event, so we can send it to Published Google Apps Script.
@@ -188,7 +195,7 @@ Request body:
 
 > note that {{$last}} is not quoted!
 
-|
+&nbsp; 
  
 ### Flow "Send create/update event to Google Calendar"
 Processing of Create / Update is more complicated than Delete, cause after we sent this event info, we might receive id of Google Calendar Event that was created and we must update current Directus item with this id. This operation is not blocking. 
@@ -430,11 +437,11 @@ Query is empty
 
 ***
 
-
-|
+&nbsp; 
 
 ### Flow "Process events from Google Calendar"
-create / update / delete Collection1 item from incoming hook parameters. Called from Google Apps script
+
+Create / Update / Delete Collection1 item from incoming hook parameters. Called from Google Apps script when event created / updated / deleted in Google Calendar. This flow is a bit wide, so screenshot is split in two.
 
 part 1
 
@@ -561,32 +568,28 @@ node config.
 node config.
 
 
-|
-
+&nbsp; 
 
 
 ## Setup in Google side
 something something something something
 something something 
 
+&nbsp; 
 
 ### Google Apps Script 
 something something something something
 something something 
 
+&nbsp; 
 
 ### deploy Google Apps Script 
 something something something something
 something something 
 
+&nbsp; 
 
 text **text**, **text**. With [link](https://www.google.com/), text
-
-> text **text** text.
-
- - line 1
- - line 2
- - line 3
 
  - [x] check1
  - [x] check2
