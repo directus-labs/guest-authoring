@@ -12,11 +12,11 @@ Directus has an excellent built-in implementation of Single Sing-On (SS0) across
 This step-by-step guide explains the process of configuring SSO in a Directus application. We will be using the SAML standard along with the Okta provider. Our goal is to enable users to log into the Directus admin panel via Okta.
 
 ## Before We Start
-- Ensure you have a self-hosted Directus application up and running.
+- Ensure we have a self-hosted Directus application up and running.
 - Register for a company account on Okta. Note: Okta requires business emails. Register [here](https://www.okta.com/free-trial/).
 
 ## Creating an Application in Okta
-1. Access Okta Admin Workspace: Navigate to `https://<YOUR-WORKSPACE-NAME>-admin.okta.com/admin/getting-started`.
+1. Access Okta Admin Workspace: Navigate to `https://<OUR-WORKSPACE-NAME>-admin.okta.com/admin/getting-started`.
 2. Create App Integration: In our Okta admin workspace, under the **Applications** tab, select **Create App Integration** and select the desired method (**SAML 2.0** in our case). Click **Next**.
 
 ![Selecting a sign-in method](select-sign-in-method.png)
@@ -57,7 +57,7 @@ Let's leave the rest of the parameters at this step as defaults. As a result, we
 Click **Next** and go to the third and final screen for the Okta app settings.
 
 ### Feedback
-Our setup is complete, and we are prompted to leave feedback or submit the app to Okta for review. Unless you want to spend any more time here, select **I'm an Okta customer adding an internal app** and, without filling anything in, click **Finish**.
+Our setup is complete, and we are prompted to leave feedback or submit the app to Okta for review. Unless we want to spend any more time here, select **I'm an Okta customer adding an internal app** and, without filling anything in, click **Finish**.
 
 ![Process feedback screen](feedback-screen.png)
 
