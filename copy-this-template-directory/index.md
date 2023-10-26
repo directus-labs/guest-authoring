@@ -133,6 +133,8 @@ Request body:
 
 After you save this Flow, copy resulting webhook url somewhere.
 
+***
+
 &nbsp; 
 
 ### Flow "Send delete event to Google Calendar"
@@ -194,6 +196,8 @@ Request body:
 ```
 
 > note that {{$last}} is not quoted!
+
+***
 
 &nbsp; 
  
@@ -267,7 +271,7 @@ Method is Post
 Request body:
 ```js
 {
-  "data": {{item_read_updated}},
+  "data": {{$last}},
   "action": "update",
   "pass": "{{$env.GCALENDARHOOKSECRET}}"
 }
@@ -275,7 +279,6 @@ Request body:
 ```
 
 > note that {{item_read_updated}} is not quoted!
-  
 
 ***
 
@@ -350,13 +353,13 @@ Rules:
 
 ![node 08](/copy-this-template-directory/directus_flow_3_08.png "node 08")
 
-Key - **"transform_payload"**
+Key - **"payload_transformed"**
 
 Code
 ```js
 module.exports = async function(data) {
 	let out = data.$trigger.payload;
-    out["id"] = data.$trigger.key;
+	out["id"] = data.$trigger.key;
 	return out;
 }
 ```
@@ -377,7 +380,7 @@ Method is Post
 Request body:
 ```js
 {
-  "data": {{payload_transformed}},
+  "data": {{$last}},
   "action": "create",
   "pass": "{{$env.GCALENDARHOOKSECRET}}"
 }
@@ -385,7 +388,6 @@ Request body:
 
 > note that {{payload_transformed}} is not quoted!
   
-
 
 ***
 
@@ -441,7 +443,12 @@ Query is empty
 
 ### Flow "Process events from Google Calendar"
 
-Create / Update / Delete Collection1 item from incoming hook parameters. Called from Google Apps script when event created / updated / deleted in Google Calendar. This flow is a bit wide, so screenshot is split in two.
+This is a webhook, called from Google Apps script when event created / updated / deleted in Google Calendar.
+
+Collection1 item will be Created / Updated / Deleted from incoming hook parameters.
+
+This flow is a bit wide, so screenshot is split in two.
+
 
 part 1
 
@@ -454,82 +461,172 @@ part 2
 
 ***
 
-- Trigger Node - Event Hook
+- Trigger Node - Webhook
 
 ![trigger node](/copy-this-template-directory/directus_flow_4_01.png "trigger node")
 
-make sure that you have same config:
+config:
 
-Type - Async
+Method - Post
 
-Scope - items.create, items.update
-
-Collections - collection of your choice
-
-Response - data of last operation
+Response Body - Data of Last Operation
 
 
 ***
 
-- Node 2 - "X"
+- Node 2 - "Condition"
+  
+simple gatekeeper - check that password from incoming parameter is same as saved in Environment Variable
 
 ![node 02](/copy-this-template-directory/directus_flow_4_02.png "node 02")
 
-node config.
+Rules:
+
+```js
+{
+    "$trigger": {
+        "body": {
+            "pass": {
+                "_eq": "{{$env.GCALENDARHOOKSECRET}}"
+            }
+        }
+    }
+}
+```
 
 
 ***
 
-- Node 3 - "X"
+- Node 3 - "Condition"
+
+determine from incoming paramenter, if Directus item need to be created
 
 ![node 03](/copy-this-template-directory/directus_flow_4_03.png "node 03")
 
-node config.
+Rules:
+
+```js
+{
+    "$trigger": {
+        "body": {
+            "action": {
+                "_eq": "create"
+            }
+        }
+    }
+}
+```
 
 
 ***
 
-- Node 4 - "X"
+- Node 4 - "Create Data"
 
 ![node 04](/copy-this-template-directory/directus_flow_4_04.png "node 04")
 
-node config.
+Collection - collection of your choice
+
+Permissions - full access
+
+Payload:
+```js
+{
+    "calendar_event_id": "{{$trigger.body.data.calendar_event_id}}",
+    "calendar_event_start": "{{$trigger.body.data.calendar_event_start}}",
+    "calendar_event_end": "{{$trigger.body.data.calendar_event_end}}",
+    "name": "{{$trigger.body.data.name}}",
+    "description": "{{$trigger.body.data.description}}"
+}
+```
 
 
 ***
 
-- Node 5 - "X"
+- Node 5 - "Read Data"
+
+find Directus Item with certain `calendar_event_id`
 
 ![node 05](/copy-this-template-directory/directus_flow_4_05.png "node 05")
 
-node config.
+Key - **item_read**
+
+Permisssions - Full Access 
+
+Collection - collection of your choice
+
+IDs is empty
+
+Query:
+```js
+{
+    "filter": {
+        "calendar_event_id": {
+            "_eq": "{{$trigger.body.data.calendar_event_id}}"
+        }
+    }
+}
+```
 
 
 ***
 
-- Node 6 - "X"
+- Node 6 - "Condition"
+
+if such item is found (then proceed to actions delete/update, oherwise - create new item (for update action))
 
 ![node 06](/copy-this-template-directory/directus_flow_4_06.png "node 06")
 
-node config.
+Rules:
+```js
+{
+    "count($last)": {
+        "_gte": 1
+    }
+}
+```
 
 
 ***
 
-- Node 7 - "X"
+- Node 7 - "Condition"
+
+determine from incoming paramenter, if Directus item need to be deleted
 
 ![node 07](/copy-this-template-directory/directus_flow_4_07.png "node 07")
 
-node config.
+Rules:
+```js
+{
+    "$trigger": {
+        "body": {
+            "action": {
+                "_eq": "delete"
+            }
+        }
+    }
+}
+```
 
 
 ***
 
-- Node 8 - "X"
+- Node 8 - "Delete Data"
 
 ![node 08](/copy-this-template-directory/directus_flow_4_08.png "node 08")
 
-node config.
+Permisssions - Full Access 
+
+Collection - collection of your choice
+
+IDs (edit raw value):
+```js
+[
+    "{{item_read[0].id}}"
+]
+```
+> note that item_read is 
+
+Query is empty
 
 
 ***
@@ -567,6 +664,9 @@ node config.
 
 node config.
 
+After you save this Flow, copy resulting webhook url somewhere.
+
+***
 
 &nbsp; 
 
