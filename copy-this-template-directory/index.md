@@ -745,7 +745,15 @@ Who has access - Anyone
 
 Click Deploy, then "Authorize Access". Choose your account and then click "Allow"
 
-Some users (usually, users not within organization) will see a bit scary looking "This App is not Verified by Google" - then you should click "Continue anyway"
+Some users (usually, users not within organization) will see a scary looking
+
+"Google hasn’t verified this app
+The app is requesting access to sensitive info in your Google Account. Until the developer (your email) verifies this app with Google, you shouldn't use it."
+
+Click "Advanced"
+
+Then click "Go to code (unsafe)"
+
 
 Web app
 URL
