@@ -19,7 +19,7 @@ Google Workspace applications like Gmail, Calendar, Drive, and more.
 There's nothing to install—we give you a code editor right in your browser, and your scripts run on Google's servers."
 
 And my personal opinion:
-It's free, it's powerful, it's easy to use, have great docs, it has good resources quota, it has access to almost
+It's free, it's powerful, it's easy to use, it has great docs, it has a good resources quota, it has access to almost
 all the things you can do in Gmail / Doc / Drive / Spreadsheet / Slide / Forms / Calendar.
 
 ```
@@ -132,7 +132,7 @@ Request body:
 
 > note that {{$trigger.headers}} is not quoted!
 
-After you save this Flow, copy the resulting webhook URL somewhere.
+After you save this Flow, copy the resulting webhook URL somewhere (the URL can be copied from the trigger node, when in view mode, not in edit mode).
 
 ***
 
@@ -739,7 +739,7 @@ Click the button "Deploy" → New Deployment
 
 Web app
 
-Execute as - Me (info@flowmata.com)
+Execute as - Me (your email)
 
 Who has access - Anyone
 
@@ -757,23 +757,31 @@ Then click "Go to code (unsafe)"
 
 Web app
 URL
-https://script.google.com/macros/s/AKfycbxabMEaxAV5J-8JNehR-gvRQDvWtTxt-2WjkFGgZsej1tAX37lPY29YAb-eoNQUnAj2/exec
+https://script.google.com/macros/s/xxxxxxxxxxxxxxxxxxx/exec
 Copy
+
+copy this Web app URL and update Directus Environment Variable `GCALENDARHOOKURL` to this value
+
+&nbsp; 
+
+### Update Spreadsheet Config
+
+set `calendar_id` to the id of your calendar. Usually, it is your email. You can run function X to view a list of all your calendars and their IDs.
+
+set `directus_url_proxy` to the URL of Flow "Google Calendar event Proxy"
+
+set `directus_url_webhook_from_g` to the URL of Flow "Process events from Google Calendar"
+
+set `pass` to the same value as in Directus Environment Variable `GCALENDARHOOKSECRET`
+
+set `collection_name` to the name of your Directus Collection
 
 &nbsp; 
 
 ### Google Apps Script 
 
+Run Initial Sync
+
+Run Calendar Push Notifications
 
 &nbsp; 
-
-### Deploy Google Apps Script 
-
-
-&nbsp; 
-
-text **text**, **text**. With [link](https://www.google.com/), text
-
- - [x] check1
- - [x] check2
- - [x] check3
