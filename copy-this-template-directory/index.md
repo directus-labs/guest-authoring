@@ -624,7 +624,7 @@ IDs (edit raw value):
     "{{item_read[0].id}}"
 ]
 ```
-> note that item_read is 
+> make sure that you are using same key (here it's "item_read") as you set in node 5
 
 Query is empty
 
