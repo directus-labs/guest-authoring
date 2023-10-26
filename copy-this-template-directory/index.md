@@ -1,13 +1,13 @@
 ---
 title: 'Directus and Google Calendar sync'
-description: 'how to synchronize items in Directus with Google Calendar events using Directus Flows and Google Apps Script'
+description: 'How to synchronize items in Directus with Google Calendar events using Directus Flows and Google Apps Script'
 author:
   name: 'Yury Klyuch'
   avatar_file_name: 'image_profile3_cr.jpg'
 ---
 
 ## Introduction
-Directus allows broad range of customization and extensibility. In this project we will create full two-way syncing between items in Directus collection and Google Calendar Events. So, when user create/update/delete item in Directus collection, corresponding event in Google Calendar will be created/updated/deleted. And vice versa, when user create/update/delete event in Google Calendar, corresponding item will be created/updated/deleted in Directus collection. On Directus side we will use Flows and on Google side we will use Google Apps Script.
+Directus allows a broad range of customization and extensibility. In this project, we will create full two-way syncing between items in Directus collection and Google Calendar Events. So, when the user creates/updates/deletes an item in Directus collection, the corresponding event in Google Calendar will be created/updated/deleted. And vice versa, when the user creates/updates/deletes an event in Google Calendar, the corresponding item will be created/updated/deleted in Directus collection. On the Directus side, we will use Flows, on the Google side, we will use Google Apps Script.
 
 ```
 Google Apps Script, eh?
@@ -19,7 +19,7 @@ Google Workspace applications like Gmail, Calendar, Drive, and more.
 There's nothing to install—we give you a code editor right in your browser, and your scripts run on Google's servers."
 
 And my personal opinion:
-It's free, it's powerfull, it's easy to use, have great docs, it have good resources quota, it have access to almost
+It's free, it's powerful, it's easy to use, have great docs, it has good resources quota, it has access to almost
 all the things you can do in Gmail / Doc / Drive / Spreadsheet / Slide / Forms / Calendar.
 
 ```
@@ -27,36 +27,36 @@ all the things you can do in Gmail / Doc / Drive / Spreadsheet / Slide / Forms /
 &nbsp; 
 
 ## Before You Start
-You will need a Directus project - check out [quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one. You will also need Google Account.
+You will need a Directus project - check out [quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one. You will also need a Google Account.
 
 **This project implementation limits:**
-it is not supporting Directus Bulk operations. I only developed and tested it for single item being created/updated/deleted.
+it does not support Directus Bulk operations. I only developed and tested it for the single item being created/updated/deleted.
 
 &nbsp; 
 
 ## Interactions Scheme
-on the high level it might look simple
+on the high level, it might look simple
 ![](/copy-this-template-directory/directus_gcalendar_shapes_highlevel.svg "high level interactions scheme overview")
 
-but actual implementation look a bit more complex
+but the actual implementation looks a bit more complex
 
 ```
 Sources of complexity:
-- For proper syncing, we need to have some id that is shared between Directus item and Google Calendar event.
-This will be id of google event, saved as additional field in Directus item. So, in Flows there will be actions to update this id 
-with the value from Google Apps Script, and also actions to search Directus item by this id.
-- it's not very straightforward to organize stream of updates from Google Calendar.
+- For proper syncing, we need to have some ID that is shared between Directus item and Google Calendar event.
+This will be the ID of Google event, saved as an additional field in Directus item. So, in Flows, there will be actions
+to update this ID with the value from Google Apps Script, and also actions to search Directus items by this ID.
+- it's not very straightforward to organize a stream of updates from Google Calendar.
 ```
 
 ![](/copy-this-template-directory/directus_gcalendar_shapes__23-10-22%2019.16.17.svg "detailed interactions scheme overview")
 
-1 - Flow set to react on create/update events in our _collection1_. Another flow set to react on delete events. Both sends signal to our Google Apps Script webapp (2).
+1 - Flow set to react on create/update events in our _collection1_. Another flow set to react on delete events. Both send a signal to our Google Apps Script webapp (2).
 
-3 - same webapp (but different function) sends signals to another Directus Flow, that creates/updates/deletes items in collection1 accordingly (4).
+3 - The same webapp (but a different function) sends signals to another Directus Flow, that creates/updates/deletes items in collection1 accordingly (4).
 
-5 - Google Calendar can send push notification when event added/updated/deleted, those notifications can be recieved directly by Google Apps Script webapp, but webapp cannot read request headers, so proxy Directus Flow (6) is used to modify request and send to webapp with parameters in body (7).
+5 - Google Calendar can send push notifications when an event is added/updated/deleted, those notifications can be received directly by Google Apps Script webapp, but webapp cannot read request headers, so proxy Directus Flow (6) is used to modify request and send to webapp with parameters in the body (7).
 
-8 - Google Apps Script have additional functions (cron to renew notifications, function to stop notifications, etc)
+8 - Google Apps Script has additional functions (cron to renew notifications, function to stop notifications, etc)
 
 &nbsp; 
 
@@ -64,47 +64,47 @@ with the value from Google Apps Script, and also actions to search Directus item
 
 &nbsp; 
 
-## Setup in Directus side
-Directus collection (_collection1_ in this sample project) have these fields:
+## Setup on Directus side
+Directus collection (_collection1_ in this sample project) has these fields:
 
-`calendar_event_id` - type text, where google calendar event id will be saved (automatically)
+`calendar_event_id` - type text, where Google calendar event id will be saved (automatically)
 
-`calendar_event_start` - type timestamp, where event start date is
+`calendar_event_start` - type timestamp, where the event start date is
 
-`calendar_event_end` - type timestamp, where event end date is
+`calendar_event_end` - type timestamp, where the event end date is
 
-`name` - type text, where event title is
+`name` - type text, where the event title is
 
 `description` - type text, where event description is
 
-> `timestamp` type is available when field is created in Advanced Mode. Could be Datetime type used instead? It might work, but since it doesn't have timezone info, you must ensure that your Directus and Google Calendar have same timezone setting.
+> `timestamp` type is available when the field is created in Advanced Mode. Could be Datetime type used instead? It might work, but since it doesn't have timezone info, you must ensure that your Directus and Google Calendar have the same timezone setting.
 
-These fields are required, names could be changed, types should not be changed
+These fields are required, names could be changed, just ensure that you reflect these changes in the Google Spreadsheet Config
 
 &nbsp; 
 
-In the Flows we will use [environment variables](https://docs.directus.io/self-hosted/config-options.html). Please add these two environment variables:
+In the Flows, we will use [environment variables](https://docs.directus.io/self-hosted/config-options.html). Please add these two environment variables:
 
 `GCALENDARHOOKSECRET=supersecretpass`
 
 `GCALENDARHOOKURL=https://script.google.com/macros/s/xxxx/exec`
 
-First is the secret word our Flows will use to check that incoming data is from our trusted script, and second is the actual URL of published google apps script, you will acquire it later. In order to Flows to have access to variables, they need to be listed in another variable:
+First is the secret word our Flows will use to check that incoming data is from our trusted script, and the second is the actual URL of the published google apps script, you will acquire it later. In order for Flows to have access to variables, they need to be listed in another variable:
 
 `FLOWS_ENV_ALLOW_LIST=GCALENDARHOOKSECRET,GCALENDARHOOKURL`
 
 &nbsp; 
 
-**now a Flows.**
+**Now a Flows.**
 
-There are 4 Flows. For each Flow I'll show overview picture and then each node screen with config also as text, so you can copy-paste it.
+There are 4 Flows. For each Flow I'll show an overview picture and then each node screen with config also as text, so you can copy-paste it.
 
 &nbsp; 
 
 ### Flow "Google Calendar event Proxy"
 
-As I mentioned - it's not very straightforward to organize stream of updates from Google Calendar with Google Apps Script.
-We will use [push notifications](https://developers.google.com/calendar/api/guides/push) that will call our published Google Apps Script when there is changes in calendar. The catch though, these push notifications provide data within Header but for incoming requests Google Apps Script can't read headers, only body. That's why we will use Directus Flow as simple proxy, it's webhook url will be registered as address for push notifications, it will receive data, save header as body and sent it to our published Google Apps Script.
+As I mentioned - it's not very straightforward to organize a stream of updates from Google Calendar with Google Apps Script.
+We will use [push notifications](https://developers.google.com/calendar/api/guides/push) that will call our published Google Apps Script when there are changes in the calendar. The catch though, these push notifications provide data within Header but for incoming requests, Google Apps Script can't read headers, only the body. That's why we will use Directus Flow as a simple proxy, it's webhook URL will be registered as the address for push notifications, it will receive data, save the header as a body, and send it to our published Google Apps Script.
 
 ![whole flow](/copy-this-template-directory/directus_flow_1_full_.png "whole flow")
 
@@ -121,7 +121,7 @@ We will use [push notifications](https://developers.google.com/calendar/api/guid
 
 ![request node](/copy-this-template-directory/directus_flow_1_02_.png "request node")
 
-url is `{{$env.GCALENDARHOOKURL}}` - actual value in the environment variable will be set after Google Apps Script is published.
+URL is `{{$env.GCALENDARHOOKURL}}` - the actual value in the environment variable will be set after Google Apps Script is published.
 
 Request body:
 ```js
@@ -132,7 +132,7 @@ Request body:
 
 > note that {{$trigger.headers}} is not quoted!
 
-After you save this Flow, copy resulting webhook url somewhere.
+After you save this Flow, copy the resulting webhook URL somewhere.
 
 ***
 
@@ -140,7 +140,7 @@ After you save this Flow, copy resulting webhook url somewhere.
 
 ### Flow "Send delete event to Google Calendar"
 
-Processing of Delete event is a bit different from processing of Create / Update (next flow). It should be set to blocking, cause we need to "intercept" delete command and read item data - we need to know id of Google Calendar event, so we can send it to Published Google Apps Script.
+Processing of the Delete event is a bit different from processing of Create / Update (next flow). It should be set to blocking, cause we need to "intercept" the delete command and read item data - we need to know the id of the Google Calendar event, so we can send it to Published Google Apps Script.
 
 ![whole flow](/copy-this-template-directory/directus_flow_2_full_.png "whole flow")
 
@@ -150,13 +150,13 @@ Processing of Delete event is a bit different from processing of Create / Update
 
 ![trigger node](/copy-this-template-directory/directus_flow_2_01_.png "trigger node")
 
-make sure that you have same config:
+make sure that you have the same config:
 
 Type - Filter(Blocking)
 
 Scope - items.delete
 
-Collections - collection of your choice
+Collections - a collection of your choice
 
 Response - data of last operation
 
@@ -182,7 +182,7 @@ Query is empty
 
 ![node 03](/copy-this-template-directory/directus_flow_2_03_.png "node 03")
 
-url is `{{$env.GCALENDARHOOKURL}}` - actual value in the environment variable will be set after Google Apps Script is published.
+URL is `{{$env.GCALENDARHOOKURL}}` - the actual value in the environment variable will be set after Google Apps Script is published.
 
 Method is Post
 
@@ -203,7 +203,7 @@ Request body:
 &nbsp; 
  
 ### Flow "Send create/update event to Google Calendar"
-Processing of Create / Update is more complicated than Delete, cause after we sent this event info, we might receive id of Google Calendar Event that was created and we must update current Directus item with this id. This operation is not blocking. 
+Processing of Create / Update is more complicated than Delete, cause after we send this event info, we might receive the id of the Google Calendar Event that was created and we must update the current Directus item with this ID. This operation is not blocking. 
 
 ![whole flow](/copy-this-template-directory/directus_flow_3_full_.png "whole flow")
 
@@ -219,7 +219,7 @@ Type - Action (Non-Blocking)
 
 Scope - items.create, items.update
 
-Collections - collection of your choice
+Collections - a collection of your choice
 
 
 ***
