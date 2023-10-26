@@ -90,7 +90,11 @@ First is the secret word our Flows will use to check that incoming data is from 
 
 **now a Flows.**
 
+There are 4 Flows. For each Flow I'll show overview picture and then each node screen with config also as text, so you can copy-paste it.
+
+
 ### Flow "Google Calendar event Proxy"
+
 As I mentioned - it's not very straightforward to organize stream of updates from Google Calendar with Google Apps Script.
 We will use [push notifications](https://developers.google.com/calendar/api/guides/push) that will call our published Google Apps Script when there is changes in calendar. The catch though, these push notifications provide data within Header but for incoming requests Google Apps Script can't read headers, only body. That's why we will use Directus Flow as simple proxy, it's webhook url will be registered as address for push notifications, it will receive data, save header as body and sent it to our published Google Apps Script.
 
@@ -102,7 +106,6 @@ We will use [push notifications](https://developers.google.com/calendar/api/guid
 
 ![trigger node](/copy-this-template-directory/directus_flow_1_01_.png "trigger node")
 
-which goes into "Webhook / Request URL" node:
 
 ***
 
@@ -110,7 +113,7 @@ which goes into "Webhook / Request URL" node:
 
 ![request node](/copy-this-template-directory/directus_flow_1_02_.png "request node")
 
-url is `{{$env.GCALENDARHOOKURL}}` - actuall value in the environment variable will be set after Google Apps Script is published.
+url is `{{$env.GCALENDARHOOKURL}}` - actual value in the environment variable will be set after Google Apps Script is published.
 
 Request body:
 ```js
@@ -119,7 +122,7 @@ Request body:
 }
 ```
 
-note that {{$trigger.headers}} is not quoted!
+> note that {{$trigger.headers}} is not quoted!
 
 After you save this Flow, copy resulting webhook url somewhere.
 
@@ -147,7 +150,6 @@ Collections - collection of your choice
 
 Response - data of last operation
 
-which goes into "Read data" node:
 
 ***
 
@@ -163,7 +165,6 @@ IDs edit raw value to:
 ```
 Query is empty
 
-node goes into "Webhook / Request URL" node:
 
 ***
 
@@ -171,7 +172,7 @@ node goes into "Webhook / Request URL" node:
 
 ![node 03](/copy-this-template-directory/directus_flow_2_03_.png "node 03")
 
-url is `{{$env.GCALENDARHOOKURL}}` - actuall value in the environment variable will be set after Google Apps Script is published.
+url is `{{$env.GCALENDARHOOKURL}}` - actual value in the environment variable will be set after Google Apps Script is published.
 
 Method is Post
 
@@ -185,7 +186,7 @@ Request body:
 
 ```
 
-note that {{$last}} is not quoted!
+> note that {{$last}} is not quoted!
 
 |
  
@@ -200,43 +201,70 @@ Processing of Create / Update is more complicated than Delete, cause after we se
 
 ![trigger node](/copy-this-template-directory/directus_flow_3_01.png "trigger node")
 
-make sure that you have same config:
+parameters:
 
-Type - Async
+Type - Action (Non-Blocking)
 
 Scope - items.create, items.update
 
 Collections - collection of your choice
 
-Response - data of last operation
-
 
 ***
 
-- Node 2 - "X"
+- Node 2 - "Condition"
   
 ![node 02](/copy-this-template-directory/directus_flow_3_02.png "node 02")
 
-node config.
+Rules:
+
+```js
+{
+    "$trigger": {
+        "event": {
+            "_ends_with": ".items.update"
+        }
+    }
+}
+```
 
 
 ***
 
-- Node 3 - "X"
+- Node 3 - "Read Data"
 
 ![node 03](/copy-this-template-directory/directus_flow_3_03.png "node 03")
 
-node config.
-
+IDs (edit raw value):
+```js
+[
+    "{{$trigger.keys[0]}}"
+]
+```
+Query is empty
 
 ***
 
-- Node 4 - "X"
-  
+- Node 4 - "Webhook / Request URL"
+
 ![node 04](/copy-this-template-directory/directus_flow_3_04.png "node 04")
 
-node config.
+url is `{{$env.GCALENDARHOOKURL}}` - actual value in the environment variable will be set after Google Apps Script is published.
 
+Method is Post
+
+Request body:
+```js
+{
+  "data": {{item_read_updated}},
+  "action": "update",
+  "pass": "{{$env.GCALENDARHOOKSECRET}}"
+}
+
+```
+
+> note that {{item_read_updated}} is not quoted!
+  
 
 ***
 
