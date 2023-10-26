@@ -235,6 +235,8 @@ Rules:
 
 ![node 03](/copy-this-template-directory/directus_flow_3_03.png "node 03")
 
+Key - **item_read_updated**
+
 IDs (edit raw value):
 ```js
 [
@@ -248,6 +250,8 @@ Query is empty
 - Node 4 - "Webhook / Request URL"
 
 ![node 04](/copy-this-template-directory/directus_flow_3_04.png "node 04")
+
+key - **request_webhook_update**
 
 url is `{{$env.GCALENDARHOOKURL}}` - actual value in the environment variable will be set after Google Apps Script is published.
 
@@ -268,65 +272,163 @@ Request body:
 
 ***
 
-- Node 5 - "X"
-
+- Node 5 - "Condition"
+  
 ![node 05](/copy-this-template-directory/directus_flow_3_05.png "node 05")
 
-node config.
+Rules:
+
+```js
+{
+    "$last": {
+        "data": {
+            "res": {
+                "_eq": "need_update_calendar_event_id"
+            }
+        }
+    }
+}
+```
+
 
 
 ***
 
-- Node 6 - "X"
+- Node 6 - "Update Data"
 
 ![node 06](/copy-this-template-directory/directus_flow_3_06.png "node 06")
 
-node config.
+Collection - collection of your choice
 
+IDs (edit raw value):
+```js
+[
+    "{{$trigger.keys[0]}}"
+]
+```
+
+Payload:
+```js
+{
+    "calendar_event_id": "{{request_webhook_update.data.id}}"
+}
+```
+
+> make sure that you are using same key (here it's "request_webhook_update") as you set in node 4
+
+Query is empty
 
 ***
 
-- Node 7 - "X"
+- Node 7 - "Condition"
 
 ![node 07](/copy-this-template-directory/directus_flow_3_07.png "node 07")
 
-node config.
+Rules:
+
+```js
+{
+    "$trigger": {
+        "event": {
+            "_ends_with": ".items.create"
+        }
+    }
+}
+```
 
 
 ***
 
-- Node 8 - "X"
+- Node 8 - "Run Script"
 
 ![node 08](/copy-this-template-directory/directus_flow_3_08.png "node 08")
 
-node config.
+Key - **"transform_payload"**
+
+Code
+```js
+module.exports = async function(data) {
+	let out = data.$trigger.payload;
+    out["id"] = data.$trigger.key;
+	return out;
+}
+```
 
 
 ***
 
-- Node 9 - "X"
+- Node 9 - "Webhook / Request URL"
 
 ![node 09](/copy-this-template-directory/directus_flow_3_09.png "node 09")
 
-node config.
+key - **request_webhook_create**
+
+url is `{{$env.GCALENDARHOOKURL}}` - actual value in the environment variable will be set after Google Apps Script is published.
+
+Method is Post
+
+Request body:
+```js
+{
+  "data": {{payload_transformed}},
+  "action": "create",
+  "pass": "{{$env.GCALENDARHOOKSECRET}}"
+}
+```
+
+> note that {{payload_transformed}} is not quoted!
+  
 
 
 ***
 
-- Node 10 - "X"
-
+- Node 10 - "Condition"
+  
 ![node 10](/copy-this-template-directory/directus_flow_3_10.png "node 10")
 
-node config.
+Rules:
+
+```js
+{
+    "$last": {
+        "data": {
+            "res": {
+                "_eq": "need_update_calendar_event_id"
+            }
+        }
+    }
+}
+```
+
 
 
 ***
 
-- Node 11 - "X"
+- Node 11 - "Update Data"
 
 ![node 11](/copy-this-template-directory/directus_flow_3_11.png "node 11")
 
-node config.
+Collection - collection of your choice
+
+IDs (edit raw value):
+```js
+[
+    "{{$trigger.key}}"
+]
+```
+
+Payload:
+```js
+{
+    "calendar_event_id": "{{request_webhook_create.data.id}}"
+}
+```
+
+> make sure that you are using same key (here it's "request_webhook_create") as you set in node 9
+
+Query is empty
+
+***
 
 
 |
