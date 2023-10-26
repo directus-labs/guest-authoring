@@ -88,13 +88,6 @@ First is the secret word our Flows will use to check that incoming data is from 
 `FLOWS_ENV_ALLOW_LIST=GCALENDARHOOKSECRET,GCALENDARHOOKURL`
 
 
-___ : three consecutive underscores
-
---- : three consecutive dashes
-
-*** : three consecutive asterisks
-
-
 **now a Flows.**
 
 ### Flow "Google Calendar event Proxy"
@@ -103,13 +96,17 @@ We will use [push notifications](https://developers.google.com/calendar/api/guid
 
 ![whole flow](/copy-this-template-directory/directus_flow_1_full_.png "whole flow")
 
+***
 
-this is the trigger node, webhook:
+- Trigger node - webhook:
 
 ![trigger node](/copy-this-template-directory/directus_flow_1_01_.png "trigger node")
 
-
 which goes into "Webhook / Request URL" node:
+
+***
+
+- Node 2 - "Webhook / Request URL"
 
 ![request node](/copy-this-template-directory/directus_flow_1_02_.png "request node")
 
@@ -134,7 +131,9 @@ Processing of Delete event is a bit different from processing of Create / Update
 
 ![whole flow](/copy-this-template-directory/directus_flow_2_full_.png "whole flow")
 
-Trigger - Event Hook
+***
+
+- Trigger node - Event Hook
 
 ![trigger node](/copy-this-template-directory/directus_flow_2_01_.png "trigger node")
 
@@ -150,6 +149,10 @@ Response - data of last operation
 
 which goes into "Read data" node:
 
+***
+
+- Node 2 - "Read data"
+
 ![node 02](/copy-this-template-directory/directus_flow_2_02_.png "node 02")
 
 IDs edit raw value to:
@@ -161,6 +164,10 @@ IDs edit raw value to:
 Query is empty
 
 node goes into "Webhook / Request URL" node:
+
+***
+
+- Node 3 - "Webhook / Request URL"
 
 ![node 03](/copy-this-template-directory/directus_flow_2_03_.png "node 03")
 
@@ -187,7 +194,9 @@ Processing of Create / Update is more complicated than Delete, cause after we se
 
 ![whole flow](/copy-this-template-directory/directus_flow_3_full_.png "whole flow")
 
-Trigger - Event Hook
+***
+
+- Trigger Node - Event Hook
 
 ![trigger node](/copy-this-template-directory/directus_flow_3_01.png "trigger node")
 
@@ -201,65 +210,96 @@ Collections - collection of your choice
 
 Response - data of last operation
 
+
+***
+
+- Node 2 - "X"
+  
 ![node 02](/copy-this-template-directory/directus_flow_3_02.png "node 02")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 3 - "X"
 
 ![node 03](/copy-this-template-directory/directus_flow_3_03.png "node 03")
 
 node config.
 
-it goes into Something
 
+***
+
+- Node 4 - "X"
+  
 ![node 04](/copy-this-template-directory/directus_flow_3_04.png "node 04")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 5 - "X"
 
 ![node 05](/copy-this-template-directory/directus_flow_3_05.png "node 05")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 6 - "X"
 
 ![node 06](/copy-this-template-directory/directus_flow_3_06.png "node 06")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 7 - "X"
 
 ![node 07](/copy-this-template-directory/directus_flow_3_07.png "node 07")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 8 - "X"
 
 ![node 08](/copy-this-template-directory/directus_flow_3_08.png "node 08")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 9 - "X"
 
 ![node 09](/copy-this-template-directory/directus_flow_3_09.png "node 09")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 10 - "X"
 
 ![node 10](/copy-this-template-directory/directus_flow_3_10.png "node 10")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 11 - "X"
 
 ![node 11](/copy-this-template-directory/directus_flow_3_11.png "node 11")
 
 node config.
 
-it goes into Something
 
 |
 
@@ -275,7 +315,9 @@ part 2
 
 ![whole flow](/copy-this-template-directory/directus_flow_4_full_2_.png "whole flow")
 
-Trigger - Event Hook
+***
+
+- Trigger Node - Event Hook
 
 ![trigger node](/copy-this-template-directory/directus_flow_4_01.png "trigger node")
 
@@ -289,67 +331,102 @@ Collections - collection of your choice
 
 Response - data of last operation
 
+
+***
+
+- Node 2 - "X"
+
 ![node 02](/copy-this-template-directory/directus_flow_4_02.png "node 02")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 3 - "X"
 
 ![node 03](/copy-this-template-directory/directus_flow_4_03.png "node 03")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 4 - "X"
 
 ![node 04](/copy-this-template-directory/directus_flow_4_04.png "node 04")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 5 - "X"
 
 ![node 05](/copy-this-template-directory/directus_flow_4_05.png "node 05")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 6 - "X"
 
 ![node 06](/copy-this-template-directory/directus_flow_4_06.png "node 06")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 7 - "X"
 
 ![node 07](/copy-this-template-directory/directus_flow_4_07.png "node 07")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 8 - "X"
 
 ![node 08](/copy-this-template-directory/directus_flow_4_08.png "node 08")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 9 - "X"
 
 ![node 09](/copy-this-template-directory/directus_flow_4_09.png "node 09")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 10 - "X"
 
 ![node 10](/copy-this-template-directory/directus_flow_4_10.png "node 10")
 
 node config.
 
-it goes into Something
+
+***
+
+- Node 11 - "X"
 
 ![node 11](/copy-this-template-directory/directus_flow_4_11.png "node 11")
 
 node config.
 
-it goes into Something
 
-![node 11](/copy-this-template-directory/directus_flow_4_12.png "node 12")
+***
+
+- Node 12 - "X"
+
+![node 12](/copy-this-template-directory/directus_flow_4_12.png "node 12")
 
 node config.
 
