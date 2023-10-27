@@ -769,15 +769,13 @@ copy this Web app URL and update Directus Environment Variable `GCALENDARHOOKURL
 
 In your Spreadsheet copy go to the 'Config' sheet.
 
-set `calendar_id` to the id of your calendar. Usually, it is your email. You can run function X to view a list of all your calendars and their IDs.
+set `calendar_id` to the id of your calendar. Usually, it is your email. You can run the function 'listCalendars' to view a list of all your calendars and their IDs.
 
 set `directus_url_proxy` to the URL of Flow "Google Calendar event Proxy"
 
 set `directus_url_webhook_from_g` to the URL of Flow "Process events from Google Calendar"
 
 set `pass` to the same value as in Directus Environment Variable `GCALENDARHOOKSECRET`
-
-set `collection_name` to the name of your Directus Collection
 
 &nbsp; 
 
