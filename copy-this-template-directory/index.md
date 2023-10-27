@@ -732,7 +732,7 @@ Google Apps Script can be created as a dedicated file (Drive → New → More �
 
 But for this project, we will use Script within Spreadsheet. That way it is easier to use a spreadsheet for config and for logging.
 
-For quicker setup, please use [this spreadsheet template copy](https://docs.google.com/spreadsheets/d/1QSKNNqRbpVBW1OAYg_8kWOCbK4RAM8FwAL8D701LEdY/copy), it has script inside.
+For quicker setup, please use [this spreadsheet template copy](https://docs.google.com/spreadsheets/d/1mXuSVR01uueeRDTjNeSXFH2rAziWkXdrNb2Jym413Fw/copy), it has full script inside and sheet with config.
 
 In your spreadsheet copy, open the menu Extensions → Apps Script. It will open Script Editor.
 
@@ -918,7 +918,7 @@ I hope you are not exhausted after reading this post and repeating all the actio
 
 Everything is set to fully automatic two-way sync. You can try it by adding items in Directus and adding events in the Calendar.
 
-You can check logs in the Directus Flows
+You can check logs in the log panel for each of  Directus Flows. And you can check spreadsheet `log` sheet.
 
 Feel free to send me a message if you know how to improve this project.
 
