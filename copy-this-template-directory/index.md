@@ -736,37 +736,31 @@ For quicker setup, please use [this spreadsheet template copy](https://docs.goog
 
 In your spreadsheet copy, open the menu Extensions → Apps Script. It will open Script Editor.
 
-
-![GAS 01](/copy-this-template-directory/GAS_01.png "GAS 01")
-
-![GAS 02](/copy-this-template-directory/GAS_02.png "GAS 02")
-
-![GAS 03](/copy-this-template-directory/GAS_03.png "GAS 03")
-
 ![GAS 04](/copy-this-template-directory/GAS_04.png "GAS 04")
+
+Click the button `Deploy` → `New Deployment`.
+
+When Google Apps Script is deployed as Web App, it creates a unique URL like `https://script.google.com/macros/s/xxxx/exec`.
+When this URL is called with a GET request, the script function `doGet` is executed.  When this URL is called with a POST request, script function `doPost` is executed. We will use POST requests and doPost function.
+ 
+ ***
 
 ![GAS 05](/copy-this-template-directory/GAS_05.png "GAS 05")
 
-![GAS 06](/copy-this-template-directory/GAS_06.png "GAS 06")
+set type to web app. Description - anything. Execute as - Me. Who has access - anyone.
+Click `Deploy`.
 
-![GAS 07](/copy-this-template-directory/GAS_07.png "GAS 07")
+ ***
 
-![GAS 08](/copy-this-template-directory/GAS_08.png "GAS 08")
+![GAS 01](/copy-this-template-directory/GAS_01.png "GAS 01")
 
-![GAS 09](/copy-this-template-directory/GAS_09.png "GAS 09")
+ click `Authorize access`
+ ***
 
-![GAS 10](/copy-this-template-directory/GAS_10.png "GAS 10")
+![GAS 02](/copy-this-template-directory/GAS_02.png "GAS 02")
 
-
-Click the button "Deploy" → New Deployment
-
-Web app
-
-Execute as - Me (your email)
-
-Who has access - Anyone
-
-Click Deploy, then "Authorize Access". Choose your account and then click "Allow"
+ 
+Choose your account and then click "Allow".
 
 Some users (usually, users not within the organization) will see a scary-looking
 
@@ -776,6 +770,52 @@ The app is requesting access to sensitive info in your Google Account. Until the
 Click "Advanced"
 
 Then click "Go to code (unsafe)"
+
+ 
+ ***
+
+![GAS 03](/copy-this-template-directory/GAS_03.png "GAS 03")
+
+click "Allow".
+
+ ***
+
+![GAS 06](/copy-this-template-directory/GAS_06.png "GAS 06")
+
+result of function listCalendars
+
+ ***
+
+![GAS 07](/copy-this-template-directory/GAS_07.png "GAS 07")
+
+Manage Deployments - Edit
+
+ ***
+
+![GAS 08](/copy-this-template-directory/GAS_08.png "GAS 08")
+
+Choose `New version`
+
+ ***
+
+![GAS 09](/copy-this-template-directory/GAS_09.png "GAS 09")
+
+Calendar Events Push notifications need to be resubscribed once a week (1 week is the maximum allowed time for subscribe channel)
+
+ ***
+
+![GAS 10](/copy-this-template-directory/GAS_10.png "GAS 10")
+
+Select function triggerResubscribeOnceWeek
+Deployment - Head
+Select event source - Time-driven
+Select type - Week Timer
+Select day of week and time - your choice
+Failure notifications - Notify me immediately
+
+ ***
+
+
 
 
 Web app
