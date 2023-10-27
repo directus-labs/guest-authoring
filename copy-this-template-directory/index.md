@@ -793,49 +793,21 @@ click `copy` to get this Web app URL (make sure that you are copying web app URL
 
  ***
 
+ Back to the script editor
+
 ![GAS 06](/copy-this-template-directory/GAS_06.png "GAS 06")
 
-result of function listCalendars
+as shown by the arrow `1`, select function `listCalendars`. Click Run (as shown by the arrow `2`)
 
- ***
-
-![GAS 07](/copy-this-template-directory/GAS_07.png "GAS 07")
-
-Manage Deployments - Edit
-
- ***
-
-![GAS 08](/copy-this-template-directory/GAS_08.png "GAS 08")
-
-Choose `New version`
-
- ***
-
-![GAS 09](/copy-this-template-directory/GAS_09.png "GAS 09")
-
-Calendar Events Push notifications need to be resubscribed once a week (1 week is the maximum allowed time for subscribe channel)
-
- ***
-
-![GAS 10](/copy-this-template-directory/GAS_10.png "GAS 10")
-
-Select function triggerResubscribeOnceWeek
-Deployment - Head
-Select event source - Time-driven
-Select type - Week Timer
-Select day of week and time - your choice
-Failure notifications - Notify me immediately
-
- ***
-
+you'll see the result of the function listCalendars run. Copy the ID of the calendar that you want to track. Usually, it's the same as an account email.
 
 &nbsp; 
 
 ### Update Spreadsheet Config
 
-In your Spreadsheet copy go to the 'Config' sheet.
+In your Spreadsheet go to the 'Config' sheet.
 
-set `calendar_id` to the id of your calendar. Usually, it is your email. You can run the function 'listCalendars' to view a list of all your calendars and their IDs.
+set `calendar_id` to the id of your calendar.
 
 set `directus_url_proxy` to the URL of Flow "Google Calendar event Proxy"
 
@@ -847,17 +819,50 @@ set `pass` to the same value as in Directus Environment Variable `GCALENDARHOOKS
 
 ### Google Apps Script 
 
-Run Initial Sync
+Back to the script editor. We need to run manually couple of functions.
 
-Run Calendar Push Notifications
+select function `triggerResubscribeOnceWeek` (just like you selected listCalendars earlier). Click `Run`.
+
+If the run was successful, in the `config` sheet values next to `channel_id`, `resource_id` will be filled.
+
+select function `runManual_getSyncedEvents`. Click `Run`.
+
+If the run was successful, in the `config` sheet value next to `sync_token`, `resource_id` will be filled.
+
+
+> For most of the Google Workspace App, Apps Script has a specific library, like `CalendarApp` with easy-to-use functions. However, these functions don't have all the functionality available for API calls. Luckily it's possible to use Advanced Calendar Service - it's almost like calling API calls directly. Thanks to that we can subscribe to notifications and retrieve a list of new events using syncToken.
+
+The calendar events push notifications need resubscription, its maximum time before expiration is 1 week.
+
+***
 
 Set Time Trigger
+
+![GAS 09](/copy-this-template-directory/GAS_09.png "GAS 09")
+
+Click `Triggers`, then `Add Trigger`
+
+***
+
+![GAS 10](/copy-this-template-directory/GAS_10.png "GAS 10")
+
+Select function triggerResubscribeOnceWeek
+
+Deployment - Head
+
+Select event source - Time-driven
+
+Select type - Week Timer
+
+Select day of week and time - your choice
+
+Failure notifications - Notify me immediately
+
+Click `Save`
 
 &nbsp; 
 
 ### Script source code - list of functions
-
-> For most of the Google Workspace App, Apps Script has a specific library, like `CalendarApp` with easy-to-use functions. However, these functions don't have all the functionality available for API calls. Luckily it's possible to use Advanced Calendar Service - it's almost like calling API calls directly. Thanks to that we can subscribe to notifications and retrieve a list of new events using syncToken.
 
 The source code of the script is organized into several functions (but there is a lot of space for refactoring and improvements)
 
@@ -889,9 +894,31 @@ The source code of the script is organized into several functions (but there is 
 
 &nbsp; 
 
-### Finish
+#### Script update deployment
+
+The deployed web app has versions, so if you update doPost function (or something called from it) and want these changes to have an effect - a new version of the web app needs to be deployed.
+
+![GAS 07](/copy-this-template-directory/GAS_07.png "GAS 07")
+
+Manage Deployments → `Edit` (pencil icon button)
+
+![GAS 08](/copy-this-template-directory/GAS_08.png "GAS 08")
+
+Choose `New version`, then click `Deploy`.
+
+The URL of the web app should stay the same (if you updated the current deployment and didn't create new deployment)
+
+***
+
+&nbsp; 
+
+### Ready to roll
 
 I hope you are not exhausted after reading this post and repeating all the actions required for this project to run.
+
+Everything is set to fully automatic two-way sync. You can try it by adding items in Directus and adding events in the Calendar.
+
+You can check logs in the Directus Flows
 
 Feel free to send me a message if you know how to improve this project.
 
