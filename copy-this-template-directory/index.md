@@ -10,7 +10,7 @@ author:
 Directus allows a broad range of customization and extensibility. In this project, we will create full two-way syncing between items in Directus collection and Google Calendar Events. So, when the user creates/updates/deletes an item in Directus collection, the corresponding event in Google Calendar will be created/updated/deleted. And vice versa, when the user creates/updates/deletes an event in Google Calendar, the corresponding item will be created/updated/deleted in Directus collection. On the Directus side, we will use Flows, on the Google side, we will use Google Apps Script.
 
 ```
-Google Apps Script, eh?
+Google Apps Script, what's that?
 
 Allow me a citation from official docs https://developers.google.com/apps-script/overview:
 "Google Apps Script is a rapid application development platform that makes it fast and easy to create business applications
@@ -778,6 +778,19 @@ Then click "Go to code (unsafe)"
 
 click "Allow".
 
+If all is fine, you'll see next popup with URL of your published web app.
+
+Web app
+
+URL
+
+`https://script.google.com/macros/s/xxxxxxxxxxxxxxxxxxx/exec`
+
+Copy
+
+click `copy` to get this Web app URL (make sure that you are copying web app URL and not Library URL) and update Directus Environment Variable `GCALENDARHOOKURL` to this value
+
+
  ***
 
 ![GAS 06](/copy-this-template-directory/GAS_06.png "GAS 06")
@@ -816,15 +829,6 @@ Failure notifications - Notify me immediately
  ***
 
 
-
-
-Web app
-URL
-https://script.google.com/macros/s/xxxxxxxxxxxxxxxxxxx/exec
-Copy
-
-copy this Web app URL and update Directus Environment Variable `GCALENDARHOOKURL` to this value
-
 &nbsp; 
 
 ### Update Spreadsheet Config
@@ -853,14 +857,15 @@ Set Time Trigger
 
 ### Script source code - list of functions
 
-> For most of the Google Workspace App, Apps Script has a specific library, like `CalendarApp` with easy-to-use functions. However, these functions don't have all the functionality available for API calls. Luckily it's possible to use Advanced Calendar Service - it's almost like calling API calls directly. Thanks to that we will be able to subscribe to notifications and retrieve a list of new events using syncToken.
+> For most of the Google Workspace App, Apps Script has a specific library, like `CalendarApp` with easy-to-use functions. However, these functions don't have all the functionality available for API calls. Luckily it's possible to use Advanced Calendar Service - it's almost like calling API calls directly. Thanks to that we can subscribe to notifications and retrieve a list of new events using syncToken.
 
+The source code of the script is organized into several functions (but there is a lot of space for refactoring and improvements)
 
 `writelog` - utility function to write to the spreadsheet log entry
 
-`listCalendars` - function for manual launch - to list calendar IDs and description
+`listCalendars` - function for manual launch - to list available for user calendars info (IDs, description)
 
-`triggerResubscribeOnceWeek` - function for once-a-week time trigger. Will resubscribe to calendar push notifications (1 week is max allowed time)
+`triggerResubscribeOnceWeek` - function for once-a-week time trigger. Will resubscribe to calendar push notifications (1 week is the maximum allowed time)
 
 `runManual_processSyncedEvents` - function for manual launch - get events stream and process it (send to Directus)
 
@@ -884,7 +889,9 @@ Set Time Trigger
 
 &nbsp; 
 
-### Resume
+### Finish
 
-That's all folks!
+I hope you are not exhausted after reading this post and repeating all the actions required for this project to run.
+
+Feel free to send me a message if you know how to improve this project.
 
