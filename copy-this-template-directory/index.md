@@ -30,7 +30,8 @@ all the things you can do in Gmail / Doc / Drive / Spreadsheet / Slide / Forms /
 You will need a Directus project - check out [quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one. You will also need a Google Account.
 
 **This project implementation limits:**
-it does not support Directus Bulk operations. I only developed and tested it for the single item being created/updated/deleted.
+It does not support Directus Bulk operations. Current Flows are developed and tested for the single item being created / updated / deleted.
+Another one - Google Calendar recurrent events will be handled as a single date event.
 
 &nbsp; 
 
@@ -765,6 +766,8 @@ copy this Web app URL and update Directus Environment Variable `GCALENDARHOOKURL
 &nbsp; 
 
 ### Update Spreadsheet Config
+
+In your Spreadsheet copy go to the 'Config' sheet.
 
 set `calendar_id` to the id of your calendar. Usually, it is your email. You can run function X to view a list of all your calendars and their IDs.
 
