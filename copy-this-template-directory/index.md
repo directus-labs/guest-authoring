@@ -785,9 +785,14 @@ Run Initial Sync
 
 Run Calendar Push Notifications
 
+Set Time trigger
+
 &nbsp; 
 
 ### Script source code - list of functions
+
+> For most of the Google Workspace App, Apps Script has a specific library, like `CalendarApp` with easy-to-use functions. However, these functions don't have all the functionality available for API calls. Luckily it's possible to use Advanced Calendar Service - it's almost like calling API calls directly. Thanks to that we will be able to subscribe to notifications and retrieve a list of new events using syncToken.
+
 
 `writelog` - utility function to write to the spreadsheet log entry
 
