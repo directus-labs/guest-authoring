@@ -736,6 +736,28 @@ For quicker setup, please use [this spreadsheet template copy](https://docs.goog
 
 In your spreadsheet copy, open the menu Extensions → Apps Script. It will open Script Editor.
 
+
+![GAS 01](/copy-this-template-directory/GAS_01.png "GAS 01")
+
+![GAS 02](/copy-this-template-directory/GAS_02.png "GAS 02")
+
+![GAS 03](/copy-this-template-directory/GAS_03.png "GAS 03")
+
+![GAS 04](/copy-this-template-directory/GAS_04.png "GAS 04")
+
+![GAS 05](/copy-this-template-directory/GAS_05.png "GAS 05")
+
+![GAS 06](/copy-this-template-directory/GAS_06.png "GAS 06")
+
+![GAS 07](/copy-this-template-directory/GAS_07.png "GAS 07")
+
+![GAS 08](/copy-this-template-directory/GAS_08.png "GAS 08")
+
+![GAS 09](/copy-this-template-directory/GAS_09.png "GAS 09")
+
+![GAS 10](/copy-this-template-directory/GAS_10.png "GAS 10")
+
+
 Click the button "Deploy" → New Deployment
 
 Web app
@@ -785,7 +807,7 @@ Run Initial Sync
 
 Run Calendar Push Notifications
 
-Set Time trigger
+Set Time Trigger
 
 &nbsp; 
 
