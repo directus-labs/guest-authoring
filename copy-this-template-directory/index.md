@@ -786,3 +786,38 @@ Run Initial Sync
 Run Calendar Push Notifications
 
 &nbsp; 
+
+### Script source code - list of functions
+
+`writelog` - utility function to write to the spreadsheet log entry
+
+`listCalendars` - function for manual launch - to list calendar IDs and description
+
+`triggerResubscribeOnceWeek` - function for once-a-week time trigger. Will resubscribe to calendar push notifications (1 week is max allowed time)
+
+`runManual_processSyncedEvents` - function for manual launch - get events stream and process it (send to Directus)
+
+`runManual_getSyncedEvents` - function for manual launch - set initial sync token, nothing sent to Directus
+
+`getConfig` - utility function for retrieving Config set in spreadsheet
+
+`updateConfig` - utility function for updating certain Config in the spreadsheet
+
+`callDirectusWebhook` - actual data sent to Directus
+
+`processSyncedEvents` - get events stream and process it (send to Directus)
+
+`doPost` - main function, special name doPost means that when the web app is published, POST requests are processed here
+
+`callCalendarEventsWatch_stop` - utility function for stopping push notifications
+
+`callCalendarEventsWatch` - utility function for registering URL for receiving push notifications
+
+`getSyncedEvents` - utility function for getting a list of new / updated / deleted events in Google Calendar, using special "syncToken"
+
+&nbsp; 
+
+### Resume
+
+That's all folks!
+
