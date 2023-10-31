@@ -20,7 +20,7 @@ This guide covers setting up Docker, configuring Docker Compose, using Nginx as 
 
 3. **Domain Name:** Register a custom domain name and have access to its DNS settings. This is crucial for the domain to resolve to your Ubuntu server.
 
-4. **Basic Command-Line Skills:** Basic familiarity with Linux command-line operations, including file uploads using `scp` and editing files with `vi`.
+4. **Command Line Familiarity:** Basic knowledge of Linux command-line operations, including file uploads using `scp` and editing files with `nano`.
 
 ## Upload Your Local Directus Application Folder to the Server
 
