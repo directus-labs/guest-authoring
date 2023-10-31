@@ -18,7 +18,7 @@ This guide covers setting up Docker, configuring Docker Compose, using Nginx as 
 
 2. **Ubuntu Server (Version 20.04 or 22.04):** Access an Ubuntu server via SSH. Obtain one from cloud providers like Azure, DigitalOcean, Linode, or AWS. Configure SSH access from your local machine.
 
-3. **Domain Name:** Register a domain name and have access to its DNS settings. This is crucial for the domain to resolve to your Ubuntu server
+3. **Domain Name:** Register a custom domain name and have access to its DNS settings. This is crucial for the domain to resolve to your Ubuntu server.
 
 4. **Basic Command-Line Skills:** Basic familiarity with Linux command-line operations, including file uploads using `scp` and editing files with `vi`.
 
