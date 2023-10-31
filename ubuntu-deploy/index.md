@@ -361,7 +361,7 @@ Now you should be able to access your Directus application without adding the po
 
 ## Securing Your Application with SSL (Optional but Recommended)
 
-Implementing SSL (Secure Sockets Layer) encryption is crucial for safeguarding data transmitted between your users and the server. [Let's Encrypt][let-encrypt] offers free SSL certificates, and here's how to set it up for your Directus application:
+Implementing SSL (Secure Sockets Layer) encryption is crucial for safeguarding data transmitted between your users and the server. Once enabled, your application will be accessible using `https`. [Let's Encrypt][let-encrypt] offers free SSL certificates, and here's how to set it up for your Directus application:
 
 1. Install Certbot: On your server, run the following commands to install Certbot and the Certbot Nginx plugin:
 
