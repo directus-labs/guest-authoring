@@ -171,7 +171,7 @@ More info about this error in this [issue][issue]
 
 ## Running the Docker Container as a Background Service
 
-Running your application like above is fine, but it will stop running when you close the terminal.
+Running your application using `sudo docker-compose up` will stop it running when you close the terminal.
 
 To ensure your application runs in the background and restarts automatically, you can create a systemd service.
 
