@@ -8,7 +8,7 @@ author:
 
 ## Introduction
 
-In this tutorial, you will learn how to deploy a Directus application within a Docker container on an Ubuntu Linux server and connect it to a custom domain, such as `https://directus.exampledomain.com`.
+In this tutorial, you will learn how to deploy a Directus application within a Docker container on an Ubuntu server and connect it to a custom domain. Ubuntu is a popular open source Linux distribution  which is commonly available from hosting providers. 
 
 This guide covers setting up Docker, configuring Docker Compose, using Nginx as a reverse proxy, and securing your application with SSL. Additionally, you'll discover how to run the application as a background service, ensuring seamless operation and easy management.
 
