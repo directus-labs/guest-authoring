@@ -8,7 +8,7 @@ author:
 
 ## Introduction
 
-In this tutorial, you will learn how to deploy a Directus application within a Docker container on an Ubuntu server and connect it to a custom domain. Ubuntu is a popular open source Linux distribution  which is commonly available from hosting providers. 
+In this tutorial, you will learn how to deploy a Directus application within a Docker container on an Ubuntu server and connect it to a custom domain. Ubuntu is a popular open source Linux distribution which is commonly available from hosting providers.
 
 This guide covers setting up Docker, configuring Docker Compose, using Nginx as a reverse proxy, and securing your application with SSL. Additionally, you'll discover how to run the application as a background service, ensuring seamless operation and easy management.
 
@@ -148,15 +148,15 @@ cd /path/to/your/directus/folder
 sudo docker-compose up
 ```
 
-![Running docker compose][image-11]
+<!-- ![Running docker compose][image-11] -->
 
 On the initial run, Docker will fetch the necessary image from the registry before launching your Directus application.
 
 Your application should now be accessible at `http://your_server_ip:8055`.
 
-![Directus application accessed with the server ip at port 8055][image-2]
+<!-- ![Directus application accessed with the server ip at port 8055][image-2] -->
 
-:::info Error Debugging
+:::info SQLITE_CANTOPEN
 
 If you encounter any error e.g `SQLITE_CANTOPEN: unable to open database file`, it is probably due to permission issues. You can try running this command to fix it:
 
@@ -213,7 +213,7 @@ WantedBy=multi-user.target
 
 You can get the full path to you directory by running the command `pwd` in the project directory on your server and copying the output.
 
-![print working directory(pwd) command][image-10]
+<!-- ![print working directory(pwd) command][image-10] -->
 
 :::
 
@@ -266,11 +266,11 @@ Configuring DNS settings for your domain is a crucial step in making your Direct
 
 2. Locate DNS Management or Domain Settings: Inside your domain registrar's dashboard, look for options like "DNS Management," "Domain Settings," or "Domain Management." These names might vary based on the registrar's interface.
 
-![DNS management dashboard][image-8]
+<!-- ![DNS management dashboard][image-8] -->
 
 3. Add a DNS Record for Your Subdomain: Create a new DNS record to point your subdomain (e.g., directus.exampledomain.com) to your server's public IP address. Depending on the registrar, you may need to choose the record type, which is usually an "A" record for IPv4 addresses. Enter your server's public IP address in the designated field.
 
-![A record domain configuration][image-5]
+<!-- ![A record domain configuration][image-5] -->
 
 4. Save the changes: After adding the DNS record, save the changes. DNS propagation might take some time, ranging from a few minutes to a few hours. During this period, the DNS changes will propagate across the internet, making your subdomain accessible.
 
@@ -357,7 +357,7 @@ sudo systemctl restart nginx
 
 Now you should be able to access your Directus application without adding the port at `http://directus.exampledomain.com`.
 
-![Directus application accessed at the domain but insecure][image-1]
+<!-- ![Directus application accessed at the domain but insecure][image-1] -->
 
 ## Securing Your Application with SSL (Optional but Recommended)
 
@@ -381,11 +381,7 @@ Ensure you select the option to redirect HTTP traffic to HTTPS when prompted. Ce
 
 ![HTTP to HTTPS redirect with certbot][image-9]
 
-:::info Renew certificate
-
 Also, ensure to renew the certificate before it expires to maintain a secure connection.
-
-:::
 
 3. Verify SSL Configuration: After the setup is complete, visit your Directus application using `https://directus.exampledomain.com` in a web browser. You should see a padlock icon indicating a secure SSL connection. You should also be automatically redirected from `http` to `https`.
 
