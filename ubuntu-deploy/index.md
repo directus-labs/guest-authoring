@@ -186,7 +186,7 @@ Systemd is a system and service manager for Linux operating systems. It provides
 Create a file named _directus.service_ in the _/etc/systemd/system/_ directory:
 
 ```bash
-sudo vi /etc/systemd/system/directus.service
+sudo nano /etc/systemd/system/directus.service
 ```
 
 Add the following content, updating the `WorkingDirectory` to your Directus project directory containing the _docker-compose.yml_ file:
