@@ -315,7 +315,7 @@ server {
 }
 ```
 
-This simply forward the request to the domain to the Directus application running at `localhost` port `8055`.
+This forwards the request to the domain to the Directus application running at `localhost` port `8055`.
 
 Let's step through the config file:
 
