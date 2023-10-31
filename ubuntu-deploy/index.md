@@ -189,7 +189,7 @@ Create a file named _directus.service_ in the _/etc/systemd/system/_ directory:
 sudo nano /etc/systemd/system/directus.service
 ```
 
-Add the following content, updating the `WorkingDirectory` to your Directus project directory containing the _docker-compose.yml_ file:
+Add the following content, updating the `WorkingDirectory` to your Directus project directory containing the `docker-compose.yml` file:
 
 ```plaintext
 [Unit]
