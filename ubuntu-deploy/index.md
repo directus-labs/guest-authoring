@@ -1,5 +1,5 @@
 ---
-title: 'Hosting a Directus Application on an Ubuntu Server'
+title: 'Deploy Directus on an Ubuntu Server with Docker'
 description: 'Learn how to host a Directus application on Ubuntu server with Docker, Nginx, and SSL encryption. A step-by-step guide for seamless deployment and security.'
 author:
   name: 'Yusuf Akorede'
