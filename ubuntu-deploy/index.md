@@ -293,7 +293,7 @@ sudo apt install nginx -y
 Create an Nginx configuration file named _directus_ for your domain:
 
 ```bash
-sudo vi /etc/nginx/sites-available/directus
+sudo nano /etc/nginx/sites-available/directus
 ```
 
 Add the following configurations, replacing `directus.exampledomain.com` with your domain name:
