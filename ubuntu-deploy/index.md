@@ -10,7 +10,7 @@ author:
 
 In this tutorial, you will learn how to deploy a Directus application within a Docker container on an Ubuntu server and connect it to a custom domain. Ubuntu is a popular open source Linux distribution which is commonly available from hosting providers.
 
-This guide covers setting up Docker, configuring Docker Compose, using Nginx as a reverse proxy, and securing your application with SSL. Additionally, you'll discover how to run the application as a background service, ensuring seamless operation and easy management.
+This guide covers setting up Docker, configuring Docker Compose, using Nginx as a reverse proxy, and securing your application with SSL. Additionally, you will discover how to run the application as a background service, ensuring seamless operation and easy management.
 
 ## Prerequisites
 
@@ -24,45 +24,7 @@ This guide covers setting up Docker, configuring Docker Compose, using Nginx as 
 
 ## Upload Your Local Directus Application Folder to the Server
 
-Assuming you have a local Directus folder structure that looks like this:
-
-```plaintext
-├── database
-│   └── data.db
-├── docker-compose.yml
-├── uploads
-└── extensions
-```
-
-And the _docker-compose.yml_ file looks somewhat like this:
-
-```yaml
-version: '3'
-services:
-  directus:
-    image: directus/directus:latest
-    ports:
-      - 8055:8055
-    volumes:
-      - ./database:/directus/database
-      - ./uploads:/directus/uploads
-      - ./extensions:/directus/extensions
-    environment:
-      KEY: 'replace-with-random-value'
-      SECRET: 'replace-with-random-value'
-      ADMIN_EMAIL: 'admin@example.com'
-      ADMIN_PASSWORD: 'd1r3ctu5'
-      DB_CLIENT: 'sqlite3'
-      DB_FILENAME: '/directus/database/data.db'
-      WEBSOCKETS_ENABLED: 1
-      # Add your other settings
-```
-
-:::info Security Note
-
-Ensure you adjust the email and set a strong password for the admin user.
-
-:::
+> If you have successfully followed the [Self-Hosted Quickstart][quickstart], you should have a directory with a `docker-compose.yml` file, `database/` directory with a `data.db` file, `uploads/` directory, and `extensions/` directory.
 
 Use `scp` (Secure Copy Protocol) to upload the local folder to your server.
 
@@ -148,13 +110,9 @@ cd /path/to/your/directus/folder
 sudo docker-compose up
 ```
 
-<!-- ![Running docker compose][image-11] -->
-
 On the initial run, Docker will fetch the necessary image from the registry before launching your Directus application.
 
 Your application should now be accessible at `http://your_server_ip:8055`.
-
-<!-- ![Directus application accessed with the server ip at port 8055][image-2] -->
 
 :::info SQLITE_CANTOPEN
 
@@ -213,13 +171,11 @@ WantedBy=multi-user.target
 
 You can get the full path to you directory by running the command `pwd` in the project directory on your server and copying the output.
 
-<!-- ![print working directory(pwd) command][image-10] -->
-
 :::
 
 Save the file and exit the editor.
 
-Let's step through the service file:
+Lets step through the service file:
 
 - [Unit] Section:
 
@@ -246,7 +202,7 @@ sudo systemctl enable directus.service
 sudo systemctl start directus.service
 ```
 
-Now, your dockerized Directus application is running as a background service and will automatically restart in case of failures or system reboots.
+By executing this command, your Dockerized Directus application will run as a background service. One of the advantages of this setup is that the service will automatically restart in case of failures or system reboots, ensuring continuous availability.
 
 Run the following command to check the status of the service:
 
@@ -260,17 +216,13 @@ You can also confirm if your application is still running at `http://your_server
 
 ## Configuring DNS Settings for Your Domain
 
-Configuring DNS settings for your domain is a crucial step in making your Directus application accessible to users over the internet. Here's how to do it:
+Configuring DNS settings for your domain is a crucial step in making your Directus application accessible to users over the internet. Here is how to do it:
 
 1. Access Your Domain Registrar's Website: Log in to the website of your domain registrar, where you initially purchased or registered your domain name. This is where you manage your domain settings.
 
 2. Locate DNS Management or Domain Settings: Inside your domain registrar's dashboard, look for options like "DNS Management," "Domain Settings," or "Domain Management." These names might vary based on the registrar's interface.
 
-<!-- ![DNS management dashboard][image-8] -->
-
 3. Add a DNS Record for Your Subdomain: Create a new DNS record to point your subdomain (e.g., directus.exampledomain.com) to your server's public IP address. Depending on the registrar, you may need to choose the record type, which is usually an "A" record for IPv4 addresses. Enter your server's public IP address in the designated field.
-
-<!-- ![A record domain configuration][image-5] -->
 
 4. Save the changes: After adding the DNS record, save the changes. DNS propagation might take some time, ranging from a few minutes to a few hours. During this period, the DNS changes will propagate across the internet, making your subdomain accessible.
 
@@ -280,9 +232,9 @@ You can confirm your changes by visiting the application by visiting `http://dir
 
 ## Setting Up Nginx as a Reverse Proxy
 
-Nginx, often called 'engine-x,' is a powerful reverse proxy server widely used in web hosting.
+Nginx is a powerful reverse proxy server widely used in web hosting. As a reverse proxy, Nginx sits between clients and backend servers, forwarding client requests to the appropriate server.
 
-As a reverse proxy, Nginx sits between clients and backend servers, forwarding client requests to the appropriate server.
+Nginx is preferred due to its high performance, low resource usage and ease of configuration.
 
 Install Nginx on your server:
 
@@ -343,7 +295,7 @@ To test the Nginx configuration files for syntax errors, you can use the followi
 sudo nginx -t
 ```
 
-Create a symbolic link to enable the site:
+Next, create a symbolic link to enable the site. Symbolic links helps streamline user directory mapping for straightforward web hosting management:
 
 ```bash
 sudo ln -s /etc/nginx/sites-available/directus /etc/nginx/sites-enabled
@@ -356,8 +308,6 @@ sudo systemctl restart nginx
 ```
 
 Now you should be able to access your Directus application without adding the port at `http://directus.exampledomain.com`.
-
-<!-- ![Directus application accessed at the domain but insecure][image-1] -->
 
 ## Securing Your Application with SSL (Optional but Recommended)
 
@@ -389,7 +339,7 @@ Also, ensure to renew the certificate before it expires to maintain a secure con
 
 ## Summary
 
-This tutorial guided you through hosting a Directus application on an Ubuntu server, covering essential steps like Docker setup, firewall configuration, and SSL encryption. By following these instructions, you've ensured a secure, accessible, and continuously running environment for your Directus project.
+This tutorial guided you through hosting a Directus application on an Ubuntu server, covering essential steps like Docker setup, firewall configuration, and SSL encryption. By following these instructions, you have ensured a secure, accessible, and continuously running environment for your Directus project.
 
 If you have any questions or encounter difficulties, don't hesitate to revisit this guide or seek support from the [Directus community][chat]. Happy hosting!
 
