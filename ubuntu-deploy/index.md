@@ -40,7 +40,7 @@ Also, replace `username` with your server's username and `server_ip` with your s
 
 In the example below, I am copying the whole Directus folder to the home directory(`~`) of my server.
 
-![Copying files to the server][image-6]
+![Copying files to the server][image-3]
 
 :::info Database Note
 
@@ -65,34 +65,57 @@ sudo apt upgrade -y
 
 This command updates and upgrades all existing packages to their latest versions.
 
-## Installing Docker and Docker Compose
+## Installing Docker
 
-To install Docker, run the following commands:
-
-```bash
-sudo apt install docker.io -y
-sudo systemctl start docker
-sudo systemctl enable docker
-```
-
-This installs Docker and enables the Docker service.
-To check if Docker is running, run:
+1. Remove conflicting packages to ensure a clean Docker installation:
 
 ```bash
-sudo systemctl status docker
+sudo apt-get remove docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc
 ```
 
-To install Docker Compose, run the following commands:
+2. Ensure you have the latest package information, update the package manager:
 
 ```bash
-sudo apt install docker-compose -y
+sudo apt-get update
 ```
 
-To verify that the installation was successful, you can run:
+3. Install dependencies needed for docker installation:
 
 ```bash
-docker-compose --version
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
 ```
+
+4. Add Docker's GPG key for package authenticity:
+
+```bash
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+```
+
+5. Add Docker repository to package manager sources:
+
+```bash
+sudo add-apt-repository "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+```
+
+6. Update package manager to recognize the new repository:
+
+```bash
+sudo apt-get update
+```
+
+7. Install Docker packages including Docker Engine and CLI, containerd, Docker Buildx, and Docker Compose plugins.
+
+```bash
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+Confirm the successful installation of Docker Engine by executing the following command:
+
+```bash
+sudo docker run hello-world
+```
+
+This command downloads a test image and executes it within a container. Upon running, the container displays a confirmation message before exiting.
 
 ## Start your Directus Application
 
@@ -107,7 +130,7 @@ Start your Directus application using Docker Compose:
 
 ```bash
 cd /path/to/your/directus/folder
-sudo docker-compose up
+sudo docker compose up
 ```
 
 On the initial run, Docker will fetch the necessary image from the registry before launching your Directus application.
@@ -129,7 +152,7 @@ More info about this error in this [issue][issue]
 
 ## Running the Docker Container as a Background Service
 
-Running your application using `sudo docker-compose up` will stop it running when you close the terminal.
+Running your application using `sudo docker compose up` will stop it running when you close the terminal.
 
 To ensure your application runs in the background and restarts automatically, you can create a systemd service.
 
@@ -158,9 +181,9 @@ After=docker.service
 
 [Service]
 Restart=always
-WorkingDirectory=/path/to/your/directory-containing-docker-compose
-ExecStart=/usr/bin/docker-compose up
-ExecStop=/usr/bin/docker-compose down
+WorkingDirectory=/path/to/your/directory-containing-docker-compose.yml
+ExecStart=/usr/bin/docker compose up
+ExecStop=/usr/bin/docker compose down
 
 
 [Install]
@@ -210,7 +233,7 @@ Run the following command to check the status of the service:
 sudo systemctl status directus.service
 ```
 
-![Directus service status][image-7]
+![Directus service status][image-4]
 
 You can also confirm if your application is still running at `http://your_server_ip:8055`.
 
@@ -228,7 +251,7 @@ Configuring DNS settings for your domain is a crucial step in making your Direct
 
 You can confirm your changes by visiting the application by visiting `http://directus.exampledomain.com:8055`.
 
-![Directus application accessed by the domain at port 8055][image-4]
+![Directus application accessed by the domain at port 8055][image-2]
 
 ## Setting Up Nginx as a Reverse Proxy
 
@@ -329,13 +352,13 @@ Certbot will interactively guide you through the setup process.
 
 Ensure you select the option to redirect HTTP traffic to HTTPS when prompted. Certbot will automatically configure Nginx to use the SSL certificate.
 
-![HTTP to HTTPS redirect with certbot][image-9]
+![HTTP to HTTPS redirect with certbot][image-5]
 
 Also, ensure to renew the certificate before it expires to maintain a secure connection.
 
 3. Verify SSL Configuration: After the setup is complete, visit your Directus application using `https://directus.exampledomain.com` in a web browser. You should see a padlock icon indicating a secure SSL connection. You should also be automatically redirected from `http` to `https`.
 
-![Secured Directus application][image-3]
+![Secured Directus application][image-1]
 
 ## Summary
 
@@ -347,14 +370,8 @@ If you have any questions or encounter difficulties, don't hesitate to revisit t
 [quickstart]: https://docs.directus.io/getting-started/quickstart.html 'Directus Quickstart'
 [issue]: https://github.com/directus/directus/discussions/17823#discussioncomment-5395649
 [let-encrypt]: https://letsencrypt.org
-[image-1]: ./app_domain_without_port_insecure.png
-[image-2]: ./app_insecure_with_port.png
-[image-3]: ./app_with_domain_secure.png
-[image-4]: ./app_with_domain_with_port_insecure.png
-[image-5]: ./configure_a_records.png
-[image-6]: ./copy_file_to_server.png
-[image-7]: ./directus_service_status.png
-[image-8]: ./dns_management_dashboard.png
-[image-9]: ./http_https_redirect.png
-[image-10]: ./pwd.png
-[image-11]: ./running_docker_compose.png
+[image-1]: ./app_with_domain_secure.png
+[image-2]: ./app_with_domain_with_port_insecure.png
+[image-3]: ./copy_file_to_server.png
+[image-4]: ./directus_service_status.png
+[image-5]: ./http_https_redirect.png
