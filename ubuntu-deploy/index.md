@@ -94,7 +94,10 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o 
 5. Add Docker repository to package manager sources:
 
 ```bash
-sudo add-apt-repository "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 ```
 
 6. Update package manager to recognize the new repository:
@@ -178,13 +181,11 @@ Description=Directus Docker Service
 Requires=docker.service
 After=docker.service
 
-
 [Service]
 Restart=always
 WorkingDirectory=/path/to/your/directory-containing-docker-compose.yml
 ExecStart=/usr/bin/docker compose up
 ExecStop=/usr/bin/docker compose down
-
 
 [Install]
 WantedBy=multi-user.target
