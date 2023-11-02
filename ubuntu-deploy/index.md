@@ -130,9 +130,12 @@ This command downloads a test image and executes it within a container. Upon run
 
 ## Start your Directus Application
 
-Run these commands to allow incoming traffic on port 8055:
+Run these commands to allow incoming traffic on ports 22 (SSH), 80 (HTTP), 443 (HTTPS), and 8055:
 
 ```bash
+sudo ufw allow 22/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
 sudo ufw allow 8055/tcp
 sudo ufw enable
 ```
