@@ -16,7 +16,7 @@ This guide covers setting up Docker, configuring Docker Compose, using Nginx as 
 
 1. **A Directus Project:** Prepare a local Directus project for deployment. Follow the [Directus quickstart guide][quickstart] if you need to create a new project.
 
-2. **Ubuntu Server (Version 20.04 or 22.04):** Access an Ubuntu server via SSH. Obtain one from cloud providers like Azure, DigitalOcean, Linode, or AWS. Configure SSH access from your local machine.
+2. **Ubuntu Server (Version 20.04 or 22.04):** Access an Ubuntu server via SSH. You can obtain one from cloud providers like Azure, DigitalOcean, Linode, or AWS. Configure SSH access from your local machine.
 
 3. **Domain Name:** Register a custom domain name and have access to its DNS settings. This is crucial for the domain to resolve to your Ubuntu server.
 
@@ -28,7 +28,7 @@ This guide covers setting up Docker, configuring Docker Compose, using Nginx as 
 
 Use `scp` (Secure Copy Protocol) to upload the local folder to your server.
 
-From your local machine terminal, run:
+From your local machine's terminal, run:
 
 ```bash
 scp -r /path/to/your/local/directus/folder username@server_ip:/path/to/your/remote/folder
@@ -63,7 +63,7 @@ sudo apt update
 sudo apt upgrade -y
 ```
 
-This command updates and upgrades all existing packages to their latest versions.
+These commands update and upgrade all existing packages to their latest versions.
 
 ## Installing Docker
 
@@ -114,7 +114,7 @@ echo \
 sudo apt-get update
 ```
 
-7. Install Docker packages including Docker Engine and CLI, containerd, Docker Buildx, and Docker Compose plugins.
+7. Install Docker packages, including Docker Engine and CLI, containerd, Docker Buildx, and Docker Compose plugins.
 
 ```bash
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
@@ -204,7 +204,7 @@ WantedBy=multi-user.target
 
 :::info
 
-You can get the full path to you directory by running the command `pwd` in the project directory on your server and copying the output.
+You can get the full path to your directory by running the command `pwd` in the project directory on your server and copying the output.
 
 :::
 
@@ -374,7 +374,7 @@ Also, ensure to renew the certificate before it expires to maintain a secure con
 
 ## Summary
 
-This tutorial guided you through hosting a Directus application on an Ubuntu server, covering essential steps like Docker setup, firewall configuration, and SSL encryption. By following these instructions, you have ensured a secure, accessible, and continuously running environment for your Directus project.
+This tutorial guided you through hosting a Directus application on an Ubuntu server, covering essential steps such as Docker setup, firewall configuration, and SSL encryption. By following these instructions, you have ensured a secure, accessible, and continuously running environment for your Directus project.
 
 If you have any questions or encounter difficulties, don't hesitate to revisit this guide or seek support from the [Directus community][chat]. Happy hosting!
 
