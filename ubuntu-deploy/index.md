@@ -387,7 +387,3 @@ If you have any questions or encounter difficulties, don't hesitate to revisit t
 [image-3]: ./copy_file_to_server.png
 [image-4]: ./directus_service_status.png
 [image-5]: ./http_https_redirect.png
-
-```
-
-```
