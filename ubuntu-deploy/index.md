@@ -70,7 +70,7 @@ This command updates and upgrades all existing packages to their latest versions
 1. Remove conflicting packages to ensure a clean Docker installation:
 
 ```bash
-sudo apt-get remove docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 ```
 
 2. Ensure you have the latest package information, update the package manager:
@@ -82,13 +82,21 @@ sudo apt-get update
 3. Install dependencies needed for docker installation:
 
 ```bash
-sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+sudo apt-get install ca-certificates curl gnupg
 ```
 
 4. Add Docker's GPG key for package authenticity:
 
 ```bash
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+sudo install -m 0755 -d /etc/apt/keyrings
+```
+
+````bash
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+```
+
+```bash
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
 ```
 
 5. Add Docker repository to package manager sources:
@@ -376,3 +384,4 @@ If you have any questions or encounter difficulties, don't hesitate to revisit t
 [image-3]: ./copy_file_to_server.png
 [image-4]: ./directus_service_status.png
 [image-5]: ./http_https_redirect.png
+````
