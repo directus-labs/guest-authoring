@@ -35,6 +35,8 @@ SAML Settings: the most important part of our integration with Directus. Fill in
 
 Note: Use `localhost:8055` for local development. For deployment to other domains, change values to your domain, which will most likely work over the https protocol (e.g., `https://example.com/...`). Alternatively, we can create as many Okta applications as needed for each environment.
 
+![Configure general SAML settings](configure-saml-screen-settings.png)
+
 Next, fill in the **Attribute Statements**.
 Note: Although it is labelled as optional, it is critical to fill in at least the email attribute for authentication to work.
 
@@ -46,62 +48,27 @@ The attributes will look like this:
 | first_name | Basic       | user.firstName | The field by which Directus will match the first name from the Okta account with the first name in our app. Add it if we want the user's first name to be pre-filled in the app. |
 | last_name  | Basic       | user.lastName  | The field by which Directus will match the last name from the Okta account with the last name in our app. Add it if we want the user's last name to be pre-filled in the app.    |
 
-
-Let's leave the rest of the parameters at this step as defaults. As a result, we will get parameters like these:
-
-![Configure general SAML settings](configure-saml-screen-settings.png)
-
 ![Configure SAML attributes](configure-saml-screen-attributes.png)
 
-Click **Next** and go to the third and final screen for the Okta app settings.
-
-### Feedback
-Our setup is complete, and we are prompted to leave feedback or submit the app to Okta for review. Unless we want to spend any more time here, select **I'm an Okta customer adding an internal app** and, without filling anything in, click **Finish**.
-
-![Process feedback screen](feedback-screen.png)
+Click **Next**, select **I'm an Okta customer adding an internal app** when asked for feedback and finish the app creation wizard.
 
 ### Add Users
-Now, we can choose which people from our organization can access Directus through Okta SSO. Go to the **Assignments** tab in the settings of our Okta application.
+Choose which people from our organization can access Directus through Okta SSO:
 
-![User assignments screen](user-assignments.png)
-
-Click **Assign**->**Assign to People**.
-
-![Assign to people action button](assign-to-people-action.png)
-
-Click **Assign** next to the desired user.
-
-![A list of people to assign](assign-people-modal.png)
-
-We can also change the username, but we will leave the default. Click **Save and Go Back**.
-
-![Save the assigned user](save-assigned-user.png)
-
-```
-:::How to add Users to Organisation
-
-Go to the People page. To do this, click **Directory**->**People** in the sidebar.
-
-![People page](people-page.png)
-
-Click **Add Person**, and enter the user's personal data in the modal window that appears. Then click **Save**.
-
-![Add new person to the organisation](add-person-modal.png)
-
-Great, the user will receive an email with further instructions and appear in our organisation's list of users.
-
-```
+1. Go to the **Assignments** tab in the settings of our Okta application.
+2. Click **Assign**->**Assign to People**.
+3. Click **Assign** next to the desired user.
+4. We can also change the username, but we will leave the default. Click **Save and Go Back**.
+5. The selected user now has permission to access Directus.
 
 ### Result
-Congrats! We have completed our Okta app.
-
 Go to the **Sign On** tab in our Okta app(**Applications** -> **Applications** -> **My Directus app** -> **Sign On**) and copy the **Metadata URL**. We will need this to configure our Directus project.
 
 ![Final screen with the Metadata URL](final-screen.png)
 
 ## Configuring SSO in the Directus application
 
-Now that the integration on the Okta side is complete, it's time to set up our Directus app. We need to open the `.env` file and add the following variables to it:
+The integration on the Okta side is complete, it's time to set up our Directus app. We need to open the `.env` file and add the following variables to it:
 
 | Name                                  | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Description                                                                                                                                                                                                                                                                                                                     |
 |---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -169,4 +136,4 @@ We can change our user data to whatever we want, and it won't be overwritten wit
 
 ## Summary
 
-We now have a fully configured and working integration of Okta SSO with the Directus application. Users can seamlessly register and log in via the organization's SSO, functioning equivalently to the standard email and password login method without any limitations.
+We have a fully configured and working integration of Okta SSO with the Directus application. Users can seamlessly register and log in via the organization's SSO, functioning equivalently to the standard email and password login method without any limitations.
