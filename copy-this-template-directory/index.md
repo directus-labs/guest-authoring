@@ -105,7 +105,7 @@ There are 4 Flows required for this project:
 
 &nbsp; 
 
-### Flow "Google Calendar event Proxy"
+### Google Calendar Event Proxy Flow
 
 As I mentioned - it's not very straightforward to organize a stream of updates from Google Calendar with Google Apps Script.
 We will use [push notifications](https://developers.google.com/calendar/api/guides/push) that will call our published Google Apps Script when there are changes in the calendar. The catch though, these push notifications provide data within Header but for incoming requests, Google Apps Script can't read headers, only the body. That's why we will use Directus Flow as a simple proxy, it's webhook URL will be registered as the address for push notifications, it will receive data, save the header as a body, and send it to our published Google Apps Script.
