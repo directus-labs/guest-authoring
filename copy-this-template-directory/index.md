@@ -74,15 +74,20 @@ These fields are required, names could be changed, just ensure that you reflect 
 
 &nbsp; 
 
-In the Flows, we will use [environment variables](https://docs.directus.io/self-hosted/config-options.html). Please add these two environment variables:
+We will use [environment variables](https://docs.directus.io/self-hosted/config-options.html) in our Flows. Please add these two environment variables:
 
-`GCALENDARHOOKSECRET=supersecretpass`
+```
+GCALENDARHOOKSECRET="supersecretpass"
+GCALENDARHOOKURL="https://script.google.com/macros/s/xxxx/exec"
+```
 
-`GCALENDARHOOKURL=https://script.google.com/macros/s/xxxx/exec`
+First is the secret word our Flows will use to validate that incoming data is from our trusted script, and the second is the URL of your published Google Apps Script, you will acquire it later so feel free to put in a placeholder value. 
 
-First is the secret word our Flows will use to check that incoming data is from our trusted script, and the second is the actual URL of the published google apps script, you will acquire it later. In order for Flows to have access to variables, they need to be listed in another variable:
+In order for Flows to have access to environment variables, they need to be listed in the `FLOWS_ENV_ALLOW_LIST` environment variable. If it exists, add the two new values to it. If it does not already exist, create it:
 
-`FLOWS_ENV_ALLOW_LIST=GCALENDARHOOKSECRET,GCALENDARHOOKURL`
+```
+FLOWS_ENV_ALLOW_LIST=GCALENDARHOOKSECRET,GCALENDARHOOKURL
+```
 
 &nbsp; 
 
