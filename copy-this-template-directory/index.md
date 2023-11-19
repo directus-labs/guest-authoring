@@ -7,7 +7,7 @@ author:
 ---
 
 ## Introduction
-Directus allows a broad range of customization and extensibility. In this project, we will create full two-way syncing between items in Directus collection and Google Calendar Events. So, when the user creates/updates/deletes an item in Directus collection, the corresponding event in Google Calendar will be created/updated/deleted. And vice versa, when the user creates/updates/deletes an event in Google Calendar, the corresponding item will be created/updated/deleted in Directus collection. On the Directus side, we will use Flows, on the Google side, we will use Google Apps Script.
+In this project, we will create a two-way sync between items in Directus Collection and Google Calendar Events. So, when the user creates/updates/deletes an item in a Directus collection or Google Calendar, the corresponding entry will be altered. On the Directus side we will use Flows, and on the Google side we will use [Google Apps Script](https://developers.google.com/apps-script/overview).
 
 ```
 Google Apps Script, what's that?
