@@ -95,7 +95,14 @@ FLOWS_ENV_ALLOW_LIST=GCALENDARHOOKSECRET,GCALENDARHOOKURL
 
 There are 4 Flows required for this project: 
 
-1. ... Quickly detail what each Flow is in one sentence. 
+1. Flow "Google Calendar event Proxy" - receives info about Google Calendar trigger event with info in Headers and sends it in Body to Google Apps script.
+
+2. Flow "Send delete event to Google Calendar" - sends data to Google Apps script about deleted collection item.
+
+3. Flow "Send create/update event to Google Calendar" - sends data to Google Apps script about created/updated collection item.
+
+4. Flow "Process events from Google Calendar" - webhook, called from Google Apps script when an event is created / updated / deleted in Google Calendar.
+
 &nbsp; 
 
 ### Flow "Google Calendar event Proxy"
