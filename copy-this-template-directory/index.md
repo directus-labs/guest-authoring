@@ -25,7 +25,7 @@ But the actual implementation has some hidden complexity:
 
 We will use the ID of Google Calendar event as the shared ID, saved as an additional field in Directus item. We can use Flows to save it, and open the ability to search by the Calendar ID within Directus.
 
-![detailed interactions scheme overview](/copy-this-template-directory/directus_gcalendar_shapes__23-10-22%2019.16.17.svg "detailed interactions scheme overview")
+![detailed interactions scheme overview](/copy-this-template-directory/directus_gcalendar_shapes_highlevel_23-11-20%2002.14.16.svg "detailed interactions scheme overview")
 
 Let's describe the processes shown in the interaction scheme:
 
