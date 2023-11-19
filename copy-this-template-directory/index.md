@@ -843,7 +843,7 @@ Click `Save`
 
 ### Script source code - list of functions
 
-The source code of the script is organized into several functions (but there is a lot of space for refactoring and improvements)
+The source code of the script is organized into several functions. In this section, I will define what each does so you can explore and expand it. 
 
 `writelog` - utility function to write to the spreadsheet log entry
 
