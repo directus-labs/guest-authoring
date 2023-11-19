@@ -1,5 +1,5 @@
 ---
-title: 'Directus and Google Calendar sync'
+title: 'Syncing Directus and Google Calendar with Directus Automate and Google Apps Script'
 description: 'How to synchronize items in Directus with Google Calendar events using Directus Flows and Google Apps Script'
 author:
   name: 'Yury Klyuch'
