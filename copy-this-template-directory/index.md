@@ -783,7 +783,7 @@ click `copy` to get this Web app URL (make sure that you are copying web app URL
 
 ![In the action bar at the top of the script editor there is a run button and a dropdown of function names'](/copy-this-template-directory/GAS_06.png "GAS 06")
 
-as shown by the arrow `1`, select function `listCalendars`. Click Run (as shown by the arrow `2`)
+Run the `listCalendars` function.
 
 you'll see the result of the function listCalendars run. Copy the ID of the calendar that you want to track. Usually, it's the same as an account email.
 
