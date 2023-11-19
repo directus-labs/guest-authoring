@@ -111,35 +111,23 @@ When a change is made in our calendar, a [push notification](https://developers.
 
 ![whole flow](/copy-this-template-directory/directus_flow_1_full_.png "whole flow")
 
-***
+Create a Flow with a **Webhook** trigger. Use a POST method. 
 
-- Trigger node - webhook:
+Add a **Webhook / Request URL** operation and send a POST request to `{{$env.GCALENDARHOOKURL}}`. The actual value in the environment variable will be set after Google Apps Script is published and a URL is provisioned. Set the Request Body to: 
 
-![trigger node](/copy-this-template-directory/directus_flow_1_01_.png "trigger node")
-
-
-***
-
-- Node 2 - "Webhook / Request URL"
-
-![request node](/copy-this-template-directory/directus_flow_1_02_.png "request node")
-
-URL is `{{$env.GCALENDARHOOKURL}}` - the actual value in the environment variable will be set after Google Apps Script is published.
-
-Request body:
 ```js
 {
   "headers": {{$trigger.headers}}
 }
 ```
 
-> note that {{$trigger.headers}} is not quoted!
+:::info Quoting
 
-After you save this Flow, copy the resulting webhook URL somewhere (the URL can be copied from the trigger node, when in view mode, not in edit mode).
+Note that `{{$trigger.headers}}` is not quoted as it will be an object.
 
-***
+:::
 
-&nbsp; 
+Save the Flow and take note of the Webhook URL for later.
 
 ### Flow "Send delete event to Google Calendar"
 
