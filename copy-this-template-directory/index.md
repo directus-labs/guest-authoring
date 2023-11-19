@@ -16,7 +16,7 @@ You will need a Directus project - check out [quickstart guide](https://docs.dir
 
 ## Interactions Scheme
 on the high level, it might look simple
-![](/copy-this-template-directory/directus_gcalendar_shapes_highlevel.svg "high level interactions scheme overview")
+![high level interactions scheme overview"](/copy-this-template-directory/directus_gcalendar_shapes_highlevel.svg "high level interactions scheme overview")
 
 but the actual implementation looks a bit more complex
 
@@ -28,7 +28,7 @@ to update this ID with the value from Google Apps Script, and also actions to se
 - it's not very straightforward to organize a stream of updates from Google Calendar.
 ```
 
-![](/copy-this-template-directory/directus_gcalendar_shapes__23-10-22%2019.16.17.svg "detailed interactions scheme overview")
+![detailed interactions scheme overview](/copy-this-template-directory/directus_gcalendar_shapes__23-10-22%2019.16.17.svg "detailed interactions scheme overview")
 
 1 - Flow set to react on create/update events in our _collection1_. Another flow set to react on delete events. Both send a signal to our Google Apps Script webapp (2).
 
