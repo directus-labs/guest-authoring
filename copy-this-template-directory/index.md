@@ -722,7 +722,7 @@ For quicker setup, please use [this spreadsheet template copy](https://docs.goog
 
 In your spreadsheet copy, open the menu Extensions → Apps Script. It will open Script Editor.
 
-![GAS 04](/copy-this-template-directory/GAS_04.png "GAS 04")
+![in the top-right corner there is Deploy button](/copy-this-template-directory/GAS_04.png "GAS 04")
 
 Click the button `Deploy` → `New Deployment`.
 
@@ -731,19 +731,19 @@ When this URL is called with a GET request, the script function `doGet` is execu
  
  ***
 
-![GAS 05](/copy-this-template-directory/GAS_05.png "GAS 05")
+![New deployment popup](/copy-this-template-directory/GAS_05.png "GAS 05")
 
 set type to web app. Description - anything. Execute as - Me. Who has access - anyone.
 Click `Deploy`.
 
  ***
 
-![GAS 01](/copy-this-template-directory/GAS_01.png "GAS 01")
+![popup with Authorize access button](/copy-this-template-directory/GAS_01.png "GAS 01")
 
  click `Authorize access`
  ***
 
-![GAS 02](/copy-this-template-directory/GAS_02.png "GAS 02")
+![warning from Google about unverified app](/copy-this-template-directory/GAS_02.png "GAS 02")
 
  
 Choose your account and then click "Allow".
@@ -760,7 +760,7 @@ Then click "Go to code (unsafe)"
  
  ***
 
-![GAS 03](/copy-this-template-directory/GAS_03.png "GAS 03")
+![list of permissions script requires](/copy-this-template-directory/GAS_03.png "GAS 03")
 
 click "Allow".
 
@@ -781,7 +781,7 @@ click `copy` to get this Web app URL (make sure that you are copying web app URL
 
  Back to the script editor
 
-![GAS 06](/copy-this-template-directory/GAS_06.png "GAS 06")
+![In the action bar at the top of the script editor there is a run button and a dropdown of function names'](/copy-this-template-directory/GAS_06.png "GAS 06")
 
 as shown by the arrow `1`, select function `listCalendars`. Click Run (as shown by the arrow `2`)
 
@@ -824,13 +824,13 @@ The calendar events push notifications need resubscription, its maximum time bef
 
 Set Time Trigger
 
-![GAS 09](/copy-this-template-directory/GAS_09.png "GAS 09")
+![script editor have Trigger button in the left pane](/copy-this-template-directory/GAS_09.png "GAS 09")
 
 Click `Triggers`, then `Add Trigger`
 
 ***
 
-![GAS 10](/copy-this-template-directory/GAS_10.png "GAS 10")
+![Add trigger Popup](/copy-this-template-directory/GAS_10.png "GAS 10")
 
 Select function triggerResubscribeOnceWeek
 
