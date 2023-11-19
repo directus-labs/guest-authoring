@@ -800,7 +800,7 @@ In your Spreadsheet go to the 'Config' sheet.
 
 &nbsp; 
 
-### Google Apps Script 
+### One-Time Set Up Of Google Apps Script 
 
 In the Script Editor, we must manually run a few functions once during setup.
 
