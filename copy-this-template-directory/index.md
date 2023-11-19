@@ -2,36 +2,15 @@
 title: 'Syncing Directus and Google Calendar with Directus Automate and Google Apps Script'
 description: 'How to synchronize items in Directus with Google Calendar events using Directus Flows and Google Apps Script'
 author:
-  name: 'Yury Klyuch'
-  avatar_file_name: 'image_profile3_cr.jpg'
 ---
 
 ## Introduction
 In this project, we will create a two-way sync between items in Directus Collection and Google Calendar Events. So, when the user creates/updates/deletes an item in a Directus collection or Google Calendar, the corresponding entry will be altered. On the Directus side we will use Flows, and on the Google side we will use [Google Apps Script](https://developers.google.com/apps-script/overview).
 
-```
-Google Apps Script, what's that?
-
-Allow me a citation from official docs https://developers.google.com/apps-script/overview:
-"Google Apps Script is a rapid application development platform that makes it fast and easy to create business applications
-that integrate with Google Workspace. You write code in modern JavaScript and have access to built-in libraries for favorite
-Google Workspace applications like Gmail, Calendar, Drive, and more.
-There's nothing to install—we give you a code editor right in your browser, and your scripts run on Google's servers."
-
-And my personal opinion:
-It's free, it's powerful, it's easy to use, it has great docs, it has a good resources quota, it has access to almost
-all the things you can do in Gmail / Doc / Drive / Spreadsheet / Slide / Forms / Calendar.
-
-```
-
 &nbsp; 
 
 ## Before You Start
 You will need a Directus project - check out [quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one. You will also need a Google Account.
-
-**This project implementation limits:**
-It does not support Directus Bulk operations. Current Flows are developed and tested for the single item being created / updated / deleted.
-Another one - Google Calendar recurrent events will be handled as a single date event.
 
 &nbsp; 
 
