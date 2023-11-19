@@ -18,15 +18,12 @@ You will need a Directus project - check out [quickstart guide](https://docs.dir
 on the high level, it might look simple
 ![high level interactions scheme overview"](/copy-this-template-directory/directus_gcalendar_shapes_highlevel.svg "high level interactions scheme overview")
 
-but the actual implementation looks a bit more complex
+But the actual implementation has some hidden complexity:
 
-```
-Sources of complexity:
 - For proper syncing, we need to have some ID that is shared between Directus item and Google Calendar event.
-This will be the ID of Google event, saved as an additional field in Directus item. So, in Flows, there will be actions
-to update this ID with the value from Google Apps Script, and also actions to search Directus items by this ID.
-- it's not very straightforward to organize a stream of updates from Google Calendar.
-```
+- It's not very straightforward to organize a stream of updates from Google Calendar.
+
+We will use the ID of Google Calendar event as the shared ID, saved as an additional field in Directus item. We can use Flows to save it, and open the ability to search by the Calendar ID within Directus.
 
 ![detailed interactions scheme overview](/copy-this-template-directory/directus_gcalendar_shapes__23-10-22%2019.16.17.svg "detailed interactions scheme overview")
 
