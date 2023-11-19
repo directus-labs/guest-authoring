@@ -51,7 +51,7 @@ webapp with parameters in the body (7).
 
 &nbsp; 
 
-## Setup on Directus side
+## Set Up Your Directus Project
 Directus collection (_collection1_ in this sample project) has these fields:
 
 `calendar_event_id` - type text, where Google calendar event id will be saved (automatically)
