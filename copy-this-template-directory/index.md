@@ -91,10 +91,11 @@ FLOWS_ENV_ALLOW_LIST=GCALENDARHOOKSECRET,GCALENDARHOOKURL
 
 &nbsp; 
 
-**Now a Flows.**
+## Create Your Flows
 
-There are 4 Flows. For each Flow I'll show an overview picture and then each node screen with config also as text, so you can copy-paste it.
+There are 4 Flows required for this project: 
 
+1. ... Quickly detail what each Flow is in one sentence. 
 &nbsp; 
 
 ### Flow "Google Calendar event Proxy"
