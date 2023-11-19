@@ -107,7 +107,7 @@ There are 4 Flows required for this project:
 
 ### Google Calendar Event Proxy Flow
 
-When a change is made in our calendar, a [push notification](https://developers.google.com/calendar/api/guides/push) will trigger the Google Apps Script with data in the headers. Google Apps Script can't read headers, so this first Flow will act as a 'middleman' proxy sitting between Google Calendar and the Google Apps Script. It will receive requests, save data from the headers in the body, and then send it back to Google Apps Script. 
+When a change is made in our calendar, a [push notification](https://developers.google.com/calendar/api/guides/push) will trigger the registered URL endpoint with data in the headers. Google Apps Script can't read headers, so this first Flow will act as a 'middleman' proxy sitting between Google Calendar and the Google Apps Script. It will receive requests, save data from the headers in the body, and then send it back to Google Apps Script. 
 
 ![whole flow](/copy-this-template-directory/directus_flow_1_full_.png "whole flow")
 
