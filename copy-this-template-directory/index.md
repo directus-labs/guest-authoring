@@ -793,13 +793,10 @@ The result of the function `listCalendars` will be shown. Copy the ID of the cal
 
 In your Spreadsheet go to the 'Config' sheet.
 
-set `calendar_id` to the id of your calendar.
-
-set `directus_url_proxy` to the URL of Flow "Google Calendar event Proxy"
-
-set `directus_url_webhook_from_g` to the URL of Flow "Process events from Google Calendar"
-
-set `pass` to the same value as in Directus Environment Variable `GCALENDARHOOKSECRET`
+1. set `calendar_id` to the id of your calendar.
+2. set `directus_url_proxy` to the URL of Flow "Google Calendar event Proxy"
+3. set `directus_url_webhook_from_g` to the URL of Flow "Process events from Google Calendar"
+4. set `pass` to the same value as in Directus Environment Variable `GCALENDARHOOKSECRET`
 
 &nbsp; 
 
