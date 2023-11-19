@@ -435,11 +435,7 @@ Query is empty
 
 ### Flow "Process events from Google Calendar"
 
-This is a webhook, called from Google Apps script when an event is created / updated / deleted in Google Calendar.
-
-Collection1 item will be Created / Updated / Deleted from incoming hook parameters.
-
-This flow is a bit wide, so the screenshot is split in two.
+This final Flow is the entry point for the Google Apps Script to interact with Directus regardless of whether it is triggered based on a create, update, or delete operation. It will determine and execute the correct operations within your collection.
 
 
 part 1
