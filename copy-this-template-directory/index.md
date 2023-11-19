@@ -804,13 +804,9 @@ In your Spreadsheet go to the 'Config' sheet.
 
 In the Script Editor, we must manually run a few functions once during setup.
 
-select function `triggerResubscribeOnceWeek` (just like you selected listCalendars earlier). Click `Run`.
+Select `triggerResubscribeOnceWeek` from the functions dropdown and click **Run**. If the run was successful, in the `config` sheet values next to `channel_id`, `resource_id` will be filled.
 
-If the run was successful, in the `config` sheet values next to `channel_id`, `resource_id` will be filled.
-
-select function `runManual_getSyncedEvents`. Click `Run`.
-
-If the run was successful, in the `config` sheet value next to `sync_token`, `resource_id` will be filled.
+Select `runManual_getSyncedEvents` from the functions dropdown and click **Run**. If the run was successful, in the `config` sheet value next to `sync_token`, `resource_id` will be filled.
 
 
 > For most of the Google Workspace App, Apps Script has a specific library, like `CalendarApp` with easy-to-use functions. However, these functions don't have all the functionality available for API calls. Luckily it's possible to use Advanced Calendar Service - it's almost like calling API calls directly. Thanks to that we can subscribe to notifications and retrieve a list of new events using syncToken.
