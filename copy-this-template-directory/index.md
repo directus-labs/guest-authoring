@@ -802,7 +802,7 @@ In your Spreadsheet go to the 'Config' sheet.
 
 ### Google Apps Script 
 
-Back to the script editor. We need to run manually couple of functions.
+In the Script Editor, we must manually run a few functions once during setup.
 
 select function `triggerResubscribeOnceWeek` (just like you selected listCalendars earlier). Click `Run`.
 
