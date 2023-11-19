@@ -785,7 +785,7 @@ click `copy` to get this Web app URL (make sure that you are copying web app URL
 
 Run the `listCalendars` function.
 
-you'll see the result of the function listCalendars run. Copy the ID of the calendar that you want to track. Usually, it's the same as an account email.
+The result of the function `listCalendars` will be shown. Copy the ID of the calendar that you want to track. Usually, it's the same as an account email.
 
 &nbsp; 
 
