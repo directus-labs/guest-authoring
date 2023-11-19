@@ -194,7 +194,7 @@ Request body:
 &nbsp; 
  
 ### Send Create or Update Event to Google Calendar Flow"
-Processing of Create / Update is more complicated than Delete, cause after we send this event info, we might receive the ID of the Google Calendar Event that was created and we must update the current Directus item with this ID. This operation is not blocking. 
+Processing of Create / Update is more complicated than Delete. After we send the event information, we might receive the ID of the Google Calendar Event that was created and we must update the current Directus item with this ID. This operation is not blocking. 
 
 ![whole flow](/copy-this-template-directory/directus_flow_3_full_.png "whole flow")
 
