@@ -64,7 +64,11 @@ Directus collection (_collection1_ in this sample project) has these fields:
 
 `description` - type text, where event description is
 
-> `timestamp` type is available when the field is created in Advanced Mode. Could be Datetime type used instead? It might work, but since it doesn't have timezone info, you must ensure that your Directus and Google Calendar have the same timezone setting.
+:::info Timestamp Data Type
+
+The `timestamp` type is available when the field is created in Advanced Mode. You could use `Datetime`, but since it doesn't have timezone info, you must ensure that your Directus and Google Calendar have the same timezone setting. Using `timestamp` overcomes this limitation.
+
+:::
 
 These fields are required, names could be changed, just ensure that you reflect these changes in the Google Spreadsheet Config
 
