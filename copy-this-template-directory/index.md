@@ -727,7 +727,7 @@ In your spreadsheet copy, open the menu Extensions → Apps Script. It will open
 Click the button `Deploy` → `New Deployment`.
 
 When Google Apps Script is deployed as Web App, it creates a unique URL like `https://script.google.com/macros/s/xxxx/exec`.
-When this URL is called with a GET request, the script function `doGet` is executed.  When this URL is called with a POST request, script function `doPost` is executed. We will use POST requests and doPost function.
+When this URL is called with a GET request, the script function `doGet` is executed.  When this URL is called with a POST request, script function `doPost` is executed. We will use POST requests and `doPost` function.
  
  ***
 
