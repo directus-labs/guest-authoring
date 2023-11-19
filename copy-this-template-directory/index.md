@@ -129,7 +129,7 @@ Note that `{{$trigger.headers}}` is not quoted as it will be an object.
 
 Save the Flow and take note of the Webhook URL for later.
 
-### Flow "Send delete event to Google Calendar"
+### Send Delete Event to Google Calendar  Flow
 
 Processing of the Delete event is a bit different from processing of Create / Update (next flow). It should be set to blocking, cause we need to "intercept" the delete command and read item data - we need to know the id of the Google Calendar event, so we can send it to Published Google Apps Script.
 
