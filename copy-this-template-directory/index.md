@@ -27,13 +27,23 @@ We will use the ID of Google Calendar event as the shared ID, saved as an additi
 
 ![detailed interactions scheme overview](/copy-this-template-directory/directus_gcalendar_shapes__23-10-22%2019.16.17.svg "detailed interactions scheme overview")
 
-1 - Flow set to react on create/update events in our _collection1_. Another flow set to react on delete events. Both send a signal to our Google Apps Script webapp (2).
+Let's describe the processes shown in the interaction scheme:
 
-3 - The same webapp (but a different function) sends signals to another Directus Flow, that creates/updates/deletes items in collection1 accordingly (4).
+1 - Flow set to react on create/update events in our _collection1_. Another flow set to react on delete events. 
 
-5 - Google Calendar can send push notifications when an event is added/updated/deleted, those notifications can be received directly by Google Apps Script webapp, but webapp cannot read request headers, so proxy Directus Flow (6) is used to modify request and send to webapp with parameters in the body (7).
+2,3 - these flows send a signal to our Google Apps Script webapp, using "Webhook / Request URL" Action.
 
-8 - Google Apps Script has additional functions (cron to renew notifications, function to stop notifications, etc)
+4 - When needed (new/updated/deleted Google calendar event detected), Google Apps Script webapp sends signals to Directus Flow Webhook.
+
+5 - as the final step of Flow in 4, this Flow creates/updates/deletes items in collection1 according to received parameters.
+
+6 - Google Calendar can send push notifications when an event is added/updated/deleted, those notifications can be received directly by 
+Google Apps Script webapp, but webapp cannot read request headers, so proxy Directus Flow is used to modify requests and send them to 
+webapp with parameters in the body (7).
+
+8 - Google Apps Script has additional functions (cron to renew notifications, function to stop notifications, etc).
+
+9 - Google Apps Script webapp can create events in Google Calendar (when processes 1,2 or 1,3 are executed).
 
 &nbsp; 
 
