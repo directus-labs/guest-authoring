@@ -97,9 +97,9 @@ There are 4 Flows required for this project:
 
 1. Flow "Google Calendar event Proxy" - receives info about Google Calendar trigger event with info in Headers and sends it in Body to Google Apps script.
 
-2. Flow "Send delete event to Google Calendar" - sends data to Google Apps script about deleted collection item.
+2. Flow "Send create/update event to Google Calendar" - sends data to Google Apps script about created/updated collection item.
 
-3. Flow "Send create/update event to Google Calendar" - sends data to Google Apps script about created/updated collection item.
+3. Flow "Send delete event to Google Calendar" - sends data to Google Apps script about deleted collection item.
 
 4. Flow "Process events from Google Calendar" - webhook, called from Google Apps script when an event is created / updated / deleted in Google Calendar.
 
@@ -129,72 +129,9 @@ Note that `{{$trigger.headers}}` is not quoted as it will be an object.
 
 Save the Flow and take note of the Webhook URL for later.
 
-### Send Delete Event to Google Calendar  Flow
-
-Processing of the Delete event is a bit different from processing of Create / Update (next flow). It should be set to blocking, cause we need to "intercept" the delete command and read item data - we need to know the id of the Google Calendar event, so we can send it to Published Google Apps Script.
-
-![whole flow](/copy-this-template-directory/directus_flow_2_full_.png "whole flow")
-
-***
-
-- Trigger node - Event Hook
-
-![trigger node](/copy-this-template-directory/directus_flow_2_01_.png "trigger node")
-
-make sure that you have the same config:
-
-Type - Filter(Blocking)
-
-Scope - items.delete
-
-Collections - a collection of your choice
-
-Response - data of last operation
-
-
-***
-
-- Node 2 - "Read data"
-
-![node 02](/copy-this-template-directory/directus_flow_2_02_.png "node 02")
-
-IDs edit raw value to:
-```js
-[
-    "{{$trigger.payload[0]}}"
-]
-```
-Query is empty
-
-
-***
-
-- Node 3 - "Webhook / Request URL"
-
-![node 03](/copy-this-template-directory/directus_flow_2_03_.png "node 03")
-
-URL is `{{$env.GCALENDARHOOKURL}}` - the actual value in the environment variable will be set after Google Apps Script is published.
-
-Method is Post
-
-Request body:
-```js
-{
-  "data": {{$last}},
-  "action": "delete",
-  "pass": "{{$env.GCALENDARHOOKSECRET}}"
-}
-
-```
-
-> note that {{$last}} is not quoted!
-
-***
-
-&nbsp; 
  
 ### Send Create or Update Event to Google Calendar Flow"
-Processing of Create / Update is more complicated than Delete. After we send the event information, we might receive the ID of the Google Calendar Event that was created and we must update the current Directus item with this ID. This operation is not blocking. 
+After we send the event information, we might receive the ID of the Google Calendar Event that was created and we must update the current Directus item with this ID. This operation is not blocking. 
 
 ![whole flow](/copy-this-template-directory/directus_flow_3_full_.png "whole flow")
 
@@ -428,6 +365,70 @@ Payload:
 > Make sure that you are using the same key (here it's "request_webhook_create") as you set in node 9
 
 Query is empty
+
+***
+
+&nbsp; 
+
+### Send Delete Event to Google Calendar  Flow
+
+Processing of the Delete event is a bit different from processing of Create / Update (next flow). It should be set to blocking, cause we need to "intercept" the delete command and read item data - we need to know the id of the Google Calendar event, so we can send it to Published Google Apps Script.
+
+![whole flow](/copy-this-template-directory/directus_flow_2_full_.png "whole flow")
+
+***
+
+- Trigger node - Event Hook
+
+![trigger node](/copy-this-template-directory/directus_flow_2_01_.png "trigger node")
+
+make sure that you have the same config:
+
+Type - Filter(Blocking)
+
+Scope - items.delete
+
+Collections - a collection of your choice
+
+Response - data of last operation
+
+
+***
+
+- Node 2 - "Read data"
+
+![node 02](/copy-this-template-directory/directus_flow_2_02_.png "node 02")
+
+IDs edit raw value to:
+```js
+[
+    "{{$trigger.payload[0]}}"
+]
+```
+Query is empty
+
+
+***
+
+- Node 3 - "Webhook / Request URL"
+
+![node 03](/copy-this-template-directory/directus_flow_2_03_.png "node 03")
+
+URL is `{{$env.GCALENDARHOOKURL}}` - the actual value in the environment variable will be set after Google Apps Script is published.
+
+Method is Post
+
+Request body:
+```js
+{
+  "data": {{$last}},
+  "action": "delete",
+  "pass": "{{$env.GCALENDARHOOKSECRET}}"
+}
+
+```
+
+> note that {{$last}} is not quoted!
 
 ***
 
