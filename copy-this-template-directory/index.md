@@ -129,6 +129,10 @@ Note that `{{$trigger.headers}}` is not quoted as it will be an object.
 
 Save the Flow and take note of the Webhook URL for later.
 
+
+***
+
+&nbsp; 
  
 ### Send Create or Update Event to Google Calendar Flow
 After we send the event information, we might receive the ID of the Google Calendar Event that was created and we must update the current Directus item with this ID. This operation is not blocking. 
@@ -137,7 +141,7 @@ After we send the event information, we might receive the ID of the Google Calen
 
 ***
 
-Create a Flow with a **Event Hook** trigger. Set Type to "Action (Non-Blocking)", scope to "items.create, items.update" and  Collections to `milestones`.
+Create a Flow with a **Event Hook** trigger. Set Type to "Action (Non-Blocking)", scope to "items.create, items.update" and  Collections to `milestones` and set Response to "data of last operation".
 
 Create an Operation "Condition" and set Rules to:
 
@@ -151,7 +155,7 @@ Create an Operation "Condition" and set Rules to:
 }
 ```
 
-For the "Resolve" route, create an Operation "Read Data" and set Key to **item_read_updated**, set IDs (edit raw value) to:
+For the "Resolve" route, create an Operation "Read Data" and set Collections to `milestones`, set Key to **item_read_updated**, set IDs (edit raw value) to:
 
 ```js
 [
@@ -290,47 +294,18 @@ Processing of the Delete event is a bit different from processing of Create / Up
 
 ***
 
-- Trigger node - Event Hook
+Create a Flow with a **Event Hook** trigger. Set Type to "Filter(Blocking)", Scope to "items.delete", set Collections to `milestones` and set Response to "data of last operation".
 
-![trigger node](/copy-this-template-directory/directus_flow_2_01_.png "trigger node")
+Create an Operation "Read data", set Collections to `milestones` and set IDs (edit raw value) to:
 
-make sure that you have the same config:
-
-Type - Filter(Blocking)
-
-Scope - items.delete
-
-Collections - a collection of your choice
-
-Response - data of last operation
-
-
-***
-
-- Node 2 - "Read data"
-
-![node 02](/copy-this-template-directory/directus_flow_2_02_.png "node 02")
-
-IDs edit raw value to:
 ```js
 [
     "{{$trigger.payload[0]}}"
 ]
 ```
-Query is empty
 
+Create an Operation "Webhook / Request URL", set Method to Post, set URL to `{{$env.GCALENDARHOOKURL}}`, set Request body to:
 
-***
-
-- Node 3 - "Webhook / Request URL"
-
-![node 03](/copy-this-template-directory/directus_flow_2_03_.png "node 03")
-
-URL is `{{$env.GCALENDARHOOKURL}}` - the actual value in the environment variable will be set after Google Apps Script is published.
-
-Method is Post
-
-Request body:
 ```js
 {
   "data": {{$last}},
@@ -339,8 +314,6 @@ Request body:
 }
 
 ```
-
-> note that {{$last}} is not quoted!
 
 ***
 
@@ -362,26 +335,9 @@ part 2
 
 ***
 
-- Trigger Node - Webhook
+Create a Flow with a **Webhook** trigger. Use a POST method.
 
-![trigger node](/copy-this-template-directory/directus_flow_4_01.png "trigger node")
-
-config:
-
-Method - Post
-
-Response Body - Data of Last Operation
-
-
-***
-
-- Node 2 - "Condition"
-  
-A gatekeeper - check that the password from the incoming parameter is the same as saved in the Environment Variable, since we don't want some random wandering bot to trigger real actions.
-
-![node 02](/copy-this-template-directory/directus_flow_4_02.png "node 02")
-
-Rules:
+Create an Operation "Condition" and set Rules to:
 
 ```js
 {
@@ -394,17 +350,9 @@ Rules:
     }
 }
 ```
+This will act as a gatekeeper - check that the password from the incoming parameter is the same as saved in the Environment Variable, since we don't want some random wandering bot to trigger real actions.
 
-
-***
-
-- Node 3 - "Condition"
-
-determine from the incoming parameter, if a Directus item needs to be created
-
-![node 03](/copy-this-template-directory/directus_flow_4_03.png "node 03")
-
-Rules:
+The next step is to determine from the incoming parameter if a Directus item needs to be created. Create an Operation "Condition" and set Rules to:
 
 ```js
 {
@@ -418,18 +366,8 @@ Rules:
 }
 ```
 
+Create an Operation "Create Data" and set Collection `milestones`, set Permissions to "full access", set Payload to:
 
-***
-
-- Node 4 - "Create Data"
-
-![node 04](/copy-this-template-directory/directus_flow_4_04.png "node 04")
-
-Collection - a collection of your choice
-
-Permissions - full access
-
-Payload:
 ```js
 {
     "calendar_event_id": "{{$trigger.body.data.calendar_event_id}}",
@@ -440,24 +378,9 @@ Payload:
 }
 ```
 
+In the Reject route of the last condition create an Operation "Read Data". This node will find Directus Item with a certain `calendar_event_id`.
+Set Key to **item_read**, set Permissions to "Full Access", set Collection to `milestones`, set Query to:
 
-***
-
-- Node 5 - "Read Data"
-
-find Directus Item with certain `calendar_event_id`
-
-![node 05](/copy-this-template-directory/directus_flow_4_05.png "node 05")
-
-Key - **item_read**
-
-Permisssions - Full Access 
-
-Collection - a collection of your choice
-
-IDs is empty
-
-Query:
 ```js
 {
     "filter": {
@@ -468,16 +391,8 @@ Query:
 }
 ```
 
+The next node will check if such an item is found (then proceed to actions delete/update, otherwise - create a new item (for update action)). Create an Operation "Condition", and set Rules to:
 
-***
-
-- Node 6 - "Condition"
-
-if such an item is found (then proceed to actions delete/update, otherwise - create a new item (for update action))
-
-![node 06](/copy-this-template-directory/directus_flow_4_06.png "node 06")
-
-Rules:
 ```js
 {
     "count($last)": {
@@ -486,16 +401,8 @@ Rules:
 }
 ```
 
+The next node will determine from the incoming parameter if a Directus item needs to be deleted. Create an Operation "Condition", and set Rules to:
 
-***
-
-- Node 7 - "Condition"
-
-determine from the incoming parameter, if a Directus item needs to be deleted
-
-![node 07](/copy-this-template-directory/directus_flow_4_07.png "node 07")
-
-Rules:
 ```js
 {
     "$trigger": {
@@ -508,46 +415,31 @@ Rules:
 }
 ```
 
+Create an Operation "Delete Data" and set Permissions to "Full Access", set Collection to `milestones`, and set IDs (edit raw value) to:
 
-***
-
-- Node 8 - "Delete Data"
-
-![node 08](/copy-this-template-directory/directus_flow_4_08.png "node 08")
-
-Permisssions - Full Access 
-
-Collection - a collection of your choice
-
-IDs (edit raw value):
-```js
-[
-    "{{item_read[0].id}}"
-]
-```
-> Make sure that you are using the same key (here it's "item_read") as you set in node 5
-
-Query is empty
-
-
-***
-
-- Node 9 - "Update Data"
-
-![node 09](/copy-this-template-directory/directus_flow_4_09.png "node 09")
-
-Collection - a collection of your choice
-
-Permissions - Full Access
-
-IDs (edit raw value):
 ```js
 [
     "{{item_read[0].id}}"
 ]
 ```
 
-Payload:
+:::info node key
+
+Make sure that you are using the same key (here it's "item_read") as you set in the first Operation "Read Data"
+
+:::
+
+
+In the Reject route of the last Condition operation create an Operation "Update Data", set permissions to "Full Access", set Collection to `milestones`, and set IDs (edit raw value) to:
+
+```js
+[
+    "{{item_read[0].id}}"
+]
+```
+
+and set Payload to:
+
 ```js
 {
     "calendar_event_id": "{{$trigger.body.data.calendar_event_id}}",
@@ -558,20 +450,14 @@ Payload:
 }
 ```
 
-> Make sure that you are using the same key (here it's "item_read") as you set in node 5
-
-Query is empty
-
 
 ***
 
-- Node 10 - "Condition"
+In the Reject route of the Condition operation, where you had rule "count($last): {_gte: 1}", create an Operation "Condition".
 
-The flow is in the branch "item not found". So, if the action was to Update an item, then creating item is required (in the next node)
+The operation is in the branch "item not found". So, if the action was to Update an item, then creating an item is required (in the next node).
+Set Rules to:
 
-![node 10](/copy-this-template-directory/directus_flow_4_10.png "node 10")
-
-Rules:
 ```js
 {
     "$trigger": {
@@ -584,18 +470,8 @@ Rules:
 }
 ```
 
+Create an Operation "Create Data" and set Permissions to "full access", set Collection to `milestones`, and set Payload to:
 
-***
-
-- Node 11 - "Create Data"
-
-![node 11](/copy-this-template-directory/directus_flow_4_11.png "node 11")
-
-Collection - a collection of your choice
-
-Permissions - full access
-
-Payload:
 ```js
 {
     "calendar_event_id": "{{$trigger.body.data.calendar_event_id}}",
@@ -605,16 +481,6 @@ Payload:
     "description": "{{$trigger.body.data.description}}"
 }
 ```
-
-
-***
-
-- Node 12 - "Transform Payload"
-
-![node 12](/copy-this-template-directory/directus_flow_4_12.png "node 12")
-
-if there was an error during operation. This node is not necessary
-
 
 After you save this Flow, copy the resulting webhook URL somewhere.
 
