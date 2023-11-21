@@ -286,7 +286,7 @@ Make sure that you are using the same key (here it's "request_webhook_create") a
 
 &nbsp; 
 
-### Send Delete Event to Google Calendar  Flow
+### Send Delete Event to Google Calendar Flow
 
 Processing of the Delete event is a bit different from processing of Create / Update (next flow). It should be set to blocking, cause we need to "intercept" the delete command and read item data - we need to know the id of the Google Calendar event, so we can send it to Published Google Apps Script.
 
@@ -319,7 +319,7 @@ Create an Operation "Webhook / Request URL", set Method to Post, set URL to `{{$
 
 &nbsp; 
 
-### Process events from Google Calendar  Flow
+### Process events from Google Calendar Flow
 
 This final Flow is the entry point for the Google Apps Script to interact with Directus regardless of whether it is triggered based on a create, update, or delete operation. It will determine and execute the correct operations within your collection.
 
@@ -429,7 +429,6 @@ Make sure that you are using the same key (here it's "item_read") as you set in 
 
 :::
 
-
 In the Reject route of the last Condition operation create an Operation "Update Data", set permissions to "Full Access", set Collection to `milestones`, and set IDs (edit raw value) to:
 
 ```js
@@ -449,9 +448,6 @@ and set Payload to:
     "description": "{{$trigger.body.data.description}}"
 }
 ```
-
-
-***
 
 In the Reject route of the Condition operation, where you had rule "count($last): {_gte: 1}", create an Operation "Condition".
 
@@ -508,12 +504,7 @@ Click the button `Deploy` → `New Deployment`.
 When Google Apps Script is deployed as Web App, it creates a unique URL like `https://script.google.com/macros/s/xxxx/exec`.
 When this URL is called with a GET request, the script function `doGet` is executed.  When this URL is called with a POST request, script function `doPost` is executed. We will use POST requests and `doPost` function.
  
- ***
-
-![New deployment popup](/copy-this-template-directory/GAS_05.png "New deployment popup")
-
-set type to web app. Description - anything. Execute as - Me. Who has access - anyone.
-Click `Deploy`.
+Set type to a Web app, write any comment in the Description, set "Execute as" to Me, set "Who has access" to anyone, and click `Deploy`.
 
  ***
 
@@ -527,7 +518,7 @@ Click `Deploy`.
  
 Choose your account and then click "Allow".
 
-Some users (usually, users not within the organization) will see a scary-looking
+Some users (usually, users not within the organization) will see a warning
 
 "Google hasn’t verified this app
 The app is requesting access to sensitive info in your Google Account. Until the developer (your email) verifies this app with Google, you shouldn't use it."
@@ -587,14 +578,13 @@ Select `triggerResubscribeOnceWeek` from the functions dropdown and click **Run*
 
 Select `runManual_getSyncedEvents` from the functions dropdown and click **Run**. If the run was successful, in the `config` sheet value next to `sync_token`, `resource_id` will be filled.
 
+:::info Calendar Advanced service
 
-> For most of the Google Workspace App, Apps Script has a specific library, like `CalendarApp` with easy-to-use functions. However, these functions don't have all the functionality available for API calls. Luckily it's possible to use Advanced Calendar Service - it's almost like calling API calls directly. Thanks to that we can subscribe to notifications and retrieve a list of new events using syncToken.
+For most of the Google Workspace App, Apps Script has a specific library, like `CalendarApp` with easy-to-use functions. However, these functions don't have all the functionality available for API calls. Luckily it's possible to use Advanced Calendar Service - it's almost like calling API calls directly. Thanks to that we can subscribe to notifications and retrieve a list of new events using syncToken.
 
-The calendar events push notifications need resubscription, its maximum time before expiration is 1 week.
+:::
 
-***
-
-Set Time Trigger
+We must set up a weekly Trigger to resubscribe.
 
 ![script editor have Trigger button in the left pane](/copy-this-template-directory/GAS_09.png "script editor have Trigger button in the left pane")
 
@@ -664,17 +654,15 @@ Manage Deployments → `Edit` (pencil icon button)
 
 Choose `New version`, then click `Deploy`.
 
-The URL of the web app should stay the same (if you updated the current deployment and didn't create new deployment)
-
 ***
 
 &nbsp; 
 
 ### Summary and Next Steps
 
-todo: summary.
+We created Automation Flows in Directus to send updates from the collection of items to Google Apps Script, which will create events in the Calendar. And vice versa, this Script will check if a new event is added or updated in the Calendar and call Directus automation Flow to reflect these changes in Directus items.
 
-Everything is set to fully automatic two-way sync. You can try it by adding items in Directus and adding events in the Calendar.
+Everything is set to fully automatic two-way sync.
 
 You can check logs in the log panel for each of  Directus Flows. And you can check spreadsheet `log` sheet.
 
