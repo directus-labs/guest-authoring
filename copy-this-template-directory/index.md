@@ -29,13 +29,13 @@ We will use the ID of Google Calendar event as the shared ID, saved as an additi
 
 Let's describe the processes shown in the interaction scheme:
 
-1 - Flow set to react on create/update events in our _collection1_. Another flow set to react on delete events. 
+1 - Flow set to react on create/update events in our _milestones_. Another flow set to react on delete events. 
 
 2,3 - these flows send a signal to our Google Apps Script webapp, using "Webhook / Request URL" Action.
 
 4 - When needed (new/updated/deleted Google calendar event detected), Google Apps Script webapp sends signals to Directus Flow Webhook.
 
-5 - as the final step of Flow in 4, this Flow creates/updates/deletes items in collection1 according to received parameters.
+5 - as the final step of Flow in 4, this Flow creates/updates/deletes items in _milestones_ according to received parameters.
 
 6 - Google Calendar can send push notifications when an event is added/updated/deleted, those notifications can be received directly by 
 Google Apps Script webapp, but webapp cannot read request headers, so proxy Directus Flow is used to modify requests and send them to 
@@ -52,7 +52,7 @@ webapp with parameters in the body (7).
 &nbsp; 
 
 ## Set Up Your Directus Project
-Directus collection (_collection1_ in this sample project) has these fields:
+Directus collection (_milestones_ in this sample project) has these fields:
 
 `calendar_event_id` - type text, where Google calendar event id will be saved (automatically)
 
@@ -433,7 +433,7 @@ Query is empty
 
 &nbsp; 
 
-### Flow "Process events from Google Calendar"
+### Process events from Google Calendar  Flow
 
 This final Flow is the entry point for the Google Apps Script to interact with Directus regardless of whether it is triggered based on a create, update, or delete operation. It will determine and execute the correct operations within your collection.
 
@@ -464,7 +464,7 @@ Response Body - Data of Last Operation
 
 - Node 2 - "Condition"
   
-simple gatekeeper - check that the password from the incoming parameter is the same as saved in the Environment Variable
+A gatekeeper - check that the password from the incoming parameter is the same as saved in the Environment Variable, since we don't want some random wandering bot to trigger real actions.
 
 ![node 02](/copy-this-template-directory/directus_flow_4_02.png "node 02")
 
@@ -845,31 +845,31 @@ Click `Save`
 
 The source code of the script is organized into several functions. In this section, I will define what each does so you can explore and expand it. 
 
-`writelog` - utility function to write to the spreadsheet log entry
+- `writelog` - utility function to write to the spreadsheet log entry
 
-`listCalendars` - function for manual launch - to list available for user calendars info (IDs, description)
+- `listCalendars` - function for manual launch - to list available for user calendars info (IDs, description)
 
-`triggerResubscribeOnceWeek` - function for once-a-week time trigger. Will resubscribe to calendar push notifications (1 week is the maximum allowed time)
+- `triggerResubscribeOnceWeek` - function for once-a-week time trigger. Will resubscribe to calendar push notifications (1 week is the maximum allowed time)
 
-`runManual_processSyncedEvents` - function for manual launch - get events stream and process it (send to Directus)
+- `runManual_processSyncedEvents` - function for manual launch - get events stream and process it (send to Directus)
 
-`runManual_getSyncedEvents` - function for manual launch - set initial sync token, nothing sent to Directus
+- `runManual_getSyncedEvents` - function for manual launch - set initial sync token, nothing sent to Directus
 
-`getConfig` - utility function for retrieving Config set in spreadsheet
+- `getConfig` - utility function for retrieving Config set in spreadsheet
 
-`updateConfig` - utility function for updating certain Config in the spreadsheet
+- `updateConfig` - utility function for updating certain Config in the spreadsheet
 
-`callDirectusWebhook` - actual data sent to Directus
+- `callDirectusWebhook` - actual data sent to Directus
 
-`processSyncedEvents` - get events stream and process it (send to Directus)
+- `processSyncedEvents` - get events stream and process it (send to Directus)
 
-`doPost` - main function, special name doPost means that when the web app is published, POST requests are processed here
+- `doPost` - main function, special name doPost means that when the web app is published, POST requests are processed here
 
-`callCalendarEventsWatch_stop` - utility function for stopping push notifications
+- `callCalendarEventsWatch_stop` - utility function for stopping push notifications
 
-`callCalendarEventsWatch` - utility function for registering URL for receiving push notifications
+- `callCalendarEventsWatch` - utility function for registering URL for receiving push notifications
 
-`getSyncedEvents` - utility function for getting a list of new / updated / deleted events in Google Calendar, using special "syncToken"
+- `getSyncedEvents` - utility function for getting a list of new / updated / deleted events in Google Calendar, using special "syncToken"
 
 &nbsp; 
 
@@ -891,13 +891,12 @@ The URL of the web app should stay the same (if you updated the current deployme
 
 &nbsp; 
 
-### Ready to roll
+### Summary and Next Steps
 
-I hope you are not exhausted after reading this post and repeating all the actions required for this project to run.
+todo: summary.
 
 Everything is set to fully automatic two-way sync. You can try it by adding items in Directus and adding events in the Calendar.
 
 You can check logs in the log panel for each of  Directus Flows. And you can check spreadsheet `log` sheet.
 
-Feel free to send me a message if you know how to improve this project.
-
+This project serves as a solid base for future expansions. It effectively manages single-item operations in Directus, paving the way for integrating bulk operations. Additionally, it treats Google Calendar recurrent events as single-date occurrences, providing a foundation for enhancing recurrent event handling.
