@@ -29,7 +29,7 @@ We will use the ID of Google Calendar event as the shared ID, saved as an additi
 
 Let's describe the processes shown in the interaction scheme:
 
-1 - Flow set to react on create/update events in our _milestones_. Another flow set to react on delete events. 
+1 - Flow set to react on create/update events in our collection of items. Our project will be using a Collection named _milestones_. Another flow set to react on delete events. 
 
 2,3 - these flows send a signal to our Google Apps Script webapp, using "Webhook / Request URL" Action.
 
@@ -52,7 +52,7 @@ webapp with parameters in the body (7).
 &nbsp; 
 
 ## Set Up Your Directus Project
-Directus collection (_milestones_ in this sample project) has these fields:
+Directus collection (_milestones_) has these fields:
 
 `calendar_event_id` - type text, where Google calendar event id will be saved (automatically)
 
@@ -130,33 +130,16 @@ Note that `{{$trigger.headers}}` is not quoted as it will be an object.
 Save the Flow and take note of the Webhook URL for later.
 
  
-### Send Create or Update Event to Google Calendar Flow"
+### Send Create or Update Event to Google Calendar Flow
 After we send the event information, we might receive the ID of the Google Calendar Event that was created and we must update the current Directus item with this ID. This operation is not blocking. 
 
 ![whole flow](/copy-this-template-directory/directus_flow_3_full_.png "whole flow")
 
 ***
 
-- Trigger Node - Event Hook
+Create a Flow with a **Event Hook** trigger. Set Type to "Action (Non-Blocking)", scope to "items.create, items.update" and  Collections to `milestones`.
 
-![trigger node](/copy-this-template-directory/directus_flow_3_01.png "trigger node")
-
-parameters:
-
-Type - Action (Non-Blocking)
-
-Scope - items.create, items.update
-
-Collections - a collection of your choice
-
-
-***
-
-- Node 2 - "Condition"
-  
-![node 02](/copy-this-template-directory/directus_flow_3_02.png "node 02")
-
-Rules:
+Create an Operation "Condition" and set Rules to:
 
 ```js
 {
@@ -168,36 +151,16 @@ Rules:
 }
 ```
 
+For the "Resolve" route, create an Operation "Read Data" and set Key to **item_read_updated**, set IDs (edit raw value) to:
 
-***
-
-- Node 3 - "Read Data"
-
-![node 03](/copy-this-template-directory/directus_flow_3_03.png "node 03")
-
-Key - **item_read_updated**
-
-IDs (edit raw value):
 ```js
 [
     "{{$trigger.keys[0]}}"
 ]
 ```
-Query is empty
 
-***
+Create an Operation "Webhook / Request URL" and set Method to **Post**, set Key to **request_webhook_update**, set URL to `{{$env.GCALENDARHOOKURL}}`, set Request body to:
 
-- Node 4 - "Webhook / Request URL"
-
-![node 04](/copy-this-template-directory/directus_flow_3_04.png "node 04")
-
-key - **request_webhook_update**
-
-URL is `{{$env.GCALENDARHOOKURL}}` - the actual value in the environment variable will be set after Google Apps Script is published.
-
-Method is Post
-
-Request body:
 ```js
 {
   "data": {{$last}},
@@ -206,16 +169,13 @@ Request body:
 }
 
 ```
+:::info Quoting
 
-> note that {{$last}} is not quoted!
+Note that `{{$last}}` is not quoted as it will be an object.
 
-***
+:::
 
-- Node 5 - "Condition"
-  
-![node 05](/copy-this-template-directory/directus_flow_3_05.png "node 05")
-
-Rules:
+Create an Operation "Condition" and set Rules to:
 
 ```js
 {
@@ -229,41 +189,28 @@ Rules:
 }
 ```
 
+Create an Operation "Update Data" and set Collection to a `milestones`, set IDs (edit raw value) to:
 
-
-***
-
-- Node 6 - "Update Data"
-
-![node 06](/copy-this-template-directory/directus_flow_3_06.png "node 06")
-
-Collection - a collection of your choice
-
-IDs (edit raw value):
 ```js
 [
     "{{$trigger.keys[0]}}"
 ]
 ```
 
-Payload:
+and set Payload to:
+
 ```js
 {
     "calendar_event_id": "{{request_webhook_update.data.id}}"
 }
 ```
+:::info node key
 
-> Make sure that you are using the same key (here it's "request_webhook_update") as you set in node 4
+Make sure that you are using the same key (here it's "request_webhook_update") as you set in "Webhook / Request URL"
 
-Query is empty
+:::
 
-***
-
-- Node 7 - "Condition"
-
-![node 07](/copy-this-template-directory/directus_flow_3_07.png "node 07")
-
-Rules:
+In the Reject route of the very first Condition create an Operation "Condition" and set Rules to:
 
 ```js
 {
@@ -275,16 +222,8 @@ Rules:
 }
 ```
 
+Create an Operation "Run Script" and set Key to **payload_transformed**, set Code to:
 
-***
-
-- Node 8 - "Run Script"
-
-![node 08](/copy-this-template-directory/directus_flow_3_08.png "node 08")
-
-Key - **"payload_transformed"**
-
-Code
 ```js
 module.exports = async function(data) {
 	let out = data.$trigger.payload;
@@ -293,20 +232,8 @@ module.exports = async function(data) {
 }
 ```
 
+Create an Operation "Webhook / Request URL" and set Method to Post, set key to **request_webhook_create**, set URL to `{{$env.GCALENDARHOOKURL}}`, set Request body to:
 
-***
-
-- Node 9 - "Webhook / Request URL"
-
-![node 09](/copy-this-template-directory/directus_flow_3_09.png "node 09")
-
-key - **request_webhook_create**
-
-URL is `{{$env.GCALENDARHOOKURL}}` - the actual value in the environment variable will be set after Google Apps Script is published.
-
-Method is Post
-
-Request body:
 ```js
 {
   "data": {{$last}},
@@ -315,16 +242,7 @@ Request body:
 }
 ```
 
-> note that {{$last}} is not quoted!
-  
-
-***
-
-- Node 10 - "Condition"
-  
-![node 10](/copy-this-template-directory/directus_flow_3_10.png "node 10")
-
-Rules:
+Create an Operation "Condition" and set Rules to:
 
 ```js
 {
@@ -338,33 +256,27 @@ Rules:
 }
 ```
 
+Create an Operation "Update Data" and set Collection to `milestones`, set IDs (edit raw value) to:
 
-
-***
-
-- Node 11 - "Update Data"
-
-![node 11](/copy-this-template-directory/directus_flow_3_11.png "node 11")
-
-Collection - a collection of your choice
-
-IDs (edit raw value):
 ```js
 [
     "{{$trigger.key}}"
 ]
 ```
 
-Payload:
+set Payload to:
+
 ```js
 {
     "calendar_event_id": "{{request_webhook_create.data.id}}"
 }
 ```
 
-> Make sure that you are using the same key (here it's "request_webhook_create") as you set in node 9
+:::info node key
 
-Query is empty
+Make sure that you are using the same key (here it's "request_webhook_create") as you set in related "Webhook / Request URL"
+
+:::
 
 ***
 
