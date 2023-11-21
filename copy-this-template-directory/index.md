@@ -875,7 +875,7 @@ The source code of the script is organized into several functions. In this secti
 
 #### Script update deployment
 
-The deployed web app has versions, so if you update doPost function (or something called from it) and want these changes to have an effect - a new version of the web app needs to be deployed.
+The deployed web app has versions, so if you update the `doPost` function (or something called from it) and want these changes to have an effect - a new version of the web app needs to be deployed. If you create a new version in the same deployment, the URL will stay the same. 
 
 ![GAS 07](/copy-this-template-directory/GAS_07.png "GAS 07")
 
