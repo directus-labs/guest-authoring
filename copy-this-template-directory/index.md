@@ -722,7 +722,7 @@ For quicker setup, please use [this spreadsheet template copy](https://docs.goog
 
 In your spreadsheet copy, open the menu Extensions → Apps Script. It will open Script Editor.
 
-![in the top-right corner there is Deploy button](/copy-this-template-directory/GAS_04.png "GAS 04")
+![in the top-right corner there is Deploy button](/copy-this-template-directory/GAS_04.png "in the top-right corner there is Deploy button")
 
 Click the button `Deploy` → `New Deployment`.
 
@@ -731,19 +731,19 @@ When this URL is called with a GET request, the script function `doGet` is execu
  
  ***
 
-![New deployment popup](/copy-this-template-directory/GAS_05.png "GAS 05")
+![New deployment popup](/copy-this-template-directory/GAS_05.png "New deployment popup")
 
 set type to web app. Description - anything. Execute as - Me. Who has access - anyone.
 Click `Deploy`.
 
  ***
 
-![popup with Authorize access button](/copy-this-template-directory/GAS_01.png "GAS 01")
+![popup with Authorize access button](/copy-this-template-directory/GAS_01.png "popup with Authorize access button")
 
  click `Authorize access`
  ***
 
-![warning from Google about unverified app](/copy-this-template-directory/GAS_02.png "GAS 02")
+![warning from Google about unverified app](/copy-this-template-directory/GAS_02.png "warning from Google about unverified app")
 
  
 Choose your account and then click "Allow".
@@ -781,7 +781,7 @@ click `copy` to get this Web app URL (make sure that you are copying web app URL
 
  Back to the script editor
 
-![In the action bar at the top of the script editor there is a run button and a dropdown of function names'](/copy-this-template-directory/GAS_06.png "GAS 06")
+![In the action bar at the top of the script editor there is a run button and a dropdown of function names](/copy-this-template-directory/GAS_06.png "In the action bar at the top of the script editor there is a run button and a dropdown of function names")
 
 Run the `listCalendars` function.
 
@@ -817,13 +817,13 @@ The calendar events push notifications need resubscription, its maximum time bef
 
 Set Time Trigger
 
-![script editor have Trigger button in the left pane](/copy-this-template-directory/GAS_09.png "GAS 09")
+![script editor have Trigger button in the left pane](/copy-this-template-directory/GAS_09.png "script editor have Trigger button in the left pane")
 
 Click `Triggers`, then `Add Trigger`
 
 ***
 
-![Add trigger Popup](/copy-this-template-directory/GAS_10.png "GAS 10")
+![Add trigger Popup](/copy-this-template-directory/GAS_10.png "Add trigger Popup")
 
 Select function triggerResubscribeOnceWeek
 
@@ -877,11 +877,11 @@ The source code of the script is organized into several functions. In this secti
 
 The deployed web app has versions, so if you update the `doPost` function (or something called from it) and want these changes to have an effect - a new version of the web app needs to be deployed. If you create a new version in the same deployment, the URL will stay the same. 
 
-![GAS 07](/copy-this-template-directory/GAS_07.png "GAS 07")
+![Manage Deployments popup have Edit button in the top right corner](/copy-this-template-directory/GAS_07.png "Manage Deployments popup have Edit button in the top right corner")
 
 Manage Deployments → `Edit` (pencil icon button)
 
-![GAS 08](/copy-this-template-directory/GAS_08.png "GAS 08")
+![select New Version entry from versions selector](/copy-this-template-directory/GAS_08.png "select New Version entry from versions selector")
 
 Choose `New version`, then click `Deploy`.
 
