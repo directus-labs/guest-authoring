@@ -66,4 +66,5 @@ Info boxes can be added to provide additional context that enrich the reader's k
 
 You can write markdown in the box. Make sure there's a space above and below paragraphs. These boxes [support links](https://directus.io).
 
+:::
 ```
