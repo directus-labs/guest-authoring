@@ -1,6 +1,6 @@
 ---
 title: 'Build an Authentication System with Nextjs, Next Auth and Directus'
-description: 'learn how to build an authentication system in a Nextjs application using Next Auth and Directus as a backend and '
+description: 'Learn how to build an authentication system in a Nextjs application using Next Auth and Directus as a backend '
 author:
   name: 'Trust Jamin'
   avatar_file_name: 'jamin.png'
