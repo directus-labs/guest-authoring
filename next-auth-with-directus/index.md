@@ -8,9 +8,9 @@ author:
 
 ## Introduction
 
-Authentication is one of the backbones of every application it provides the ability to provide users with the right information and the rights and permissions to show the right data
+Authentication is an important aspect of web applications, as it provides the ability for users with the right permissions to access certain resources or perform specific actions.
 
-In this article, you'll build an authentication system for a Nextjs application using Nextjs, Next Auth and Directus as the backend and save your user data to a PostgresQL database.
+In this article, you'll build an authentication system for a Nextjs application using Nextjs, NextAuth, and Directus as the backend and save the data of the application to a PostgreSQL database.
 
 For a better understanding of the application you will be building, here is a demo of the application in play:
 
@@ -18,19 +18,18 @@ For a better understanding of the application you will be building, here is a de
 
 ## Prerequisites
 
-The following information and resources are required before you can proceed with this section:
+To begin with this tutorial, you'll need the following knowledge and tools:
 
-- You need the latest [`Nodejs`](https://nodejs.org/en/download/) version installed on your computer to build the Nextjs application
-- You need [`Docker`](https://www.docker.com/get-started/) on your computer to run Directus locally
+- [`Nodejs`](https://nodejs.org/en/download/) installed on your computer to build the Nextjs application
+- [`Docker`](https://www.docker.com/get-started/) installed on your computer to run Directus locally
 - A [`PostgresQL`](https://www.postgresql.org/docs/current/tutorial-install.html) database for storing your users (preferably version 15 and higher)
 - A basic knowledge of terminal/CLI commands
-<!-- ## Your Sections Here -->
 
 ## Setting Up the Database
 
-Before setting up directus you need to configure the database that directus will use for storing data.
+Before setting up Directus you need to configure the database that Directus will use for storing data.
 
-*Note: This tutorial uses PostgresQL as a database, Directus also supports other databases like `mysql`, `oracledb` ,  `mssql`, `sqlite3`, `cockroachdb`. You can read more information about configuring directus with a database here:
+*Note: This tutorial uses PostgresQL as a database, Directus also supports other databases like `mysql`, `oracledb` ,  `mssql`, `sqlite3`, `cockroachdb`. You can read more information about configuring Directus with a database here:
 
 Assuming you have PostgresQL installed locally and running, connect to the default PostgreSQL database using the command:
 
@@ -42,7 +41,7 @@ Enter the password you set during installation.
 
 ### Create a New User and Database
 
-1. In the PostgreSQL interactive shell (psql), run:
+1. In the PostgreSQL interactive shell (`psql`), run:
 
     ```bash
     CREATE USER 'your_username' WITH PASSWORD 'your_password';
@@ -61,11 +60,11 @@ Enter the password you set during installation.
     \q
     ```
 
-Now that you have a working Database, the next step is to set up directus and connect it to the database.
+Now that you have a working database, the next step is to set up Directus and connect it to the database.
 
 ## Setting up the Backend (Directus)
 
-To set up Directus to run locally on your computer, follow the Directus [self hosting guide](https://docs.directus.io/self-hosted/quickstart.html) with a few customizations.
+To set up Directus to run locally on your computer, follow the Directus [self-hosting guide](https://docs.directus.io/self-hosted/quickstart.html) with a few customizations.
 
 1. First, create a root folder for the project called `next-directus` and navigate into the folder with the command:
 
@@ -73,9 +72,9 @@ To set up Directus to run locally on your computer, follow the Directus [self ho
     mkdir next-directus && cd next-directus
     ```
 
-    This folder will house the whole application including your locally hosted directus instance and the frontend of the application (Nextjs).
+    This folder will house the whole application including your locally hosted Directus instance and the frontend of the application (Nextjs).
 
-2. Next, navigate into the `next-directus` folder and create a sub folder called `server`, here you'll store all the files related to running directus locally.
+2. Next, navigate into the `next-directus` folder and create a subfolder `server`, here you'll store all the files related to running Directus locally.
 
     ```bash
     mkdir server && cd server
@@ -86,8 +85,8 @@ To set up Directus to run locally on your computer, follow the Directus [self ho
     ```yml
     version: '3'
     services:
-      directus:
-        image: directus/directus:10.8.2
+      Directus:
+        image: Directus/directus:10.8.2
         ports:
           - 8055:8055
         volumes:
@@ -108,11 +107,11 @@ To set up Directus to run locally on your computer, follow the Directus [self ho
           WEBSOCKETS_ENABLED: true
           # allow CORS
           CORS_ENABLED: true
-          # Extensions config for directus
+          # Extensions config for Directus
           EXTENSIONS_AUTO_RELOAD: true
           EXTENSIONS_MUST_LOAD: true
           EXTENSIONS_PATH: ./extensions
-          Tell directus to allow this URL as our reset-password URL
+          Tell Directus to allow this URL as our reset-password URL
           PASSWORD_RESET_URL_ALLOW_LIST: http://localhost:3000/reset-password
           # EMAIL configs for sending emails
           EMAIL_FROM: EMAIL@YOURDOMAIN.COM
@@ -126,7 +125,7 @@ To set up Directus to run locally on your computer, follow the Directus [self ho
 
     ```
 
-    This file will tell docker the configurations to use when starting a new directus container in docker.
+    This file will tell Docker the configurations to use when starting a new Directus container in Docker.
 
 4. Run the command on the command line:
 
@@ -134,49 +133,51 @@ To set up Directus to run locally on your computer, follow the Directus [self ho
     docker compose up
     ```
 
-    This will create a new directus container in docker with all the necessary files for running in your `server` folder.
+    This command will create a new Directus container in docker with all the necessary files for running in your `server` folder.
 
-    You should now have directus running on your machine on <http://localhost:8055> or <http://127.0.0.1:8055>
+    You should now have Directus running on your machine on <http://localhost:8055> or <http://127.0.0.1:8055>
 
      ![Directus running locally](directus.png)
 
 ### Create a New Customer Role in Directus
 
-Login with the admin credentials you set up in the `docker-compose.yml` file and head over to Settings > Access Control (<http://localhost:8055/admin/settings/roles>) and click on the `+` icon on the top right to create a new role for users that can access your directus app. Name this role `Customers`, also uncheck the app access checkbox as you do not want users to access our directus app here but to login from our frontend application and update the description to be `Users on our Nextjs Directus application`.
+Login with the admin credentials you set up in the `docker-compose.yml` file and head over to Settings > Access Control (<http://localhost:8055/admin/settings/roles>), and click on the `+` icon on the top right to create a new role for users that can access your Directus app.
+
+Name this role `Customer`; also uncheck the app access checkbox as you do not want users to access our Directus app here but to login from our frontend application and update the description to be `Users on our Nextjs Directus application.`
 
  ![Customer Role in Directus](customer-role.png)
 
-> Note: The default directus user comes with a list of default fields such as `first_name`, `last_name`,  `password`, `email`, and other fields. You can also extend the directus user schema to contain other fields to suit your needs. To do this head to <http://localhost:8055/admin/settings/data-model/directus_users/+> to add custom fields to the user model in your directus app.
+> Note: The default Directus user comes with a list of default fields such as `first_name`, `last_name`,  `password`, `email`, and others. You can also extend the Directus user schema to contain other fields to suit your needs. To do this, head to <http://localhost:8055/admin/settings/data-model/directus_users/+> to add custom fields to the user model in your Directus app.
 >To reduce the complexity of a user for this application you only need the `first_name`, `last_name`, `email`, and `password` fields.
 
  ![Updating User Data Model](user-data-model.png)
 
 ### Setting Permission for the Customer users
 
-When you navigate to the User Directory (<http://localhost:8055/admin/users>) you should see two categories of users, Administrators and Customers.
+When you navigate to the User Directory (<http://localhost:8055/admin/users>), you should see two categories of users: Administrator and Customer.
 
-To set specific permissions and restrictions to ensure your `customers` users do not access unauthorized information and new visitors on your frontend application can only sign up as a customer, navigate to Settings > Access Control, click on Customers and on the info icon on the top right, this will provide you with customer role `id` copy it and store it somewhere.
+To set specific permissions and restrictions to ensure your `customer` users do not access unauthorized information and new visitors on your frontend application can only sign up as a customer, navigate to Settings > Access Control, click on Customers, and the info icon on the top right, this will provide you with customer role `id` copy it and store it somewhere.
 
 ![Customer role ID](customer-role-key.png)
 
-Next, navigate to  Settings > Access Control > Public (<http://localhost:8055/admin/settings/roles/public>), here you'd want to set a permission rule that whenever a visitor visits your website and want to create a new account they can only do so as a customer using this customer role `id`.
+Next, navigate to  Settings > Access Control > Public (<http://localhost:8055/admin/settings/roles/public>); here, you'd want to set a permission rule that whenever a visitor visits your website and want to create a new account, they can only do so as a customer using this customer role `id`
 
-Click on the system collections dropdown to show all directus system collections, navigate to the `directus_users` list, on the plus icon tab (`+`), click on the red icon and click on `Use Custom`,
+Click on the system collections dropdown to show all Directus system collections, navigate to the `directus_users` list, on the plus icon tab (`+`), click on the red icon and click on `Use Custom`.
 
-![Set Customer Id Role to Public](use-custom.png)
+![Set Customer ID Role to Public](use-custom.png)
 
-Navigate to `Field Validation` tab and create a new rule
-that a new user can only be created if the `role` field of the user is equal to customers role `id` you copied in the previous step.
+Navigate to the `Field Validation` tab and create a new rule:
+The frontend application can only create a new user if the `role` field of the user is equal to the customer role `id` you copied in the previous step.
 
 ![Role Equal](role-equal.png)
 
-This will ensure that a new user created from your frontend application will always be assigned the role of a customer.
+This will ensure that users created from your frontend application will permanently be assigned the role of a customer.
 
-Now that you've successfully set up directus as the backend of your application with custom permissions and access control for your users, it's time to build the frontend of the application and use directus api services
+Now that you've successfully set up Directus as the backend of your application with custom permissions and access control for your users, it's time to build the frontend of the application and use Directus API services
 
 ## Building the Frontend Application (Nextjs)
 
-With the backend already running, you can now start building the frontend of the application, to do so, first navigate to the `next-directus` folder if you are still in the `server` folder with the command:
+With the backend already running, you can now start building the application's frontend. To do so, first navigate to the `next-directus` folder if you are still in the `server` folder with the command:
 
 ```bash
 cd ../
@@ -190,7 +191,7 @@ Inside of the `next-directus` folder, run the following command to install nextj
 npx create-next-app@latest client
 ```
 
-On installation, when prompted, choose the following configurations:
+During installation, when prompted, choose the following configurations:
 
 ```bash
 ✔ Would you like to use TypeScript?  Yes
@@ -203,7 +204,7 @@ On installation, when prompted, choose the following configurations:
 
 ```
 
-This will install Nextjs with Typescript and TailwindCSS configurations ready to use.
+This will install Nextjs with Typescript and TailwindCSS configurations that are ready to use.
 
 Navigate into the `client` folder with the command:
 
@@ -211,7 +212,7 @@ Navigate into the `client` folder with the command:
 cd client
 ```
 
-Start the Nextjs server with the this will open up the default Nextjs page template for a new project.
+Start the Nextjs server with the command below. This will open up the default Nextjs page template for a new project.
 
 ```bash
 npm run dev
@@ -221,10 +222,11 @@ You should have a Nextjs application running in <http://localhost:3000/>
 
 ### Installing the required dependencies
 
-For the frontend of the application, you need the following dependencies
+For the frontend of the application, you need the following dependencies:
 
 - [Next Auth](https://next-auth.js.org/) for creating the authentication system for Nextjs
-- [Directus JavaScript SDK](https://docs.directus.io/guides/sdk/getting-started.html) for communicating with your directus backend.
+- [Directus JavaScript SDK](https://docs.directus.io/guides/sdk/getting-started.html) for communicating with your Directus backend.
+
 Install the dependencies using the command:
 
 ```bash
@@ -235,6 +237,8 @@ npm i next-auth @directus/sdk
 
 Create a `.env.local` with the following contents:
 
+`.env.local`
+
 ```bash
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=YOUR_NEXT_RANDOM_SECRET
@@ -244,11 +248,11 @@ NEXT_PUBLIC_URL=http://localhost:3000
 
 ```
 
-This `.env.local` contains all the credentials that is needed by `Next Auth` and the directus SDK
+This `.env.local` contains all the credentials needed by `NextAuth` and the Directus SDK.
 
 ### Configuring the Directus SDK
 
-Create a new folder called `lib` and inside of that folder, create a new file called `directus.ts` with the following contents:
+Create a new folder called `lib`, and inside of that folder, create a new file called `directus.ts` with the following contents:
 `lib/directus.ts`
 
 ```ts
@@ -259,12 +263,12 @@ const directus = createDirectus(BACKEND_URL).with(authentication("cookie", {cred
 export default directus;
 ```
 
-Here you are creating a new directus API instance with `authentication` and `rest` API features enabled.
+Here, you are creating a new Directus API instance with enabled `authentication` and `rest` API features.
 
-### Creating the Components
+### Creating the AuthForm Component
 
-With all the required dependencies installed, you now can start building the components for the frontend application.
-Open the `next-directus` in an editor of your choice and create a new folder named `AuthForm` inside the `components` folder (you'd need to create the `components` folder also), inside of the `AuthForm` folder create an `index.tsx`
+With all the required dependencies installed, you can start building the components for the frontend application.
+Open the `next-directus` in an editor of your choice and create a new folder named `AuthForm` inside the `components` folder (you'd need to create the `components` folder also); inside of the `AuthForm` folder, create an `index.tsx`
 
 `components/AuthForm/index.tsx`
 
@@ -376,16 +380,15 @@ export default function AuthForm({
 }
 ```
 
-This is a react form that will server as the form for both the registration and login pages.
+This TailwindCSS styled form will serve as the `AuthForm` for both the registration and login pages.
 
 ### Implementing the Registration Functionality
 
-`Nextjs 13` and above uses the new `app` router functionality and
-To create the registration functionality for new users to register on the platform, you first need to create a Next API that will be consumed by the UI of the registration page.
+To create the registration functionality for new users to register on the platform, you first need to create a Next API that the UI of the registration page will consume.
 
 #### Creating the Registration API
 
-Open the `app` folder and create a new `api` folder with an `auth` sub folder and inside of this `auth` folder, create a `register` folder  with the file `route.ts` with the content:
+Open the `app` folder and create a new `api` folder with an `auth` subfolder and inside of this `auth` folder, create a `register` folder  with the file `route.ts` with the content:
 
 `api/auth/register/route.ts`
 
@@ -424,14 +427,14 @@ export async function POST(request: Request) {
 The code above does the following:
 
 1. Gets the `request` data that will be coming from the frontend `{ first_name, last_name, email, password }`
-2. Uses the `directus` SDK to send a request to the backend server to create a new user with a `role` field that is set to a customer `role` id
-3. Respond to the frontend of application if the request was successful or not
+2. Uses the `directus` SDK to send a request to the backend server to create a new user with a `role` field that is set to a customer `role` ID
+3. Respond to the frontend of the application if the request was successful or not
 
 #### Creating the Registration UI
 
-In the `app` folder, create a new folder called `register`, inside of this folder, create two new files `form.tsx` and `page.tsx`.
+In the `app` folder, create a new folder called `register`; inside of this folder, create two new files, `form.tsx` and `page.tsx`.
 
-The `form.tsx` will contain the registration form, and the `page.tsx` will server as the page that will be rendered on the browser.
+The `form.tsx` will contain the registration form and the `page.tsx` will serve as the page rendered on the browser.
 Add the following content to `form.tsx`:
 
 ```tsx
@@ -484,11 +487,11 @@ export default function RegistrationForm() {
 }
 ```
 
-The code above does the following:
+The code above performs the following actions:
 
 - Renders the `<AuthForm />` component with some customization as a registration form.
-- Gets the input values from the from and sends a `fetch` request to `/api/auth/register` to register a new user.
-- If the request is successful it should redirect the user to the login page or throw an error if the request failed
+- Gets the input values from the form and sends a `fetch` request to `/api/auth/register` to register a new user.
+- If the request is successful, it should redirect the user to the login page or throw an error if the request failed
 
 Next, add the following content to the `page.tsx` to render `form.tsx` :
 
@@ -514,18 +517,18 @@ This should provide you with a UI like this:
 
 ![Registration Page](register.png)
 
-The code above:
+In code above:
 
 - Renders the registration form created in the previous step
-- Imports `getServerSession` from `next-auth` to check if a user currently have a session
+- Imports `getServerSession` from `next-auth` to check if a user currently has a session
 - If a user already has a `session` ongoing, instead of rendering the registration form, it redirects them to the user dashboard( `/` )
 
-Hurray 🥳, you've just a registration page that register a new user from your Nextjs application to Directus.
+Hurray! You've created a registration page that registers a new user from your Nextjs application to Directus.
 
-Go to your directus dashboard in <http://localhost:8055/admin/users> and you should see a new user on has been added to your list of users. Click on the `Customers` tab on the left and it will show you all customers that are registered on your application:
+Go to your Directus dashboard in <http://localhost:8055/admin/users>, and you should see a new user has been added to your list of users. Click on the `Customer` tab on the left, and it will show you all registered customers on your application.
 
 ![New Customer](new-customer.png)
-Next action is to create the login functionality for the frontend application.
+The following action is to create the login functionality for the frontend application.
 
 ### Implementing the Login Functionality
 
@@ -533,9 +536,9 @@ With the registration page in place, let's implement the login functionality usi
 
 #### Creating the Login API
 
-Head to `api/auth` and create a new folder called `[...nextauth]`, this folder will be picked by the `next-auth` package for all login logic for the application.
+Head to `api/auth` and create a new folder called `[...nextauth]`; this folder will be used by the `next-auth` package for all login logic for the application.
 
-Inside of the `[...nextauth]` create a new file called `options.ts` with the content:
+Inside of the `[...nextauth]`, create a new file called `options.ts` with the content:
 
 `[...nextauth]/options.ts`
 
@@ -618,24 +621,27 @@ export const options: NextAuthOptions = {
 };
 ```
 
-Let's break down the `NextAuthOptions` values a for better understanding:
+Let's break down the `options` object for better understanding:
 
-- `Next Auth` has authentication `providers` that can be used to sign in a user, this can be using `next-auth` built-in OAuth providers (eg, Google, Github e.t.c), using your own OAuth provider, using email or credentials. tutorial uses credentials to authenticate users from the directus backend.
+- `NextAuth` has authentication `providers` that can be used to sign in a user; this can be using `next-auth` built-in OAuth providers (e.g., Google, Github, etc.), using your own OAuth provider, using email or credentials. This tutorial uses credentials to authenticate users from the Directus backend.
 
-> Note you can always have more than one providers to use for authenticating your users.
+> Note: you can have multiple providers to use to authenticate your users.
 
-- The `authorize` function performs an async request to the backend auth URL `http://localhost:8055/auth/login` to login the user using the credentials provided by the request. If a user is found in the database it returns the user data, else it throws and error.
-- The `secret` field provides `next-auth` a secret to use for signing the `JWT` tokens that will be generated when a user is authenticated.
-- By default, `next-auth` provides it's own auth pages for handling authentication, the `pages` field can be used to customize `next-auth` to use custom pages provided.
-- `callbacks` in `next-auth` are functions called after the authentication is successful. The code above has two call back functions:
+- The `authorize` function performs an async request to the backend auth URL `http://localhost:8055/auth/login` to log in the user using the credentials provided by the request. If a user is found in the database, it returns the user data; otherwise, it throws an error.
+- The `secret` field provides `next-auth` a secret for signing the `JWT` tokens that will be generated when a user is authenticated.
+- By default, `next-auth` provides its own auth pages for handling authentication; the `pages` field can be used to customize `next-auth` to use custom pages provided.(In this application, the `signIn` page is the `login` page)
+- `callbacks` in `next-auth` are functions after successful authentication. The code above has two callback functions:
 
-  - By default when a user is authenticated by directus, the directus API returns an `access_token` and a `refresh_token`, when `next-auth` generates it's `JWT` token for an authenticated user, the `async jwt` function attaches the `access_token` and `refresh_token` to the `JWT` token generated. The function also fetches the `userData` from directus with the `access_token` and attaches the data to the `JWT` token.
+  - When a user is authenticated by Directus, the Directus API returns an `access_token` and a `refresh_token`. Whenever `next-auth` generates its `JWT` token for an authenticated user, the `async jwt` function attaches the `access_token` and `refresh_token` to the `JWT` token generated. The function also fetches the `userData` from Directus using the `access_token` and attaches the data to the `JWT` token.
 
-  - In NextAuth.js, a session represents the state of authentication for a user, this include the user details such as `id`, `first_name` and `last_name`.
-  The `async session` function attached custom fields to `session.user` object to contain and `id`, `first_name` and `last_name` as well as the `accessToken` and `refreshToken` gotten from the directus.
+  - In NextAuth.js, a session represents the state of authentication for a user; this includes the user details such as `id`, `email` etc.
+  The `async session` function attaches custom fields to the `session.user` object to contain an `id`, `first_name`, and `last_name` as well as the `accessToken` and `refreshToken` gotten from the Directus.
 
-That's it, you've implemented the login logic to authenticating a user and also storing it's details in a `session`, you can now use this `session` data to check if a user is authenticated or not and have they have the authorization to view a page or carry out a specific action.
+That's it; you've implemented the login logic to authenticate a user and also store its details in a `session`; you can now use this `session` data to check if a user is authenticated or not and whether they have the authorization to view a page or carry out a specific action.
+
 To use this `options` object you created, open the `route.ts` file and update its content:
+
+`[...nextauth]/route.ts`
 
 ```ts
 import NextAuth from 'next-auth';
@@ -648,10 +654,10 @@ export { handler as GET, handler as POST };
 
 #### Creating the Login UI
 
-With the login function ready, let's create the page that will call the login API to authenticate a user:
-In the `app` folder, create a new folder called `login`, inside of this folder, create two new files `form.tsx` and `page.tsx`.
+With the login API ready, let's create the page that will call the login API to authenticate a user:
+In the `app` folder, create a new folder called `login`; inside of this folder, create two new files, `form.tsx` and `page.tsx`.
 
-The `form.tsx` will contain the login form, and the `page.tsx` will server as the page that will be rendered on the browser.
+The `form.tsx` will contain the login form and the `page.tsx` will serve as the page rendered on the browser.
 Add the following content to `form.tsx`:
 
 `app/login/form.tsx`
@@ -717,8 +723,8 @@ export default function RegistrationForm() {
 The above code:
 
 - Renders the `<AuthForm />` component with some customization as a login form.
-- Gets the input values from the form and uses the `signIn` method from `next-auth` to authenticate the user .
-- If the request is successful it should redirect the user to their dashboard or throw an error if the request failed
+- Gets the input values from the form and uses the `signIn` method from `next-auth` to authenticate the user.
+- If the request is successful, it should redirect the user to their dashboard or throw an error if the request failed
 
 In your `page.tsx`, update its content to:
 
@@ -744,13 +750,15 @@ This will create a page like this in the browser:
 
 Kudos 🥳, you've just implemented a login functionality using `next-auth` in your Nextjs application with Directus.
 
-Go ahead and test it, when the user account is authenticated it will to the dashboard page (`/`)
+Go ahead and test it. When a user logs in, it will go to the dashboard page (`/`)
 
 ### Protecting Private Routes with a Middleware
 
-In a typical application, you'd only want authenticated users to be able to access private routes/pages such as `/dashboards` and  user `profile` pages.
+In a typical application, you'd only want authenticated users to be able to access private routes/pages such as `/dashboards` and user `profile` pages.
 
 To do this in `next-auth`, create a new file in the `client` folder called `middleware.ts` with the content:
+
+`middleware.ts`
 
 ```ts
 export { default } from "next-auth/middleware"
@@ -762,8 +770,8 @@ This file will ensure any URL in the `matcher` array will be protected from unau
 
 ### Implementing a Forgot Password Request
 
-An authentication system is not complete without a forgot password reset functionality.
-To implement a forgot password functionality in your Nextjs application, create a new folder in `app` folder called `request-reset-password` with two files `form.tsx` and `page.tsx`.
+An authentication system is only complete with a forgotten password reset functionality.
+To implement a forgot password functionality in your Nextjs application, create a new folder in the `app` folder called `request-reset-password` with two files, `form.tsx` and `page.tsx`.
 
 Update the `form.tsx` to the following:
 
@@ -838,8 +846,8 @@ export default function RequestResetPasswordForm() {
 The above code:
 
 - Renders a form to collect the email input from the user.
-- Fires up a request using the directus SDK to the directus backend to reset the user password with an `email` and `reset_url` as request parameters.
-- If the request is successful or failed it should display a success or error message on the screen
+- Fires a request using the Directus SDK to the Directus backend to reset the user password with an `email` and `reset_url` as request parameters.
+- If the request is successful or failed, it should display a success or error message on the screen
 
 In your `page.tsx`, update its content to:
 
@@ -861,14 +869,14 @@ This will create a new page that looks like this:
 
 ![Request Reset Password Page](request-reset-password.png)
 
-Filling the reset password form and clicking on the reset button will  will trigger directus to send a reset email with a link with token to the user using the email configurations in your `docker-compose.yml` file
+Filling out the reset password form and clicking on the reset button will trigger Directus to send a reset email with a link with a token to the user using the email configurations in your `docker-compose.yml` file.
 
 ### Customizing the Reset Password Email
 
-To customize the email sent to the user's email, open the `server/extensions/templates` in the files generated by directus in the `server` folder create a new templates
-Directus email templates are based on  `liquid.js`.
+To customize the email sent to the user's email, open the `server/extensions/`  folder generated by Directus in the `server` folder and create a new  folder named `templates`
+Directus email templates utilize `liquid.js.`. as such, you can customize them by creating custom `.liquid` files as replacements.
 
-To customize the reset password email sent to the user, in the templates folder create a new `password-reset.liquid` with the content:
+To customize the reset password email sent to the user, in the `templates` folder, create a new `password-reset.liquid` with the content:
 
 ```tsx
 
@@ -884,13 +892,17 @@ To customize the reset password email sent to the user, in the templates folder 
 ```
 
 The `url` in the template is the `reset_url` passed in the reset password request from the frontend
-Directus will attach a `token` to the `url` in the email  that can be used to perform a new password request
+Directus will attach a `token` to the `url` in the email that can be used to perform a new password request.
+
+![Reset Password Email](reset-password-email.png)
+
+The email your users will receive should look like this screenshot above
 
 ### Resetting a User password
 
-Now that the password reset request is successful, let's create a page where users can now reset their password with the `url` they receive in their emails.
+Now that the password reset request is successful, let's create a page where users can reset their password with the `url` they receive in their emails.
 
- create a new folder in `app` folder called `reset-password` with two files `form.tsx` and `page.tsx`.
+ Create a new folder in the `app` folder called `reset-password` with two files, `form.tsx` and `page.tsx`.
  In the `form.tsx` add the following:
 
 `app/reset-password/form.tsx`
@@ -900,7 +912,7 @@ Now that the password reset request is successful, let's create a page where use
 
 import { FormEvent, useState } from 'react';
 import { passwordReset } from '@directus/sdk';
-import directus from '@/lib/directus';
+import Directus from '@/lib/directus';
 import { useRouter } from 'next/navigation'
 
 export default function RequestResetForm({token}: {token: string}) {
@@ -915,7 +927,7 @@ export default function RequestResetForm({token}: {token: string}) {
     e.preventDefault();
 
     try {
-      const response = await directus.request(
+      const response = await Directus.request(
         passwordReset(reset_token, newPassword)
       );
       setSuccess('Password successfully reset, redirecting you to login page...')
@@ -958,9 +970,9 @@ export default function RequestResetForm({token}: {token: string}) {
 }
  ```
 
-- The `reset-password/form.tsx` accepts a token and performs a request to directus using the directus SDK with the `token` and `newPassword` as parameters for changing the user's password.
+- The `reset-password/form.tsx` accepts a token and sends a request to Directus using the Directus SDK with the `token` and `newPassword` as parameters for changing the user's password.
 
-- If this request is successful , it redirects the user to the login page to login with their new password.
+- If this request is successful, it redirects the user to the login page to log in with their new password.
 
 Inside of the `page.tsx`, update the content to be:
 
@@ -983,21 +995,19 @@ export default async function ResetPasswordPage({ searchParams }: { searchParams
 }
 ```
 
-The `page.tsx` components checks if there's a token present in the `reset-password`url and if it's present it displays the `ResetPasswordPage` else it redirects the user to the login page.
+The `page.tsx` components checks if a token is present in the `reset-password`url; if it is present, it displays the `ResetPasswordPage`. Otherwise, it redirects the user to the login page.
 
 ## Summary
 
-That's a wrap, in this article you've successfully built an authentication system with password reset functionality using, `Nextjs`, `Next Auth` and `Directus`.
-This is just a glimpse of what Directus can be implement
-Directus runs fully as a backend service meaning you can complex backend services that will serve your frontend application with any backend of your choice
+That's a wrap 🥳; in this article, you've successfully built an authentication system with password reset functionality using `Nextjs`, `NextAuth`, and `Directus`.
+This is just a glimpse of what you can implement with Directus
+Directus runs entirely as a backend service, meaning you can build complex backend services that will serve your frontend application with any database of your choice
 
-Some possible steps you can consider
+Some possible steps you can consider to improve this application:
 
-- Improving the functionality of the authentication system to accept OAuth providers like `Google`, `Twitter`, et.c
-- Improving error handling to properly show the right errors to your users
+- Improving the functionality of the authentication system to accept OAuth providers like `Google`, `Twitter`, et. c
+- Improving error handling to show the correct errors to your users properly
 - Add a
 - Create new `Item` models that your `Customers` can use to create their data from your frontend application
 
 The complete code for this tutorial can be found [here](https://github.com/0xJamin/next-auth-directus)
-
-## References
