@@ -66,7 +66,7 @@ Now that you have a working database, the next step is to set up Directus and co
 
 To set up Directus to run locally on your computer, follow the Directus [self-hosting guide](https://docs.directus.io/self-hosted/quickstart.html) with a few customizations.
 
-1. First, create a root folder for the project called `next-directus` and navigate into the folder with the command:
+1. First, create a root folder for the project called _next-directus_ and navigate into the folder with the command:
 
     ```bash
     mkdir next-directus && cd next-directus
@@ -74,13 +74,14 @@ To set up Directus to run locally on your computer, follow the Directus [self-ho
 
     This folder will house the whole application including your locally hosted Directus instance and the frontend of the application (Nextjs).
 
-2. Next, navigate into the `next-directus` folder and create a subfolder `server`, here you'll store all the files related to running Directus locally.
+2. Next, navigate into the _next-directus_ folder and create a subfolder _server_, here you'll store all the files related to running Directus locally.
 
     ```bash
     mkdir server && cd server
     ```
 
-3. Inside of the `server` folder, create a docker compose file named `docker-compose.yml`. with the following contents:
+3. Inside of the _server_ folder, create a docker compose file named _docker-compose.yml_. with the following contents:
+`docker-compose.yml`
 
     ```yml
     version: '3'
@@ -133,7 +134,7 @@ To set up Directus to run locally on your computer, follow the Directus [self-ho
     docker compose up
     ```
 
-    This command will create a new Directus container in docker with all the necessary files for running in your `server` folder.
+    This command will create a new Directus container in docker with all the necessary files for running in your _server_ folder.
 
     You should now have Directus running on your machine on <http://localhost:8055> or <http://127.0.0.1:8055>
 
@@ -141,14 +142,21 @@ To set up Directus to run locally on your computer, follow the Directus [self-ho
 
 ### Create a New Customer Role in Directus
 
-Login with the admin credentials you set up in the `docker-compose.yml` file and head over to Settings > Access Control (<http://localhost:8055/admin/settings/roles>), and click on the `+` icon on the top right to create a new role for users that can access your Directus app.
+Login with the admin credentials you set up in the _docker-compose.yml_ file and head over to Settings > Access Control (<http://localhost:8055/admin/settings/roles>), and click on the `+` icon on the top right to create a new role for users that can access your Directus app.
 
 Name this role `Customer`; also uncheck the app access checkbox as you do not want users to access our Directus app here but to login from our frontend application and update the description to be `Users on our Nextjs Directus application.`
 
  ![Customer Role in Directus](customer-role.png)
 
-> Note: The default Directus user comes with a list of default fields such as `first_name`, `last_name`,  `password`, `email`, and others. You can also extend the Directus user schema to contain other fields to suit your needs. To do this, head to <http://localhost:8055/admin/settings/data-model/directus_users/+> to add custom fields to the user model in your Directus app.
->To reduce the complexity of a user for this application you only need the `first_name`, `last_name`, `email`, and `password` fields.
+```
+
+:::info Directus default user fields
+
+Note: The default Directus user comes with a list of default fields such as `first_name`, `last_name`,  `password`, `email`, and others. You can also extend the Directus user schema to contain other fields to suit your needs. To do this, head to <http://localhost:8055/admin/settings/data-model/directus_users/+> to add custom fields to the user model in your Directus app.
+To reduce the complexity of a user for this application you only need the `first_name`, `last_name`, `email`, and `password` fields.
+
+:::
+```
 
  ![Updating User Data Model](user-data-model.png)
 
@@ -177,7 +185,7 @@ Now that you've successfully set up Directus as the backend of your application 
 
 ## Building the Frontend Application (Nextjs)
 
-With the backend already running, you can now start building the application's frontend. To do so, first navigate to the `next-directus` folder if you are still in the `server` folder with the command:
+With the backend already running, you can now start building the application's frontend. To do so, first navigate to the _next-directus_ folder if you are still in the _server_ folder with the command:
 
 ```bash
 cd ../
@@ -185,7 +193,7 @@ cd ../
 
 ### Installing Nextjs
 
-Inside of the `next-directus` folder, run the following command to install nextjs
+Inside of the _next-directus_ folder, run the following command to install nextjs
 
 ```bash
 npx create-next-app@latest client
@@ -206,7 +214,7 @@ During installation, when prompted, choose the following configurations:
 
 This will install Nextjs with Typescript and TailwindCSS configurations that are ready to use.
 
-Navigate into the `client` folder with the command:
+Navigate into the _client_ folder with the command:
 
 ```bash
 cd client
@@ -235,7 +243,7 @@ npm i next-auth @directus/sdk
 
 ### Configuring the Dependencies
 
-Create a `.env.local` with the following contents:
+Create a _.env.local_ with the following contents:
 
 `.env.local`
 
@@ -248,11 +256,12 @@ NEXT_PUBLIC_URL=http://localhost:3000
 
 ```
 
-This `.env.local` contains all the credentials needed by `NextAuth` and the Directus SDK.
+This _.env.local_ contains all the credentials needed by NextAuth and the Directus SDK.
 
 ### Configuring the Directus SDK
 
-Create a new folder called `lib`, and inside of that folder, create a new file called `directus.ts` with the following contents:
+Create a new folder called _lib_, and inside of that folder, create a new file called _directus.ts_ with the following contents:
+
 `lib/directus.ts`
 
 ```ts
@@ -268,7 +277,7 @@ Here, you are creating a new Directus API instance with enabled `authentication`
 ### Creating the AuthForm Component
 
 With all the required dependencies installed, you can start building the components for the frontend application.
-Open the `next-directus` in an editor of your choice and create a new folder named `AuthForm` inside the `components` folder (you'd need to create the `components` folder also); inside of the `AuthForm` folder, create an `index.tsx`
+Open the _next-directus_ project in an editor of your choice and create a new folder named _AuthForm_ inside the _components_ folder (you'd need to create the _components_ folder also); inside of the _AuthForm_ folder, create an _index.tsx_ file
 
 `components/AuthForm/index.tsx`
 
@@ -388,7 +397,7 @@ To create the registration functionality for new users to register on the platfo
 
 #### Creating the Registration API
 
-Open the `app` folder and create a new `api` folder with an `auth` subfolder and inside of this `auth` folder, create a `register` folder  with the file `route.ts` with the content:
+Open the _app_ folder and create a new _api_ folder with an _auth_ subfolder and inside of this _auth_ folder, create a _register_ folder  with the file _route.ts_ with the content:
 
 `api/auth/register/route.ts`
 
@@ -432,10 +441,12 @@ The code above does the following:
 
 #### Creating the Registration UI
 
-In the `app` folder, create a new folder called `register`; inside of this folder, create two new files, `form.tsx` and `page.tsx`.
+In the _app_ folder, create a new folder called _register_; inside of this folder, create two new files, _form.tsx_ and _page.tsx_.
 
-The `form.tsx` will contain the registration form and the `page.tsx` will serve as the page rendered on the browser.
-Add the following content to `form.tsx`:
+The _form.tsx_ will contain the registration form and the _page.tsx_ will serve as the page rendered on the browser.
+Add the following content to _form.tsx_:
+
+`app/register/form.tsx`
 
 ```tsx
 "use client";
@@ -493,7 +504,9 @@ The code above performs the following actions:
 - Gets the input values from the form and sends a `fetch` request to `/api/auth/register` to register a new user.
 - If the request is successful, it should redirect the user to the login page or throw an error if the request failed
 
-Next, add the following content to the `page.tsx` to render `form.tsx` :
+Next, add the following content to the _page.tsx_ to render the registration form:
+
+`app/register/app.tsx`
 
 ```tsx
 import { getServerSession } from 'next-auth';
@@ -536,9 +549,9 @@ With the registration page in place, let's implement the login functionality usi
 
 #### Creating the Login API
 
-Head to `api/auth` and create a new folder called `[...nextauth]`; this folder will be used by the `next-auth` package for all login logic for the application.
+Head to _api/auth_ and create a new folder called _[...nextauth]_; this folder will be used by the `next-auth` package for all login logic for the application.
 
-Inside of the `[...nextauth]`, create a new file called `options.ts` with the content:
+Inside of the _[...nextauth]_, create a new file called _options.ts_ with the content:
 
 `[...nextauth]/options.ts`
 
@@ -639,7 +652,7 @@ Let's break down the `options` object for better understanding:
 
 That's it; you've implemented the login logic to authenticate a user and also store its details in a `session`; you can now use this `session` data to check if a user is authenticated or not and whether they have the authorization to view a page or carry out a specific action.
 
-To use this `options` object you created, open the `route.ts` file and update its content:
+To use this `options` object you created, open the _route.ts_ file and update its content:
 
 `[...nextauth]/route.ts`
 
@@ -655,10 +668,10 @@ export { handler as GET, handler as POST };
 #### Creating the Login UI
 
 With the login API ready, let's create the page that will call the login API to authenticate a user:
-In the `app` folder, create a new folder called `login`; inside of this folder, create two new files, `form.tsx` and `page.tsx`.
+In the _app_ folder, create a new folder called _login_; inside of this folder, create two new files, _form.tsx_ and _page.tsx_.
 
-The `form.tsx` will contain the login form and the `page.tsx` will serve as the page rendered on the browser.
-Add the following content to `form.tsx`:
+The _form.tsx_ will contain the login form and the _page.tsx_ will serve as the page rendered on the browser.
+Add the following content to _form.tsx_:
 
 `app/login/form.tsx`
 
@@ -726,7 +739,7 @@ The above code:
 - Gets the input values from the form and uses the `signIn` method from `next-auth` to authenticate the user.
 - If the request is successful, it should redirect the user to their dashboard or throw an error if the request failed
 
-In your `page.tsx`, update its content to:
+In your _page.tsx_, update its content to:
 
 `app/login/page.tsx`
 
@@ -756,7 +769,7 @@ Go ahead and test it. When a user logs in, it will go to the dashboard page (`/`
 
 In a typical application, you'd only want authenticated users to be able to access private routes/pages such as `/dashboards` and user `profile` pages.
 
-To do this in `next-auth`, create a new file in the `client` folder called `middleware.ts` with the content:
+To do this in `next-auth`, create a new file in the _client_ folder called _middleware.ts_ with the content:
 
 `middleware.ts`
 
@@ -771,9 +784,9 @@ This file will ensure any URL in the `matcher` array will be protected from unau
 ### Implementing a Forgot Password Request
 
 An authentication system is only complete with a forgotten password reset functionality.
-To implement a forgot password functionality in your Nextjs application, create a new folder in the `app` folder called `request-reset-password` with two files, `form.tsx` and `page.tsx`.
+To implement a forgot password functionality in your Nextjs application, create a new folder in the _app_ folder called _request-reset-password_ with two files, _form.tsx_ and _page.tsx_.
 
-Update the `form.tsx` to the following:
+Update the _form.tsx_ to the following:
 
 `app/request-reset-password/form.tsx`
 
@@ -849,7 +862,7 @@ The above code:
 - Fires a request using the Directus SDK to the Directus backend to reset the user password with an `email` and `reset_url` as request parameters.
 - If the request is successful or failed, it should display a success or error message on the screen
 
-In your `page.tsx`, update its content to:
+In your _page.tsx_, update its content to:
 
 `app/request-reset-password/page.tsx`
 
@@ -873,10 +886,12 @@ Filling out the reset password form and clicking on the reset button will trigge
 
 ### Customizing the Reset Password Email
 
-To customize the email sent to the user's email, open the `server/extensions/`  folder generated by Directus in the `server` folder and create a new  folder named `templates`
-Directus email templates utilize `liquid.js.`. as such, you can customize them by creating custom `.liquid` files as replacements.
+To customize the email sent to the user's email, open the _server/extensions/_  folder generated by Directus in the _server_ folder and create a new  folder named _templates_
+Directus email templates utilize [`liquid.js.`](https://liquidjs.com/). as such, you can customize them by creating custom `.liquid` files as replacements.
 
-To customize the reset password email sent to the user, in the `templates` folder, create a new `password-reset.liquid` with the content:
+To customize the reset password email sent to the user, in the _templates_ folder, create a new _password-reset.liquid_ with the content:
+
+`extensions/templates/password-reset.liquid`
 
 ```tsx
 
@@ -902,8 +917,8 @@ The email your users will receive should look like this screenshot above
 
 Now that the password reset request is successful, let's create a page where users can reset their password with the `url` they receive in their emails.
 
- Create a new folder in the `app` folder called `reset-password` with two files, `form.tsx` and `page.tsx`.
- In the `form.tsx` add the following:
+ Create a new folder in the _app_ folder called _reset-password_ with two files, _form.tsx_ and _page.tsx_.
+ In the _form.tsx_ add the following:
 
 `app/reset-password/form.tsx`
 
@@ -970,11 +985,11 @@ export default function RequestResetForm({token}: {token: string}) {
 }
  ```
 
-- The `reset-password/form.tsx` accepts a token and sends a request to Directus using the Directus SDK with the `token` and `newPassword` as parameters for changing the user's password.
+- The _reset-password/form.tsx_ accepts a token and sends a request to Directus using the Directus SDK with the `token` and `newPassword` as parameters for changing the user's password.
 
 - If this request is successful, it redirects the user to the login page to log in with their new password.
 
-Inside of the `page.tsx`, update the content to be:
+Inside of the _page.tsx_, update the content to be:
 
 `app/reset-password/page.tsx`
 
@@ -995,7 +1010,7 @@ export default async function ResetPasswordPage({ searchParams }: { searchParams
 }
 ```
 
-The `page.tsx` components checks if a token is present in the `reset-password`url; if it is present, it displays the `ResetPasswordPage`. Otherwise, it redirects the user to the login page.
+The _page.tsx_ components checks if a token is present in the `reset-password` url; if it is present, it displays the `ResetPasswordPage`. Otherwise, it redirects the user to the login page.
 
 ## Summary
 
