@@ -29,7 +29,13 @@ To begin with this tutorial, you'll need the following knowledge and tools:
 
 Before setting up Directus you need to configure the database that Directus will use for storing data.
 
-*Note: This tutorial uses PostgresQL as a database, Directus also supports other databases like `mysql`, `oracledb` ,  `mssql`, `sqlite3`, `cockroachdb`. You can read more information about configuring Directus with a database here:
+```
+:::info Directus supports different databases
+
+>Note: This tutorial uses PostgresQL as a database, Directus also supports other databases like `mysql`, `oracledb` ,  `mssql`, `sqlite3`, `cockroachdb`. You can read more information about configuring Directus with a database here:
+
+:::
+```
 
 Assuming you have PostgresQL installed locally and running, connect to the default PostgreSQL database using the command:
 
@@ -152,7 +158,7 @@ Name this role `Customer`; also uncheck the app access checkbox as you do not wa
 
 :::info Directus default user fields
 
-Note: The default Directus user comes with a list of default fields such as `first_name`, `last_name`,  `password`, `email`, and others. You can also extend the Directus user schema to contain other fields to suit your needs. To do this, head to <http://localhost:8055/admin/settings/data-model/directus_users/+> to add custom fields to the user model in your Directus app.
+>Note: The default Directus user comes with a list of default fields such as `first_name`, `last_name`,  `password`, `email`, and others. You can also extend the Directus user schema to contain other fields to suit your needs. To do this, head to <http://localhost:8055/admin/settings/data-model/directus_users/+> to add custom fields to the user model in your Directus app.
 To reduce the complexity of a user for this application you only need the `first_name`, `last_name`, `email`, and `password` fields.
 
 :::
@@ -638,7 +644,13 @@ Let's break down the `options` object for better understanding:
 
 - `NextAuth` has authentication `providers` that can be used to sign in a user; this can be using `next-auth` built-in OAuth providers (e.g., Google, Github, etc.), using your own OAuth provider, using email or credentials. This tutorial uses credentials to authenticate users from the Directus backend.
 
-> Note: you can have multiple providers to use to authenticate your users.
+```
+:::info NextAuth supports multiple providers
+
+>Note: you can have multiple providers to use to authenticate your users.
+
+:::
+```
 
 - The `authorize` function performs an async request to the backend auth URL `http://localhost:8055/auth/login` to log in the user using the credentials provided by the request. If a user is found in the database, it returns the user data; otherwise, it throws an error.
 - The `secret` field provides `next-auth` a secret for signing the `JWT` tokens that will be generated when a user is authenticated.
