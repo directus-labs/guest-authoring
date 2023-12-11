@@ -19,10 +19,6 @@ You will need:
 
 3. **A Directus Project:** Prepare a local Directus project for deployment. Follow the [Directus quickstart guide][quickstart] if you need to create a new project.
 
-
-
-
-
 ## Post
 
 Create a new file in your Xcode project and name it Post.swift 
@@ -63,15 +59,6 @@ Create a ContentView.swift file if you haven't got one already
 
 
 The ContentView is a SwiftUI view that serves as the main interface for displaying a list of posts. Users can interact with individual posts, view truncated content, and access detailed information about a selected post. The view leverages SwiftUI's navigation and sheet presentation capabilities to create a seamless user experience.
-
-
-
-
-
-
-
-
-
 
 
 ```swift 
@@ -215,10 +202,7 @@ Inside ContentView.swift, add the following function:
 `catch { print("Error: \(error)") }`: Catches and prints any errors that may occur during the URL creation, data fetching, or decoding process.
 
 
-
-
 ## PostAPIcall Function
-
 
 This function encapsulates the logic for making an asynchronous API call to fetch details of a specific post. It ensures uniqueness in the request by including a generated UUID as a query parameter. The fetched data is then decoded, and if successful, the `selectedPost` property is updated with the retrieved post details.
 
@@ -255,7 +239,6 @@ Inside ContentView.swift, add the following function:
 }
 ```
 
-
 **Generating a unique UUID:**
 
 `let uuid = UUID().uuidString`: Generates a unique identifier (UUID) as a string.
@@ -288,10 +271,6 @@ Inside ContentView.swift, add the following function:
 
 **Handling errors in case of any issues during the process:**
 `catch { print("Error: \(error)") }`: Catches and prints any errors that may occur during the URL creation, data fetching, or decoding process.
-
-
-
-
 
 ## PostDetailView
 
@@ -389,8 +368,6 @@ Uses `AsyncImage` to asynchronously load and display the post image. It handles 
 **Asynchronous task to fetch additional post details:**
 
 `.task { await fetchPost(post.id) }`: Initiates an asynchronous task to fetch additional details for the selected post. The `await` keyword is used to wait for the asynchronous operation to complete.
-
-
 
 ## Summary
 - The ContentView displays a list of posts and allows users to view detailed information about each post.
