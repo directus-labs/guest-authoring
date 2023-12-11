@@ -163,6 +163,9 @@ The `.task { await fetchPosts() }` is an asynchronous task that fetches posts wh
 
 This function is responsible for asynchronously fetching posts from a remote API, decoding the JSON response, and updating the `@State` property `posts` with the retrieved data. Any errors encountered during this process are printed to the console.
 
+
+Inside ContentView.swift, add the following function:
+
 ```swift
   func fetchPosts() async {
         guard let url = URL(string: "https://ios-author-demo.directus.app/items/posts") else {
@@ -216,7 +219,10 @@ This function is responsible for asynchronously fetching posts from a remote API
 
 ## PostAPIcall Function
 
+
 This function encapsulates the logic for making an asynchronous API call to fetch details of a specific post. It ensures uniqueness in the request by including a generated UUID as a query parameter. The fetched data is then decoded, and if successful, the `selectedPost` property is updated with the retrieved post details.
+
+Inside ContentView.swift, add the following function:
 
 ```swift
 
@@ -289,9 +295,10 @@ This function encapsulates the logic for making an asynchronous API call to fetc
 
 ## PostDetailView
 
-Create a new file in your Xcode project and name it PostDetailView.swift
-
 this SwiftUI view is designed to present detailed information about a selected post. It includes the post title, image (if available), content, a dismiss button to clear the selected post, and the post status. Additionally, it initiates an asynchronous task to fetch additional post details using the fetchPost function.
+
+
+Create a new file in your Xcode project and name it PostDetailView.swift and add the following code:
 
 ```swift
 import SwiftUI
