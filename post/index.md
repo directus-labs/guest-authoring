@@ -23,7 +23,7 @@ Welcome to "Mastering Directus Advanced Filtering" – your comprehensive guide 
 
 ### Consider we have Blog Website
 
--   In our blog website we have articles list with filters
+-   In our blog website, we have articles list with filters
 
 ### Article List
 
@@ -290,3 +290,6 @@ const result = await client.request(
     ![Article List!](./images/all-filters-options.png)
 
 ## Summary
+
+-   By delving into this comprehensive guide, you have not only master advanced filtering in Directus but also learned valuable insights into SDK 11 integration and real-world application development.
+-   This guide serves as a cornerstone for creating powerful queries, providing a solid foundation for addressing complex use cases with confidence.
