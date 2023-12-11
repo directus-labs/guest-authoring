@@ -1,13 +1,13 @@
 ---
 title: 'Getting Started with Directus and iOS'
 description: 'Integrate Directus into your iOS app. Fetch and display dynamic content with ease using SwiftUI'
-author: Harshpal Bhirth
-name: ''
-avatar_file_name: 'add-to-directory'
+author:
+    name: 'Harshpal Bhirth'
+    avatar_file_name: 'avatar.jpeg'
 ---
 
 ## Introduction
-In this tutorial, you will learn how to configure an iOS project that interacts with the Directus API to fetch and showcase posts. Whether you're a seasoned iOS developer or just starting your journey, this step-by-step guide will provide you with the necessary instructions to set up Directus integration your SwiftUI-based iOS app.
+In this tutorial, you will learn how to configure an iOS project that interacts with the Directus API to fetch and showcase posts. Whether you're a seasoned iOS developer or just starting your journey, this step-by-step guide will provide you with the necessary instructions to set up Directus integration for your SwiftUI-based iOS app.
 
 ## Before You Start
 
@@ -15,7 +15,7 @@ You will need:
 
 1. To have Xcode installed on your macOS machine.
 
-2. Basic knowledge of Swift programming language.
+2. Basic knowledge of the Swift programming language.
 
 3. **A Directus Project:** Prepare a local Directus project for deployment. Follow the [Directus quickstart guide][quickstart] if you need to create a new project.
 
