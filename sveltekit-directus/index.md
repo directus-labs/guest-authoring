@@ -48,18 +48,12 @@ of the `src/libs` directory:
 ```js
 import { createDirectus, rest } from '@directus/sdk';
 import { readItems, readItem, updateItem, updateUser, createItem, deleteItem } from '@directus/sdk';
+import { PUBLIC_APIURL } from '$env/static/public';
 
 function getDirectusInstance(fetch) {
-	const directus = createDirectus(import.meta.env.VITE_APIURL, { globals: { fetch } }).with(rest());
-
-  //These are optional shortcuts. Feel free to omit those and adapt the code later
-	directus.updateUser = async (id, query) => directus.request(updateUser(id, query));
-	directus.updateItem = async (collection, id, query) => directus.request(updateItem(collection, id, query));
-	directus.readItems = async (collection, query) => directus.request(readItems(collection, query));
-	directus.readItem = async (collection, id, query) => directus.request(readItem(collection, id, query));
-	directus.createItem = async (collection, query) => directus.request(createItem(collection, query));
-	directus.deleteItem = async (collection, id) => directus.request(deleteItem(collection, id));
-
+	
+  	const options = fetch ? { globals: { fetch } } : {};
+	const directus = createDirectus(PUBLIC_APIURL, options ).with(rest());
 	return directus;
 }
 
@@ -86,13 +80,12 @@ implementation. However the Directus SDK offers some nice [additional features](
 
 :::
 
-Also create the environment variable inside a `.env` file in the root directory
+Also create the environment variable inside a `.env` file in the root directory. Ensure your API URL is correct when initializing the Directus JavaScript SDK.
 
 ```js
-VITE_APIURL = 'https://directus.example.com';
+PUBLIC_APIURL = 'https://directus.example.com';
 ```
 
-Ensure your API URL is correct when initializing the Directus JavaScript SDK.
 
 ## Setup Global Metadata and Settings
 
@@ -119,10 +112,11 @@ be responsible to fetch the data on the client and on the server during Server S
 ```js
 /** @type {import('./$types').PageLoad} */
 import getDirectusInstance from '$lib/directus';
+import { readItems } from '@directus/sdk';
 export async function load({ fetch }) {
 	const directus = getDirectusInstance(fetch);
 	return {
-		global: await directus.readItems('global'),
+		global: await directus.request(readItems('global')),
 	};
 }
 ```
@@ -166,12 +160,13 @@ refetch our page data.
 /** @type {import('./$types').PageLoad} */
 import { error } from '@sveltejs/kit';
 import getDirectusInstance from '$lib/directus';
+import { readItem } from '@directus/sdk';
 export async function load({ fetch, params }) {
 	const directus = getDirectusInstance(fetch);
 
 	try {
 		return {
-			page: await directus.readItem('pages', params.slug),
+			page: await directus.request(readItem('pages', params.slug)),
 		};
 	} catch (err) {
 		throw error(404, 'Page not found');
@@ -218,13 +213,14 @@ Create a new Directory called `blog` and a new file called `+page.js` inside of 
 ```js
 /** @type {import('./$types').PageLoad} */
 import getDirectusInstance from '$lib/directus';
+import { readItems } from '@directus/sdk';
 export async function load({ fetch }) {
 	const directus = getDirectusInstance(fetch);
 	return {
-		posts: await directus.readItems('posts', {
+		posts: await directus.request(readItems('posts', {
 			fields: ['slug', 'title', 'publish_date', { author: ['name'] }],
 			sort: ['-publish_date'],
-		}),
+		})),
 	};
 }
 ```
@@ -256,7 +252,7 @@ Likewise to before we create a template file `+page.svelte` to show our newly fe
 </ul>
 ```
 
-Visit http://localhost:5173 and you should now see a blog post listing, with latest items first.
+Visit http://localhost:5173/blog and you should now see a blog post listing, with latest items first.
 
 ![A page with a title of "Blog". On it is a list of three items - each with a title, author, and date. The title is a link.](blog-listing.webp)
 
@@ -271,14 +267,15 @@ with the necessary files as usual:
 /** @type {import('./$types').PageLoad} */
 import { error } from '@sveltejs/kit';
 import getDirectusInstance from '$lib/directus';
+import { readItem } from '@directus/sdk';
 export async function load({ fetch, params }) {
 	const directus = getDirectusInstance(fetch);
 
 	try {
 		return {
-			post: await directus.readItem('posts', params.slug, {
+			post: await directus.request(readItem('posts', params.slug, {
 				fields: ['*', { '*': ['*'] }],
-			}),
+			})),
 		};
 	} catch (err) {
 		throw error(404, 'Post not found');
@@ -292,7 +289,7 @@ export async function load({ fetch, params }) {
 	export let data;
 </script>
 
-<img src="{import.meta.env.VITE_APIURL}/assets/{data.post.image.filename_disk}?width=600" alt="" />
+<img src="{import.meta.env.VITE_APIURL}/assets/{data.post.image.filename_disk}?width=600" alt="{data.post.image.description}" />
 <h1>{data.post.title}</h1>
 <div>{@html data.post.content}</div>
 ```
@@ -339,11 +336,3 @@ While not strictly Directus-related, there are now several pages that aren't lin
 
 Through this guide, you have set up a SvelteKit project, created a Directus Wrapper, and used it to query data. You have
 used a singleton collection for global metadata, dynamically created pages, as well as blog listing and post pages.
-
-The next steps are to add
-
-- Authentication and State Management (Using Cookies)
-- GraphQL / Realtime capabilities of Directus in SvelteKit
-- I18N with SvelteKit and Directus
-
-For this we will have other blog post ready, so stay tuned and check our developer blog for more infos
