@@ -1,6 +1,6 @@
 ---
-title: 'Build an Authentication System with Nextjs, Next Auth and Directus'
-description: 'Learn how to build an authentication system in a Nextjs application using Next Auth and Directus as a backend '
+title: 'Using Directus Auth with NextAuth.js'
+description: 'Learn how to build an authentication system in a Next.js application using NextAuth.js and Directus as a backend '
 author:
   name: 'Trust Jamin'
   avatar_file_name: 'jamin.png'
@@ -10,69 +10,23 @@ author:
 
 Authentication is an important aspect of web applications, as it provides the ability for users with the right permissions to access certain resources or perform specific actions.
 
-In this article, you'll build an authentication system for a Nextjs application using Nextjs, NextAuth, and Directus as the backend and save the data of the application to a PostgreSQL database.
+In this article, you'll build an authentication system for a Next.js application using NextAuth.js, and Directus as the backend and save the data of the application to a PostgreSQL database.
 
-For a better understanding of the application you will be building, here is a demo of the application in play:
-
-![Nextjs Directus App](demo.gif)
+![Directus Auth with NextAuth.js Demo](demo.gif)
 
 ## Prerequisites
 
-To begin with this tutorial, you'll need the following knowledge and tools:
+You will need the following knowledge and tools:
 
-- [`Nodejs`](https://nodejs.org/en/download/) installed on your computer to build the Nextjs application
-- [`Docker`](https://www.docker.com/get-started/) installed on your computer to run Directus locally
-- A [`PostgresQL`](https://www.postgresql.org/docs/current/tutorial-install.html) database for storing your users (preferably version 15 and higher)
+- [`Node.js`](https://nodejs.org/en/download/) installed on your computer to build the Next.js application
+- A Directus project - you can use [Directus Cloud or run it yourself](https://docs.directus.io/getting-started/quickstart.html).
 - A basic knowledge of terminal/CLI commands
-
-## Setting Up the Database
-
-Before setting up Directus you need to configure the database that Directus will use for storing data.
-
-```
-:::info Directus supports different databases
-
->Note: This tutorial uses PostgresQL as a database, Directus also supports other databases like `mysql`, `oracledb` ,  `mssql`, `sqlite3`, `cockroachdb`. You can read more information about configuring Directus with a database here:
-
-:::
-```
-
-Assuming you have PostgresQL installed locally and running, connect to the default PostgreSQL database using the command:
-
-```bash
-psql -U postgres
-```
-
-Enter the password you set during installation.
-
-### Create a New User and Database
-
-1. In the PostgreSQL interactive shell (`psql`), run:
-
-    ```bash
-    CREATE USER 'your_username' WITH PASSWORD 'your_password';
-
-    ```
-
-2. Next, Create a Database, using the command:
-
-    ```bash
-    CREATE DATABASE your_database OWNER your_username;
-    ```
-
-3. Exit PostgreSQL shell with:
-
-    ```bash
-    \q
-    ```
-
-Now that you have a working database, the next step is to set up Directus and connect it to the database.
 
 ## Setting up the Backend (Directus)
 
 To set up Directus to run locally on your computer, follow the Directus [self-hosting guide](https://docs.directus.io/self-hosted/quickstart.html) with a few customizations.
 
-1. First, create a root folder for the project called _next-directus_ and navigate into the folder with the command:
+1. First, create a root folder for the project called `next-directus` and navigate into the folder with the command:
 
     ```bash
     mkdir next-directus && cd next-directus
