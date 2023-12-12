@@ -44,9 +44,9 @@ open http://localhost:5173 in your browser.
 ### Create a Wrapper for the SDK
 
 We now need to setup the Directus SDK and make it accessible globally. In order to make the best use of SvelteKit's
-Server Side Rendering we will need to use SvelteKit's own
+Server Side Rendering, we will need to use SvelteKit's own
 [fetch implementation](https://kit.svelte.dev/docs/load#making-fetch-requests). Create a new file `directus.js` inside
-of the `src/libs` directory
+of the `src/libs` directory:
 
 ```js
 import { createDirectus, rest } from '@directus/sdk';
