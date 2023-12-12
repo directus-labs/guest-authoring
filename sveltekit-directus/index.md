@@ -162,7 +162,7 @@ Public role read access to the new collection. Create a few items in the new col
 
 Inside of `[slug]`, create a new file called `+page.js`. This is a dynamic route, so this time we will use the dynamic
 `params` object to fetch the correct data. To illustrate how SvelteKit's data loading works you can open a different
-page url which will change the `params` object. Evidently this will lead to SvelteKit invalidate the `.page.js` data and
+page URL which will change the `params` object. Evidently this will lead to SvelteKit invalidate the `.page.js` data and
 refetch our page data.
 
 ```js
