@@ -111,7 +111,7 @@ hit save.
 By default, new collections are not accessible to the public. Navigate to Settings -> Roles & Permissions -> Public and
 give Read access to the Global collection.
 
-## Prepare SvelteKit to use Directus instance
+## Prepare SvelteKit to use Directus
 
 Create a new file called `+page.js` in the root directory along the `.page.svelte` file. This file's load function will
 be responsible to fetch the data on the client and on the server during Server Side Rendering.
