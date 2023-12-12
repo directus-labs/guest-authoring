@@ -22,12 +22,9 @@ You will need:
 - A Directus project - follow our [quickstart guide](docs.directus.io/getting-started/quickstart) if you don't already have one.
 - Some knowledge of Svelte.
 
-## Create Backend (Directus)
 
-Create a new Directus Cloud project - any tier and configuration is suitable for this tutorial. You can also choose to
-install Directus [locally](/self-hosted/quickstart).
 
-## Create Frontend (SvelteKit)
+## Initialize SvelteKit Project
 
 Open your terminal and run the following commands to create a new SvelteKit project and add the Directus JavaScript SDK:
 
