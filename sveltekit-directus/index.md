@@ -94,7 +94,7 @@ VITE_APIURL = 'https://directus.example.com';
 
 Ensure your API URL is correct when initializing the Directus JavaScript SDK.
 
-## Setup Global Metadata and Settings
+## Using Global Metadata and Settings
 
 In your Directus project, navigate to Settings -> Data Model and create a new collection called `global`. Under the
 Singleton option, select 'Treat as a single object', as this collection will have just a single entry containing global
