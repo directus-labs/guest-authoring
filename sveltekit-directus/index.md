@@ -344,6 +344,6 @@ The next steps are to add
 
 - Authentication and State Management (Using Cookies)
 - GraphQL / Realtime capabilities of Directus in SvelteKit
-- I18N with SvelteKit and Directus
+- Internationalization with SvelteKit and Directus
 
 For this we will have other blog post ready, so stay tuned and check our developer blog for more infos
