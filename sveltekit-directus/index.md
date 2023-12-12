@@ -19,7 +19,7 @@ Directus items, and build a blog.
 You will need:
 
 - To install Node.js and a code editor on your computer.
-- To sign up for a Directus Cloud account.
+- A Directus project - follow our [quickstart guide](docs.directus.io/getting-started/quickstart) if you don't already have one.
 - Some knowledge of Svelte.
 
 ## Create Backend (Directus)
