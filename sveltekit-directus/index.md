@@ -106,10 +106,11 @@ give Read access to the Global collection.
 
 ## Prepare SvelteKit to use Directus
 
-Create a new file called `+page.js` in the root directory along the `.page.svelte` file. This file's load function will
+Create a new file called `+page.js` in the root directory next to the `.page.svelte` file. This file's load function will
 be responsible to fetch the data on the client and on the server during Server Side Rendering.
 
-```js
+
+```js [+page.js]
 /** @type {import('./$types').PageLoad} */
 import getDirectusInstance from '$lib/directus';
 import { readItems } from '@directus/sdk';
@@ -121,12 +122,9 @@ export async function load({ fetch }) {
 }
 ```
 
-Correspondingly we need to modify the `+page.svelte` file to take the data into account and display it on our site.
-SvelteKit magically populates the data property and also updates it should any dependency(variable, url, etc.) change
-which influences the data fetch mechanism in the `+page.js` file. Currently there is no dependency, later you will see
-how this works.
+Modify the `+page.svelte` file to use the new data and display it on our site:
 
-```svelte
+```svelte [+page.svelte]
 <script>
 	/** @type {import('./$types').PageData} */
 	export let data;
@@ -140,10 +138,7 @@ Refresh your browser. You should see data from your Directus Global collection i
 
 ## Creating Pages With Directus
 
-Create a new directory called `[slug]`. SvelteKit uses a file based routing mechanism and parameters are always part of
-the directory name, whereas the files within the directory are always either +page.js, +page.js or +page.server.js (which is
-only run on server side only so it is save to expose secrets in this file). The same concept is true for layout files.
-Please refer to the [SvelteKit Documentation](https://kit.svelte.dev/docs/routing) for more information.
+### Setup Directus Data
 
 Create a new collection called `pages` - make the Primary ID Field a "Manually Entered String" called `slug`, which will
 correlate with the URL for the page. For example `about` will later correlate to the page `/about`.
@@ -151,12 +146,17 @@ correlate with the URL for the page. For example `about` will later correlate to
 Create a text input field called `title` and a WYSIWYG input field called `content`. In Roles & Permissions, give the
 Public role read access to the new collection. Create a few items in the new collection.
 
+### Setup SvelteKit Routes
+
+Create a new directory called `[slug]`. SvelteKit uses a [file based routing mechanism](https://kit.svelte.dev/docs/routing) and parameters are always part of
+the directory name, while the files within the directory are always either +page.js, +page.js or +page.server.js
+
 Inside of `[slug]`, create a new file called `+page.js`. This is a dynamic route, so this time we will use the dynamic
 `params` object to fetch the correct data. To illustrate how SvelteKit's data loading works you can open a different
 page URL which will change the `params` object. Evidently this will lead to SvelteKit invalidate the `.page.js` data and
 refetch our page data.
 
-```js
+```js [+page.js]
 /** @type {import('./$types').PageLoad} */
 import { error } from '@sveltejs/kit';
 import getDirectusInstance from '$lib/directus';
@@ -177,6 +177,8 @@ export async function load({ fetch, params }) {
 Go to http://localhost:5173/about, replacing `about` with any of your item slugs. Using the Directus JavaScript SDK, the
 single item with that slug is retrieved, and the page should show your data. `readItem()` only checks against your
 `slug` Primary ID Field.
+
+SvelteKit populates the data property and also updates it on the client automatically should any dependency(variable, url, etc.) used inside our load function change. In this case whenever `params.slug` changes.
 
 :::warning 404s and Trusted Content
 
@@ -210,7 +212,7 @@ Create a few items in the posts collection.
 
 Create a new Directory called `blog` and a new file called `+page.js` inside of it.
 
-```js
+```js [+page.js]
 /** @type {import('./$types').PageLoad} */
 import getDirectusInstance from '$lib/directus';
 import { readItems } from '@directus/sdk';
@@ -231,7 +233,7 @@ related `author` item.
 
 Likewise to before we create a template file `+page.svelte` to show our newly fetched data:
 
-```svelte
+```svelte [+page.svelte]
 <script>
 	/** @type {import('./$types').PageData} */
 	export let data;
