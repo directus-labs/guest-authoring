@@ -1,5 +1,5 @@
 ---
-title: 'SvelteKit and Directus as a Headless CMS'
+title: 'Getting Started with Directus and SvelteKit'
 description: 'A Starter Guide about how to build performant and flexible websites with Server Side Rendering in SvelteKit and Directus as a CMS'
 author:
   name: 'Eike Thies'
