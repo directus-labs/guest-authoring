@@ -186,9 +186,13 @@ Go to http://localhost:5173/about, replacing `about` with any of your item slugs
 single item with that slug is retrieved, and the page should show your data. `readItem()` only checks against your
 `slug` Primary ID Field.
 
-_Note that non existing IDs will result in a forbidden error, which we catch and then throw svelte's internal error
-object to respond with a 404. Please also note that
+:::warning 404s and Trusted Content
+
+Non-existing IDs will result in a forbidden error, which we catch and then throw svelte's internal error
+object to respond with a 404. Additionally,
 [`@html` should only be used for trusted content.](https://svelte.dev/docs/special-tags#html)_
+
+:::
 
 ## Creating Blog Posts With Directus
 
