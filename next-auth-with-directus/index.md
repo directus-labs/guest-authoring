@@ -526,7 +526,7 @@ interface Data {
   password?: string;
 }
 
-export default function RegistrationForm() {
+export default function LoginForm() {
   const router = useRouter();
   const [error, setError] = useState('');
   const handleFormSubmit = async (data: Data) => {
@@ -583,7 +583,7 @@ In your `page.tsx`, update its content to:
 
 import LoginForm from "./form"
 
-export default async function RegisterPage() {
+export default async function LoginPage() {
   return (
     <div>
       <LoginForm />
@@ -606,8 +606,6 @@ Go ahead and test it. When a user logs in, the application will navigate to dash
 In a typical application, you'd only want authenticated users to be able to access private routes/pages such as `/dashboards` and user `profile` pages.
 
 To do this in `next-auth`, create a new file called `middleware.ts` with the content:
-
-`middleware.ts`
 
 ```ts
 export { default } from "next-auth/middleware"
