@@ -19,7 +19,14 @@ You will need:
    
 ## Create Post Structs and Helpers
 
-Create a new file in your Xcode project and name it `Post.swift`: 
+Create a new file in your Xcode project and name it `Post.swift` you can do this by: 
+1. Right-click on the project navigator in the root of the project.
+2. Choose "New File..." from the context menu.
+3. In the template chooser, select "Swift File" under the "Source" section.
+4. Name the file as "Post.swift".
+5. Click "Create."
+
+
 
 In the `Post.swift` file, create a Swift `struct` named `Post` to represent the data structure of the posts you'll be fetching from the Directus API. This `struct` should conform to the `Codable` and `Identifiable` protocols. 
 
@@ -54,11 +61,16 @@ return content.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularEx
 
 ## Create a ContentView
 
-Create a `ContentView.swift` file if you haven't got one already.
+Create a `ContentView.swift` file if you haven't got one already you can do this by: 
+1. Right-click on the project navigator in the root of the project.
+2. Choose "New File...".
+3. Select "SwiftUI View" and name it "ContentView.swift".
+4. Click "Create".
+
 
 `ContentView` is a SwiftUI view that serves as the main interface for displaying a list of posts. Users can interact with individual posts, view truncated content, and access detailed information about a selected post. The view leverages SwiftUI's navigation and sheet presentation capabilities to create a consistent user experience.
 
-add screenshot
+<img src="screenshot.png" width="300" height="700"/>
 
 `@State private var posts = [Post]()`: A state property holding an array of `Post` objects. The `@State` property wrapper indicates that the value can be modified and that changes to it should trigger a re-render of the corresponding view.
 
@@ -208,47 +220,40 @@ Inside `ContentView.swift`, add the following function:
 }
 ```
 
- - **Generating a unique UUID:**
-
-    - `let uuid = UUID().uuidString`: Generates a unique identifier (UUID) as a string.
-
-- **Creating URL components with query parameters:**
-
-    - `var components = URLComponents(string: "https://ios-author-demo.directus.app/items/posts/\(postId)")!`: Creates URL components with the base URL and incorporates the provided `postId`.
-`components.queryItems = [URLQueryItem(name: "uuid", value: uuid)]`: Adds a query parameter (UUID) to the URL.
-
-- **Constructing the final URL:**
-
-    - `guard let url = components.url else { print("Invalid URL") return }`: Ensures the final URL is valid and prints an error if not. 
-
-- **Fetching data from the specified URL:**
-
-    - `let (data, _) = try await URLSession.shared.data(from: url)`: Asynchronously fetches data from the specified URL.
-
-- **Decoding the fetched JSON data using JSONDecoder:**
-
-    - `let decoder = JSONDecoder(): Creates an instance of `JSONDecoder`.
-`struct ApiResponse: Decodable { let data: Post }`: Defines a structure to represent the expected API response.
-
-- **Decoding the JSON data into the ApiResponse structure:**
-
-    - `let result = try decoder.decode(ApiResponse.self, from: data)`: Attempts to decode the JSON data into the ApiResponse structure.
-
-- **Updating the selectedPost with the fetched post data:**
-
-    - `selectedPost = result.data`: If decoding is successful, updates the selectedPost with the post data from the API response.
-
-- **Handling errors in case of any issues during the process:**
-  
-    - `catch { print("Error: \(error)") }`: Catches and prints any errors that may occur during the URL creation, data fetching, or decoding process.
-
 ## Displaying a Single Post
 
 This SwiftUI view is designed to present detailed information about a selected post. It includes the post title, image (if available), content, a dismiss button to clear the selected post, and the post status. Additionally, it initiates an asynchronous task to fetch additional post details using the `fetchPost` function.
 
 
 Create a new `PostDetailView.swift` file and add the following code:
+- **Checking if a post is selected:**
 
+    - `if let post = selectedPost { ... }`: The body of the view is only displayed if there is a selected post.
+
+- **Displaying post title:**
+
+    - `Text(post.title)`: Displays the title of the selected post with a headline font.
+
+- **Displaying post image if available:**
+
+    - Uses `AsyncImage` to asynchronously load and display the post image. It handles different loading phases and displays a placeholder or an error message if necessary.
+
+- **Displaying post content:**
+
+    - `Text(post.stripHTML())`: Displays the content of the selected post, removing HTML tags.
+
+- **Dismiss button to clear the selectedPost:**
+
+    - `Button("Dismiss") { selectedPost = nil }`: Provides a button to clear the selectedPost, effectively dismissing the detailed view.
+
+
+- **Displaying post status:**
+
+    - `Text("Status: \(post.status)")`: Displays the status of the post in a subheadline font and gray color.
+
+- **Asynchronous task to fetch additional post details:**
+
+    - `.task { await fetchPost(post.id) }`: Initiates an asynchronous task to fetch additional details for the selected post. The `await` keyword is used to wait for the asynchronous operation to complete.
 ```swift
 import SwiftUI
 
@@ -309,35 +314,6 @@ struct PostDetailView: View {
 }
 
 ```
-
-- **Checking if a post is selected:**
-
-    - `if let post = selectedPost { ... }`: The body of the view is only displayed if there is a selected post.
-
-- **Displaying post title:**
-
-    - `Text(post.title)`: Displays the title of the selected post with a headline font.
-
-- **Displaying post image if available:**
-
-    - Uses `AsyncImage` to asynchronously load and display the post image. It handles different loading phases and displays a placeholder or an error message if necessary.
-
-- **Displaying post content:**
-
-    - `Text(post.stripHTML())`: Displays the content of the selected post, removing HTML tags.
-
-- **Dismiss button to clear the selectedPost:**
-
-    - `Button("Dismiss") { selectedPost = nil }`: Provides a button to clear the selectedPost, effectively dismissing the detailed view.
-
-
-- **Displaying post status:**
-
-    - `Text("Status: \(post.status)")`: Displays the status of the post in a subheadline font and gray color.
-
-- **Asynchronous task to fetch additional post details:**
-
-    - `.task { await fetchPost(post.id) }`: Initiates an asynchronous task to fetch additional details for the selected post. The `await` keyword is used to wait for the asynchronous operation to complete.
 
 ## Summary
 By following this tutorial, you've learned to integrate Directus API calls into a SwiftUI iOS app. The ContentView efficiently displays a post list, and with the Post struct and the asynchronous fetchPosts function, you can dynamically fetch and present data. The postAPIcall function complements this by fetching additional details for specific posts. The PostDetailView enhances the user experience by providing detailed information about selected posts. These skills not only enable efficient API integration but also lay the foundation for building more advanced features and interactions in your app.
