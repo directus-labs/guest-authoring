@@ -119,7 +119,7 @@ const REFRESH_TOKEN_EXPIRATION = 30; // in days - adapt this with your Directus 
 
 export const load = async ({ locals,url }) => {
 	// redirect user if already logged in
-	if (locals.token) throw redirect(302, '/profile')
+	if (locals.token) redirect(302, '/profile')
 	return {};
 }
 
@@ -321,7 +321,7 @@ export async function load({ parent, fetch }) {
       ),
     };
   } catch (err) {
-    throw error(404, "User not found");
+    error(404, "User not found");
   }
 }
 
@@ -428,7 +428,7 @@ export async function GET({locals,request,cookies}) {
   cookies.delete('refresh_token');
   cookies.delete('access_token');
 
-  throw redirect(302,`/signin`);
+  redirect(302,`/signin`);
 }
 ```
 
