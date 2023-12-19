@@ -21,6 +21,7 @@ author:
 
 - Different authentication mechanisms to choose from
 - In this article using the most secure form: HTTP Only Same-Site Cookies
+- for this same-site=strict prevents CSRF (meaning in order to be able to access the directus backend from the client directly, it must be on the same domain as the sveltekit frontend e.g myexample.com/api. otherwise it can only be accessed on the server-side of sveltekit)
 
 ## Adapt Directus Wrapper
 
