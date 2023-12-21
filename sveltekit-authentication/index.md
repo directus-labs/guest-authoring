@@ -428,8 +428,8 @@ export async function GET({locals,request,cookies}) {
     throw fail(400,err);
   }
   
-  cookies.delete('refresh_token');
-  cookies.delete('access_token');
+  cookies.delete('refresh_token', { path: '/' });
+  cookies.delete('access_token', { path: '/' });
 
   redirect(302,`/signin`);
 }
