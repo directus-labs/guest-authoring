@@ -9,28 +9,20 @@ author:
 
 ## Overview
 
-- Login/Singup User
-- Save Tokens in Cookie
-- Retrieve Tokens and use State Management (SSR)
-- Use Directus SDK (With Token) on unified Server/Client and/or Client
-- Example Role based Access
-
+In this Guide we will show how to setup a complete authentication and authorization mechanism in SvelteKit using Directus as the Provider. The user session will be persisted via Server-Side Cookies and evidently be used within the Directus SDK to make authenticated Calls. As an example we will create a new Role showing how authorization works.
 
 
 ## Primer Authentication
 
-- Different authentication mechanisms to choose from
-- In this article using the most secure form: HTTP Only Same-Site Cookies
-- for this same-site=strict prevents CSRF (meaning in order to be able to access the directus backend from the client directly, it must be on the same domain as the sveltekit frontend e.g myexample.com/api. otherwise it can only be accessed on the server-side of sveltekit)
-- -->https://andrewlock.net/understanding-samesite-cookies/
+There are different ways how to store the user session. Here we will use the most secure form via Server-Side Cookies using the `Same-Site=Strict` attribute which will prevent CSRF Attacks. This means in order to be able to access the Directus Backend from the client directly, the Directus Backend will need to live on the same domain as the SvelteKit Frontend. For local development this will not matter. For more Infos on this topic see https://andrewlock.net/understanding-samesite-cookies/
+
 
 ## Adapt Directus Wrapper
 
-See SvelteKit First Blog Post for initial setup! We need to change a few lines in order to:
-- Utilize the Access Token in the Directus SDK
-- Define a global Cookie Options Schema (using HttpOnly and Same-Site Attribute)
+The following code examples will build up on the first Directus SvelteKit Blog Article. If you haven't seen it, you can check it out. Otherwise will basic knowledge of SvelteKit you will be fine following along. First - let`s change a few lines in our Directus SDK Wrapper, to utilize the Token and define a global Cookie Options Schema:
 
-```js
+
+```js [/libs/directus.js]
 import { createDirectus, rest  } from "@directus/sdk"; // [!code --]
 import { createDirectus, rest, authentication  } from "@directus/sdk"; // [!code ++]
 import { PUBLIC_APIURL } from '$env/static/public'; // [!code --]
@@ -77,7 +69,7 @@ PUBLIC_COOKIE_DOMAIN= "example.com" // [!code ++]
 
 ## Setup Login/Signup Form
 
-Let's start the user journey from adding a login/signup form
+Let's start the user journey from adding a login/signup form:
 
 ```svelte [/signin/+page.svelte]
 <script lang="ts">
@@ -110,7 +102,7 @@ Let's start the user journey from adding a login/signup form
 The html template is straight forward. We only have a small function to let us redirect the user to a page he was trying to access before needing to login/signup.
 
 The javascript form action below will handle the actual request.
-The Directus SDK cannot save HttpOnly Cookies, thus the Directus API is directly accessed in order to be able to save the tokens in a secure cookie via SvelteKit's cookie handler.
+The Directus SDK is not saving HttpOnly Cookies, thus the Directus API is directly accessed from SvelteKit in order to be able to save the tokens in a secure cookie via SvelteKit's cookie handler.
 
 ```js [/signin/+page.server.js]
 import { redirect,fail } from '@sveltejs/kit';
@@ -137,7 +129,7 @@ const loginUser = async (request,email,password) => {
 			password
 		})
 	});
-	if(req.status !== 200){
+	if(req.status >= 300){
 		throw new Error(await req.text());
 	}
 	req = await req.json();
@@ -160,7 +152,7 @@ const login = async ({ cookies, request, url }) => {
 		return fail(400, {email,message:err.message});
 	}
 
-	throw redirect(302, redirectedFrom ? redirectedFrom : `/profile`)
+	redirect(302, redirectedFrom ? redirectedFrom : `/profile`)
 }
 
 const register = async ({ cookies, request, url }) => {
@@ -181,7 +173,7 @@ const register = async ({ cookies, request, url }) => {
 			password
 		})
 	});
-	if(signupRequest.status !== 200){
+	if(signupRequest.status >= 300){
 		return fail(400, { email, message:await signupRequest.text() });
 	}
 	try {
@@ -193,26 +185,36 @@ const register = async ({ cookies, request, url }) => {
 		return fail(400, err.message);
 	}
 	
-	throw redirect(302, redirectedFrom ? redirectedFrom : `/profile`)
+	redirect(302, redirectedFrom ? redirectedFrom : `/profile`)
 }
 
 export const actions = { login,register }
 ```
 
-- Make sure public Access Role has create permission for directus_user collection
-
 ## Setup Directus Roles
 
-- Create new Role in Directus (image)
-- Setup Permissions (image)
-- Bonus: How to define default role in Directus (image)
+Before you open `http://localhost:5173/signup` and create a new test user let us define a new role called `user` which all new users will inherited upon creating an account.
 
-Let's now try to register a new user ....
+Within the Directus Admin App go to Settings -> Access Control -> Create new Role and name it `Users`. App Access should be enabled.
+![A new role called User having App Access enabled.](new-role.webp)
+
+Also note down the role id from the url while you are in the Access Role page of the new Role.
+
+To make this role the default for new registered users and also to enable public non authenticated users to register themselfs, go to Access Control -> public and customize the create permission of the directus_users collection. Make sure that only email and password field permissions are set and as a default field use the following setting:
+```
+{
+    "role": "<YOUR ROLE ID>"
+}
+```
+
+Here you will need to enter the Role ID from before. It could for example [look like this](default-role.webp).
+
+Let's now try to register a new user for example `test@example.com` and password `test123`. You should see a 404 page as we do not yet have a profile page.  Even though the actual user is created in Directus and the cookie is set, the user is not logged in. This is because the cookie is only saved but not read for every request.
 
 
 ## Handle Authentication State
 
-Next up we need to handle the actual Cookie and keep the user remain logged in. For that we need to adapt the `hooks.server.js` file.
+Next up we need to handle the actual Cookie and keep the user remain logged in. For that adapt the `hooks.server.js` file.
 
 ```js
 import jwt from "jsonwebtoken";
@@ -234,9 +236,9 @@ async function refreshAccessToken(cookies) {
       body: JSON.stringify({ refresh_token: cookies.get('refresh_token') }),
     });
   
-    if (res.status != 200) {
-      cookies.delete('refresh_token');
-      cookies.delete('access_token');
+    if (res.status >= 300) {
+      cookies.delete('refresh_token', { path:'/' });
+      cookies.delete('access_token', { path:'/' });
       throw new Error("Refresh Token Status != 200");
     }
     let data = (await res.json()).data;
@@ -265,8 +267,8 @@ export async function handle({event, resolve}) {
             await refreshAccessToken(cookies);
             jwtPayload = cookies.get('access_token') ? jwt.decode(cookies.get('access_token')) : false;
           } catch (err) {
-            cookies.delete('refresh_token');
-            cookies.delete('access_token');
+            cookies.delete('refresh_token', { path:'/' });
+            cookies.delete('access_token', { path:'/' });
           }
         }
         
@@ -275,9 +277,10 @@ export async function handle({event, resolve}) {
     }
 
     if (event.route.id && shouldProtectRoute(event.route.id) && !event.locals.user) {
-        throw redirect(302,`/signin?redirectedFrom=${encodeURIComponent(url.pathname)}`)
+        redirect(302,`/signin?redirectedFrom=${encodeURIComponent(url.pathname)}`)
     }
 
+    // this is needed so that the response headers from SvelteKit do include the correct header to allow the browser to parse json requests
     return await resolve(event, {
         filterSerializedResponseHeaders: (key, value) => {
             return key.toLowerCase() === 'content-type'
@@ -288,11 +291,11 @@ export async function handle({event, resolve}) {
 
 Every single request goes passtrough this file. It checks the tokens and if valid sets the user id and the token to the locals object, which can be accessed througout SvelteKits Load Functions. If the Access Token is expired, a new one will be generated. Finally we can define routes under the `(protected)` Directory. The "protected" keyword will not appear in the url but is only visible in our file structure.
 
-In order for the authentication to work however, we also need to tell SvelteKit to actually pass those local variables through.
+In order for the authentication to work however, we also need to tell SvelteKit to actually pass those local variables through to every other load function.
 
 Create a file `/+layout.server.js`:
 
-```js
+```js [/+layout.server.js]
 /** @type {import('./$types').LayoutServerLoad} */
 export async function load({locals}) {
 	return {
@@ -344,12 +347,16 @@ Let's continue writing the Html Template:
 <p>Your Email: {data.user.email}</p>
 ```
 
+You should now see a simple profile page if you are logged in under http://localhost:5173/profile
+
+![A simple example of a profile page showing the users email](profile1.webp)
+
 
 ### Authenticated requests on the client and logging the user out
 
 Until now we have used the Directus SDK solely in the load functions. In order to also use it on the client we can define a global context object, which we can use on every svelte component. For this the `+layout.svelte` file needs to be adapted:
 
-```svelte
+```svelte [/+layout.svelte]
 <script>
     export let data;
     import getDirectusInstance from '$lib/directus'; // [!code ++]
@@ -379,7 +386,7 @@ Until now we have used the Directus SDK solely in the load functions. In order t
 
 As you see we also change the layout based on the login state and already add a logout endpoint for later usage.
 
-A simple example to use the Directus SDK on the client now is to change the users email in the profile page. For this let's revisit the profile page and adapt it:
+A simple example to use the Directus SDK on the client is now to change the users email in the profile page. Do the following changes to the profile component:
 
 ```svelte [/(protected)/profile/+page.svelte]
 <script>
@@ -405,9 +412,9 @@ A simple example to use the Directus SDK on the client now is to change the user
 </div> // [!code ++]
 ```
 
-Now go to /profile. testing out.....
+Now go to http://localhost:5173/profile and change the email of your current logged in user. Afterwards refresh the page to make sure that the value was persisted correctly.
 
-Lastly let's define a server endpoint to enable logout:
+Lastly let's define a server endpoint to enable logout functionality:
 
 ```js [/(protected)/logout/+server.js]
 import { redirect,fail } from '@sveltejs/kit';
@@ -435,8 +442,8 @@ export async function GET({locals,request,cookies}) {
 }
 ```
 
-This will simple delete the cookies and also calls the Directus API to invalide the stored session in the DB. Then redirecting the user back to the login page.
+This will simple delete the cookies and also calls the Directus API to invalide the stored session in the Datagbase. Then redirecting the user back to the login page. You can try this out by just opening http://localhost:5173/logout
 
 # Conclusion
 
-In this Guide ...
+In this Guide we have setup authentication and authorization in SvelteKit using Directus. It allows complex role based authorization schemas with granular control over what a logged in user can access and do in your Directus backed App.
