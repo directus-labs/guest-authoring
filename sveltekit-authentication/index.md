@@ -9,17 +9,17 @@ author:
 
 ## Overview
 
-In this Guide we will show how to setup a complete authentication and authorization mechanism in SvelteKit using Directus as the Provider. The user session will be persisted via Server-Side Cookies and evidently be used within the Directus SDK to make authenticated Calls. As an example we will create a new Role showing how authorization works.
+In this Guide we will show how to set up a complete authentication and authorization mechanism in SvelteKit using Directus as the Provider. The user session will be persisted via Server-Side Cookies and evidently be used within the Directus SDK to make authenticated Calls. As an example we will create a new Role showing how authorization works.
 
 
 ## Primer Authentication
 
-There are different ways how to store the user session. Here we will use the most secure form via Server-Side Cookies using the `Same-Site=Strict` attribute which will prevent CSRF Attacks. This means in order to be able to access the Directus Backend from the client directly, the Directus Backend will need to live on the same domain as the SvelteKit Frontend. For local development this will not matter. For more Infos on this topic see https://andrewlock.net/understanding-samesite-cookies/
+There are different ways how to store the user session. Here we will use the most secure form via Server-Side Cookies using the `Same-Site=Strict` attribute which will prevent CSRF Attacks. This means in order to be able to access the Directus Backend from the client directly, the Directus Backend will need to live on the same domain as the SvelteKit Frontend. For local development this will not matter. For more Information on this topic see https://andrewlock.net/understanding-samesite-cookies/
 
 
 ## Adapt Directus Wrapper
 
-The following code examples will build up on the first Directus SvelteKit Blog Article. If you haven't seen it, you can check it out. Otherwise will basic knowledge of SvelteKit you will be fine following along. First - let`s change a few lines in our Directus SDK Wrapper, to utilize the Token and define a global Cookie Options Schema:
+The following code examples will build up on the first Directus SvelteKit Blog Article. If you haven't seen it, you can check it out. Otherwise, with basic knowledge of SvelteKit you will be fine following along. First - let's change a few lines in our Directus SDK Wrapper, to utilize the Token and define a global Cookie Options Schema:
 
 
 ```js [/libs/directus.js]
@@ -101,7 +101,7 @@ Let's start the user journey from adding a login/signup form:
 
 The html template is straight forward. We only have a small function to let us redirect the user to a page he was trying to access before needing to login/signup.
 
-The javascript form action below will handle the actual request.
+The JavaScript form action below will handle the actual request.
 The Directus SDK is not saving HttpOnly Cookies, thus the Directus API is directly accessed from SvelteKit in order to be able to save the tokens in a secure cookie via SvelteKit's cookie handler.
 
 ```js [/signin/+page.server.js]
@@ -193,14 +193,14 @@ export const actions = { login,register }
 
 ## Setup Directus Roles
 
-Before you open `http://localhost:5173/signup` and create a new test user let us define a new role called `user` which all new users will inherited upon creating an account.
+Before you open `http://localhost:5173/signup` and create a new test user, let us define a new role called `user` which all new users will inherit upon creating an account.
 
 Within the Directus Admin App go to Settings -> Access Control -> Create new Role and name it `Users`. App Access should be enabled.
 ![A new role called User having App Access enabled.](new-role.webp)
 
 Also note down the role id from the url while you are in the Access Role page of the new Role.
 
-To make this role the default for new registered users and also to enable public non authenticated users to register themselfs, go to Access Control -> public and customize the create permission of the directus_users collection. Make sure that only email and password field permissions are set and as a default field use the following setting:
+To make this role the default for new registered users and also to enable public non-authenticated users to register themself, go to Access Control -> public and customize the create permission of the directus_users collection. Make sure that only email and password field permissions are set and as a default field use the following setting:
 ```
 {
     "role": "<YOUR ROLE ID>"
@@ -214,7 +214,7 @@ Let's now try to register a new user for example `test@example.com` and password
 
 ## Handle Authentication State
 
-Next up we need to handle the actual Cookie and keep the user remain logged in. For that adapt the `hooks.server.js` file.
+Next up, we need to handle the actual Cookie and keep the user remain logged in. For that, adapt the `hooks.server.js` file.
 
 ```js
 import jwt from "jsonwebtoken";
@@ -289,9 +289,9 @@ export async function handle({event, resolve}) {
 }
 ```
 
-Every single request goes passtrough this file. It checks the tokens and if valid sets the user id and the token to the locals object, which can be accessed througout SvelteKits Load Functions. If the Access Token is expired, a new one will be generated. Finally we can define routes under the `(protected)` Directory. The "protected" keyword will not appear in the url but is only visible in our file structure.
+Every single request goes pass trough this file. It checks the tokens and if valid sets the user id and the token to the locals object, which can be accessed througout SvelteKits Load Functions. If the Access Token is expired, a new one will be generated. Finally, we can define routes under the `(protected)` Directory. The "protected" keyword will not appear in the url, but is only visible in our file structure.
 
-In order for the authentication to work however, we also need to tell SvelteKit to actually pass those local variables through to every other load function.
+In order for the authentication to work, however, we also need to tell SvelteKit to actually pass those local variables through to every other load function.
 
 Create a file `/+layout.server.js`:
 
@@ -307,7 +307,7 @@ export async function load({locals}) {
 
 ## Create Profile Page
 
-The locals will now be used in every `+page.js` file to initialize the Directus SDK with the users session token. To test this out, let's now create our `profile` page, which is only accessible if the user is logged in.
+The locals will now be used in every `+page.js` file to initialize the Directus SDK with the user's session token. To test this out, let's now create our `profile` page, which is only accessible if the user is logged in.
 
 Create a file `/(protected)/profile/+page.js`
 
@@ -333,7 +333,7 @@ export async function load({ parent, fetch }) {
 
 ```
 
-As you see we are getting the token and initialize our Directus Instance as usual. This time however we also give it the Access Token so that every request will now have the Users Session attached. In this case we are reading the users profile. If you try this without the token the request will fail because of missing permissions.
+As you see, we are getting the token and initialize our Directus Instance as usual. This time however, we also give it the Access Token so that every request will now have the User's Session attached. In this case, we are reading the user's profile. If you try this without the token, the request will fail because of missing permissions.
 
 Let's continue writing the Html Template:
 
@@ -384,9 +384,9 @@ Until now we have used the Directus SDK solely in the load functions. In order t
 </div>
 ```
 
-As you see we also change the layout based on the login state and already add a logout endpoint for later usage.
+As you see, we also change the layout based on the login state and already add a logout endpoint for later usage.
 
-A simple example to use the Directus SDK on the client is now to change the users email in the profile page. Do the following changes to the profile component:
+A simple example to use the Directus SDK on the client is now to change the user's email in the profile page. Do the following changes to the profile component:
 
 ```svelte [/(protected)/profile/+page.svelte]
 <script>
@@ -412,9 +412,9 @@ A simple example to use the Directus SDK on the client is now to change the user
 </div> // [!code ++]
 ```
 
-Now go to http://localhost:5173/profile and change the email of your current logged in user. Afterwards refresh the page to make sure that the value was persisted correctly.
+Now go to http://localhost:5173/profile and change the email of your current logged-in user. Afterwards refresh the page to make sure that the value was persisted correctly.
 
-Lastly let's define a server endpoint to enable logout functionality:
+Lastly, let's define a server endpoint to enable logout functionality:
 
 ```js [/(protected)/logout/+server.js]
 import { redirect,fail } from '@sveltejs/kit';
@@ -442,8 +442,8 @@ export async function GET({locals,request,cookies}) {
 }
 ```
 
-This will simple delete the cookies and also calls the Directus API to invalide the stored session in the Datagbase. Then redirecting the user back to the login page. You can try this out by just opening http://localhost:5173/logout
+This will simply delete the cookies and also calls the Directus API to invalidate the stored session in the Database. Then redirecting the user back to the login page. You can try this out by just opening http://localhost:5173/logout
 
 # Conclusion
 
-In this Guide we have setup authentication and authorization in SvelteKit using Directus. It allows complex role based authorization schemas with granular control over what a logged in user can access and do in your Directus backed App.
+In this Guide, we have set up authentication and authorization in SvelteKit using Directus. It allows complex role based authorization schemas with granular control over what a logged-in user can access and do in your Directus backed App.
