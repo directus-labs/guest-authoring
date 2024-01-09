@@ -2,8 +2,8 @@
 title: 'Authentication in SvelteKit with Directus'
 description: 'Learn how to authenticate users and integrate state management with Cookies using SvelteKit with Server-Side Rendering (SSR).'
 author:
-  name: 'Eike Thies'
-  avatar_file_name: 'avatar.jpg'
+	name: 'Eike Thies'
+	avatar_file_name: 'avatar.jpg'
 ---
 
 
@@ -14,13 +14,21 @@ In this guide, we will set up a complete authentication and authorization mechan
 
 ## Primer Authentication
 
-There are different ways how to store the user session. Here we will use the most secure form via Server-Side Cookies using the `Same-Site=Strict` attribute which will prevent CSRF Attacks. This means in order to be able to access the Directus Backend from the client directly, the Directus Backend will need to live on the same domain as the SvelteKit Frontend. For local development this will not matter. For more Information on this topic see https://andrewlock.net/understanding-samesite-cookies/
+For Authentication usually a user session is used. It is a mechanism to identify a user between multiple requests. There are different ways how to store the user session.This is usually done via Cookies or Tokens. Cookies are sent by the browser automatically with every request to the same domain. Tokens on the other hand are usually stored in the local storage and have to be sent manually with each request. Both ways have their pros and cons. Cookies are more secure as they are not accessible from the JavaScript context.
+
+ Here we will use the most secure form via Server-Side Cookies using the `Same-Site=Strict` attribute which will prevent CSRF Attacks. CSRF Attacks are possible if the user is logged in and the attacker can make the user's browser send requests to the server. This is possible if the attacker can make the user visit a malicious website. That malicious website can then make the user's browser send requests to the server. If the user is logged in, the server will accept the request and execute it. This is prevented by the `Same-Site=Strict` attribute. It will only allow requests from the same domain. This means that the user's browser will not send the cookies to the malicious website. For more Information on this topic see https://andrewlock.net/understanding-samesite-cookies/
 
 
 ## Adapt Directus Wrapper
 
-In [Getting Started with Directus and SvelteKit](https://docs.directus.io/blog/getting-started-directus-sveltekit.html), we create a wrapper which makes the Directus SDK available to our project. In this project, we will adapt the wrapper to utilize the token and define a global cookie options schema:
+First we need to define the Domain the Cookie is valid for in the  `.env` file of our root project:
 
+```
+PUBLIC_APIURL= "https://directus.example.com"
+PUBLIC_COOKIE_DOMAIN= "example.com" // [!code ++]
+```
+
+In [Getting Started with Directus and SvelteKit](https://docs.directus.io/blog/getting-started-directus-sveltekit.html), we create a wrapper which makes the Directus SDK available to our project. In this project, we will adapt the wrapper to utilize the token and define a global cookie options schema:
 
 ```js [/libs/directus.js]
 import { createDirectus, rest  } from "@directus/sdk"; // [!code --]
@@ -30,15 +38,15 @@ import { PUBLIC_APIURL,PUBLIC_COOKIE_DOMAIN } from '$env/static/public'; // [!co
 
 function getDirectusInstance(fetch,token) {
 
-  const options = fetch ? { globals: { fetch } } : {};
+	const options = fetch ? { globals: { fetch } } : {};
 
-  const directus = createDirectus(PUBLIC_APIURL, options)
-  .with(authentication('cookie', { credentials: 'include' })) // [!code ++]
-  .with(rest());
+	const directus = createDirectus(PUBLIC_APIURL, options)
+	.with(authentication('cookie', { credentials: 'include' })) // [!code ++]
+	.with(rest());
 
-  if(token) directus.setToken(token); // [!code ++]
+	if(token) directus.setToken(token); // [!code ++]
 
-  return directus;
+	return directus;
 }
 export default getDirectusInstance;
 
@@ -60,12 +68,7 @@ export const constructCookieOpts = (age) => { // [!code ++]
 	} // [!code ++]
 ```
 
-Additionally we need to define the Domain the Cookie is valid for in the  `.env` file:
 
-```
-PUBLIC_APIURL= "https://directus.example.com"
-PUBLIC_COOKIE_DOMAIN= "example.com" // [!code ++]
-```
 
 ## Create the Login Form
 
@@ -75,9 +78,15 @@ Let's start the user journey from adding a login/signup form:
 <script lang="ts">
 	/** @type {import('./$types').PageData} */
 	import { page } from '$app/stores';
-  let email,password;
+	let email,password;
+	export let form;
 	const redirectedFrom = $page.url.searchParams.get('redirectedFrom')
 </script>
+
+
+{#if form?.message}
+	<p>{form.message}</p>
+{/if}
 
 <form
 	action="?/login{redirectedFrom?`&redirectedFrom=${redirectedFrom}`:''}"
@@ -99,24 +108,25 @@ Let's start the user journey from adding a login/signup form:
 </form>
 ```
 
-The html template is straight forward. We only have a small function to let us redirect the user to a page he was trying to access before needing to login/signup.
+The html template is straight forward. We only have a small function to let us redirect the user to a page he was trying to access before needing to login/signup. Also any message from the server side will be displayed, e.g. if the user entered a wrong password. 
 
-The JavaScript form action below will handle the actual request.
-The Directus SDK is not saving HttpOnly Cookies, thus the Directus API is directly accessed from SvelteKit in order to be able to save the tokens in a secure cookie via SvelteKit's cookie handler.
+The SvelteKit form action below will handle the actual request.
+The Directus SDK is not saving Cookies with the HTTP-only Option enabled and we want to set the Cookie on the server, thus we need to access the Directus API directly from SvelteKit ourself and save the tokens in a secure cookie via SvelteKit's cookie handler.
 
 ```js [/signin/+page.server.js]
 import { redirect,fail } from '@sveltejs/kit';
 import { PUBLIC_APIURL } from '$env/static/public';
 import { constructCookieOpts } from '$lib/directus';
 
-const REFRESH_TOKEN_EXPIRATION = 30; // in days - adapt this with your Directus Settings
+const REFRESH_TOKEN_TTL = 7; // in days - sync this with the Setting from Directus. see https://docs.directus.io/self-hosted/config-options.html#security
 
+// This makes sure that the login page is only available if the user is not logged in yet
 export const load = async ({ locals,url }) => {
-	// redirect user if already logged in
 	if (locals.token) redirect(302, '/profile')
 	return {};
 }
 
+// This calls the Directus API login endpoint
 const loginUser = async (request,email,password) => {
 	let req = await fetch(`${PUBLIC_APIURL}/auth/login`, {
 		method: 'POST',
@@ -146,22 +156,28 @@ const login = async ({ cookies, request, url }) => {
 	try {
 		let tokens = await loginUser(request,email,password);
 
+		// save cookies
 		cookies.set('access_token',tokens.access_token, constructCookieOpts(Math.floor(tokens.expires/1000)));
-		cookies.set('refresh_token', tokens.refresh_token, constructCookieOpts(60 * 60 * 24 * REFRESH_TOKEN_EXPIRATION));
+		cookies.set('refresh_token', tokens.refresh_token, constructCookieOpts(60 * 60 * 24 * REFRESH_TOKEN_TTL));
 	} catch (err) {
-		return fail(400, {email,message:err.message});
+		return fail(400, { message: err.message});
 	}
 
+	// redirect to the page the user was trying to access before. If there is no such page, redirect to the profile page
 	redirect(302, redirectedFrom ? redirectedFrom : `/profile`)
 }
+```
 
+Registering a new user works similar to the login. We will first create the user and then login the user. The only difference is that we need to create a new user via the Directus API. We will also use the same login function as before to login the user after creating the user.
+
+```js [/signin/+page.server.js]
 const register = async ({ cookies, request, url }) => {
 	const data = await request.formData();
 	const email = data.get('email');
 	const password = data.get('password');
 	const redirectedFrom = url.searchParams.get('redirectedFrom')
 	
-  //First create the user
+	//a) First create the user
 	let signupRequest = await fetch(`${PUBLIC_APIURL}/users`, {
 		method: 'POST',
 		headers: {
@@ -174,15 +190,18 @@ const register = async ({ cookies, request, url }) => {
 		})
 	});
 	if(signupRequest.status >= 300){
-		return fail(400, { email, message:await signupRequest.text() });
+		return fail(400, { message: await signupRequest.text() });
 	}
+	
 	try {
+		// b) then login the user as usual
 		let tokens = await loginUser(request,email,password);
-
+		
+		// save cookies
 		cookies.set('access_token',tokens.access_token, constructCookieOpts(Math.floor(tokens.expires/1000)));
-		cookies.set('refresh_token', tokens.refresh_token, constructCookieOpts(60 * 60 * 24 * REFRESH_TOKEN_EXPIRATION));
+		cookies.set('refresh_token', tokens.refresh_token, constructCookieOpts(60 * 60 * 24 * REFRESH_TOKEN_TTL));
 	} catch (err) {
-		return fail(400, err.message);
+		return fail(400, { message: err.message });
 	}
 	
 	redirect(302, redirectedFrom ? redirectedFrom : `/profile`)
@@ -196,20 +215,21 @@ export const actions = { login,register }
 Before you open `http://localhost:5173/signup` and create a new test user, let us define a new role called `user` which all new users will inherit upon creating an account.
 
 Within the Directus Admin App go to Settings -> Access Control -> Create new Role and name it `Users`. App Access should be enabled.
-![A new role called User having App Access enabled.](new-role.webp)
 
 Also note down the role id from the url while you are in the Access Role page of the new Role.
 
 To make this role the default for new registered users and also to enable public non-authenticated users to register themself, go to Access Control -> public and customize the create permission of the directus_users collection. Make sure that only email and password field permissions are set and as a default field use the following setting:
 ```
 {
-    "role": "<YOUR ROLE ID>"
+		"role": "<YOUR ROLE ID>"
 }
 ```
 
-Here you will need to enter the Role ID from before. It could for example [look like this](default-role.webp).
+Here you will need to enter the Role ID from before. It could for example look like this
 
-Let's now try to register a new user for example `test@example.com` and password `test123`. You should see a 404 page as we do not yet have a profile page.  Even though the actual user is created in Directus and the cookie is set, the user is not logged in. This is because the cookie is only saved but not read for every request.
+![example default user role](default-role.webp).
+
+Let's now try to register a new user for example `test@example.com` and password `test123`. You should see a 404 page as we do not yet have a profile page.  Even though the actual user is created in Directus and the cookie is set, the user is not logged in. This is because the cookie is only saved, but not read for every request.
 
 
 ## Handle Authentication State
@@ -226,66 +246,66 @@ const TOKEN_EXPIRATION_BUFFER = 300;
 
 // exchange the refresh token for an access token
 async function refreshAccessToken(cookies) {
-    let res = await fetch(PUBLIC_APIURL + "/auth/refresh", {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ refresh_token: cookies.get('refresh_token') }),
-    });
-  
-    if (res.status >= 300) {
-      cookies.delete('refresh_token', { path:'/' });
-      cookies.delete('access_token', { path:'/' });
-      throw new Error("Refresh Token Status != 200");
-    }
-    let data = (await res.json()).data;
-  
-    cookies.set("refresh_token", data.refresh_token, constructCookieOpts(60 * 60 * 24 * 30));
-    cookies.set("access_token", data.access_token, constructCookieOpts(Math.floor(data.expires/1000)));
-  }
+		let res = await fetch(PUBLIC_APIURL + "/auth/refresh", {
+			method: "POST",
+			mode: "cors",
+			headers: {
+				Accept: "application/json, text/plain, */*",
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ refresh_token: cookies.get('refresh_token') }),
+		});
+	
+		if (res.status >= 300) {
+			cookies.delete('refresh_token', { path:'/' });
+			cookies.delete('access_token', { path:'/' });
+			throw new Error("Refresh Token Status != 200");
+		}
+		let data = (await res.json()).data;
+	
+		cookies.set("refresh_token", data.refresh_token, constructCookieOpts(60 * 60 * 24 * 30));
+		cookies.set("access_token", data.access_token, constructCookieOpts(Math.floor(data.expires/1000)));
+	}
 
 function isTokenExpired(jwtPayload){
-    return jwtPayload?.exp < Math.floor(Date.now()/1000) + TOKEN_EXPIRATION_BUFFER;
+		return jwtPayload?.exp < Math.floor(Date.now()/1000) + TOKEN_EXPIRATION_BUFFER;
 }
 
 function shouldProtectRoute(url) {
-    return url.split("/").includes("(protected)")
+		return url.split("/").includes("(protected)")
 }
 
 export async function handle({event, resolve}) {
-    const { cookies,url } = event
-    
-    if (cookies.get('access_token') || cookies.get('refresh_token')) {
-        let jwtPayload = cookies.get('access_token') ? jwt.decode(cookies.get('access_token')) : false;
-  
-        //check if token is expired and renew it if necessary
-        if (isTokenExpired(jwtPayload) || !cookies.get('access_token')) {
-          try {
-            await refreshAccessToken(cookies);
-            jwtPayload = cookies.get('access_token') ? jwt.decode(cookies.get('access_token')) : false;
-          } catch (err) {
-            cookies.delete('refresh_token', { path:'/' });
-            cookies.delete('access_token', { path:'/' });
-          }
-        }
-        
-        event.locals.user = jwtPayload?.id;
-        event.locals.token = cookies.get('access_token');
-    }
+		const { cookies,url } = event
+		
+		if (cookies.get('access_token') || cookies.get('refresh_token')) {
+				let jwtPayload = cookies.get('access_token') ? jwt.decode(cookies.get('access_token')) : false;
+	
+				//check if token is expired and renew it if necessary
+				if (isTokenExpired(jwtPayload) || !cookies.get('access_token')) {
+					try {
+						await refreshAccessToken(cookies);
+						jwtPayload = cookies.get('access_token') ? jwt.decode(cookies.get('access_token')) : false;
+					} catch (err) {
+						cookies.delete('refresh_token', { path:'/' });
+						cookies.delete('access_token', { path:'/' });
+					}
+				}
+				
+				event.locals.user = jwtPayload?.id;
+				event.locals.token = cookies.get('access_token');
+		}
 
-    if (event.route.id && shouldProtectRoute(event.route.id) && !event.locals.user) {
-        redirect(302,`/signin?redirectedFrom=${encodeURIComponent(url.pathname)}`)
-    }
+		if (event.route.id && shouldProtectRoute(event.route.id) && !event.locals.user) {
+				redirect(302,`/signin?redirectedFrom=${encodeURIComponent(url.pathname)}`)
+		}
 
-    // this is needed so that the response headers from SvelteKit do include the correct header to allow the browser to parse json requests
-    return await resolve(event, {
-        filterSerializedResponseHeaders: (key, value) => {
-            return key.toLowerCase() === 'content-type'
-        }
-    });
+		// this is needed so that the response headers from SvelteKit do include the correct header to allow the browser to parse json requests
+		return await resolve(event, {
+				filterSerializedResponseHeaders: (key, value) => {
+						return key.toLowerCase() === 'content-type'
+				}
+		});
 }
 ```
 
@@ -309,62 +329,63 @@ export async function load({locals}) {
 
 The locals will now be used in every `+page.js` file to initialize the Directus SDK with the user's session token. To test this out, let's now create our `profile` page, which is only accessible if the user is logged in.
 
-Create a file `/(protected)/profile/+page.js`
+::: code-group
 
 ```js [/(protected)/profile/+page.js]
 import getDirectusInstance from "$lib/directus";
 import { readMe } from "@directus/sdk";
 import { error } from "@sveltejs/kit";
 export async function load({ parent, fetch }) {
-  const { token } = await parent();
-  const directus = getDirectusInstance(fetch, token);
-  try {
-    return {
-      user: await directus.request(
-        readMe({
-          fields: ["*"],
-        })
-      ),
-    };
-  } catch (err) {
-    error(404, "User not found");
-  }
+	const { token } = await parent();
+	const directus = getDirectusInstance(fetch, token);
+	try {
+		return {
+			user: await directus.request(
+				readMe({
+					fields: ["*"],
+				})
+			),
+		};
+	} catch (err) {
+		error(404, "User not found");
+	}
 }
-
 ```
-
-As you see, we are getting the token and initialize our Directus Instance as usual. This time however, we also give it the Access Token so that every request will now have the User's Session attached. In this case, we are reading the user's profile. If you try this without the token, the request will fail because of missing permissions.
-
-To use data from Directus in the page we must export a `data` variable:
 
 ```svelte [/(protected)/profile/+page.svelte]
 <script>
-  export let data;
+	export let data;
 </script>
-  
+	
 <p>This is only visible if you are logged in</p>
 
 <p>Your Email: {data.user.email}</p>
 ```
+
+:::
+
+As you see, we are getting the token and initialize our Directus Instance as usual. This time however, we also give it the Access Token so that every request will now have the User's Session attached. In this case, we are reading the user's profile. If you try this without the token, the request will fail because of missing permissions.
+
+To use data from Directus in the page we must export a `data` variable.
 
 You should now see a simple profile page if you are logged in under http://localhost:5173/profile
 
 ![A simple example of a profile page showing the users email](profile1.webp)
 
 
-### Authenticated requests on the client and logging the user out
+## Authenticated requests on the client
 
 Until now we have used the Directus SDK solely in the load functions. In order to also use it on the client we can define a global context object, which we can use on every svelte component. For this the `+layout.svelte` file needs to be adapted:
 
 ```svelte [/+layout.svelte]
 <script>
-    export let data;
-    import getDirectusInstance from '$lib/directus'; // [!code ++]
-	  import { setContext } from 'svelte'; // [!code ++]
+		export let data;
+		import getDirectusInstance from '$lib/directus'; // [!code ++]
+		import { setContext } from 'svelte'; // [!code ++]
 
-    // Make directus available to all components via Context API // [!code ++]
-    const directus = getDirectusInstance(fetch,data.token) // [!code ++]
-    setContext('directus', directus); // [!code ++]
+		// Make directus available to all components via Context API // [!code ++]
+		const directus = getDirectusInstance(fetch,data.token) // [!code ++]
+		setContext('directus', directus); // [!code ++]
 </script>
 
 <a href="/">Home</a>
@@ -374,71 +395,73 @@ Until now we have used the Directus SDK solely in the load functions. In order t
 <a href="/blog">Blog</a>
 
 {#if data.token} // [!code ++]
-    <a href="/logout" data-sveltekit-preload-data="off">logout</a> // [!code ++]
+		<a href="/logout" data-sveltekit-preload-data="off">logout</a> // [!code ++]
 {:else} // [!code ++]
-    <a href="/signin">signin</a> // [!code ++]
+		<a href="/signin">signin</a> // [!code ++]
 {/if} // [!code ++]
 
 <div>
-    <slot></slot>
+		<slot></slot>
 </div>
 ```
 
-As you see, we also change the layout based on the login state and already add a logout endpoint for later usage.
+As you see, we also change the layout based on the login state and already add a logout endpoint for later usage. The actual logout link has a attribute which prevents SvelteKit from preloading the data. This is important because we do not want to call the logout endpoint on hovering the link.
 
 A simple example to use the Directus SDK on the client is now to change the user's email in the profile page. Do the following changes to the profile component:
 
 ```svelte [/(protected)/profile/+page.svelte]
 <script>
 	import { getContext } from 'svelte'; // [!code ++]
-  import { updateMe } from '@directus/sdk'; // [!code ++]
-  export let data;
+	import { updateMe } from '@directus/sdk'; // [!code ++]
+	export let data;
 
-  const directus = getContext('directus'); // [!code ++]
+	const directus = getContext('directus'); // [!code ++]
 
-  async function changeEmail() { // [!code ++]
-    await directus.request(updateMe({email:data.user.email})) // [!code ++]
-  } // [!code ++]
+	async function changeEmail() { // [!code ++]
+		await directus.request(updateMe({email:data.user.email})) // [!code ++]
+	} // [!code ++]
 </script>
-  
+	
 <p>This is only visible if you are logged in</p>
 
 <p>Your Email: {data.user.email}</p>
 
 <div> // [!code ++]
-  <label for="email">Your E-Mail</label> // [!code ++]
-  <input bind:value={data.user.email} required type="email" autocomplete="email" autocapitalize="off" /> // [!code ++]
-  <button on:click={changeEmail}>Change Email</button> // [!code ++]
+	<label for="email">Your E-Mail</label> // [!code ++]
+	<input bind:value={data.user.email} required type="email" autocomplete="email" autocapitalize="off" /> // [!code ++]
+	<button on:click={changeEmail}>Change Email</button> // [!code ++]
 </div> // [!code ++]
 ```
 
 Now go to http://localhost:5173/profile and change the email of your current logged-in user. Afterwards refresh the page to make sure that the value was persisted correctly.
 
+## Logout Functionality
+
 Lastly, let's define a server endpoint to enable logout functionality:
 
 ```js [/(protected)/logout/+server.js]
-import { redirect,fail } from '@sveltejs/kit';
+import { redirect,error } from '@sveltejs/kit';
 import { PUBLIC_APIURL } from '$env/static/public';
 
 export async function GET({locals,request,cookies}) {
-  try {
-    if(cookies.get('refresh_token'))
-      await fetch(`${PUBLIC_APIURL}/auth/logout`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'user-agent':request.headers.get("user-agent")
-        },
-        body: JSON.stringify({ refresh_token: cookies.get('refresh_token') })
-      });
-  } catch (err) {
-    throw fail(400,err);
-  }
-  
-  cookies.delete('refresh_token', { path: '/' });
-  cookies.delete('access_token', { path: '/' });
+	try {
+		if(cookies.get('refresh_token'))
+			await fetch(`${PUBLIC_APIURL}/auth/logout`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'user-agent':request.headers.get("user-agent")
+				},
+				body: JSON.stringify({ refresh_token: cookies.get('refresh_token') })
+			});
+	} catch (err) {
+		error(400,err);
+	}
+	
+	cookies.delete('refresh_token', { path: '/' });
+	cookies.delete('access_token', { path: '/' });
 
-  redirect(302,`/signin`);
+	redirect(302,`/signin`);
 }
 ```
 
