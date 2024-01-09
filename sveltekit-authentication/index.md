@@ -289,7 +289,7 @@ export async function handle({event, resolve}) {
 }
 ```
 
-Every single request goes pass trough this file. It checks the tokens and if valid sets the user id and the token to the locals object, which can be accessed througout SvelteKits Load Functions. If the Access Token is expired, a new one will be generated. Finally, we can define routes under the `(protected)` Directory. The "protected" keyword will not appear in the url, but is only visible in our file structure.
+Every request will touch the logic in this file. It checks tokens and, if valid, sets the user id and the token to the locals object, which can be accessed throughout SvelteKit's load functions. If the Access Token is expired, a new one will be generated. Finally, we can define routes under the `(protected)` Directory. The "protected" keyword will not appear in the url, but is only visible in our file structure.
 
 In order for the authentication to work, however, we also need to tell SvelteKit to actually pass those local variables through to every other load function.
 
