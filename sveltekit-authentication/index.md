@@ -1,6 +1,6 @@
 ---
 title: 'Authentication in SvelteKit with Directus'
-description: 'How to authenticate users and integrate state managment with Cookies using SvelteKit SSR'
+description: 'Learn how to authenticate users and integrate state management with Cookies using SvelteKit with Server-Side Rendering (SSR).'
 author:
   name: 'Eike Thies'
   avatar_file_name: 'avatar.jpg'
@@ -9,7 +9,7 @@ author:
 
 ## Overview
 
-In this Guide we will show how to set up a complete authentication and authorization mechanism in SvelteKit using Directus as the Provider. The user session will be persisted via Server-Side Cookies and evidently be used within the Directus SDK to make authenticated Calls. As an example we will create a new Role showing how authorization works.
+In this guide, we will set up a complete authentication and authorization mechanism in SvelteKit using Directus as the Provider. The user session will be persisted via Server-Side Cookies and be used by the Directus SDK to make authenticated requests. As an example, we will create a new Role showing how authorization works.
 
 
 ## Primer Authentication
@@ -19,7 +19,7 @@ There are different ways how to store the user session. Here we will use the mos
 
 ## Adapt Directus Wrapper
 
-The following code examples will build up on the first Directus SvelteKit Blog Article. If you haven't seen it, you can check it out. Otherwise, with basic knowledge of SvelteKit you will be fine following along. First - let's change a few lines in our Directus SDK Wrapper, to utilize the Token and define a global Cookie Options Schema:
+In [Getting Started with Directus and SvelteKit](https://docs.directus.io/blog/getting-started-directus-sveltekit.html), we create a wrapper which makes the Directus SDK available to our project. In this project, we will adapt the wrapper to utilize the token and define a global cookie options schema:
 
 
 ```js [/libs/directus.js]
@@ -67,7 +67,7 @@ PUBLIC_APIURL= "https://directus.example.com"
 PUBLIC_COOKIE_DOMAIN= "example.com" // [!code ++]
 ```
 
-## Setup Login/Signup Form
+## Create the Login Form
 
 Let's start the user journey from adding a login/signup form:
 
@@ -335,7 +335,7 @@ export async function load({ parent, fetch }) {
 
 As you see, we are getting the token and initialize our Directus Instance as usual. This time however, we also give it the Access Token so that every request will now have the User's Session attached. In this case, we are reading the user's profile. If you try this without the token, the request will fail because of missing permissions.
 
-Let's continue writing the Html Template:
+To use data from Directus in the page we must export a `data` variable:
 
 ```svelte [/(protected)/profile/+page.svelte]
 <script>
