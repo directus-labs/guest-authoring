@@ -273,7 +273,7 @@ export default function PostsList() {
 
 ## Add Navigation
 
-While not strictly Directus-related, there are now several pages that aren't linked to each other. Create the file `src/routes/app.jsx` to add a navigation above the main content. Don't forget to use your specific page slugs.
+While not strictly Directus-related, there are now several pages that aren't linked to each other. Create a `src/routes/app.jsx` file to add a navigation above the main content. Don't forget to use your specific page slugs.
 
 Within the `root` attribute, we can wrap our app within an `<ErrorBoundary>`. That way every time we throw within a component will be caught by our boundary.
 
