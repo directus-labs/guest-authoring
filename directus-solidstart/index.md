@@ -206,7 +206,7 @@ Create 3 items in the posts collection -[here's some sample data](https://github
 
 ## List Blog Posts
 
-Time to add another fetcher. Back into our `src/lib/directus.js`, add now a request to read multiple items from `"posts"`.
+Open `src/lib/directus.js`, add a helper to request all items from the `posts` collection.
 
 ```jsx
 export const getPosts = cache(async () => {
