@@ -230,7 +230,7 @@ This query will retrieve the first 100 items (default), sorted by publishing dat
 
 ![A page with a title of "Blog". On it is a list of three items - each with a title, author, and date. The title is a link.](blog-list.webp)
 
-This time, we don't want this route to throw ever. What we want is to just show an empty list if by any chance we are not successful, so not rendering the list is enough.
+This fetcher should not throw an error, and instead show an empty list if the request is not successful.
 
 In our `src/routes`, we can now create a `blog` directory. And within the newly create directory, an `index.jsx`.
 
