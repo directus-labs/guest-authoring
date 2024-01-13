@@ -59,7 +59,11 @@ export const directus = createDirectus("< your project URL >").with(rest());
 
 We have some unused `import` statements at the moment since now we are only instantiating the Directus client.
 
-> Remember to replace `"< your project URL >"` with your actual URL, you can find it in your Directus dashboard.
+:::tip Provide Your Directus Project URL
+
+Remember to replace `< your project URL >` with your actual URL, you can find it in your Directus dashboard.
+
+:::
 
 It may be useful to create an `.env` file and store the URL there in case you use different projects for production, development, etc. Otherwise it is not a private value, access is managed through the Directus dashboard.
 
