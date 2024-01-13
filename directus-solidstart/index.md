@@ -188,7 +188,7 @@ export default function UserPage() {
 
 ## Creating Blog Posts
 
-Create a new collection called authors with a single text input field called name. Create one or more authors.
+Create a new collection called `authors` with a single text input field called `name`. Create one or more authors.
 
 Then, create a new collection called posts - make the Primary ID Field a "Manually Entered String" called slug, which will correlate with the URL for the page. For example hello-world will later correlate to the page `localhost:3000/blog/hello-world`.
 
