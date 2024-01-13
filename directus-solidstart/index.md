@@ -65,8 +65,6 @@ Remember to replace `< your project URL >` with your actual URL, you can find it
 
 :::
 
-It may be useful to create an `.env` file and store the URL there in case you use different projects for production, development, etc. Otherwise it is not a private value, access is managed through the Directus dashboard.
-
 ## Using Global Metadata and Settings
 
 In your Directus project, navigate to Settings -> Data Model and create a new collection called **global**. Under the Singleton option, select 'Treat as a single object', as this collection will have just a single entry containing global website metadata.
@@ -311,4 +309,4 @@ export default function App() {
 
 Through this guide, you have set up a SolidStart project, created a Directus helper, and used it to query data. You have used a singleton collection for global metadata, dynamically created pages, as well as blog listing and post pages.
 
-If you want to change what is user-accessible, consider setting up more restrictive roles and accessing only valid data at build-time.
+If you want to change what is user-accessible, consider setting up more restrictive roles and accessing only valid data at build-time. Additionally, it may be useful to create an `.env` file and store the URL there in case you use different projects for production, development, etc. Otherwise it is not a private value, access is managed through the Directus dashboard.
