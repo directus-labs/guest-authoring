@@ -14,9 +14,9 @@ author:
 
 You will need:
 
-- To install Node.js and a code editor on your computer.
-- A Directus project - follow our quickstart guide if you don't already have one.
-- SolidJS knowledge will definitely help, but will not prevent you from following this guide.
+- Node.js and a code editor.
+- A Directus project - [follow our quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one.
+- (Bonus) SolidJS knowledge will definitely help, but is not required.
 
 ## Initialize SolidStart Project
 
