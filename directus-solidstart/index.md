@@ -86,7 +86,6 @@ export const getGlobals = cache(async () => {
     return await directus.request.readItems("global");
   } catch (e) {
     console.error(e);
-
     return null;
   }
 }, "globals");
@@ -232,7 +231,7 @@ This query will retrieve the first 100 items (default), sorted by publishing dat
 
 This fetcher should not throw an error, and instead show an empty list if the request is not successful.
 
-In our `src/routes`, we can now create a `blog` directory. And within the newly create directory, an `index.jsx`.
+Inside of the `src/routes` directory, now create a `blog` directory. And within this newly created directory, an `index.jsx` file:
 
 ```jsx
 import { A, createAsync } from "@solidjs/router";
