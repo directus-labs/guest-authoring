@@ -89,7 +89,7 @@ export const getGlobals = cache(async () => {
 
     return null;
   }
-}, `globals`);
+}, "globals");
 ```
 
 Notice the `"use server"` directive. This indicates the bundler this method will never run (and therefore will not exist) in the client-side build. The `cache()` method wrapper defines a cache-key ("globals") where this response will be stored. We will try the request to Directus, if the request is not successful we can throw a `404`.
