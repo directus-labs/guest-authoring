@@ -144,7 +144,7 @@ export const getPage = (slug) =>
   }, slug);
 ```
 
-Again, this method will attempt to fetch information from a given `slug`. And if there is no information, it will return `null`.
+This method attempts to fetch information from a given `slug`. If there is no information, it will return `null`.
 
 Inside of `src/routes`, create a new a file called `slug.jsx`. This is a dynamic route, so a single file can be used for all of the top-level pages.
 
