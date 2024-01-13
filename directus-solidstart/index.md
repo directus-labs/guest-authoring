@@ -48,7 +48,7 @@ It will open a browser window or tab on [localhost:3000](https://localhost:3000)
 
 ## Create a Directus Helper
 
-We now need to setup the Directus SDK. We will add our data fetchers in this same file so we can handle caching and requests all at the same place. Create a new file `directus.js` inside of the src/libs directory:
+We now need to setup the Directus SDK. We will add our data fetchers in this same file so we can handle caching and requests all at the same place. Create a new file `directus.js` inside of the `src/libs` directory:
 
 ```jsx
 import { createDirectus, readItem, readItems, rest } from "@directus/sdk";
