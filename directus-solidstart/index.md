@@ -126,7 +126,7 @@ The `route` object defines a `load` method that will be called **before** our ro
 
 ## Dynamic Routes With Directus
 
-Create a new collection called pages - make the Primary ID Field a "Manually Entered String" called slug, which will correlate with the URL for the page. For example about will later correlate to the page [localhost:3000/about](http://localhost:3000/about).
+Create a new collection called pages - make the Primary ID Field a "Manually Entered String" called slug, which will correlate with the URL for the page. For example, `about` will later correlate to the page [localhost:3000/about](http://localhost:3000/about).
 
 Create a text input field called title and a WYSIWYG input field called content. In Roles & Permissions, give the Public role read access to the new collection. Create 3 items in the new collection - here's some sample data.
 
