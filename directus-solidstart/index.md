@@ -147,8 +147,6 @@ This method attempts to fetch information from a given `slug`. If there is no in
 
 Inside of the `src/routes` directory, create a new a file called `slug.jsx`. This is a dynamic route, so a single file can be used for all of the top-level pages.
 
-> It's important to note that exact matches take precedence over dynamic routes. If it exists, a `about.jsx` file will render instead of `[slug].jsx` for the `/about` URL.
-
 ```jsx
 import { createAsync, useParams } from "@solidjs/router";
 import { Show, createEffect } from "solid-js";
@@ -184,6 +182,12 @@ export default function UserPage() {
   );
 }
 ```
+
+:::tip Dynamic Route Precedence
+
+It's important to note that exact matches take precedence over dynamic routes. If it exists, a `about.jsx` file will render instead of `[slug].jsx` for the `/about` URL.
+
+:::
 
 ## Creating Blog Posts
 
