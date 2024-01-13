@@ -130,7 +130,7 @@ Create a new collection called pages - make the Primary ID Field a "Manually Ent
 
 Create a text input field called title and a WYSIWYG input field called content. In Roles & Permissions, give the Public role read access to the new collection. Create 3 items in the new collection - here's some sample data.
 
-Now, we go to our `src/lib/directus.js` and create our new fetcher.
+Open `src/lib/directus.js` and create our new fetcher.
 
 ```js
 export const getPage = (slug) =>
