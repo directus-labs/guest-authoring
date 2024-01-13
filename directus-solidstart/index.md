@@ -24,17 +24,10 @@ Open your terminal and run the following commands to create a new Solid project 
 
 ```sh
 npm create solid@latest solid-directus
-```
-
-A prompt will start, here are the sequence of answers provided for this exercise:
-
-```text
 ✔ Which template do you want to use?
   › bare
-
 ✔ Server Side Rendering?
   › yes
-
 ✔ Use TypeScript?
   › no
 ```
