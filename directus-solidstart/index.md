@@ -306,6 +306,6 @@ export default function App() {
 
 ## Next Steps
 
-Through this guide, you have set up a Next project, created a Directus helper, and used it to query data. You have used a singleton collection for global metadata, dynamically created pages, as well as blog listing and post pages.
+Through this guide, you have set up a SolidStart project, created a Directus helper, and used it to query data. You have used a singleton collection for global metadata, dynamically created pages, as well as blog listing and post pages.
 
 If you want to change what is user-accessible, consider setting up more restrictive roles and accessing only valid data at build-time.
