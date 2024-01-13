@@ -146,7 +146,7 @@ export const getPage = (slug) =>
 
 This method attempts to fetch information from a given `slug`. If there is no information, it will return `null`.
 
-Inside of `src/routes`, create a new a file called `slug.jsx`. This is a dynamic route, so a single file can be used for all of the top-level pages.
+Inside of the `src/routes` directory, create a new a file called `slug.jsx`. This is a dynamic route, so a single file can be used for all of the top-level pages.
 
 > It's important to note that exact matches take precedence over dynamic routes. If it exists, a `about.jsx` file will render instead of `[slug].jsx` for the `/about` URL.
 
