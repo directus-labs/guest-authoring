@@ -8,7 +8,7 @@ author:
 
 ## Summary
 
-[SolidStart](https://start.solidjs.com) a meta-framework built around [SolidJS](https://solidjs.com) - SolidStart is a framework aiming to allow people and teams to built high-end applications while bringing their own opinions. In this tutorial, you will learn how to build a website using Directus as a CMS. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items, and build a blog.
+[SolidStart](https://start.solidjs.com) a meta-framework built around [SolidJS](https://solidjs.com) - SolidStart is a framework aiming to allow people and teams to built high-end applications without being too opinionated. In this tutorial, you will learn how to build a website using Directus as a CMS. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items, and build a blog.
 
 ## Before You Start
 
