@@ -36,7 +36,7 @@ Inside `my-website` open the `config.toml` file and add the URL to your Directus
 
 Open `my-website` in your code editor.
 
-## Using Global Metadata and Settings
+## Using Global Metadata And Settings
 
 In your Directus project, navigate to Settings -> Data Model and create a new collection called `global`. Select 'Treat as a single object' under the Singleton option.
 
@@ -44,7 +44,7 @@ Create two text input fields - one with the key of `title` and the other with `d
 
 Go to the Content module and select the Global collection. Enter information for the title and the description and hit Save.
 
-![Hugo global collection configuration](/hugo-global-config.png)
+![Hugo global collection configuration](hugo-global-config.png)
 
 By default, new collections are not accessible to the public. Navigate to Settings -> Access Control -> Public and give Read access to the Global collection.
 
@@ -107,8 +107,6 @@ disableKinds = ["sitemap", "taxonomy", "term"]
 [params]
   api_url = "https://directus.example.com"
 ```
-
-The variable `api_url` is the URL of your Directus project.
 
 This ensures the prebuild directory outputs only the data fetched from the Directus project API.
 
@@ -230,7 +228,7 @@ This will display a list of all the blog posts. It includes the `slug`, `title`,
 
 Visit http://localhost:1313/blog to view the blog post listing with the latest items first.
 
-![Blog Post Listing](/blog-post-listing.png)
+![Blog Post Listing](blog-post-listing.png)
 
 ### Create Blog Post Pages
 
@@ -253,7 +251,7 @@ Some key notes about the code snippet:
 
 Run `hugo serve` and view any blog post page, for example, http://localhost:1313/why-steampunk-rabbits-are-the-future-of-work.
 
-![Single Blog Post]()
+![Single Blog Post](single-blog-article.png)
 
 ## Add Navigation
 
