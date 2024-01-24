@@ -196,9 +196,9 @@ Create the following fields in your `posts` data model:
 - a datetime selection field called `published_date` - set the type to 'date'
 - a many-to-one relational field called `author` with the related collection set to `authors`
 
-In Roles & Permissions, give the Public role read access to the `authors`, `posts`, and `directus_files` collections.
+In Settings -> Access Control, give the Public role read access to the `authors`, `posts`, and `directus_files` collections.
 
-Create some items in the posts collection - here's some sample data.
+Create some items in the posts collection - [here's some sample data.](https://github.com/directus-community/getting-started-demo-data)
 
 ### Create Blog Post Listing
 
