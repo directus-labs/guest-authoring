@@ -8,7 +8,7 @@ author:
 
 ## Introduction
 
-[Remix](https://remix.run/) is a React.js framework that  helps you deliver websites that are fast, slick, and have resilient user experience. In this tutorial, you will learn how to build a website using Directus as a headless CMS. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items, and build a blog.
+[Remix](https://remix.run/) is a React.js framework that provides many conveniences useful when building websites. In this tutorial, you will learn how to build a website using Directus as a Headless CMS. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items, and build a blog.
 
 ## Before You Start
 
@@ -16,14 +16,14 @@ You will need:
 
 - To install [Node.js](https://nodejs.org/en/) and a code editor on your computer.
 - A Directus project - you can use [Directus Cloud](https://directus.cloud/) or [run it yourself](https://docs.directus.io/getting-started/quickstart.html).
-- Some knowledge of TypeScript and React
+- Some knowledge of TypeScript and React.
 
 ## Initialize Remix and Install the Directus SDK
 
 Open your terminal to run the following command to create a new Remix project:
 
 ```bash
-npx create-remix@latest
+npx create-remix@2.5.1
 
 ```
 
@@ -37,16 +37,17 @@ Do you plan to write TypeScript? Yes
 
 ```
 
-Once completed, navigate into the new directory and delete all the contents in the `app/routes/_index.tsx` file so you can build the project from scratch and install the Directus JavaScript SDK:
-
-```bash
-cd remix-directus
-npm i @directus/sdk
-```
+Once initialized, open the directory in a code editor and delete all the contents in the `app/routes/_index.tsx` file.
 
 Open the `remix-directus` directory in a text editor of your choice and run `npm run dev` in the terminal to start the development server at `http://localhost:3000`.
 
-## Create a Helper for the SDK
+## Create a Directus SDK Helper
+
+Install the Directus SDK using the command:
+
+```bash
+npm install @directus/sdk
+```
 
 To create an instance of the Directus SDK that multiple pages in the project will use, create a new directory called `lib` and a new file called `directus.ts` inside of it, add the following content:
 
@@ -100,7 +101,7 @@ Navigate to the content module and enter the global collection. Collections will
 
  ![A form named "Global" has two inputs - a title and a description, each filled with some text.](global-data.png)
 
- By default, new collections are not accessible to the public. Navigate to Settings -> Roles & Permissions -> Public and give Read access to the Global collection.
+ By default, new collections are not accessible to the public. Navigate to Settings -> Access Control -> Public and give Read access to the Global collection.
 
  In your `app/routes/_index.tsx` file, add the following to fetch the data from Directus and display it:
 
@@ -135,11 +136,11 @@ Refresh your browser. You should see the data from your Directus Global collecti
 
 Create a new collection called `pages` - make the Primary ID Field a "Manually Entered String" called `slug`, which will correlate with the URL for the page. For example `about` will later correlate to the page `localhost:3000/about`.
 
-Create a text input field called `title` and a WYSIWYG input field called `content`. In Roles & Permissions, give the Public role read access to the new collection.
+Create a text input field called `title` and a WYSIWYG input field called `content`. In the Access Control settings, give the Public role read access to the new collection.
 
 Create some items in the new collection
 
-### Setup Dynamic Routes in Astro
+### Setup Dynamic Routes in Remix
 
 Inside of the `app/routes` directory, create a new file called `$slug.tsx`. Remix uses `$` in a filename to identify dynamic route parameters and generates generate multiple, matching pages.
 
@@ -223,9 +224,9 @@ export const loader = async () => {
 
 ```
 
-This query will retrieve the first 100 items (default), sorted by published date (descending order, which is latest first). It will only return the specific fields we request - `slug`, `title`, `published_date`, and the `name` from the related `author` item.
+The above query to Directus will retrieve the first 100 items (default), sorted by published date (descending order, which is latest first). It will only return the specific fields we request - `slug`, `title`, `published_date`, and the `name` from the related `author` item.
 
-Display the fetched data in HTML:
+Next, display the retrieved data in HTML:
 
 ```tsx
 export default function Blog() {
@@ -300,7 +301,7 @@ Click on any of the blog post links, and it will take you to a blog post page co
 
 ## Add Navigation
 
-While not strictly Directus-related, there are now several pages that aren't linked to each other. Update the `Layout.astro` file to include a navigation. Don't forget to use your specific page slugs.
+While not strictly Directus-related, there are now several pages that aren't linked to each other. Update the `app/root.tsx` file to include a navigation with your specific page slugs.
 
 ```tsx
   <html lang="en">
@@ -328,4 +329,6 @@ While not strictly Directus-related, there are now several pages that aren't lin
 
 ## Next Steps
 
-Through this guide, you have set up a Remix project, created a Directus instance, and used it to query data. You have used a singleton collection for global metadata, dynamically created pages, as well as blog listing and post pages.
+Using this guide, you have successfully set up a Remix project, created a Directus instance, and used it to query data. You have used a singleton collection for global metadata, dynamically created pages, as well as blog listing and post pages.
+
+Directus can also be used as build complex Remix applications as a backend service to build complex Remix applications or as a CMS for complicated content-driven remix websites.
