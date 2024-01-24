@@ -18,7 +18,7 @@ You will need:
 - A Directus project - you can use [Directus Cloud](https://directus.cloud/) or [run it yourself](https://docs.directus.io/getting-started/quickstart.html).
 - Some knowledge of TypeScript and React.
 
-## Initialize Remix and Install the Directus SDK
+## Initialize Remix
 
 Open your terminal to run the following command to create a new Remix project:
 
@@ -41,7 +41,7 @@ Once initialized, open the directory in a code editor and delete all the content
 
 Open the `remix-directus` directory in a text editor of your choice and run `npm run dev` in the terminal to start the development server at `http://localhost:3000`.
 
-## Create a Directus SDK Helper
+## Install the Directus SDK and Create a Directus SDK Helper
 
 Install the Directus SDK using the command:
 
