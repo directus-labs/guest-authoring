@@ -22,38 +22,27 @@ You will need:
 
 ## Setup
 
-Create a new gatsby project using NPM:
+Create a new Gatsby project on your terminal and walk through the wizard:
 
 ```sh
 npm init gatsby
-```
 
-Respond with the following:
-
-```sh
 What would you like to call your site?
-✔ · Directus Gatsby Blog
-
+  › Directus Gatsby Blog
 What would you like to name the folder where your site will be created?
-✔ code/ directus-gatsby-blog
-
-✔ Will you be using JavaScript or TypeScript?
-· JavaScript
-
-✔ Will you be using a CMS?
-· No (or I'll add it later)
-
-✔ Would you like to install a styling system?
-· No (or I'll add it later)
-
-? Would you like to install additional features with other plugins?
-· Done
-
-❯◯ Add the Google gtag script for e.g. Google Analytics
-· Done
-
+  › directus-gatsby-blog
+Will you be using JavaScript or TypeScript?
+  › JavaScript
+Will you be using a CMS?
+  › No (or I'll add it later)
+Would you like to install a styling system?
+  › No (or I'll add it later)
+Would you like to install additional features with other plugins?
+  › Done
+Add the Google gtag script for e.g. Google Analytics
+  › Done
 Shall we do this? (Y/n)
-› Yes
+  › Yes
 ```
 
 Navigate into the new directory and install dependencies:
