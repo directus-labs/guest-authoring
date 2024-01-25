@@ -56,25 +56,15 @@ Shall we do this? (Y/n)
 › Yes
 ```
 
-Go into the directory
+Navigate into the new directory and install dependencies:
 
 ```sh
 cd directus-gatsby-blog
+npm install @directus/gatsby-source-directus
+npm install gatsby-plugin-image gatsby-transformer-sharp gatsby-plugin-sharp
 ```
 
-Install the Directus Plugin
-
-```sh
-npm i @directus/gatsby-source-directus
-```
-
-Install the gatsby sharp plugins so we can compress images at build-time.
-
-```sh
-npm i gatsby-plugin-image gatsby-transformer-sharp gatsby-plugin-sharp
-```
-
-Start the dev server
+Start the development server
 
 ```sh
 npm run develop
