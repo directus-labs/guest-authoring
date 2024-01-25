@@ -8,9 +8,9 @@ author:
 
 ## Introduction
 
-Hello! This is a blog post to show you how to create a simple static website using Gatsby and Directus as a headless CMS.
+In this blog post, we will create a static website using Gatsby and Directus as a Headless CMS.
 
-We'll make use of the official Directus Gatsby plugin whichs lets hook into the best feature of Gatsby, which is image compression.
+We'll make use of the official Directus Gatsby plugin which leverages into one of Gatsby's best features - image compression.
 
 ## Before You Start
 
