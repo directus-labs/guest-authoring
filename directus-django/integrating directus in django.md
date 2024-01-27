@@ -216,7 +216,7 @@ You can now click on a blog post title. This should take you to the view of the 
 - Ensure that the Directus API endpoint is correct and accessible.
 - Verify that your index.html and detail.html templates are correctly set up to display the data.
 
-## Conclusion
+## Summary
 This tutorial demonstrates how to create a blog application with Django and Directus, featuring a main page listing all posts and individual detail views for each post. This setup allows users to browse through summaries of blog posts and click on them to read more.
 
 
