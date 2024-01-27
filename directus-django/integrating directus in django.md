@@ -204,12 +204,12 @@ python manage.py runserver
 This will start  django’s development  server, usually at http://localhost:8000/
 
 Open a web browser and go to http://localhost:8000/. This should display the list of blog posts fetched from the Directus API like so:
-![blog list](blog list.png)
+![blog list](blog-list.png)
 
 You can now click on a blog post title. This should take you to the view of the post:
 
 
-![image]
+![blog detail](blog-detail.png)
 
 ### Debugging:
 - If you encounter issues, check the Django server's output in the terminal for error messages.
