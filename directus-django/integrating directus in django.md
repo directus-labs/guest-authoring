@@ -1,3 +1,4 @@
+
 ---
 title: 'Using Directus with Django'
 description: 'This tutorial provides a concise guide on integrating Django with Directus for building a blog API. It covers the initial setup of a Django project, creating a blog app, configuring settings, and creating views to fetch and display data from Directus. The tutorial is aimed at those familiar with Python and Django and concludes with testing the application using Django's development server.'
