@@ -4,7 +4,7 @@ description: 'Django is one of the most popular python frameworks known for its 
 '
 author:
   name: 'omu inetimi'
-  avatar_file_name: 'add-to-directory'
+  avatar_file_name: 'omu-inetimi.JPG'
 ---
 ## Introduction
 Django is one of the most popular python frameworks known for its battery included philosophy, it comes loaded with a lot of features that cuts down development time for  devs. In this tutorial, you will learn how to integrate django with Directus using a blog API. At the end of this tutorial, you will have an application that uses the django templating engine to display data from the API.
