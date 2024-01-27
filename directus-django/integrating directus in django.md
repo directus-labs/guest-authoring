@@ -1,6 +1,6 @@
 ---
 title: 'Using Directus with Django'
-description: 'Django is one of the most popular python frameworks known for its battery included philosophy, it comes loaded with a lot of features that cuts down development time for  devs. In this tutorial, you will learn how to integrate django with Directus using a blog API. At the end of this tutorial, you will have an application that uses the django templating engine to display data from the API.
+description: 'This tutorial provides a concise guide on integrating Django with Directus for building a blog API. It covers the initial setup of a Django project, creating a blog app, configuring settings, and creating views to fetch and display data from Directus. The tutorial is aimed at those familiar with Python and Django and concludes with testing the application using Django's development server.
 '
 author:
   name: 'omu inetimi'
