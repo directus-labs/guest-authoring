@@ -13,7 +13,7 @@ Django is one of the most popular python frameworks known for its battery includ
 
 ## Before You Start
 You will need:
-- Python and django installed and a code editor on your computer.
+- Python installed and a code editor on your computer.
 - Directus project - Use the [quickstart guide](https://docs.directus.io/getting-started/quickstart) to create a project with the fields  title, content and author.
 - Basic knowledge of python and django
 
