@@ -22,8 +22,6 @@ You'll need:
 
 Open up your command prompt or terminal app and run the following command:
 
-This will create a Vue.js project using [Vite](https://vitejs.dev/):
-
 ```bash
 npm create vue@3
 ```
