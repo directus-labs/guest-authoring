@@ -14,7 +14,7 @@ In this tutorial, you we’ll build a personal travel journal application using 
 
 You'll need:
 
-- [Node.js](https://nodejs.org/en/) and a [text editor](https://kinsta.com/blog/best-text-editors/) installed on your machine.
+- [Node.js](https://nodejs.org/en/) and a code editor installed on your machine.
 - A Directus project created either using [Directus Cloud](https://directus.cloud/) or [run locally on your machine.](https://docs.directus.io/getting-started/quickstart.html) This tutorial on the otherhand uses Directus Cloud.
 - Some knowledge of the Vue.js Composition API.
 
