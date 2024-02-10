@@ -8,7 +8,7 @@ author:
 
 ## Introduction
 
-Vue.js, a progressive JavaScript framework known for its simplicity and flexibility, has gained widespread popularity among developers for building interactive user interfaces. In this tutorial, you we’ll build a personal travel journal application using Vue.js in conjunction with Directus, an open-source headless CMS. In this guide we’ll go through the process of implementing user authentication with Directus and demonstrate how to interact with a Directus collection using the Vue.js framework.
+In this tutorial, you we’ll build a personal travel journal application using Vue.js and Directus. We’ll go through the process of implementing user authentication with Directus and demonstrate how to interact with a Directus collection using the Vue.js framework.
 
 ## Before You Start
 
