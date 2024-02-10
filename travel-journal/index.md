@@ -40,7 +40,7 @@ During project creation, when prompted with questions, choose the following conf
 ✔ Add ESLint for code quality? … No / Yes
 ```
 
-Once completed, execute the following commands sequentially to finalize the project creation:
+Once completed, run the following command to install dependencies and start the development server:
 
 ```bash
 cd directus-travel-journal
