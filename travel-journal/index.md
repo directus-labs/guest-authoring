@@ -15,7 +15,7 @@ In this tutorial, you we’ll build a personal travel journal application using 
 You'll need:
 
 - [Node.js](https://nodejs.org/en/) and a code editor installed on your machine.
-- A Directus project created either using [Directus Cloud](https://directus.cloud/) or [run locally on your machine.](https://docs.directus.io/getting-started/quickstart.html)
+- A Directus project created either using [Directus Cloud](https://directus.cloud/) or [run locally on your machine.](https://docs.directus.io/getting-started/quickstart.html). This tutorial on the otherhand uses the Directus SDK via NPM.
 - Some knowledge of the Vue.js Composition API.
 
 ## Creating A Vue.js Project
@@ -60,7 +60,7 @@ In your Directus project, navigate to Settings -> Data Model and create a new co
 Create the following fields with the following types:
 
 - `title`: Input - string (*required*).
-- `description`: Input - textarea (*required*).
+- `description`: Textarea - text (*required*).
 - `photo`: Image - uuid (*required*).
 - `city`: Input - string (*required*).
 - `country`: Input - string (*required*).
@@ -162,9 +162,9 @@ This is the library we will use to interact with the Directus API.
 npm i axios
 ```
 
-Head ove to the `LoginView.vue` view and add the following script:
+Head over to the `LoginView.vue` view and add the following script:
 
-```jsx
+```javascript
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -176,15 +176,14 @@ const password = ref('');
 
 const handleLogin = async () => {
   try {
-    const response = await axios.post('https://travel-journal.directus.app/auth/login', {
+    const response = await axios.post('http://localhost:8055/auth/login', {
       email: email.value,
-      password: password.value
+      password: password.value,
     });
-
     localStorage.setItem('auth_token', response.data.token);
     router.push({ name: 'addjournal' });
   } catch (error) {
-    console.error('Login failed:', error);
+    console.error('Login failed:', error.response ? error.response.data : error);
   }
 };
 </script>
@@ -292,7 +291,7 @@ button:hover {
 
 To configure the signup functionality, add the following script to your `SignupView.vue`:
 
-```jsx
+```javascript
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -307,15 +306,18 @@ const password = ref('');
 
 const handleSignup = async () => {
   try {
-    const response = await axios.post('https://travel-journal.directus.app/users', {
+    const response = await axios.post('http://localhost:8055/users', {
       first_name: firstName.value,
       last_name: lastName.value,
       email: email.value,
       password: password.value,
-      role: '78bf9bb0-fa3c-...',
+      role: "1e0dbd44-279f-4b4a-ac1a-9f03ff19e998",
     });
     console.log('Signup successful:', response.data);
-    router.push({ name: 'addjournal' });
+    if (response.data.token) {
+      localStorage.setItem('userToken', response.data.token);
+      router.push({ name: 'addjournal' });
+    }
   } catch (error) {
     console.error('Signup failed:', error);
   }
@@ -464,7 +466,7 @@ Now that you have successfully integrated a login and signup feature with Direct
 
 First, edit your `Addjournal.vue` view to contain the following script:
 
-```jsx
+```javascript
 <script setup>
 import { ref, watch } from 'vue';
 import axios from 'axios';
@@ -519,7 +521,7 @@ const uploadImageToDirectus = async () => {
   formData.append('file', photo.value);
 
   try {
-    const response = await axios.post('https://travel-journal.directus.app/files', formData, {
+    const response = await axios.post('http://localhost:8055/files', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -553,9 +555,9 @@ const handleSubmit = async () => {
 
     let response;
     if (journalId.value) {
-      response = await axios.patch(`https://travel-journal.directus.app/items/journals/${journalId.value}`, journalData);
+      response = await axios.patch(`http://localhost:8055/items/journals/${journalId.value}`, journalData);
     } else {
-      response = await axios.post('https://travel-journal.directus.app/items/journals', journalData);
+      response = await axios.post('http://localhost:8055/items/journals', journalData);
     }
 
     console.log('Journal entry processed:', response.data);
@@ -691,7 +693,7 @@ button:hover {
 
 For viewing journals, add the following script in your `Readjournal.vue` view:
 
-```jsx
+```javascript
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
@@ -703,7 +705,7 @@ const journals = ref([]);
 
 onMounted(async () => {
   try {
-    const response = await axios.get('https://travel-journal.directus.app/items/journals');
+    const response = await axios.get('http://localhost:8055/items/journals');
     journals.value = response.data.data;
   } catch (error) {
     console.error('Error fetching journals:', error);
@@ -717,7 +719,7 @@ const editJournal = (journal) => {
 
 const deleteJournal = async (journalId) => {
   try {
-    await axios.delete(`https://travel-journal.directus.app/items/journals/${journalId}`);
+    await axios.delete(`http://localhost:8055/${journalId}`);
     journals.value = journals.value.filter(journal => journal.id !== journalId);
   } catch (error) {
     console.error('Error deleting journal:', error);
@@ -725,7 +727,7 @@ const deleteJournal = async (journalId) => {
 };
 
 const getImageUrl = (imageId) => {
-  return `https://travel-journal.directus.app/assets/${imageId}`;
+  return `http://localhost:8055/assets/${imageId}`;
 };
 
 </script>
@@ -764,15 +766,15 @@ And then the following styles:
 ```css
 <style scoped>
 .read-journal-container {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
   
 .journal-list {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px; 
-    padding: 20px; 
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px; 
+  padding: 20px; 
 }
 
 @media (max-width: 1200px) {
@@ -794,54 +796,54 @@ And then the following styles:
 }
 
 .card {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .journal-photo {
-    width: 100px;
-    height: 100px;
-    display: block;
-    margin-bottom: 10px;
+  width: 100px;
+  height: 100px;
+  display: block;
+  margin-bottom: 10px;
 }
 
 .journal-actions {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
 }
   
 .edit-button, .delete-button {
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    color: white;
-    font-weight: bold;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
 }
 
 .edit-button {
-    background-color: #4CAF50;
+  background-color: #4CAF50;
 }
   
 .delete-button {
-    background-color: #f44336;
+  background-color: #f44336;
 }
   
 .edit-button:hover {
-    background-color: #45a049;
+  background-color: #45a049;
 }
   
 .delete-button:hover {
-    background-color: #d32f2f;
+  background-color: #d32f2f;
 }
 
 .content {
-   margin-bottom: 10px;
-   border: 2px solid black;
-   padding: 10px;
+  margin-bottom: 10px;
+  border: 2px solid black;
+  padding: 10px;
 }
 
 .journal-entry {
@@ -891,13 +893,13 @@ At this point, you can choose to delete a journal if you want too and it will be
 
 Looking ahead, here are some exciting directions you might consider venturing into after completing this tutorial.
 
-### **Add a Session Identifier to Track Journals Created by the Same User**
+### Add a Session Identifier to Track Journals Created by the Same User
 
 Currently, the application does not differentiate between journals created by different users. To enhance user experience and security, you can implement a filtering approach. Here's how:
 
 1. **Filter Journals by User**: When fetching journals, modify the API call to filter journals based on the logged-in user's ID, ensuring users only see their own journals.
 
-### **Allow Users to View Their Existing Journals Before Creating New Ones**
+### Allow Users to View Their Existing Journals Before Creating New Ones
 
 Currently, after a user creates a journal, they have to go through the signup or login process to create another one. To streamline this:
 
