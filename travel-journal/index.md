@@ -73,7 +73,7 @@ Head over to Settings→Access Control, create customer role with only App Acces
 
 ![Creating a customer role](./images/3.png)
 
-After creating the customer role, you will be directed to the Access Control page. Click on the Public role and enable create, read, update and delete access to the `journal` collections:
+After creating the customer role, you will be directed to the Access Control page. Click on the Public role and enable create, read, update and delete access to the `journal` collections and also for `directus_files` under system collections:
 
 ![Authorizing public role](./images/4.png)
 
