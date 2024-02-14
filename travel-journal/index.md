@@ -8,7 +8,7 @@ author:
 
 ## Introduction
 
-In this tutorial, you we’ll build a personal travel journal application using Vue.js and Directus. We’ll go through the process of implementing user authentication with Directus and demonstrate how to interact with a Directus collection using the Vue.js framework.
+In this tutorial, we’ll build a personal travel journal application using Vue.js and Directus. We’ll go through the process of implementing user authentication with Directus and demonstrate how to interact with a Directus collection using Vue.js.
 
 ## Before You Start
 
