@@ -44,14 +44,11 @@ Once completed, run the following command to install dependencies and start the 
 
 ```bash
 cd directus-travel-journal
-code .
 npm install
 npm run dev
 ```
 
-Once everything is set up, visit the following address  - localhost:5173 **and you should see the vite welcome page:
-
-![Viewing the vite welcome page](./images/1.png)
+Once the command is run, visit `http://localhost:5173` and you should see a starter project. Open the new directory in your code editor before continuing.
 
 ## Creating a Journal and Users Collection
 
