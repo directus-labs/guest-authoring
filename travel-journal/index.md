@@ -134,7 +134,7 @@ This will set up the basic routing for the Vue.js application, allowing users to
 
 Now go into the `views` folder; delete the existing views - `AboutView.vue` and `HomeView.vue` and create the following views - `LoginView.vue`, `SignupView.vue`, `Addjournal.vue` and `Readjournal.vue`.
 
-Finally, edit your `App.vue` to contain the following code :
+Finally, edit your `App.vue` to contain the following code:
 
 ```html
 <script setup>
