@@ -26,7 +26,7 @@ Open up your command prompt or terminal app and run the following command:
 npm create vue@3
 ```
 
-During project creation, when prompted with questions, choose the following configurations:
+During project creation, when prompted with questions, choose the following options:
 
 ```bash
 ✔ Project name: … ./directus-travel-journal
