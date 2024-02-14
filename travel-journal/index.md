@@ -132,7 +132,7 @@ This will set up the basic routing for the Vue.js application, allowing users to
 - `/addjournal`: This is the part for the `Addjournal` view. This route is used for adding new journal entries.
 - `readjournal`: • This route is linked to the `Readjournal` view. It is intended for users to view and read their existing journal entries. When users navigate to `/readjournal`, they can browse through all the journal entries they have created.
 
-Now go into the `views` folder; delete the existing views - `AboutView.vue` and `HomeView.vue` and create the following views - `LoginView.vue`, `SignupView.vue`, `Addjournal.vue` and `Readjournal.vue`.
+In the `views` folder, delete the existing views - `AboutView.vue` and `HomeView.vue` and create the following views - `LoginView.vue`, `SignupView.vue`, `Addjournal.vue` and `Readjournal.vue`.
 
 Finally, edit your `App.vue` to contain the following code:
 
