@@ -15,7 +15,7 @@ In this tutorial, we’ll build a personal travel journal application using Vue.
 You'll need:
 
 - [Node.js](https://nodejs.org/en/) and a code editor installed on your machine.
-- A Directus project created either using [Directus Cloud](https://directus.cloud/) or [run locally on your machine.](https://docs.directus.io/getting-started/quickstart.html). This tutorial on the otherhand uses the Directus SDK via NPM.
+- A Directus project created either using [Directus Cloud](https://directus.cloud/) or [run locally on your machine.](https://docs.directus.io/getting-started/quickstart.html).
 - Some knowledge of the Vue.js Composition API.
 
 ## Creating A Vue.js Project
