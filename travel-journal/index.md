@@ -20,7 +20,7 @@ You'll need:
 
 ## Creating A Vue.js Project
 
-Open up your command prompt or terminal app and run the following command:
+Open your terminal and run the following command:
 
 ```bash
 npm create vue@3
