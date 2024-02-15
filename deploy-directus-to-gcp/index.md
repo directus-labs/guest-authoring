@@ -45,35 +45,21 @@ To deploy a Docker container to Cloud Run, you must first prepare the container.
 In your local computer, create a `Dockerfile` with the following content:
 
 ```yml
-FROM directus/directus:10.8.3
-USER root
-RUN corepack enable \
-&& corepack prepare pnpm@8.7.6 --activate \
-&& chown node:node /directus
-EXPOSE 8080
-USER node
-CMD : \
-&& node /directus/cli.js bootstrap \
-&& node /directus/cli.js start;
+FROM directus/directus:10.9.2
 ```
 
-In the `Dockerfile` above:
+The`Dockerfile` creates a new Docker image using the Directus image as the base image.
 
-- Creates a new Docker image using the Directus image as the base image
-- Enables the required packages to run directus.
-- Expose port 8080 for running the image
-- Run starts the Directus server using the Directus `cli.js` file
-
-Build the docker image and tag it to be `directus:10.8.3` using the command:
+Next, Build the docker image and tag it to be `directus:10.9.2` using the command:
 
 ```bash
-docker build -t directus:10.8.3 --platform linux/amd64 .
+docker build -t directus:10.9.2 --platform linux/amd64 .
 ```
 
 If you are using an ARM-based MacBook(M series), use the command:
 
 ```bash
-docker buildx build -t directus:10.8.3 --platform linux/amd64 .
+docker buildx build -t directus:10.9.2 --platform linux/amd64 .
 ```
 
 ## Set up Repository on Google Cloud
@@ -128,7 +114,7 @@ To push the `Dockerfile` to the created repository, you must first be authentica
 2. Tag the Docker Image: Tag the local docker image you built with the repository created with the command:
 
     ```bash
-    docker tag directus:10.8.3 us-central1-docker.pkg.dev/directus-project/directus-repo/directus:10.8.3
+    docker tag directus:10.9.2 us-central1-docker.pkg.dev/directus-project/directus-repo/directus:10.9.2
     ```
 
     Where:
@@ -140,7 +126,7 @@ To push the `Dockerfile` to the created repository, you must first be authentica
 3. Push the Docker image to the Artifact Registry with the command:
 
 ```bash
-docker push  us-central1-docker.pkg.dev/directus-project/directus-repo/directus:10.8.3
+docker push  us-central1-docker.pkg.dev/directus-project/directus-repo/directus:10.9.2
 
 ```
 
