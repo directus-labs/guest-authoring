@@ -70,9 +70,11 @@ Head over to Settings→Access Control, create customer role with only App Acces
 
 ![Creating a customer role](./images/3.png)
 
-After creating the customer role, you will be directed to the Access Control page. Click on the Public role and enable create, read, update and delete access to the `journal` collections and also for `directus_files` under system collections:
+After creating the customer role, you will be directed to the Access Control page. Click on the Public role and enable create, read, update and delete access to the `journal` collections and also for `directus_files` and `directus_users` under system collections:
 
 ![Authorizing public role](./images/4.png)
+
+![Enabling public role to add users](./images/-4.png)
 
 ## Preparing the Vue.js Project
 
@@ -696,7 +698,6 @@ button:hover {
   max-height: 150px;
   object-fit: cover;
 }
-
 </style>
 ```
 
@@ -752,7 +753,7 @@ The `editJournal` function navigates the user to the `AddJournal.vue` view for e
 
 The `deleteJournal` function removes an entry by its ID and updates the journals array to reflect this change. Additionally, the `getImageUrl` function generates URLs for any image associated with the journals so it can be viewed in the `Readjournal` template.
 
-Add the following template:
+Now, add the following template:
 
 ```html
 <template>
