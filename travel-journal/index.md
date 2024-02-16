@@ -92,7 +92,7 @@ Head over to the `components` folder and delete everything in it ncluding the `i
 
 Once that is done, go into the `router/index.js` file and edit it to match the following:
 
-```jsx
+```javascript
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 
@@ -147,48 +147,50 @@ import { RouterView } from 'vue-router'
 </template>
 ```
 
-## Configuring Login and SignUp
+## Installing the Directus SDK
+With your Vue.js project set up, proceed to install the Directus SDK with the following command:
 
-With your Vue.js project set up, you’ll now dive into the main functionality of the travel journal application.
-
-First install [Axios](https://axios-http.com/docs/intro) using the following command:
-
-This is the library we will use to interact with the Directus API.
-
-```jsx
-npm i axios
+```bash
+npm install @directus/sdk
 ```
 
-Head over to the `LoginView.vue` view and add the following script:
+## Configuring Login and SignUp
+
+With the Directus SDK installed, you’ll now dive into the main functionality of the travel journal application.
+
+First head over to the `LoginView.vue` view and add the following script:
 
 ```javascript
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
+import { createDirectus, authentication, rest, login} from '@directus/sdk';
 
-const router = useRouter();
 const email = ref('');
 const password = ref('');
 
+const router = useRouter();
+
+const directus = createDirectus('http://localhost:8055').with(authentication('json')).with(rest());
+
+
 const handleLogin = async () => {
   try {
-    const response = await axios.post('http://localhost:8055/auth/login', {
-      email: email.value,
-      password: password.value,
-    });
-    localStorage.setItem('auth_token', response.data.token);
+    const response = await directus.request(login(email.value, password.value));
+    console.log('Authentication successful', response);
     router.push({ name: 'addjournal' });
+    if (response.access_token) {
+      localStorage.setItem('userToken', response.access_token);
+    }
   } catch (error) {
-    console.error('Login failed:', error.response ? error.response.data : error);
+    console.error('Authentication failed:', error);
   }
 };
 </script>
 ```
 
-This will establish the functionality for user authentication with Directus using Axios. If the login is successful, the received authentication token is stored in the browser's local storage, and the user is redirected to the route - `addjournal` , where they can start adding entries to their travel journal.
+This will establish the functionality for user authentication with Directus using the Directus SDK. If the login is successful, the received authentication token is stored in the browser's local storage, and the user is redirected to the route - `addjournal`, where they can start adding entries to their travel journal.
 
-Make sure to replace the URL in the code above with your Directus project URL and then append `/auth/login`.
 
 Next, add the following template:
 
@@ -214,7 +216,7 @@ Next, add the following template:
 </template>
 ```
 
- and styles:
+and styles:
 
 ```html
 <style scoped>
@@ -292,7 +294,7 @@ To configure the signup functionality, add the following script to your `SignupV
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
+import { createDirectus, createUser, rest } from '@directus/sdk';
 
 const router = useRouter();
 
@@ -301,20 +303,19 @@ const lastName = ref('');
 const email = ref('');
 const password = ref('');
 
+const directus = createDirectus('http://localhost:8055').with(rest());
+
 const handleSignup = async () => {
   try {
-    const response = await axios.post('http://localhost:8055/users', {
+    const response = await directus.request(createUser({
       first_name: firstName.value,
       last_name: lastName.value,
       email: email.value,
       password: password.value,
-      role: "1e0dbd44-279f-4b4a-ac1a-9f03ff19e998",
-    });
-    console.log('Signup successful:', response.data);
-    if (response.data.token) {
-      localStorage.setItem('userToken', response.data.token);
-      router.push({ name: 'addjournal' });
-    }
+      role: '..72a55849',
+    }));
+    console.log('Signup successful:', response);
+    router.push({ name: 'addjournal' });
   } catch (error) {
     console.error('Signup failed:', error);
   }
@@ -322,7 +323,7 @@ const handleSignup = async () => {
 </script>
 ```
 
-This will set up the user registration functionality in directus. And, after a successful signup, the user is directed to the `Addjournal.vue` view just like the Login functionsality. Be sure to replace the role with your own customer role ID string.
+This will set up the user registration functionality in directus. And, after a successful signup, the user is directed to the `Addjournal.vue` view just like the `Login` functionality. Be sure to replace the role with your own customer role ID string.
 
 Add the following template:
 
@@ -466,7 +467,7 @@ First, edit your `Addjournal.vue` view to contain the following script:
 ```javascript
 <script setup>
 import { ref, watch } from 'vue';
-import axios from 'axios';
+import { createDirectus, uploadFiles, rest, createItems, updateItem, readItems } from '@directus/sdk';
 import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
@@ -481,21 +482,30 @@ const photoPreview = ref(null);
 const isLoading = ref(false);
 
 const getImageUrl = (imageId) => {
-  return `https://travel-journal.directus.app/assets/${imageId}`;
+  return `http://localhost:8055/assets/${imageId}`;
 };
+
+const client = createDirectus("http://localhost:8055").with(rest());
+  
 
 watch(journalId, async (newJournalId) => {
   if (newJournalId) {
     try {
       isLoading.value = true;
-      const response = await axios.get(`https://travel-journal.directus.app/items/journals/${newJournalId}`);
-      const journalData = response.data.data;
+      const journalData = await client.request(readItems('journals', {
+        filter: {
+          id: {
+            _eq: newJournalId,
+          },
+        },
+        fields: ['title', 'description', 'country', 'city', 'photo'],
+      }));
 
-      title.value = journalData.title;
-      description.value = journalData.description;
-      country.value = journalData.country;
-      city.value = journalData.city;
-      photoPreview.value = getImageUrl(journalData.photo); 
+      title.value = journalData[0].title;
+      description.value = journalData[0].description;
+      country.value = journalData[0].country;
+      city.value = journalData[0].city;
+      photoPreview.value = getImageUrl(journalData[0].photo); 
     } catch (error) {
       console.error('Error fetching journal:', error);
     } finally {
@@ -514,16 +524,21 @@ const handleFile = (file) => {
 };
 
 const uploadImageToDirectus = async () => {
-  const formData = new FormData();
-  formData.append('file', photo.value);
-
   try {
-    const response = await axios.post('http://localhost:8055/files', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return response.data.data.id; 
+    if (!photo.value) {
+      return null;
+    }
+    
+    const formData = new FormData();
+    formData.append('file', photo.value); 
+    const response = await client.request(uploadFiles(formData));
+
+    if (response && response.id) {
+      return response.id;
+    } else {
+      console.error('Unexpected response format:', response);
+      throw new Error('Invalid response format or missing expected data');
+    }
   } catch (error) {
     console.error('Image upload failed:', error);
     throw error;
@@ -535,7 +550,6 @@ const handleSubmit = async () => {
   try {
     let imageUUID;
     if (photo.value) {
-      
       imageUUID = await uploadImageToDirectus();
     } else {
       const imageIdMatch = photoPreview.value.match(/\/assets\/(.+)$/);
@@ -552,13 +566,11 @@ const handleSubmit = async () => {
 
     let response;
     if (journalId.value) {
-      response = await axios.patch(`http://localhost:8055/items/journals/${journalId.value}`, journalData);
+      response = await client.request(updateItem('journals', journalId.value, journalData));
     } else {
-      response = await axios.post('http://localhost:8055/items/journals', journalData);
+      response = await client.request(createItems('journals', journalData));
     }
-
-    console.log('Journal entry processed:', response.data);
-    router.push({ name: 'readjournal' });
+    router.push({ name: 'readjournal'});
   } catch (error) {
     console.error('Journal submission failed:', error);
     if (error.response) {
@@ -571,7 +583,7 @@ const handleSubmit = async () => {
 </script>
 ```
 
-Here, we are allowing users to interact with the `journals` collection in Directus. This includes functionality for adding new journal entries and editing existing ones. We are making use of Vue's reactivity system and Axios for API calls to handle file uploads and CRUD operations on journal entries.
+Here, we are allowing users to interact with the `journals` collection in Directus. This includes functionality for adding new journal entries and editing existing ones. We are making use of Vue's reactivity system, represented by the [ref](https://vuejs.org/api/reactivity-core.html#ref) and [watch](https://vuejs.org/guide/essentials/watchers.html) APIs, to manage state and react to changes in data, such as the journal ID from the route query.
 
 This script include key features like:
 
@@ -693,31 +705,36 @@ For viewing journals, add the following script in your `Readjournal.vue` view:
 ```javascript
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
-
-import { useRouter } from 'vue-router';
+import { createDirectus, rest, readItems, deleteItem } from '@directus/sdk';
+import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
+const route = useRoute()
 const journals = ref([]);
+
+const client = createDirectus('http://localhost:8055').with(rest());
 
 onMounted(async () => {
   try {
-    const response = await axios.get('http://localhost:8055/items/journals');
-    journals.value = response.data.data;
+    const response = await client.request(readItems('journals'));
+    console.log("Full response:", response);
+    journals.value = response;
+    console.log("journlas value from readjournal:", journals.value);
   } catch (error) {
     console.error('Error fetching journals:', error);
   }
 });
 
 const editJournal = (journal) => {
-  router.push({ name: 'addjournal', query: { journalId: journal.id } });
-  console.log(journal)
+  router.push({ name: 'addjournal', query: { journalId: journal.id }});
+  console.log("Editing journal:", journal.id);
 };
 
 const deleteJournal = async (journalId) => {
   try {
-    await axios.delete(`http://localhost:8055/${journalId}`);
-    journals.value = journals.value.filter(journal => journal.id !== journalId);
+    await client.request(deleteItem('journals', journalId));
+    journals.value = journals.value.filter((journal) => journal.id !== journalId);
+    console.log("Journal deleted:", journalId);
   } catch (error) {
     console.error('Error deleting journal:', error);
   }
@@ -726,13 +743,14 @@ const deleteJournal = async (journalId) => {
 const getImageUrl = (imageId) => {
   return `http://localhost:8055/assets/${imageId}`;
 };
-
 </script>
 ```
 
-Here In `ReadJournal.vue`, we have a script that handles fetching and displaying user journals, as well as providing options to edit or delete them. The script uses Axios to make a GET request to `https://travel-journal.directus.app/items/journals`, which is the URL for fetching journals from your Directus backend. The `journals` array is populated with the fetched data and the `editJournal` function navigates the user to the `AddJournal.vue` view for editing, passing the selected journal's ID as a query parameter. 
+Here In `ReadJournal.vue`, we have a script that handles fetching and displaying user journals, as well as providing options to edit or delete them. The script uses the Directus SDK `readItems` method and stores them in the journals reactive array for display.
 
-The `deleteJournal` function sends a DELETE request to the same URL, removing the journal by its ID, and updates the local `journals` array to reflect this change. Additionally, the `getImageUrl` function generates URLs for any images associated with the journals so it can be viewed in the `Readjournal` template.
+The `editJournal` function navigates the user to the `AddJournal.vue` view for editing, passing the selected journal's ID as a query parameter with the help of Vue Router. 
+
+The `deleteJournal` function removes an entry by its ID and updates the journals array to reflect this change. Additionally, the `getImageUrl` function generates URLs for any image associated with the journals so it can be viewed in the `Readjournal` template.
 
 Add the following template:
 
