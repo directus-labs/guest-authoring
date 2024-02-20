@@ -1,6 +1,4 @@
-Spring Boot is one of the most used Java development frameworks and it comes in handy when developing web applications. This framework provides different libraries and tools that you can leverage to integrate the Directus API with your application.
-
-As a result, this tutorial will show you how to integrate Spring Boot in Directus using an article API. At the end of this tutorial, you will have an application that uses Thymeleaf templating engine to display the data from the API.
+This tutorial will show you how to integrate Spring Boot in Directus. At the end of this tutorial, you will have an application that uses Thymeleaf templating engine to display the data from the Directus API.
 
 ## Prerequisites
 - Knowledge of Java programming language.
