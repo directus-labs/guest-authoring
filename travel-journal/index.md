@@ -132,7 +132,7 @@ This will set up the basic routing for the Vue.js application, allowing users to
 - `/`: This is the root path of the application and is associated with a view called `LoginView`. When users visit the base URL of your application, they are directed to this view, which is typically used for user authentication.
 - `/signup`: This path leads to the `SignupView` and is designed for new users to register or create an account. When users navigate to `/signup`, they are presented with a signup form to enter their details and create a new account.
 - `/addjournal`: This is the part for the `Addjournal` view. This route is used for adding new journal entries.
-- `readjournal`: • This route is linked to the `Readjournal` view. It is intended for users to view and read their existing journal entries. When users navigate to `/readjournal`, they can browse through all the journal entries they have created.
+- `/readjournal`: • This route is linked to the `Readjournal` view. It is intended for users to view and read their existing journal entries. When users navigate to `/readjournal`, they can browse through all the journal entries they have created.
 
 In the `views` folder, delete the existing views - `AboutView.vue` and `HomeView.vue` and create the following views - `LoginView.vue`, `SignupView.vue`, `Addjournal.vue` and `Readjournal.vue`.
 
