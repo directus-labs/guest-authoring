@@ -1,8 +1,7 @@
 This tutorial will show you how to integrate Spring Boot in Directus. At the end of this tutorial, you will have an application that uses Thymeleaf templating engine to display the data from the Directus API.
 
 ## Prerequisites
-- Knowledge of Java programming language.
-- Basic knowledge of Thymeleaf
+- Knowledge of Java programming language and Thymeleaf templating.
 - [Java development kit(JDK)8](https://www.oracle.com/ke/java/technologies/javase/javase8-archive-downloads.html) and above.
 - Directus project - Use the [quickstart guide](https://docs.directus.io/getting-started/quickstart) to create a project with the fields `id`, `title`, `featuredImage`, and `body`.
 - [IntelliJ IDEA community edition](https://www.jetbrains.com/idea/download/#section=linux) - Development environment for the Java programming language. 
