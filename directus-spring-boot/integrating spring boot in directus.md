@@ -96,7 +96,7 @@ public class ArticleDTO {
 ```
 In this file, you have created a class named `ArticleDTO` with one field named `articles`. Since the JSON response is an Array, the field should be of type `List` for the deserialization to work.
 
-If you have noted, the JSON Array is named `data` but the `ArticleDTO` field is named `articles`. As a result, you should add the `@JsonProperty` annotation to the field and pass the Array name as the argument to indicate that the field should be used for the deserialization.
+The JSON Array is named `data` but the `ArticleDTO` field is named `articles`. As a result, you should add the `@JsonProperty` annotation to the field and pass the Array name as the argument to indicate that the field should be used for the deserialization.
 
 ## Create a service interface for the articles
 Create a file named *ArticleService.java* under the *service* package then copy and paste the following code into the file.
