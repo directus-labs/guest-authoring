@@ -134,7 +134,7 @@ import java.util.Objects;
 
 @Service
 public class ArticleServiceImpl implements ArticleService{
-    private final String BASEURL = "https://techlead.directus.app/items/articles";
+    private final String BASEURL = "YOUR_DIRETUS_PROJECT_URL/items/articles";
     @Override
     public List<Article> getAllArticles() {
         return Objects.requireNonNull(new RestTemplate().exchange(
