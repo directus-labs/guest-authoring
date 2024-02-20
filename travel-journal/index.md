@@ -173,7 +173,7 @@ const password = ref('');
 
 const router = useRouter();
 
-const directus = createDirectus('http://localhost:8055').with(authentication('json')).with(rest());
+const directus = createDirectus('YOUR_DIRECTUS_PROJECT_URL').with(authentication('json')).with(rest());
 
 
 const handleLogin = async () => {
