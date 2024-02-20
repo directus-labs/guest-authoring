@@ -10,7 +10,7 @@ This tutorial will show you how to integrate Spring Boot in Directus. At the end
 ## Project setup
 To create a new Spring Boot project, go to [Spring initializr](https://start.spring.io/) and select **Maven** on **Project** section and **3.x.x** on the **Spring Boot** section. The version will depend on the time you are reading this article so replace the x with the current version of Spring Boot.
 
-On the **Project Metadata** section, enter the respective section as shown below. Note that the **Name** and **Package name** sections will be entered for you once you input the **Group** and **Artifact** sections. 
+On the **Project Metadata** section, enter the following: 
 
 - **Group** - *com.directus*
 - **Artifact** - blog
