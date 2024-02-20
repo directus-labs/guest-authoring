@@ -166,7 +166,7 @@ First head over to the `LoginView.vue` view and add the following script:
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { createDirectus, authentication, rest, login} from '@directus/sdk';
+import { createDirectus, authentication, rest, login } from '@directus/sdk';
 
 const email = ref('');
 const password = ref('');
