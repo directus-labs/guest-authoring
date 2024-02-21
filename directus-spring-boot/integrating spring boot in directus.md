@@ -3,11 +3,11 @@ This tutorial will show you how to integrate Spring Boot in Directus. At the end
 ## Prerequisites
 - Knowledge of Java programming language and Thymeleaf templating.
 - [Java development kit(JDK)8](https://www.oracle.com/ke/java/technologies/javase/javase8-archive-downloads.html) and above.
-- Directus project - Use the [quickstart guide](https://docs.directus.io/getting-started/quickstart) to create a project with the fields `id`, `title`, `featuredImage`, and `body`.
-- [IntelliJ IDEA community edition](https://www.jetbrains.com/idea/download/#section=linux) - Development environment for the Java programming language. 
+- Directus project - Use the [quickstart guide](https://docs.directus.io/getting-started/quickstart) to create the project.
+- Integrated development environment(IDE). Feel free to use any environment that supports the Java programming language.
+- A Directus collection named `articles` with the fields `id`, `title`, `featuredImage`, and `body`. These fields will be used to store the contents of an article.
 
-
-## Project setup
+## Project Setup
 To create a new Spring Boot project, go to [Spring initializr](https://start.spring.io/) and select **Maven** on **Project** section and **3.x.x** on the **Spring Boot** section. The version will depend on the time you are reading this article so replace the x with the current version of Spring Boot.
 
 On the **Project Metadata** section, enter the following: 
@@ -22,18 +22,14 @@ On the **Project Metadata** section, enter the following:
 
 Add the following dependencies: Spring Web, Lombok, and Thymeleaf.
 
-If you followed this steps to the latter, the project structure and dependencies of your application should be as shown below.
-
 ![A Spring Initializr page showing user configuration and three dependencies.](create-spring-boot-project.png)
 
-Next, click the **GENERATE** button to generate a zip file of your project. Extract the zip file to a desired location on your computer then import the extracted Spring Boot project in IntelliJ.
+Next, click the **GENERATE** button to generate a zip file of your project. Extract the zip file to a desired location on your computer then import the extracted Spring Boot project in your IDE.
 
-## Create project sub packages
-Having different packages in your application will help you to separate responsibilities, improve the readability of the code, and simplify making changes.
+## Create Project Sub Packages
+In your IDE, go to *src/main/java/com/directus/blog* and create three packages named *model*, *service*, and *controller*.
 
-In IntelliJ, go to *src/main/java/com/directus/blog* and create three packages named *model*, *service*, and *controller*.
-
-## Create a class for the article
+## Create a Class for the Article
 Create a file named *Article.java* under the *model* package:
 
 ```java
@@ -52,8 +48,6 @@ public class Article {
     private String body;
 }
 ```
-In this file, you have defined a class named `Article` with the fields `id`, `title`, `featuredImage`, and `body`. Note that this fields should be similar to those in your Directus project.
-
 Add the `@Data` annotation to the class and Lombok will generate getter and setter methods. This class will be used to map the data from your Directus project from JSON to Java objects.
 
 ## Create an Articles Data Transfer Object
@@ -61,14 +55,14 @@ If you make a request to retrieve a JSON response of your Directus project, you 
 
 ```json
 {
-"data": [
-{
-"id": 2,
-"title": "Integrating Directus in Spring Boot",
-"featuredImage": "f1b20633-5329-4a6a-8942-1983a5732e7e",
-"body": "In this tutorial, you will learn how to integrate Directus in Spring Boot by leveraging Thymeleaf templating engine"
-}
-]
+  "data": [
+    {
+      "id": 2,
+      "title": "Integrating Directus in Spring Boot",
+      "featuredImage": "f1b20633-5329-4a6a-8942-1983a5732e7e",
+      "body": "In this tutorial, you will learn how to integrate Directus in Spring Boot by leveraging Thymeleaf templating engine"
+    }
+  ]
 }
 ```
 You can see that the data is wrapped in an Array. As a result, you have to ensure the type of data being received is the same as the one returned by JSON. 
@@ -88,11 +82,11 @@ public class ArticleDTO {
     private List<Article> articles;
 }
 ```
-In this file, you have created a class named `ArticleDTO` with one field named `articles`. Since the JSON response is an Array, the field should be of type `List` for the deserialization to work.
+Since the JSON response is an Array, the field should be of type `List` for the deserialization to work.
 
 The JSON Array is named `data` but the `ArticleDTO` field is named `articles`. As a result, you should add the `@JsonProperty` annotation to the field and pass the Array name as the argument to indicate that the field should be used for the deserialization.
 
-## Create a service interface for the articles
+## Create a Service Interface for the Articles
 Create a file named *ArticleService.java* under the *service* package then copy and paste the following code into the file.
 
 ```java
@@ -110,7 +104,7 @@ This `interface` declares a single method named `getAllArticles()` that you will
 
 If you want to add another functionality to the application such as retrieving a single article, you can declare the method in this `interface`.
 
-## Implement the article service interface
+## Implement the Article Service Interface
 Create a file named *ArticleServiceImpl.java* under the *service* package then copy and paste the folllowing code into the file.
 
 ```java
@@ -151,7 +145,7 @@ To achieve this, create a new instance of `RestTemplate` and call the `exchange(
 
 The call to the `exchange()` method should be followed by a call to `getBody()` to retrieve the body from response as it contains the data for your Directus project. The return type for this `RestTemplate` is `ArticleDTO` but we are interested in the `List` of articles. As a result, call the `getArticles()` method to return a `List` of articles.
 
-## Create a controller for the articles
+## Create a Controller for the Articles
 Create a file named *ArticleController.java* under the *controller* package then copy and paste the following code into the file.
 
 ```java
@@ -190,59 +184,39 @@ To retrieve the `List` of articles from the service class, inject the `ArticleSe
 
 The `index` string returned is the name of a Thymeleaf page that will be used to display the articles. You will create the page in the next step.
 
-## Create Thymeleaf view page
-In IntelliJ, go to *src/main/resources/templates* and create a file named *index.html*:
+## Create Thymeleaf View Page
+In your IDE, go to *src/main/resources/templates* and create a file named *index.html*:
 
-```java
+```html
 <!doctype html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-          crossorigin="anonymous">
 </head>
 <body>
-
-<div class="container">
-    <div class="row">
-        <div class="col-md-12 d-flex justify-content-center">
-            <div th:each="article: ${articles}">
-                <div class="card mt-3" style="max-width: 540px">
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${article.title}"></h5>
-                        <p class="card-text" th:text="${article.body}"></p>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                    </div>
-                    <img th:src="@{${'https://techlead.directus.app/assets/'+article.featuredImage}}"
-                         class="card-img-bottom" alt="featured image">
-                </div>
-            </div>
-
-        </div>
-
+<div style="width: 500px">
+    <div th:each="article: ${articles}">
+        <h1 th:text="${article.title}"></h1>
+        <img th:src="@{${'https://YOUR_DIRETUS_PROJECT_URL/assets/'+article.featuredImage}}"
+             style="width: 100%" alt="featured image">
+        <p th:text="${article.body}"></p>
     </div>
 
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
 </body>
 </html>
 ```
 Since the articles were added in the controller as model attributes and you are using Thymeleaf to display them, you can leverage Thymeleaf syntax to create a loop that iterates through the articles and displays each of the article as a Bootstrap card.
 
-## Run and test the application
+## Run and Test the Application
 To run the application, click on the **Run** icon located on the top right side of IntelliJ as shown in the following image. You can also use the keyboard shortcut **SHIFT+F10**.
 
 ![running a spring boot project](run-spring-boot-project.png)
 
 If your application runs successfully without any errors, go to [localhost:8080](http://localhost:8080/) on your browser and you should see the articles you created in your Directus project displayed on the page. The following image shows the final view of the application that you have created.
 
-![Spring boot Thymeleaf card](spring-boot-thymeleaf-card.png)
+![Displaying the article using Thymeleaf](displaying-the-article-using-thymeleaf.png)
 
 If your images are not being displayed, there is a probability you have not granted public access. By default, images in Directus are protected by authentication and you will not be able to view them on your application. Use the Directus tutorial on how to [show images on a website](https://learndirectus.com/show-images-on-a-website/) to learn how to grant public access to your images.
 
