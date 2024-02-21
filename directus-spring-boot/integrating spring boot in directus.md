@@ -20,13 +20,7 @@ On the **Project Metadata** section, enter the following:
 - **Packaging** - Jar
 - **Java** - 17
 
-To add the project dependencies, click on the **ADD DEPENDENCIES** button then add the dependencies described below. In the search bar that opens, search for the name of the dependency then select it to include it in the project. Repeat the same process for all the dependencies.
-
-- Spring Web - Spring Web dependency provides the functionalities required to build a web application using the MVC pattern. This dependency also provides support for RESTful architecture and uses Apache Tomcat as the default server.
-
-- Lombok - Lombok helps to reduce boilerplate code by generating getter and setter methods for your application.
-
-- Thymeleaf - Thymeleaf is a templating engine that will help you to display dynamic data from the API on the HTML pages.
+Add the following dependencies: Spring Web, Lombok, and Thymeleaf.
 
 If you followed this steps to the latter, the project structure and dependencies of your application should be as shown below.
 
