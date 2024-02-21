@@ -191,7 +191,7 @@ To retrieve the `List` of articles from the service class, inject the `ArticleSe
 The `index` string returned is the name of a Thymeleaf page that will be used to display the articles. You will create the page in the next step.
 
 ## Create Thymeleaf view page
-In IntelliJ, go to *src/main/resources/templates* and create a file named *index.html*. Next, copy and paste the following code into the file.
+In IntelliJ, go to *src/main/resources/templates* and create a file named *index.html*:
 
 ```java
 <!doctype html>
