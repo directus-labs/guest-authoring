@@ -34,7 +34,7 @@ Having different packages in your application will help you to separate responsi
 In IntelliJ, go to *src/main/java/com/directus/blog* and create three packages named *model*, *service*, and *controller*.
 
 ## Create a class for the article
-Create a file named *Article.java* under the *model* package then copy and paste the following code into the file.
+Create a file named *Article.java* under the *model* package:
 
 ```java
 package com.directus.blog.model;
