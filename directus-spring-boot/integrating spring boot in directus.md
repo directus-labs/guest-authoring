@@ -12,13 +12,13 @@ To create a new Spring Boot project, go to [Spring initializr](https://start.spr
 
 On the **Project Metadata** section, enter the following: 
 
-- **Group** - *com.directus*
+- **Group** - com.directus
 - **Artifact** - blog
 - **Name** - blog
 - **Description** - Integrating Directus in Spring Boot
-- **Package name** - *com.directus.blog*
-- **Packaging** - **Jar**
-- **Java** - **17**
+- **Package name** - com.directus.blog
+- **Packaging** - Jar
+- **Java** - 17
 
 To add the project dependencies, click on the **ADD DEPENDENCIES** button then add the dependencies described below. In the search bar that opens, search for the name of the dependency then select it to include it in the project. Repeat the same process for all the dependencies.
 
