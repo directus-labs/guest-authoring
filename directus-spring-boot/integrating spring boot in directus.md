@@ -54,7 +54,7 @@ public class Article {
 ```
 In this file, you have defined a class named `Article` with the fields `id`, `title`, `featuredImage`, and `body`. Note that this fields should be similar to those in your Directus project.
 
-As mentioned earlier, Lombok helps to generate getter and setter methods. To achieve this, you should add the `@Data` annotation on the class. This class will be used to map the data from your Directus project from JSON to Java objects.
+Add the `@Data` annotation to the class and Lombok will generate getter and setter methods. This class will be used to map the data from your Directus project from JSON to Java objects.
 
 ## Create a DTO for the articles
 If you make a request to retrieve a JSON response of your Directus project, you will find that the JSON response has the following format.
