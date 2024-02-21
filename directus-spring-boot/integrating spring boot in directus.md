@@ -24,7 +24,7 @@ Add the following dependencies: Spring Web, Lombok, and Thymeleaf.
 
 If you followed this steps to the latter, the project structure and dependencies of your application should be as shown below.
 
-![project structure](create-spring-boot-project.png)
+![A Spring Initializr page showing user configuration and three dependencies.](create-spring-boot-project.png)
 
 Next, click the **GENERATE** button to generate a zip file of your project. Extract the zip file to a desired location on your computer then import the extracted Spring Boot project in IntelliJ.
 
