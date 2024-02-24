@@ -74,7 +74,7 @@ Add a description of the `journal` collection and proceed to create the collecti
 
 ![Creating the journal collection](./images/creating-the-journal-collection.png)
 
-Head over to Settings→Access Control, and create a customer role with only App Access. Give it create, read, update, and delete access to the `journal` collection, add a description, and then proceed to create the customer role while taking note of the customer role id:
+Head over to Settings → Access Control, and create a customer role with only App Access. Give it create, read, update, and delete access to the `journal` collection, add a description, and then proceed to create the customer role while taking note of the customer role id:
 
 ![Creating a customer role](./images/creating-a-customer-role.png)
 
@@ -308,7 +308,7 @@ const lastName = ref("");
 const email = ref("");
 const password = ref("");
 
-const directus = createDirectus("http://localhost:8055").with(rest());
+const directus = createDirectus("YOUR_DIRECTUS_PROJECT_URL").with(rest());
 
 const handleSignup = async () => {
   try {
@@ -503,10 +503,10 @@ Next, define a utility function `getImageUrl` to construct URLs for images so th
 
 ```javascript
 const getImageUrl = (imageId) => {
-  return `http://localhost:8055/assets/${imageId}`;
+  return `YOUR_DIRECTUS_PROJECT_URL/assets/${imageId}`;
 };
 
-const client = createDirectus("http://localhost:8055").with(rest());
+const client = createDirectus("YOUR_DIRECTUS_PROJECT_URL").with(rest());
 ```
 
 Then, use the `watch` function to fetch existing journal data when a `journalId` is provided using the `readItems` method from the Directus SDK to fetch data based on the provided `journalId`.
@@ -747,7 +747,7 @@ const router = useRouter();
 const route = useRoute();
 const journals = ref([]);
 
-const client = createDirectus('http://localhost:8055').with(rest());
+const client = createDirectus('YOUR_DIRECTUS_PROJECT_URL').with(rest());
 ```
 
 Use the `onMounted` lifecycle hook to fetch journal entries from the Directus backend as soon as the component is mounted to the DOM using the `readItems` method:
@@ -800,7 +800,7 @@ This will help convert stored image IDs into usable image URLs for displaying im
 
 ```javascript
 const getImageUrl = (imageId) => {
-  return `http://localhost:8055/assets/${imageId}`;
+  return `YOUR_DIRECTUS_PROJECT_URL/assets/${imageId}`;
 };
 ```
 
