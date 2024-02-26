@@ -461,7 +461,7 @@ At this point, navigate to the signup page by clicking on **signup,** and then c
 
 Once the user is created successfully, you should be directed to the `Addjournal.vue` view:
 
-![Viewing ths addjournal view](./images/viewing-the-addjournal-view.png)
+![Viewing the addjournal view](./images/viewing-the-addjournal-view.png)
 
 To confirm the user has been created, head to your Directus project and navigate to User Directory → All Users, you should see the newly created user:
 
