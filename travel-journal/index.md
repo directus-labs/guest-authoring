@@ -979,7 +979,7 @@ Looking ahead, here are some exciting directions you might consider venturing in
 
 Currently, the application does not differentiate between journals created by different users. To enhance user experience and security, you can implement a filtering approach. Here's how:
 
-1. **Filter Journals by User**: When fetching journals, modify the API call to filter journals based on the logged-in user's ID, ensuring users only see their journals.
+1. **Filter Journals by User**: When fetching journals, modify the Directus SDK to [filter](https://docs.directus.io/reference/filter-rules.html) journals based on the logged-in user's ID, ensuring users only see their journals.
 
 ### Allow Users to View Their Existing Journals Before Creating New Ones
 
