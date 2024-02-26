@@ -989,4 +989,4 @@ Currently, after a user creates a journal, they have to go through the signup or
 2. **Direct Access to Journal View**: After login or journal creation, redirect users to the `Readjournal` view instead of the `Addjournal` view where they are required to create a journal before viewing the ones they already created. This can be done by adjusting the navigation flow in your Vue Router setup.
 3. **Add** `Create New Journal` **Button in ReadJournal View**: In the `Readjournal` view, include a prominent button or link to navigate to the `AddJournal` view. This provides users with a clear and immediate path to create a new journal entry without unnecessary navigation.
 
-The code snippets used in this tutorial can be found in the [GitHub repository](https://github.com/mercybassey/travel-journal-with-directus). Thank you for reading and happy coding!
+The code snippets used in this tutorial can be found in this [GitHub repository](https://github.com/mercybassey/travel-journal-with-directus). Thank you for reading and happy coding!
