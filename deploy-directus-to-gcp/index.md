@@ -12,7 +12,7 @@ In this tutorial, you will learn how to deploy a self-hosted instance of Directu
 
 ## Prerequisite
 
-To begin with this tutorial, you need the following:
+You will need:
 
 - A [Google Cloud Account](https://cloud.google.com) with billing enabled.
 - Google Cloud SDK [(gcloud CLI)](https://cloud.google.com/sdk/docs/install) installed in your local computer
@@ -24,7 +24,7 @@ Log in to Google Cloud Platform and head to the [project page](https://console.c
 
 ## Set up a Cloud SQL Database
 
-Go to your Google Cloud console -> Menu -> SQL. On the Cloud SQL page, click on `Create Instance`, choosing PostgreSQL to create a Cloud SQL instance(You will need to enable this API if it's not enabled already).
+Go to your Google Cloud console -> Menu -> SQL. On the Cloud SQL page, click on `Create Instance`, choosing PostgreSQL to create a Cloud SQL instance. You may need to enable this API if it's not already enabled.
 
 Add an instance ID and a password for the default admin user `postgres` and select the database version you need. Choose also the Cloud SQL edition and region to suit your needs.
 
@@ -36,13 +36,11 @@ After successful creation, you will be redirected to the instance page; here, yo
 
 Copy the connection name for later usage.
 
-![A PostgreSQL database instance details page](db-details.png)
+![A PostgreSQL database instance details page. Highlighted is the connection name under the Connect to this instance header](db-details.png)
 
 ## Set up Docker Container
 
-To deploy a Docker container to Cloud Run, you must first prepare the container.
-
-In your local computer, create a `Dockerfile` with the following content:
+To deploy a Docker container to Cloud Run, you must first prepare the container. On your local computer, create a `Dockerfile` with the following content:
 
 ```yml
 FROM directus/directus:10.9.2
@@ -65,7 +63,7 @@ docker buildx build -t directus:10.9.2 --platform linux/amd64 .
 ## Set up Repository on Google Cloud
 
 To deploy the `Dockerfile` created, you must set up a repository on the Google Cloud Platform.
-On the Google Cloud console, search for `repositories` and click on the Artifact Registry repositories (You'd need to enable Artifact Registry API if it is not enabled).
+In the Google Cloud console, search for `repositories` and click on the Artifact Registry repositories. (You may need to enable Artifact Registry API if it is not already enabled).
 
 Click on the `Create repository` button and create a new repository with the name `directus-repo` with the following details:
 
@@ -78,47 +76,42 @@ Click on the `Create repository` button and create a new repository with the nam
 
 Click on Create to create a new repository.
 
-![Artifact Registry page with repositories](repo.png)
-You should have a repository page that looks like the photo above.
-
 ### Pushing the Dockerfile to Google Cloud
 
-To push the `Dockerfile` to the created repository, you must first be authenticated via the Google Cloud SDK.
+To push the `Dockerfile` to the created repository, you must first be authenticated via the CLI that ships Google Cloud SDK. Open your terminal.
 
-1. Login to Google Cloud SDK:  Login to Google Cloud using:
+1. Set up the Google Cloud CLI.
+    Login to Google Cloud:
 
     ```bash
     gcloud auth login
     ```
 
-    Select the project you created on Google Cloud via the `gcloud` CLI with:
+    Select the project you created on Google Cloud via the `gcloud` CLI:
 
     ```bash
     gcloud config set project PROJECT_ID
     ```
 
-    In the directory where the `Dockerfile` is located, run the command:
+    In the directory where the `Dockerfile` is located, configure Docker to authenticate with the Google Artifact Registry:
 
     ```bash
     gcloud auth configure-docker us-central1-docker.pkg.dev
     ```
 
-    The command above will configure Docker to authenticate with Google Artifact Registry.
-
-    ```
     :::info Google Cloud Region
     Wherever `us-central1` appears in this tutorial should be replaced with the `region` you selected when creating that resource
     :::
     ```
 
-2. Tag the Docker Image: Tag the local docker image you built with the repository created with the command:
+2. Tag the Docker Image.
+    Tag the local docker image you built with the repository:
 
     ```bash
     docker tag directus:10.9.2 us-central1-docker.pkg.dev/directus-project/directus-repo/directus:10.9.2
     ```
 
     Where:
-
     - `directus-project` is the project ID you are working on
     - `directus-repo` is the repository created
     - `us-central1` is the region
