@@ -45,7 +45,7 @@ spec:
         protocol: TCP
 ```
 
-## Metadata and labels
+## Metadata and Labels
 
 Metadata is used to identify your Kubernetes objects, without them you soon will be lost, and even different parts of the Kubernetes puzzle requires them. Some metadata is a must, like the name - otherwise there is no identification. Labels and annotations adds metadata to your objects so you could easily find them or target them.
 
