@@ -201,7 +201,7 @@ spec:
 
 ## Volumes and StorageClasses
 
-As you could see in the MariaDB StatefulSets above, we are mounting volumes. Volumes could be temporarily, like a temp dir, or they could be persistent and data stays between Deployments.
+As you could see in the MariaDB StatefulSets above, we are mounting volumes. Volumes could be temporarily, like a `temp` directory, or they could be persistent and data stays between Deployments.
 
 A persistent volume needs a StorageClass, so it could create the volume, and a StorageClass normally has the type `ReadWriteOnce` - which means it only could be written to by one pod (but all of the containers in the pod). Another type of StorageClass could use `ReadWriteMany` - and that is useful if you have many pods that needs to write to the same filesystem - like uploading files. You should never setup a database with a ReadWriteMany StorageClass, that could end badly.
 
