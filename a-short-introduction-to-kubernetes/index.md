@@ -14,7 +14,7 @@ Kubernetes (K8s) is the most popular open-source container orchestration system,
 
 If you never used Kubernetes, you may be surprised that you very often already have it on your development computer. Kubernetes, in a simple flavor is for instance shipped with Docker Desktop for Mac. So the place to test out Kubernetes itself it is very often nearby. If you want to experiment with Kubernetes for the first time, I really recommend that you do so locally.
 
-There are a lot of hosted Kubernetes solutions for you to choose from - like Amazon's [EKS](https://aws.amazon.com/eks/), Google's [GKE](https://cloud.google.com/kubernetes-engine), and Microsoft's [AKS](https://azure.microsoft.com/en-us/products/kubernetes-service). 
+There are a lot of hosted Kubernetes solutions for you to choose from - like Amazon's [EKS](https://aws.amazon.com/eks/), Google's [GKE](https://cloud.google.com/kubernetes-engine), and Microsoft's [AKS](https://azure.microsoft.com/en-us/products/kubernetes-service).
 
 I will do a walk through of some of the basic pieces of the Kubernetes puzzle, and what they mean in a Directus context.
 
@@ -61,7 +61,7 @@ Containers are the Docker images you deploy to your K8s cluster. There are mainl
 
 Environment variables could be added as part of your object, like the public url for Directus.
 
-```yaml
+```yaml{13-15}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -91,11 +91,11 @@ A Deployment manages a set of Pods to run an application workload, usually one t
 
 A Deployment could "update" your pod - and what happens is that K8s takes down the existing pod, and replaces with a new one, like when updating your Directus instance, or adding new config or env variables.
 
-```yaml
+```yaml{2}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: directus-Deployment
+  name: directus-deployment
   labels:
     app: directus
 spec:
@@ -109,7 +109,7 @@ spec:
     spec:
       containers:
       - name: directus
-        image: directus:1.32.3
+        image: directus:10.9.3
         ports:
           - containerPort: 80
         env:
@@ -121,7 +121,7 @@ spec:
 
 When Deployments normally doesn't should be used for a pod that use a state, like a database, you need something that should be used for that, here is when you should use StatefulSet. Where a Deployment could normally just replace a pod, a StatefulSet needs either several replicas, or need to be deleted before it is replaced. Deletion of a pod, doesn't mean you loose your data, as long you are saving that data to a persistent volume.
 
-```yaml
+```yaml{2}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -175,7 +175,7 @@ An application like Directus works with replicas if you set up it with external 
 
 Here we are creating 3 replicas of Directus:
 
-```yaml
+```yaml{8}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -194,7 +194,7 @@ spec:
     spec:
       containers:
       - name: directus
-        image: directus:1.32.3
+        image: directus:10.9.3
         ports:
           - containerPort: 80
 ```
@@ -207,7 +207,7 @@ A persistent volume needs a StorageClass, so it could create the volume, and a S
 
 Here is an example of a Deployment with an `emptyDir` (`/tmp`) - a non-persistent volume, when the pod restarts, it is empty again.
 
-```yaml
+```yaml{27-29}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -225,7 +225,7 @@ spec:
     spec:
       containers:
       - name: directus
-        image: directus/directus:10.8.3
+        image: directus/directus:10.9.3
         ports:
           - containerPort: 80
         env:
@@ -245,7 +245,7 @@ ConfigMaps are used to store different kind of configuration objects like enviro
 
 Like config for MariaDB:
 
-```yaml
+```yaml{2}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -282,7 +282,7 @@ Service are used to expose the running pods, so you could communicate between th
 
 Example service for the MariaDB StatefulSet could be:
 
-```yaml
+```yaml{9}
 apiVersion: v1
 kind: Service
 metadata:
@@ -318,7 +318,7 @@ env:
 
 Ingresses exposes the service (which exposes the pod) to "the world". Ingresses exists of different kinds, and one of the most common ones is Nginx Ingress. If we want someone to reach our Directus app outside of the cluster, we need an ingress, but first we need a service to expose our Directus app:
 
-```yaml
+```yaml{2}
 apiVersion: v1
 kind: Service
 metadata:
@@ -340,7 +340,7 @@ spec:
 
 So, now can use the name of the Service, `directus` in the ingress, like:
 
-```yaml
+```yaml{14-17}
 apiVersion: networking.K8s.io/v1
 kind: Ingress
 metadata:
@@ -366,4 +366,4 @@ So, if we create a DNS-record for `directus.app`, pointing to your K8s cluster, 
 
 ## Summary
 
-You have learned some of the basic parts and lingo in Kubernetes, and also how Directus fit in that puzzle. And as promised, [here is full Directus Deployment, with Redis and MariaDB](https://gist.github.com/mikkeschiren/ab57c6bb67f57b21040215a8284d9450).
+With this, you have learned how you could orchestrate your containers, your volumes, config, secrets etc. with Kubernetes, and also some of the basic parts and lingo in Kubernetes. And as promised, [here is full Directus Deployment, with Redis and MariaDB](https://gist.github.com/mikkeschiren/ab57c6bb67f57b21040215a8284d9450).
