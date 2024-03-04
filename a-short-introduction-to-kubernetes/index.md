@@ -12,7 +12,17 @@ When you start to run applications in docker containers it is pretty simple just
 
 Kubernetes (K8s) is the most popular open-source container orchestration system, and it automates deployments, scaling, and management of applications. While Kubernetes is not the easiest way to run a self-hosted Directus project, there a lot of gains to be realized.
 
+<<<<<<< HEAD
 If you never used Kubernetes, you may be surprised that you very often already have it on your development computer. Kubernetes, in a simple flavor is for instance shipped with Docker Desktop for Mac. So the place to test out Kubernetes itself it is very often nearby. If you want to experiment with Kubernetes for the first time, I really recommend that you do so locally.
+||||||| e22c7a7
+
+
+If you never used Kubernetes, you may be surprised that you very often already have it on your development computer. Kubernetes, in a simple flavor is for instance shipped with Docker Desktop for Mac. So the place to test out Kubernetes itself it is very often nearby. If you want to experiment with Kubernetes for the first time, I really recommend that you do so locally.
+=======
+
+
+If you never used Kubernetes, you may be surprised that you very often already have it on your development computer, so the place to test out Kubernetes itself it is very often nearby. If you want to experiment with Kubernetes for the first time, I really recommend that you do so locally.
+>>>>>>> 40f5a19a82460002e741105adce141f8b39a27f4
 
 I set up my own Kubernetes cluster on Amazon some years ago - before they had their offering [EKS](https://aws.amazon.com/eks/) (Amazon Elastic Kubernetes Service). I learned a lot, but I would not recommend my worst enemy to do it. Today there are a lot of ready Kubernetes solutions for you to choose from - like EKS, [GKE](https://cloud.google.com/kubernetes-engine) (Google Kubernetes Engine), Microsoft [Azure Kubernetes Service](https://azure.microsoft.com/en-us/products/kubernetes-service) (AKS) etc. And if you want more control you can setup Kubernetes with [Rancher](https://www.rancher.com/) (which we mostly do these days).
 
