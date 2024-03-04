@@ -8,9 +8,9 @@ author:
 
 ## Introduction
 
+When you start to run applications in docker containers it is pretty simple just fire up a container. But then you need another container, like a database, and then you need secrets, hosts, backups, updates etc. It could be quite messy to handle all the things, and you need something to orchestrate it with. 
+
 Kubernetes (K8s) is the most popular open-source container orchestration system, and it automates deployments, scaling, and management of applications. While Kubernetes is not the easiest way to run a self-hosted Directus project, there a lot of gains to be realized.
-
-
 
 If you never used Kubernetes, you may be surprised that you very often already have it on your development computer. Kubernetes, in a simple flavor is for instance shipped with Docker Desktop for Mac. So the place to test out Kubernetes itself it is very often nearby. If you want to experiment with Kubernetes for the first time, I really recommend that you do so locally.
 
