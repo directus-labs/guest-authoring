@@ -241,7 +241,7 @@ spec:
 
 ## ConfigMaps
 
-ConfigMaps are used to store different kind of config objects, it could be environment variables, or like a whole file, which later could be used to mount (like a volume), and the application uses that.
+ConfigMaps are used to store different kind of configuration objects like environment variables or a file-based configuration, which later could be used to mount (like a volume), for an application to use.
 
 Like config for MariaDB:
 
