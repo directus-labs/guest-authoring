@@ -34,7 +34,7 @@ The example files in this post, should not be used to create a Directus setup, t
 
 :::
 
-## Yaml and API:s
+## YAML and API:s
 
 All objects can be described and created with yaml, with a minimum requirement telling which api you are going to use, and what kind, like:
 
