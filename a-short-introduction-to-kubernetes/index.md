@@ -89,7 +89,7 @@ A pod is the smallest deployable compute object in K8s, like the example above. 
 
 A Deployment manages a set of Pods to run an application workload, usually one that doesn't maintain state (coming that later). A Deployment is a way to describe the pod(s) you want to run, if you need to mount volumes (for storing data) or config (like the config file for your Directus Deployment), also you add logic for resources is going to use (RAM, and CPU). So, with a Deployment, you create pods. Each Deployment, creates normally one pod (which, like state above, could have many containers).
 
-A Deployment could "update" your pod - and what happens is that K8s takes down the existing pod, and replaces with a new one, like when updating your Directus instance, or adding new config or env variables.
+A Deployment could "update" your pod - where K8s takes down the existing pod, and replaces with a new one, like when updating your Directus instance, or adding new config or environment variables.
 
 ```yaml{2}
 apiVersion: apps/v1
@@ -119,7 +119,9 @@ spec:
 
 ## StatefulSets
 
-When Deployments normally doesn't should be used for a pod that use a state, like a database, you need something that should be used for that, here is when you should use StatefulSet. Where a Deployment could normally just replace a pod, a StatefulSet needs either several replicas, or need to be deleted before it is replaced. Deletion of a pod, doesn't mean you loose your data, as long you are saving that data to a persistent volume.
+Deployments are suitable for stateless applications or microservices where instances of the application can be treated as interchangeable, and manages rolling updates and rollback strategies seamlessly, ensuring that your application remains available during updates.
+
+For databases, you need something else, there is when you use a StatefulSet. StatefulSets are designed for stateful applications that require stable, unique network identifiers, and persistent storage for each pod.
 
 ```yaml{2}
 apiVersion: apps/v1
