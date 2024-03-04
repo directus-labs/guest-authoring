@@ -79,8 +79,6 @@ spec:
         value: https://directus.app
 ```
 
-You could also use Secrets and use with for setting environment variables, that I will not cover here.
-
 ## Pods
 
 A pod is the smallest deployable compute object in K8s, like the example above. A pod is what is running one or several docker containers, a pod could be Directus, MySQL or Redis. If your pod crashes, it's dead and doesn't restart - it's like when you start a docker container with `docker run directus` and suddenly something gets weird, or your resources run out. So you need something to handle pods with, and the logic they are started, with config and volumes, there is where Deployments and StatefulSets come in.
