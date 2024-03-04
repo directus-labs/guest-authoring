@@ -278,7 +278,7 @@ This means that you can mount your config to a docker container, so the containe
 
 ## Services
 
-Service are used to expose the running pods, so you could communicate between the pods or expose them in different ways. The docker port is not exposed by default, so you need a way to tell Directus where to find MariaDB as an example. There are different kind of Services, and here we only going to cover the most common one, `ClusterIP`. Like the name says the service gets an ip, an internal one, so communication could happen.
+Service are used to expose the running pods, so you could communicate between the pods or expose them in different ways. The docker port is not exposed by default, so you need a way to tell Directus where to find MariaDB as an example. There are different kind of Services, and here we only going to cover the most common one, `ClusterIP`. Like the name says the service gets an internal IP so communication can happen between...
 
 Example service for the MariaDB StatefulSet could be:
 
