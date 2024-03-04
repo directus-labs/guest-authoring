@@ -314,7 +314,7 @@ spec:
 
 This finds the MariaDB StatefulSet (the selector part, looks for a label named `app.kubernetes.io/name`, and value `mariadb`), and exposes port 3306 with the name `directus-mariadb` (equals hostname) for the running pod.
 
-So in Directus, you could communicate with the MariaDB pod, setting the port and the hostname as environment variables in the Deployment, like:
+In Directus, you can communicate with the MariaDB pod, setting the port and the hostname as environment variables in the Deployment:
 
 ```yaml
 env:
