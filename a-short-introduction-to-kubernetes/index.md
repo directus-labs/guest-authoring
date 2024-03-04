@@ -117,7 +117,7 @@ spec:
             value: https://directus.app
 ```
 
-## StatefulSets
+## `StatefulSets`
 
 Deployments are suitable for stateless applications or microservices where instances of the application can be treated as interchangeable, and manages rolling updates and rollback strategies seamlessly, ensuring that your application remains available during updates.
 
