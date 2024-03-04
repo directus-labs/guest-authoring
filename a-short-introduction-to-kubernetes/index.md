@@ -47,7 +47,7 @@ spec:
 
 ## Metadata and Labels
 
-Metadata is used to identify your Kubernetes objects, without them you soon will be lost, and even different parts of the Kubernetes puzzle requires them. Some metadata is a must, like the name - otherwise there is no identification. Labels and annotations adds metadata to your objects so you could easily find them or target them.
+Metadata is used to identify your Kubernetes objects, with different parts of the Kubernetes puzzle requiring them to be set. Some metadata is required, with labels and annotations allowing easier object identification when searching for or targeting them.
 
 One of the reasons is then you create an object, like a Deployment, a random string is used for the pod it creates. So you to communicate with it, you need the metadata to identify it.
 
