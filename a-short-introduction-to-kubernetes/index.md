@@ -85,7 +85,9 @@ A pod is the smallest deployable compute object in K8s, like the example above. 
 
 ## Deployments
 
-A Deployment manages a set of Pods to run an application workload, usually one that doesn't maintain state (coming that later). A Deployment is a way to describe the pod(s) you want to run, if you need to mount volumes (for storing data) or config (like the config file for your Directus Deployment), also you add logic for resources is going to use (RAM, and CPU). So, with a Deployment, you create pods. Each Deployment, creates normally one pod (which, like state above, could have many containers).
+A Deployment manages a set of Pods to run an application workload. A Deployment is a way to describe the pod(s) you want to run, if you need to mount volumes (for storing data) or config (like the config file for your Directus Deployment), and add logic for resources is going to use (RAM, and CPU). 
+
+With a Deployment, you create pods. Each Deployment creates normally one pod (which could have many containers).
 
 A Deployment could "update" your pod - where K8s takes down the existing pod, and replaces with a new one, like when updating your Directus instance, or adding new config or environment variables.
 
