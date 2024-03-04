@@ -24,7 +24,7 @@ The example files in this post, should not be used to create a Directus setup, t
 
 :::
 
-## Yaml and API:s
+## YAML and API:s
 
 All objects can be described and created with yaml, with a minimum requirement telling which api you are going to use, and what kind, like:
 
@@ -304,7 +304,7 @@ spec:
 
 This finds the MariaDB StatefulSet (the selector part, looks for a label named `app.kubernetes.io/name`, and value `mariadb`), and exposes port 3306 with the name `directus-mariadb` (equals hostname) for the running pod.
 
-So in Directus, you could communicate with the MariaDB pod, setting the port and the hostname as environment variables in the Deployment, like:
+In Directus, you can communicate with the MariaDB pod, setting the port and the hostname as environment variables in the Deployment:
 
 ```yaml
 env:
