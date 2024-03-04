@@ -8,9 +8,9 @@ author:
 
 ## Introduction
 
-Originated in Googles project Borg, which started in 2003, Kubernetes (K8s) is today the most popular open-source container orchestration system, and it automates Deployments, scaling and management of applications. And Kubernetes is in many ways, a complicated beast to handle, like a puzzle with many pieces. If you never used Kubernetes before, it is maybe not the easiest way forward for your self-hosted Directus project. But there a lot of gains with Kubernetes running an application like Directus.
+Kubernetes (K8s) is the most popular open-source container orchestration system, and it automates deployments, scaling, and management of applications. While Kubernetes is not the easiest way to run a self-hosted Directus project, there a lot of gains to be realized.
 
-Good to remember that Kubernetes is not a traditional, all-inclusive PaaS (Platform as a Service) system, when you start up a new cluster, depending on which flavor your using, you need to install some, or all pieces yourself.
+
 
 If you never used Kubernetes, you may be surprised that you very often already have it on your development computer. Kubernetes, in a simple flavor is for instance shipped with Docker Desktop for Mac. So the place to test out Kubernetes itself it is very often nearby. If you want to experiment with Kubernetes for the first time, I really recommend that you do so locally.
 
@@ -300,7 +300,6 @@ spec:
   selector:
     labels:
       app.kubernetes.io/name: mariadb
-
 ```
 
 This finds the MariaDB StatefulSet (the selector part, looks for a label named `app.kubernetes.io/name`, and value `mariadb`), and exposes port 3306 with the name `directus-mariadb` (equals hostname) for the running pod.
@@ -313,7 +312,6 @@ env:
     value: "3306"
   - name: DB_HOST
     value: directus-mariadb
-
 ```
 
 ## Ingresses
@@ -369,4 +367,3 @@ So, if we create a DNS-record for `directus.app`, pointing to your K8s cluster, 
 ## Summary
 
 You have learned some of the basic parts and lingo in Kubernetes, and also how Directus fit in that puzzle. And as promised, [here is full Directus Deployment, with Redis and MariaDB](https://gist.github.com/mikkeschiren/ab57c6bb67f57b21040215a8284d9450).
-
