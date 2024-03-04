@@ -55,7 +55,7 @@ Another, extremely useful metadata is annotations, but that is out of the scope 
 
 ## Containers
 
-Containers are the Docker images you deploy to your K8s cluster. There are mainly two kind of containers, initContainers and containers. initContainers runs before your containers start, like if you need to set permissions, or do some task like updating your Directus schema etc.
+Containers are the Docker images you deploy to your K8s cluster. There are mainly two kind of containers, `initContainers` and `containers`. `initContainers` runs before your containers start, like if you need to set permissions, or do some task like updating your Directus schema.
 
 ## Environment variables
 
