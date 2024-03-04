@@ -59,7 +59,7 @@ Containers are the Docker images you deploy to your K8s cluster. There are mainl
 
 ## Environment variables
 
-Environment variables could be added as part of your object, like the public url for Directus.
+Environment variables can be added as part of your object, like the URL of a Directus project.
 
 ```yaml{13-15}
 apiVersion: v1
