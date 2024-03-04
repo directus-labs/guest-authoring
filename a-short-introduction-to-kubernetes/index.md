@@ -18,7 +18,7 @@ There are a lot of hosted Kubernetes solutions for you to choose from - like Ama
 
 I will do a walk through of some of the basic pieces of the Kubernetes puzzle, and what they mean in a Directus context.
 
-:::info Please note
+:::info Examples Only
 
 The example files in this post, should not be used to create a Directus setup, they are just there to describe the different parts, please see the GitHub gist in the end of the post if you are interested in a full working example.
 
