@@ -36,11 +36,11 @@ This collection is for integration into the OpsGenie alerting system. As Direcut
 
 | Field name | Interface | Comment |
 | ---- | ---- | ---- |
-| external_id |  | Store the Alert ID |
-| priority |   | Low, Mid or High |
-| category |  | Simple method to deicde if health related or just an info |
-| message |  | The message that should be displayed in OpsGenie |
-| data |  | foreign key to the data item |
+| external_id | Input/String | Store the Alert ID |
+| priority | Dropdown | P1 - Critical to P5 - Informational |
+| category | Dropdown | Simple method to deicde if health related or just an info |
+| message | String | The message that should be displayed in OpsGenie |
+| data | Many to Many | foreign key to the data item |
 
 There are also a couple of other fields that we can use and populate such as severity, type, description, tags, links, or alias. To find our more about each field, check out the OpsGenie docs
 
