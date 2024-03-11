@@ -31,29 +31,19 @@ For each element of the data provided by the sensor, we want to save these value
 | heart_status | Dropdown | To evaluate the sensor data. |
 | oxygen_state | Dropdown | To evaluate the sensor data. |
 | thermal_state | Dropdown | To evaluate the sensor data. |
-This collection is for integration into the OpsGenie alerting system.
+This collection is for integration into the OpsGenie alerting system. As Direcuts provides the fields for sort, creation, and update date as well aw who perfomred the action, we enanled these fields during creation. Next to the id we need the following fields for alerts we want to create later on. Next to the default fields, the most important custom fields are the following ones:
+
 
 | Field name | Interface | Comment |
 | ---- | ---- | ---- |
-| id |  |  |
-| external_id |  |  |
-| sort |  |  |
-| user_created |  |  |
-| user_updated |  |  |
-| date_created |  |  |
-| date_updated |  |  |
-| category |  |  |
-| type |  |  |
-| severity |  |  |
-| status |  |  |
-| priority |  |  |
-| message |  |  |
-| alias |  |  |
-| details |  |  |
-| entity |  |  |
-| description |  |  |
-| neboo_data |  |  |
-| links |  |  |
+| external_id |  | Store the Alert ID |
+| priority |   | Low, Mid or High |
+| category |  | Simple method to deicde if health related or just an info |
+| message |  | The message that should be displayed in OpsGenie |
+| data |  | foreign key to the data item |
+
+There are also a couple of other fields that we can use and populate such as severity, type, description, tags, links, or alias. To find our more about each field, check out the OpsGenie docs
+
 ### Flows
 A Flow inside Direcuts can be used to automate things. Each Flow contains of a trigger and one or more operations. A trigger could be time based, manual, or based on events coming from actions like creating or updating items. As operations we can use CRUD operations to work with items or create new items, if-else condtions, web requests, and even more operations.
 
