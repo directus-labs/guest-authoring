@@ -215,9 +215,6 @@ The last step within the flow is to save the gathered data within the collection
 }
 ```
 
-This is a very minimal setup and only stores a subset of data that comes from the tracker. 
-As the collection also has some fields for status, the idea could be to define the status like low, ok and high within the run operation and save these values as well. Another way could be to create a second flow that runs every time a new item is created and updates the status fields based on the related numeric value.
-
 From here, we have all the basic data saved within Directus, if the Flow runs without any issues, don't forget to turn off the logging of the flow and maybe also the logging for the data collection to reduce the amount of overhead data within the Flow log and activity table for the collection.
 ## Reporting
 ### Insights
