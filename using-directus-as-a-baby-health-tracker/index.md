@@ -372,3 +372,6 @@ let widget = await createWidget(processedData);
 Script.setWidget(widget);
 Script.complete()
 ```
+
+## Wrap up
+And Voila, you've successfully built your monitoring system by using Direcuts. In this post, we covered how to set up the needed Collections to store data from an external API using Flows, worked with the data to further integrate the collected data into third-party tools and built our reporting Dashboard directly within Direcuts using Insights as well as display the latest data on our mobile phone.
