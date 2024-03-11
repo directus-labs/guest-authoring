@@ -60,7 +60,6 @@ The second Collection is only needed for the integration into OpsGenie later on,
 | description |  |  |
 | neboo_data |  |  |
 | links |  |  |
-The idea behind this collection is to store the alert details directly within Directus. Whenever an alert is created within this collection, a new alert has to be created within our external alerting tool (OpsGenie). So most fields are just the the exact fields we'd like to set within OpsGenie, some are Directus-internal related and the external_id as well as the neboo_data fields are used to refer to either the alert or the regarding data set from our first data collection.
 ### Flows
 A Flow inside Direcuts can be used to automate things. Each Flow contains of a trigger and one or more operations. A trigger could be time based, manual, or based on events coming from actions like creating or updating items. As operations we can use CRUD operations to work with items or create new items, if-else condtions, web requests, and even more operations.
 
@@ -92,15 +91,6 @@ The general process to get a token which can be used to access actual device dat
 3. Within the third request we pass the 2nd token to the vendor API once again. For this request, we will receive a last token that can be used to fetch actual data from the API.
 
 !(Pasted image 20240214224605.png)
-
-As all of these tokens will expire after some time, it could be possible to save the tokens and reuse them instead of chaining all the requests for every run of the flow. For a simple way to setup we run it within a single Flow and pass each token to the next operation. 
-
-To pass data from one Flow Operation to another Operation, the `{{ … }}` syntax can be used. With the `{{ … }}` you can refer to any object that is currently part of the Flow. Here the functionality of named Operation keys becomes handy to easily identify and maintain the Flow.
-
-> [!TIP] Name your Flow operations
-> ToDo why this could be a best practice.
-> - Easy to apply
-> - easy to use and to remember of $last is not an option
 
 The screenshot shows the last request. As a key, we've set `token_sign_in` which can be used in the next operation. Within the payload/request body, we've specified the token to use with the dynamic code `"{{$last.data.mini_token}}"`. The object `$last` refers to the previous operation, an easy way to access the results from the last request. 
 
@@ -139,8 +129,8 @@ If everything works so far, the JSON we receive looks something like this, but f
         "lan_enabled": false,
         "has_properties": true,
         "connection_status": "Online",
-        "lat": "xxxxxxxx",
-        "lng": "xxxxxxxx",
+        "lat": "********",
+        "lng": "********",
         "device_type": "Wifi"
       }
     }
