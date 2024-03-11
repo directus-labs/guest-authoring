@@ -36,8 +36,7 @@ For each element of the data provided by the sensor, we want to save these value
 | heart_status | Dropdown | To evaluate the sensor data. |
 | oxygen_state | Dropdown | To evaluate the sensor data. |
 | thermal_state | Dropdown | To evaluate the sensor data. |
-#### The alerting collection (optional)
-The second Collection is only needed for the integration into OpsGenie later on, so you may skip this part if not needed in your scenario or replace/adjust it with any other structure (fields in this collection) that might become handy for your kind of reporting or integration into external tools.
+This collection is for integration into the OpsGenie alerting system.
 
 | Field name | Interface | Comment |
 | ---- | ---- | ---- |
