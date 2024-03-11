@@ -11,7 +11,7 @@ Directus can be used for many different use cases all over certain industries. N
 
 ## Summary
 In this article, we will explore Directus as a backend for a smart wearable device, and how to extend the functionality of the the apps shipped with the device.
-You will find some basic step-by-step guides for setting up some Collections, relationships between Collections, how to automatically grab data from the wearable using Flows and how to integrate Directus into 3rd party tools for reporting, such as OpsGenie and screen widgets on an iPhone.
+We will cover data model configuration, how to grab data from the wearable using Directus Flows, and how to integrate Directus into 3rd party tools for reporting, such as OpsGenie and screen widgets on an iPhone.
 
 ## Before You Start
 
