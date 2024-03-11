@@ -11,13 +11,8 @@ In this article, we will explore Directus as a backend for a smart wearable devi
 We will cover data model configuration, how to grab data from the wearable using Directus Flows, and how to integrate Directus into 3rd party tools for reporting, such as OpsGenie and screen widgets on an iPhone.
 
 ## Before You Start
-To get on common ground, let's have a look at the used tools and infrastructure first.
-Next to a running Directus instance, regardless if self-hosted or within Directus Cloud. 
-For Directus I expect you to have the permission to create new Collections as well as new Flows, so an admin-access level would be required. 
-
-Next, you need a wearable with an API to consume the data. Of course, all other sensor data would work as long as we can access the data by a web request. Depending on your used sensors, the final Flow might look different. In our case, we used the Neebo tracker first and switched to Owlet. Both provide an API with some authentication set up in front. Unfortunately, there is no official documentation of the API so it was kind of reverse engineering the network traffic and digging through a couple of GitHub repositories.
-
-Last but not least, a basic understanding of Directus and RESTful APIs and web requests is helpful, but we'll provide as many details as possible to make it as easy as possible to follow, even if you're new to Directus (or APIs).
+- A Directus project - follow our [quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one.
+- A wearable with an API to consume the data. For this project, we will use the [Owlet](https://owletcare.com/).
 
 ## Implementation
 ### Collections
