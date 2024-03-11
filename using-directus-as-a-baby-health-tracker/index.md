@@ -31,12 +31,7 @@ Last but not least, a basic understanding of Directus and RESTful APIs and web r
 
 First, let's point out which Collections we need to save the data later on. To make it simple, we start with only two Collections. From a data-structure point of view, this might not be the best solution, but as Directus is very flexible, we can optimize the structure later on if needed.
 #### The data storage collection
-As we want to track sensor data over time, we will frequently pull the data with some details from the external API. To store this data we are using a Collection called "sensor_data".
-For the ID we use an auto-generated UUID that can be used as an index and to refer to any item in our collection later on. Using a regular auto-increment would work of cause as well.
-There are a couple of fields provided by Directus, during the creation of the new Collection we've selected the following ones:
-* sort
-* status
-* date_created
+As we want to track sensor data over time, we will frequently pull the data with some details from the external API. Create a collection called `sensor_data` with a auto-generated UUID as an ID. Allow Directus to create `sort`, `status`, and `date_created` fields as well.
 For each element of the data provided by the sensor, we want to save these values. Depending on the used sensor, you may come up with a different set of fields. In our case we've created the following important additional fields:
 
 | Field name | Interface | Comment |
