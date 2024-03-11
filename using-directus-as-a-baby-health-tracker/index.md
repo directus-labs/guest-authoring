@@ -11,8 +11,6 @@ In this article, we will explore Directus as a backend for a smart wearable devi
 We will cover data model configuration, how to grab data from the wearable using Directus Flows, and how to integrate Directus into 3rd party tools for reporting, such as OpsGenie and screen widgets on an iPhone.
 
 ## Before You Start
-
-### Setup and Technical requirements
 To get on common ground, let's have a look at the used tools and infrastructure first.
 Next to a running Directus instance, regardless if self-hosted or within Directus Cloud. 
 For Directus I expect you to have the permission to create new Collections as well as new Flows, so an admin-access level would be required. 
@@ -20,13 +18,9 @@ For Directus I expect you to have the permission to create new Collections as we
 Next, you need a wearable with an API to consume the data. Of course, all other sensor data would work as long as we can access the data by a web request. Depending on your used sensors, the final Flow might look different. In our case, we used the Neebo tracker first and switched to Owlet. Both provide an API with some authentication set up in front. Unfortunately, there is no official documentation of the API so it was kind of reverse engineering the network traffic and digging through a couple of GitHub repositories.
 
 Last but not least, a basic understanding of Directus and RESTful APIs and web requests is helpful, but we'll provide as many details as possible to make it as easy as possible to follow, even if you're new to Directus (or APIs).
+
 ## Implementation
 ### Collections
-
-> [!TIP] What is a Collection
-> Collections are individual collections of items, similar to tables in a database. Changes to collections will alter the schema of the database. [Learn more about Collections](https://docs.directus.io/user-guide/overview/glossary#collections).
-
-First, let's point out which Collections we need to save the data later on. To make it simple, we start with only two Collections. From a data-structure point of view, this might not be the best solution, but as Directus is very flexible, we can optimize the structure later on if needed.
 #### The data storage collection
 As we want to track sensor data over time, we will frequently pull the data with some details from the external API. Create a collection called `sensor_data` with a auto-generated UUID as an ID. Allow Directus to create `sort`, `status`, and `date_created` fields as well.
 For each element of the data provided by the sensor, we want to save these values. Depending on the used sensor, you may come up with a different set of fields. In our case we've created the following important additional fields:
@@ -68,9 +62,7 @@ The second Collection is only needed for the integration into OpsGenie later on,
 | links |  |  |
 The idea behind this collection is to store the alert details directly within Directus. Whenever an alert is created within this collection, a new alert has to be created within our external alerting tool (OpsGenie). So most fields are just the the exact fields we'd like to set within OpsGenie, some are Directus-internal related and the external_id as well as the neboo_data fields are used to refer to either the alert or the regarding data set from our first data collection.
 ### Flows
-
-> [!TIP] What is a Flow
-> Flows enable custom, event-driven data processing and task automation within Directus.  [Learn more about Flows](https://docs.directus.io/reference/system/flows.html) 
+A Flow inside Direcuts can be used to automate things. Each Flow contains of a trigger and one or more operations. A trigger could be time based, manual, or based on events coming from actions like creating or updating items. As operations we can use CRUD operations to work with items or create new items, if-else condtions, web requests, and even more operations.
 
 #### Read Data Flow
 The by far most complex Flow of this use case is the one we need to extract the data. This is due to the lack of publicly documented API of the used health-tracking gadget. 
