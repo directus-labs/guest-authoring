@@ -27,15 +27,15 @@ For each element of the data provided by the sensor, we want to save these value
 
 | Field name | Interface | Comment |
 | ---- | ---- | ---- |
-| raw_payload | Code | We use this to store the JSON payload that we gather from the external API. This is more or less just for debugging and can be skipped of cause. |
-| temperature | Input, Decimal | Just the plain value of the sensor data |
-| oxygen | Input, Decimal | Just the plain value of the sensor data |
-| heart_rate | Input, Decimal | Just the plain value of the sensor data |
-| battery_level | Input, Integer | Just the plain value of the sensor data |
-| battery_status | Dropdown | To evaluate the sensor data, a simple Dropdown field is used to display the status for each value. |
-| heart_status | Dropdown | To evaluate the sensor data, a simple Dropdown field is used to display the status for each value. |
-| oxygen_state | Dropdown | To evaluate the sensor data, a simple Dropdown field is used to display the status for each value. |
-| thermal_state | Dropdown | To evaluate the sensor data, a simple Dropdown field is used to display the status for each value. |
+| raw_payload | Code | We use this to store the JSON payload that we gather from the external API for debugging purposes. |
+| temperature | Input, Decimal | Plain value from the sensor data. |
+| oxygen | Input, Decimal | Plain value from the sensor data. |
+| heart_rate | Input, Decimal | Plain value from the sensor data. |
+| battery_level | Input, Integer | Plain value from the sensor data. |
+| battery_status | Dropdown | To evaluate the sensor data. |
+| heart_status | Dropdown | To evaluate the sensor data. |
+| oxygen_state | Dropdown | To evaluate the sensor data. |
+| thermal_state | Dropdown | To evaluate the sensor data. |
 #### The alerting collection (optional)
 The second Collection is only needed for the integration into OpsGenie later on, so you may skip this part if not needed in your scenario or replace/adjust it with any other structure (fields in this collection) that might become handy for your kind of reporting or integration into external tools.
 
