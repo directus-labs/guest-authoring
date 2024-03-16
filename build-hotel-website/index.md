@@ -70,7 +70,7 @@ Create some items in the Room Types and Rooms collections - [here's some sample 
 
 ### Configure the Directus SDK
 
-1. Open the `hotel-resort` project in a code editor and create a .env with the content:
+1. Open the `hotel-resort` project in a code editor and create a `.env.local` with the content:
 
     ```bash
     DIRECTUS_URL=YOUR_DIRECTUS_URL
@@ -453,7 +453,7 @@ You should have UI on the browser that looks like this:
 
 To set up Stripe for receiving payments on your Next.js application,
 
-Update your `.env` file with the publishable and secret keys you copied:
+Update your `.env.local` file with the publishable and secret keys you copied:
 
 ```bash
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=YOUR_STRIPE_PUBLISHABLE_KEY
