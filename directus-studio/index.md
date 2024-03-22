@@ -19,21 +19,23 @@ Imagine a scenario where your business receives numerous customer inquiries dail
 
 - Ensure that you have setup a Directus account either on the [Directus Cloud](https://directus.cloud/) or on your local development environment using [docker](https://docs.directus.io/getting-started/quickstart.html). Watch this youtube [video](https://www.youtube.com/watch?v=ZOCfBBTMtoE) for a step-by-step guide in setting up Directus locally on your computer.
 
-- Log into your Directus account, you'll create a specific schema for your support ticket form. This schema will include the `Customer` and the `Support`control fields. The control fields allows you to assign the ticket to an available support agent including the summary of the ticket resolution. Below is the structure of the schema
-	- Customer Fields: Name, Email, Issue Type (options like Billing, Technical Issue, General Inquiry), Description, and Submission Date.
-	- Support Fields: Ticket ID (auto-increment), Status (Open, In Progress, Resolved), Assigned To (support agent), and Resolution Summary.
+- Log into your Directus account, you'll create a specific collection for your support ticket, agent, and message. This collections will include the form for `Customer` to drop a ticket, the support collection will be for the `Support Agent` assigned to each ticket, while the message collection is for communication on the ticket. Below is the structure of the schema for each collections:
+
+	1. Support Ticket: Ticket_Id, Name, Email, Issue Type (options: Billing, Technical Issue, General Inquiry), Description, status (Open, In Progress, Resolved), asigned_to, and Submission Date.
+	2. Agents: agent_id (uuid), assigned (relationship: manyToOne, related collection: directus user)
+   3. Ticket Message: message_id, date_created, ticket_message, relationship (relationship: ManyToOne, related collection: support_tickets `ticket_id`)
 
 - Configuring roles for the support agents and the customers:
-	-  `Customers` can create tickets and view the status of their own tickets.
+	-  `Customers` can create tickets and view the status of their own tickets, as well as add message to the ticket.
 
-	-  `Support Agents` has access to view assigned tickets, update statuses.
+	-  `Support Agents` has access to view assigned tickets, update statuses, add message for the customer.
 
 Setting up these roles and permissions ensures that customers have a straightforward way to submit and track their inquiries while giving support agents the tools needed to manage and resolve tickets efficiently.
 
 ## Designing the Agent Schema
 The support agent schema is useful for managing a dedicated support team: below are the few fields to include in the `agent` schema:
 
-1. Create a New Collection: Name it `agens`. This collection will be where all your agents will be added. Rename the `id` to `agent-id` which will be your primary key and change the type `uuid`.
+1. Create a New Collection: Name it `agents`. This collection is where all your agents will be added. Rename the `id` to `agent-id` which will be your primary key and change the type to `uuid`.
 2. Create a new field, `assigned` the field type will be `many-to-one`. The related collection will be `directus_users`. This will allow you to select your agents and add them to this collection.
 3. Configure the access to this collection to be visible to only admin. Save your chnages.
 
@@ -67,19 +69,32 @@ Make sure to check the "required" option for critical fields like customer_email
 
 Ensure each field is correctly set up for its purpose, especially concerning data types, placeholder where necessary, and default values.
 
+## Designing the Ticket_message Schema
+The message schema is useful for follow-up messages between an assigned support agent and the customer. Below are the few fields to include in the `agent` schema:
+
+1. Create a New Collection: Name it `ticket_message`. Rename the `id` to `message-id` which will be your primary key and change the type to `uuid`.
+2. Add the `date_created` and `user_created` field before clicking next.
+3. Create a new field, `ticket_message`, this field will be for adding messages to the ticket for communication and follow-up.
+4. Create a new field, `relationship` the field type will be `many-to-one`. The related collection will be `support_tickets`, choose `ticket_id` in the dropdown. This will allow you to select which ticket the message is meant for.
+5. Configure the access to this collection to be visible to only admin. Save your chnages.
+
+Following all the above listed steps, you will have three collections by now. The collection for the ticket_submission, agents, and ticket message. All linked together.
 
 ## Implementing the communication flow
 This section highlight the communication flow of your support ticket system between customers and support agents:
 
 **For Customers:**
 - Customers submit tickets through a Directus form, detailing their issue or inquiry.
-- They can view the status of their submitted tickets and receive notifications for any updates or messages.
-- Access to a direct communication interface with the support agent handling their case.
+- They can view the status of their submitted tickets.
+- Access to a direct message with the support agent handling their case.
 
 **For Support Agents:**
-- Agents can view incoming tickets, filter them by status or issue type, and assign them to themselves or others.
+- Agents can view incoming tickets assigned to them.
 - They update ticket statuses (e.g., from Open to In Progress to Resolved) and communicate directly with customers through the ticket's messaging system.
-- Agents add a resolution summary once the issue is resolved, which can be viewed by the customer.
+
+**For Admin:**
+- Admin can view incoming tickets and assign the ticket to an available agent (sales, support) to act on them.
+- Admin can update ticket statuses (e.g., from Open to In Progress to Resolved) and communicate directly with customers through the ticket's messaging system.
 
 ## Configuring Roles and Permissions
 
@@ -89,7 +104,7 @@ Directus’s flexibility in permissions allows you to control access precisely:
 1. **Navigate to Roles & Permissions** in Directus Studio and create two new roles named `Customer`, `Agent`. Agents will be assigned to review and treat tickets.
 2. **Set Permissions for the `Customer` Role:** Allow `read` and `create` access to the `support_tickets` collection. It's crucial to restrict `read` access to only their tickets, ensuring privacy and security.
    ![Applying rules to what user can see](rule-setting.png)
-3. **Set Permissions for the `Agent` Role:** Allow `read` and `update` access to the `support_tickets` assigned to them. 
+3. **Set Permissions for the `Agent` Role:** Allow `read` and `update` access to the `support_tickets` assigned to them. Also, grant a full `create`, `read`, and `update` role to the Agent on the `ticket_message` collection. 
 ![Applying rules to Agent, to limit what they can see](directus-agent-role.gif)
 
 ```
@@ -97,7 +112,7 @@ Directus’s flexibility in permissions allows you to control access precisely:
 
 Directus allows you to apply filters to permissions. To ensure users can only see their own tickets, you'll apply a filter on the Read permission. According to the image above, you'll allow the user to see only the tickets they created. You need to choose the field that links the ticket to the user. This is often a user ID or user email field in the ticket collection that references the user who submitted the ticket. This same goes to the permission set on the Agent role as well. You can read more about user fileds on the [documentation](https://docs.directus.io/reference/system/users.html).
 
-Test this setting with a test account before going live.
+> Test this setting with a test account before going live.
 
 :::
 ```
