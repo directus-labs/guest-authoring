@@ -105,7 +105,10 @@ Directus’s flexibility in permissions allows you to control access precisely:
 2. **Set Permissions for the `Customer` Role:** Allow `read` and `create` access to the `support_tickets` collection. It's crucial to restrict `read` access to only their tickets, ensuring privacy and security.
    ![Applying rules to what user can see](rule-setting.png)
 3. **Set Permissions for the `Agent` Role:** Allow `read` and `update` access to the `support_tickets` assigned to them. Also, grant a full `create`, `read`, and `update` role to the Agent on the `ticket_message` collection. 
+
 ![Applying rules to Agent, to limit what they can see](directus-agent-role.gif)
+
+
 
 ```
 :::Rule Setting
@@ -151,5 +154,3 @@ To build upon the skills learnt in this article, consider the following steps:
 1. Read more on the amazing offerings of Directus on their [Documentation](https://docs.directus.io/): Explore the Directus Documentation, especially sections related to API usage, advanced permission configurations, and webhooks. This will enhance your ability to customize and extend the functionality of your support ticket system.
 
 2. Sign Up for [Directus Cloud](https://directus.cloud/): If you haven't already, sign up for Directus Cloud to experience the platform's full capabilities without the need to manage your infrastructure.
-
-3. Setup Directus Locally: Watch this [Youtube video](https://www.youtube.com/watch?v=ZOCfBBTMtoE) that walk you through how to setup directus locally on your PC.
