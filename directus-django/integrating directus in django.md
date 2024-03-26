@@ -30,7 +30,7 @@ lets get our django project setup
 After setting up your project structure, let's configure Django to serve as the foundation of your dynamic website:
 
  Open your Django project in your code editor of choice.
-Modify settings.py to include the necessary configurations for Directus API communication.
+
  	
  Activate your virtual environment and start your Django development server with the following command:
  
@@ -38,6 +38,30 @@ Modify settings.py to include the necessary configurations for Directus API comm
  python manage.py runserver  
  ```
  Visit http://localhost:8000 in your web browser to see your new Django project running.
+
+ After you've started your Django project, you need to create a Django app that will contain your views, integrations and URLs. Run the following command in your project directory:
+
+ ```bash
+ python manage.py startapp blog
+```
+Replace blog with whatever name you find suitable for your app.
+
+Open the config/settings.py file in your Django project and add your newly created app to the INSTALLED_APPS list. Also edit the template settings. This step tells Django to include the app in the project as well as where to look find the templates we create.
+
+```python
+INSTALLED_APPS = [
+    ...  # Other installed apps
+    'blog',  # Add this line
+]
+
+TEMPLATES = [
+    {
+        ...
+        "DIRS": [BASE_DIR / "templates"],  
+        ...
+    },
+]
+```
  
  
  ## Using Global Metadata and Settings
@@ -50,7 +74,7 @@ Navigate to the content module and enter the global collection. Collections will
 
 By default, new collections are not accessible to the public. Navigate to Settings -> Access Control -> Public and give Read access to the Global collection.
 
-In your Django project, create a file named directus_integration.py in the main app directory.
+In your Django project, create a file named directus_integration.py in the blog app directory.
 In this file, write functions to handle data fetching:
 
 ```python
@@ -71,7 +95,6 @@ def get_collection_items(collection):
 With the functions in place, you can now fetch global settings and pass them to your Django templates.
 
 
-## Creating Pages With Directus in Django
 
 In your Django project, we'll set up a simple system to serve pages stored in a Directus collection called pages. each page in Directus will have a unique identifier that corresponds to its URL path.
 
@@ -82,35 +105,26 @@ Add a text field named title and a Rich Text field for the content.
 head to Roles & Permissions and allow the public role to read the pages collection.
 
 
-Inside your Django project, create a Python script to interface with Directus and fetch page data. Here's a simplified version using Django's built-in HTTP client:
 
-```python
-from django.http import JsonResponse
-import requests
 
-DIRECTUS_API_ENDPOINT = "YOUR_DIRECTUS_INSTANCE_API_ENDPOINT"
-
-def fetch_pages():
-    response = requests.get(f"{DIRECTUS_API_ENDPOINT}/items/pages")
-    return response.json()
-    
-```
-
-In your views.py, utilize the fetching function to get the content and serve it through a Django view:
+In your views.py, utilize the `get_collection_items` function to get the content and serve it through a Django view:
 
 ```python
 from django.shortcuts import render
+from django.http import JsonResponse
+# Import the get_collection_items function from your integration script
+from .directus_integration import get_collection_items
 
 def page_view(request, slug):
-    pages = fetch_pages()
+    pages = get_collection_items('pages')
     page = next((p for p in pages['data'] if p['slug'] == slug), None)
-    if page is not None:
+    if page:
         return render(request, 'page.html', {'page': page})
     else:
         return JsonResponse({'error': 'Page not found'}, status=404)
 ```
 
-Develop a Django template to render the page content. In your templates directory, create a file named page.html:
+Now we can develop a Django template to render the page content. First off, create a `templates` directory in the root directory of our django project (the root directory is where you have the manage.py file). In your templates directory, create a file named page.html:
 
 ```html
 <!DOCTYPE html>
@@ -147,30 +161,25 @@ Adjust Directus permissions to allow public reading of the authors and posts.
 
 ### Create blog post listing
 
-Now, you'll need to create a Django view that fetches the blog posts. In a new file directus_integration.py, set up the following code:
+Now, you'll need to create a Django view that fetches the blog posts. still within our directus_integration.py file, set up the following code:
 
 ```python
-import requests
-
-DIRECTUS_API_ENDPOINT = "YOUR_DIRECTUS_INSTANCE_API_ENDPOINT"
-
 def fetch_blog_posts():
     response = requests.get(f"{DIRECTUS_API_ENDPOINT}/items/posts")
     return response.json()
-    
 ```
 
-In your views.py, create a function that uses the fetch_blog_posts to display the list of posts:
+In your views.py, create a function that imports and uses the `fetch_blog_posts` function to display the list of posts:
 
 ```python
-from django.shortcuts import render
+from .directus_integration import get_collection_items,fetch_blog_posts
 
 def blog_posts(request):
     posts_data = fetch_blog_posts()
     return render(request, 'blog_list.html', {'posts': posts_data['data']})
 ```
 
-Craft a Django template to list all blog posts, blog_list.html:
+Within the the tamplates directory craft a Django template to list all blog posts, blog_list.html:
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -207,7 +216,7 @@ def blog_post_detail(request, slug):
         return JsonResponse({'error': 'Post not found'}, status=404)
 ```
 
-Design the blog_detail.html template to display each post:
+Still within our templates directory, create the blog_detail.html template to display each post:
 
 ```html
 <!DOCTYPE html>
@@ -234,7 +243,7 @@ Design the blog_detail.html template to display each post:
 
 ![blog detail](blog-detail.png)
 
-Update urls.py to include URL patterns for these views:
+Create a urls.py within the blog app directory and update it to include URL patterns for these views:
 
 ```python
 from django.urls import path
