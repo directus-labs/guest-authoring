@@ -94,8 +94,46 @@ def get_collection_items(collection):
 
 With the functions in place, you can now fetch global settings and pass them to your Django templates.
 
+Lets now create a View for the Home Page.
+django automatically adds a views.py file after starting an app, so within the views.py in your blog app, add:
+
+```python
+from django.shortcuts import render
+from .directus_integration import get_global_settings
+
+def home_page(request):
+    global_settings = get_global_settings()
+    context = {
+        'title': global_settings['data']['title'],
+        'description': global_settings['data']['description']
+    }
+    return render(request, 'home.html', context)
+```
+Now we can design the Home Page Template.
+
+ First off, create a `templates` directory in the root directory of our django project (the root directory is where you have the manage.py file).
+Create home.html in your templates directory:
+
+```python
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <header>
+        <h1>{{ title }}</h1>
+    </header>
+    <main>
+        <p>{{ description }}</p>
+    </main>
+</body>
+</html>
+```
 
 
+## Creating Pages With Directus
 In your Django project, we'll set up a simple system to serve pages stored in a Directus collection called pages. each page in Directus will have a unique identifier that corresponds to its URL path.
 
 In your Directus dashboard, navigate to Settings -> Data Model and create a new collection named pages.
@@ -124,7 +162,7 @@ def page_view(request, slug):
         return JsonResponse({'error': 'Page not found'}, status=404)
 ```
 
-Now we can develop a Django template to render the page content. First off, create a `templates` directory in the root directory of our django project (the root directory is where you have the manage.py file). In your templates directory, create a file named page.html:
+Now we can develop a Django template to render the page content. In your templates directory, create a file named page.html:
 
 ```html
 <!DOCTYPE html>
@@ -179,7 +217,7 @@ def blog_posts(request):
     return render(request, 'blog_list.html', {'posts': posts_data['data']})
 ```
 
-Within the the tamplates directory craft a Django template to list all blog posts, blog_list.html:
+Within the the templates directory craft a Django template to list all blog posts, blog_list.html:
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -243,20 +281,31 @@ Still within our templates directory, create the blog_detail.html template to di
 
 ![blog detail](blog-detail.png)
 
-Create a urls.py within the blog app directory and update it to include URL patterns for these views:
+Create a urls.py within the blog app directory and update it to include URL patterns for all views:
 
 ```python
 from django.urls import path
 from .views import blog_posts, blog_post_detail
 
 urlpatterns = [
+    path('', home_page, name='home'),
     path('blog/', blog_posts, name='blog_list'),
     path('blog/<slug:slug>/', blog_post_detail, name='blog_detail'),
+    
     # ... other URL patterns ...
 ]
 
 ```
 
+Include the app's URLs in the main project's config/urls.py:
+
+```python
+from django.urls import path, include
+
+urlpatterns = [
+    path('', include('blog.urls')),
+]
+```
 
  		
 ## Add Navigation
