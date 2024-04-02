@@ -1,0 +1,377 @@
+---
+title: 'Getting Started With Directus And Flask'
+description: 'This guide will show you how to create an application using Flask framework and Directus as a headless CMS'
+author:
+  name: 'Guilherme Souza'
+  avatar_file_name: 'guilherme-souza-avatar.png'
+---
+
+## Introduction
+
+[Flask](https://flask.palletsprojects.com/en/3.0.x/) is a well-known Python framework used to build web APIs, and Directus is a powerful tool that helps developers and their teams integrate data with new or existing applications. In this tutorial, you will learn how to create a simple website using Directus as a [headless CMS](https://directus.io/solutions/headless-cms), creating and retrieving data such as global metadata, dynamic pages, and blog posts.
+
+## Before You Start
+
+You will need:
+
+- To have Python installed on your machine
+- A Directus project - [follow our quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one.
+- Basic knowledge of Python and Flask
+
+## Setting Up A Flask Project
+
+To create a new Flask project using `venv`, create your project directory and enter it, then run the following commands:
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows you should use `.venv\Scripts\activate`
+pip install Flask requests python-dotenv
+```
+
+To make *.env* file variables available on the project, create a file called *config.py* and add the following content to it:
+
+```py
+from dotenv import load_dotenv
+
+load_dotenv()
+```
+
+Then create an *app.py* file to start the Flask app:
+
+```py
+from flask import Flask
+
+app = Flask(__name__)
+
+
+@app.get("/")
+def home():
+    return "Hello world"
+```
+
+And run the following command to run your flask server, which will start a server at [http://localhost:3000](http://localhost:3000):
+
+```sh
+flask run --debug
+```
+
+> The `--debug` flag enables the autoreload feature on the project, which is very useful while developing.
+
+## Creating Global Metadata And Settings Collection
+
+In your Directus project, navigate to **Settings** -> **Data Model** and create a new collection called `global`. Under the **Singleton** option, select 'Treat as a single object', as this collection will have just a single entry containing global website metadata.
+
+Create two text input fields - one with the key of `title` and one `description`.
+
+Navigate to the content module and enter the `global` collection. Collections will generally display a list of items, but as a singleton, it will launch directly into the one-item form. Enter information in the title and description field and hit save.
+
+![Global metadata fields filled with custom text](global-collection-content.png)
+
+By default, new collections are not accessible to the public. Navigate to **Settings** -> **Access Control** -> **Public** and give Read access to the Global collection.
+
+## Creating a Directus Module
+
+Since your data will be fetched via the Directus REST API, you will need to create a module that encapsulates all that logic and exposes a simple interface to the outside world.
+
+To accomplish this, create a *directus.py* file and add the following content to it:
+
+```py
+import requests
+import os
+
+DIRECTUS_BASE_URL = os.environ.get("DIRECTUS_BASE_URL")
+
+
+def get_global_data():
+    response = requests.get(f"{DIRECTUS_BASE_URL}/items/global")
+    return response.json().get("data")
+```
+
+By now this is all you need, but in the following sections, you will also create a new function to fetch data from other collections.
+
+## Rendering The Home Page
+
+To render the site home page, create a new route that uses the directus module to get the global data and use it on a page template.
+
+### Creating Page Templates
+
+First of all, you have to create a base template to be used by all your pages. Create a *templates* directory and a file called *base.html* in it. Now place the following content on this file:
+
+```jinja
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+		/>
+		{% block head %}{% endblock %}
+
+		<title>{% block title %}Directus blog post with Flask{% endblock %}</title>
+	</head>
+	<body>
+		<header class="container">
+			<nav>
+				<ul>
+					<li>
+						<a href="/"><strong>Home</strong></a>
+					</li>
+				</ul>
+				<ul>
+					<li><a href="/blog">Blog</a></li>
+					<li><a href="/about">About</a></li>
+					<li><a href="/conduct">Code of Conduct</a></li>
+					<li><a href="/privacy">Privacy Policy</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main class="container">{% block content %}{% endblock %}</main>
+	</body>
+</html>
+```
+
+> Note there is a stylesheet in this code that imports [Pico](https://picocss.com/), a minimal class-less CSS library used to add some basic styles on the website. It was only used on this article to make things look better, but you can feel free to use whichever library you prefer and even use the default browser styles.
+
+Now create a *templates/home.html* file that will extend the base template and display some data on it. This file will have the following content:
+
+```jinja
+{% extends "base.html" %}
+
+{% block content %}
+<article>
+	<h1>{% block title %}{{ title }}{% endblock %}</h1>
+	<p>{{ description }}</p>
+</article>
+{% endblock %}
+```
+
+### Updating Home Route
+
+After creating the templates, update the *app.py* file:
+
+```py
+from flask import Flask // [!code --]
+from flask import Flask, render_template // [!code ++]
+import directus // [!code ++]
+
+app = Flask(__name__)
+
+
+@app.get("/")
+def home():
+    return "Hello world" // [!code --]
+    global_data = directus.get_global_data() // [!code ++]
+// [!code ++]
+    return render_template( // [!code ++]
+        "home.html", title=global_data["title"], description=global_data["description"] // [!code ++]
+    ) // [!code ++]
+```
+
+Then go to [http://localhost:3000](http://localhost:3000) and you will see a page like this:
+
+![Home page displaying configured global data](home-page.png)
+
+
+## Creating Pages With Directus
+
+Note that the base template has some links on its navbar pointing to pages like **About** that typically have just some text content and some images, but also need to be updated frequently and by people who do not have access to the code base.
+
+Using Directus you can make these pages dynamically available on your site and editable by non-technical users.
+
+To accomplish this, create a new collection called `pages` - make the Primary ID Field a "Manually Entered String" called `slug`, which will correlate with the URL for the page. For example, `about` will later correlate to the page `localhost:3000/about`.
+
+Create a text input field called `title` and a WYSIWYG input field called `content`. In Access Control, give the Public role read access to the new collection. Create 3 items in the new collection - [here's some sample data](https://github.com/directus-community/getting-started-demo-data).
+
+### Rendering Dynamic Pages
+
+To get data of pages registered on the `pages` collection you will need to add the following code at the end of the *directus.py* file:
+
+```py
+def get_page_by_slug(slug):
+    response = requests.get(f"{DIRECTUS_BASE_URL}/items/pages/{slug}")
+    return response.json().get("data")
+```
+
+Create the *templates/dynamic-page.html* file with the following content:
+
+```jinja
+{% extends "base.html" %}
+
+{% block content %}
+	<h1>{% block title %}{{ title }}{% endblock %}</h1>
+	<article>{{ content | safe }}</article>
+{% endblock %}
+```
+
+Then, on the *app.py* file import `render_template_string` from `Flask` and define a new app route with the following code at the end of the file:
+
+```py
+@app.get("/<slug>")
+def dynamic_page(slug):
+    page = directus.get_page_by_slug(slug)
+
+    if not page:
+        return render_template_string(
+            "{% extends 'base.html' %}{% block content %}This page does not exists{% endblock %}"
+        )
+
+    return render_template(
+        "dynamic-page.html", title=page["title"], content=page["content"]
+    )
+```
+
+This route fetches page data using the `directus.get_page_by_slug` method and then renders a simple not found page (defined as an inline template string) if the page does not exist, and if it exists it renders the `dynamic-page.html` template with page data on it.
+
+Now navigate to [http://localhost:3000](http://localhost:3000) and see the result
+
+![About page displaying configured data](about-page.png)
+
+## Creating Blog Posts With Directus
+
+Create a new collection called `authors` with a single text input field called `name`. Create one or more authors.
+
+Then, create a new collection called `posts` - make the Primary ID Field a "Manually Entered String" called `slug`, which will correlate with the URL for the page. For example `hello-world` will later correlate to the page `localhost:3000/blog/hello-world`.
+
+Create the following fields in your `posts` data model:
+
+- a text input field called `title`
+- a WYSIWYG input field called `content`
+- an image relational field called `image`
+- a datetime selection field called `publish_date` - set the type to 'date'
+- a many-to-one relational field called `author` with the related collection set to `authors`
+
+In Access Control, give the Public role read access to the `authors`, `posts`, and `directus_files` collections.
+
+Create 3 items in the posts collection - [here's some sample data](https://github.com/directus-community/getting-started-demo-data).
+
+### Create Blog Post Listing Page
+
+To fetch the blog post data add this function at the end of the *directus.py* file:
+
+```py
+def get_posts():
+    response = requests.get(
+        f"{DIRECTUS_BASE_URL}/items/posts?fields[]=slug,title,description,publish_date,author.name&sort=-publish_date"
+    )
+    return response.json().get("data")
+```
+
+> Note there is a `fields[]` query string with a list of names as its value. This informs the Directus API to return only the specified fields for each post, instead of returning all fields, and also informs that you want to receive the `author.name` data from the author relationship.
+> In the same way, the `sort` query string informs the API to return posts with the most recent ones first.
+> You can learn more about it [here](https://docs.directus.io/reference/query.html).
+
+Then create a *templates/blog.html* file to display the posts data to users.
+
+```jinja
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+	/* This is only needed to prevent cards list from receiving the default list style provided by Pico  */
+	.blog-posts { 
+		list-style: none;
+		padding: 0;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<section>
+	<h1>Blog posts</h1>
+	<ol class="blog-posts">
+		{% for post in posts %}
+		<li>	
+			<article>
+				<h2>{{ post["title"] }}</h2>
+				<span>
+					{{ post["publish_date"] }} &bull; {{ post["author"]["name"] }}
+				</span>
+				<hr />
+				<a href="{{ '/blog/' + post["slug"] }}">Read post</a>
+			</article>
+		</li>
+		{% endfor %}
+	</ol>
+</section>
+{% endblock %}
+```
+
+And add the following route at the end of *app.py*:
+
+```py
+@app.get("/blog")
+def blog_page():
+    posts = directus.get_posts()
+
+    return render_template("blog.html", posts=posts)
+```
+
+Now navigate to [http://localhost:5000/blog](http://localhost:5000/blog) and you will see this result:
+
+![Blog page displaying data stored in Directus collection](blog-page.png)
+ 
+### Create Blog Post Page
+
+For this page you will need to add the following function at the end of *directus.py* file:
+
+```py
+def get_post_by_slug(slug):
+    response = requests.get(
+        f"{DIRECTUS_BASE_URL}/items/posts/{slug}?fields[]=*,author.name"
+    )
+    post = response.json().get("data")
+    post["image"] = f'{DIRECTUS_BASE_URL}/assets/{post["image"]}'
+
+    return post
+```
+
+> Note that this code is reassigning `post["image"]`, this is because Directus returns the image ID, and you need to explicitly say where it is placed in your code, following this structure: `<directus-base-url>/assets/<image-id>`.
+> You can read more about it [here](https://docs.directus.io/reference/files.html#accessing-a-file).
+
+Then create the page template on the *templates/post.html* file:
+
+```jinja
+{% extends "base.html" %}
+
+{% block content %}
+<header>
+	<h1>{% block title %}{{ post["title"] }}{% endblock %}</h1>
+	<span> {{ post["publish_date"] }} &bull; {{ post["author"]["name"] }} </span>
+</header>
+<hr />
+<article>
+	<img src="{{ post["image"] + "?format=webp&width=400" }}" />
+	<section>{{ post["content"] | safe }}</section>
+</article>
+{% endblock %}
+```
+
+> Note that the template code appends a query string to the image URL, it is used to dynamically convert the image to the webp format and set a width of 400px to it, allowing you to prevent users from loading an excessively large image.
+> You can learn more about this [here](https://docs.directus.io/reference/files.html#custom-transformations).
+
+Lastly, create the page route handler at the end of *app.py*:
+
+```py
+@app.get("/blog/<slug>")
+def post_page(slug):
+    post = directus.get_post_by_slug(slug)
+
+    return render_template("post.html", post=post)
+```
+
+Now navigate to one of your posts listed on the previous page an see the result.
+
+![Post page displaying post data that came from Directus posts collection](post-page.png)
+
+## Next steps
+
+Through this guide, you have set up a Flask project, created a Directus module, and used it to query data. You have used a singleton collection for global metadata, dynamically created pages, as well as blog listing and post pages.
+
+If you want to change what is user-accessible, consider setting up more restrictive roles and accessing only valid data at build-time.
+
+If you want to build more complex dynamic pages made out of reusable components, [check out our recipe on doing just this](https://docs.directus.io/guides/headless-cms/reusable-components.html).
+
+If you want to see the code for this project, you can find it [on GitHub](https://github.com/guilhermesdev/directus-flask-example).
