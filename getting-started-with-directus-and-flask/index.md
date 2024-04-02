@@ -55,7 +55,11 @@ And run the following command to run your flask server, which will start a serve
 flask run --debug
 ```
 
-> The `--debug` flag enables the autoreload feature on the project, which is very useful while developing.
+:::info
+
+The `--debug` flag enables the autoreload feature on the project, which is very useful while developing.
+
+:::
 
 ## Creating Global Metadata And Settings Collection
 
@@ -133,7 +137,11 @@ First of all, you have to create a base template to be used by all your pages. C
 </html>
 ```
 
-> Note there is a stylesheet in this code that imports [Pico](https://picocss.com/), a minimal class-less CSS library used to add some basic styles on the website. It was only used on this article to make things look better, but you can feel free to use whichever library you prefer and even use the default browser styles.
+:::info
+
+Note there is a stylesheet in this code that imports [Pico](https://picocss.com/), a minimal class-less CSS library used to add some basic styles on the website. It was only used on this article to make things look better, but you can feel free to use whichever library you prefer and even use the default browser styles.
+
+:::
 
 Now create a *templates/home.html* file that will extend the base template and display some data on it. This file will have the following content:
 
@@ -259,9 +267,13 @@ def get_posts():
     return response.json().get("data")
 ```
 
-> Note there is a `fields[]` query string with a list of names as its value. This informs the Directus API to return only the specified fields for each post, instead of returning all fields, and also informs that you want to receive the `author.name` data from the author relationship.
-> In the same way, the `sort` query string informs the API to return posts with the most recent ones first.
-> You can learn more about it [here](https://docs.directus.io/reference/query.html).
+:::info Directus query params
+
+Note there is a `fields[]` query string with a list of names as its value. This informs the Directus API to return only the specified fields for each post, instead of returning all fields, and also informs that you want to receive the `author.name` data from the author relationship.
+In the same way, the `sort` query string informs the API to return posts with the most recent ones first.
+You can learn more about it [here](https://docs.directus.io/reference/query.html).
+
+:::
 
 Then create a *templates/blog.html* file to display the posts data to users.
 
@@ -328,8 +340,12 @@ def get_post_by_slug(slug):
     return post
 ```
 
-> Note that this code is reassigning `post["image"]`, this is because Directus returns the image ID, and you need to explicitly say where it is placed in your code, following this structure: `<directus-base-url>/assets/<image-id>`.
-> You can read more about it [here](https://docs.directus.io/reference/files.html#accessing-a-file).
+:::info File ID
+
+Note that this code is reassigning `post["image"]`, this is because Directus returns the image ID, and you need to explicitly say where it is placed in your code, following this structure: `<directus-base-url>/assets/<image-id>`.
+You can read more about it [here](https://docs.directus.io/reference/files.html#accessing-a-file).
+
+:::
 
 Then create the page template on the *templates/post.html* file:
 
@@ -348,9 +364,12 @@ Then create the page template on the *templates/post.html* file:
 </article>
 {% endblock %}
 ```
+:::info Images transformation
 
-> Note that the template code appends a query string to the image URL, it is used to dynamically convert the image to the webp format and set a width of 400px to it, allowing you to prevent users from loading an excessively large image.
-> You can learn more about this [here](https://docs.directus.io/reference/files.html#custom-transformations).
+Note that the template code appends a query string to the image URL, it is used to dynamically convert the image to the webp format and set a width of 400px to it, allowing you to prevent users from loading an excessively large image.
+You can learn more about this [here](https://docs.directus.io/reference/files.html#custom-transformations).
+
+:::
 
 Lastly, create the page route handler at the end of *app.py*:
 
