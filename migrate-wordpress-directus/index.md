@@ -1,10 +1,10 @@
-# Migrating from WordPress to Directus: A Technical Guide
-[WordPress](https://wordpress.org/) and [Directus](https://directus.cloud/) are two notable platforms each with its unique strengths. WordPress, the titan of traditional CMS, offers a vast ecosystem of themes and plugins. In contrast, Directus is a headless CMS that provides greater flexibility and control over how and where content appears. This guide goes into the technicalities of migrating from WordPress to Directus. This will enable you understand the process and how you can apply it in your wpecific use case.
-This guide is for you if you are considering transitioning your content management system from Wordpress to Directus (Headless CMS). This guide aims to assist you in understanding the process involved in migrating content, data, and functionalities from Wordpress to Directus.
+# Migrating from WordPress to Directus
+[WordPress](https://wordpress.org/) and [Directus](https://directus.cloud/) are two notable platforms each with its unique strengths. WordPress, the titan of traditional CMS, offers a vast ecosystem of themes and plugins. In contrast, Directus is a headless CMS that provides greater flexibility and control over how and where content appears. This guide goes into the technicalities of migrating from WordPress to Directus. This will enable you to understand the process and how you can apply it in your specific use case.
+If you are considering transitioning your content management system from Wordpress to Directus (Headless CMS), this guide is for you. This guide aims to help you understand the process in migrating content, data, and functionalities from WordPress to Directus.
 **Prerequisites**
 To follow along with this tutorial you must have the following:
 
-1. Wordpress site or you can use [my data](https://github.com/khabdrick/wordpress-directus/blob/main/WP-data.json).
+1. WordPress site or you can use [my data](https://github.com/khabdrick/wordpress-directus/blob/main/WP-data.json).
 2. A [Directus account](https://directus.cloud/).
 ## Understanding the Differences
 
