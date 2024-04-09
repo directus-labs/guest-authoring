@@ -48,8 +48,7 @@ multi-part series), and be over 1000 words.</p>
 
 <details>
 <summary>How long does it take?</summary>
-<p>Once agreed, we love to move quickly through drafting, reviewing, and publishing. We expect each post to take somewhere
-between 2-4 weeks to go through this whole process.</p>
+<p>When accepting your post, we will set a deadline for a first draft. Once the draft is submitted, we seek to have a round of reviews completed and answered in a few days. We will publish it as part of the agreed month's content schedule.</p>
 </details>
 
 <details>
