@@ -1,4 +1,4 @@
-Angular is a front-end framework that leverage TypeScript to create web applications. In this tutorial, you will use the framework to implement the front-end for the Directus headless CMS. You will implement a blog that loads blog posts dynamically and also serves global metadata.
+[Angular](https://angular.dev/) is a popular front-end web framework. In this tutorial, you will use the framework to implement the front-end for the Directus headless CMS. You will implement a blog that loads blog posts dynamically and also serves global metadata.
 
 ## Prerequisites
 - Some knowledge of TypeScript and [Angular](https://angular.io/)
