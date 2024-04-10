@@ -53,6 +53,7 @@ In your project, create a file named `./directus.ts` with the following code.
 
 ```ts
 import {createDirectus, rest} from "@directus/sdk";
+
 type Metadata = {
   id: number;
   title: string;
@@ -64,6 +65,7 @@ type Job = {
   title: string;
   description: string;
 }
+
 type Gallery = {
   id: number;
   image: string;
