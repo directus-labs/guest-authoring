@@ -215,7 +215,7 @@ The retrieved job item is stored in the object named `job`. To display the conte
 </div>
 ```
 ### Add Routing for Dynamic Pages
-Go to `src/app/app.routes.ts` file and add the following route in the `Routes` array.
+In `src/app/app.routes.ts` add the following route in the `Routes` array:
 
 ```ts
   {path: 'job/:id', component: JobDetailComponent},
