@@ -70,7 +70,7 @@ type Page = {
   content: string;
 }
 
-ttype Post = {
+type Post = {
   id: number;
   image: string;
   title: string;
