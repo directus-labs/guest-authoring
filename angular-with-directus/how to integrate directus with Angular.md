@@ -87,7 +87,7 @@ For every Directus model that you define, you need to create a TypeScript type f
 
 In addition, you should expose an instance of the Directus SDK that you will use to make different requests to the Directus CMS.
 
-## Serving Global Metadata
+## Using Global Metadata and Settings
 In your Directus project, go to **Settings > Data Model** and create a singleton collection named `metadata` with the fields `title` and `description`. The primary key named `id` will be created for you by default.
 
 To ensure the collection is a singleton, select the **Singleton** checkbox. Note that this collection matches the `Metadata` type you created in the previous section.
