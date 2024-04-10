@@ -24,7 +24,8 @@ For the prompts, choose CSS for the stylesheet format and no to disable server s
 ? Which stylesheet format would you like to use? CSS
 ? Do you want to enable Server-Side Rendering (SSR) and Static Site Generation (SSG/Prerendering)? (y/N) No
 ```
-Once the project has been created, open it in the development environment and replace the code in the `src/app/app.component.html` file with the following tag.
+
+Once the project has been created, open it in your code editor and replace the code in the `src/app/app.component.html` file with the following:
 
 ```html
 <router-outlet/>
