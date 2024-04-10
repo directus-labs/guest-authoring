@@ -38,7 +38,7 @@ You should also disable strict checking in `./tsconfig.json` file under `compile
 "strict": false
 ```
 
-Next, open a new terminal window and CD into the project then use the following command to start the server at `http://localhost:4200`.
+Navigate to your project directory in a terminal and start the development server at `http://localhost:4200`:
 
 ```bash
 ng serve
