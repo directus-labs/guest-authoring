@@ -17,14 +17,14 @@ To create a new Angular project, use the following command.
 
 ```bash
 ng new directus-with-angular
-```
-For the prompts, choose CSS for the stylesheet format and no to disable server side rendering and static site generation.
-
-```bash
 ? Which stylesheet format would you like to use? CSS
 ? Do you want to enable Server-Side Rendering (SSR) and Static Site Generation (SSG/Prerendering)? (y/N) No
 ```
+Next, run the following command to install the Directus SDK:
 
+```bash
+npm install @directus/sdk
+```
 Once the project has been created, open it in your code editor and replace the code in the `src/app/app.component.html` file with the following:
 
 ```html
@@ -43,340 +43,382 @@ Navigate to your project directory in a terminal and start the development serve
 ```bash
 ng serve
 ```
-## Configure the Directus SDK
-Open a new terminal window and CD into the project then use the following command to install the directus SDK.
+## Create an instance of Directus SDK
+For every Directus model that you define, you need to create a TypeScript type for that model. The type will help to map the JSON data to TypeScript objects.
 
-```bash
-npm install @directus/sdk
-```
-In your project, create a file named `./directus.ts` with the following code.
+In addition, you should expose an instance of the Directus SDK that you will use to make different requests to the Directus CMS.
+
+In your project, create a file named `./directus.ts` with the following code:
 
 ```ts
 import {createDirectus, rest} from "@directus/sdk";
 
-type Metadata = {
+type Global = {
   id: number;
   title: string;
   description: string;
 }
 
-type Job = {
+type Author = {
   id: number;
-  title: string;
-  description: string;
+  name: string;
 }
 
-type Gallery = {
+type Page = {
+  slug: string;
+  title: string;
+  content: string;
+}
+
+ttype Post = {
   id: number;
   image: string;
   title: string;
-  description: string;
+  content: string;
+  author: Author;
+  published_date: string;
 }
 
 type Schema = {
-  metadata: Metadata;
-  gallery: Gallery[];
-  job: Job[];
+  global: Global;
+  posts: Post[];
+  pages: Page[];
 }
 
 const directus =
   createDirectus<Schema>("YOUR_DIRECTUS_URL")
     .with(rest());
 
-export {directus, Metadata, Gallery, Job}
+export {directus, Global, Post, Page}
 ```
-For every Directus model that you define, you need to create a TypeScript type for that model. The type will help to map the JSON data to TypeScript objects.
-
-In addition, you should expose an instance of the Directus SDK that you will use to make different requests to the Directus CMS.
-
 ## Using Global Metadata and Settings
-In your Directus project, go to **Settings > Data Model** and create a singleton collection named `metadata` with the fields `title` and `description`. The primary key named `id` will be created for you by default.
+In your Directus project, go to **Settings > Data Model** and create a singleton collection named `global` with the fields `title` and `description`. The primary key named `id` will be created for you by default.
 
-To ensure the collection is a singleton, select the **Singleton** checkbox. Note that this collection matches the `Metadata` type you created in the previous section.
+To ensure the collection is a singleton, select the **Singleton** checkbox. Note that this collection matches the `Global` type you created in the previous section.
 
 Once the collection is defined go to the **Content** section and add the title and description for the metadata. 
 
 To permit public access to the metadata, go to **Settings > Access Control > Public** and permit the read permission under the metadata section.
 
-### Create a Component for the Metadata
-Use the following command on a terminal window pointing to your project.
+### Create a Component for the Global Metadata
+Navigate to your project directory in a terminal and create the global metadata component:
 
 ```bash
-ng g c component/home
+ng g c component/global
 ```
 This command will generate four files under the *component* directory. 
 
-Replace the code in the `src/app/component/home/home.component.ts` file with the following code.
+Replace the code in the `src/app/component/global/global.component.ts` file with the following code:
 
 ```ts
 import {Component, OnInit} from '@angular/core';
-import {directus, Metadata} from "../../../../directus";
+import {directus, Global} from "../../../../directus";
 import {CommonModule} from "@angular/common";
 import {readSingleton} from "@directus/sdk";
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-global',
   standalone: true,
   imports: [
     CommonModule
   ],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  templateUrl: './global.component.html',
+  styleUrl: './global.component.css'
 })
-export class HomeComponent implements OnInit{
-  metadata: Metadata;
+export class GlobalComponent implements OnInit{
+  global: Global;
   ngOnInit(): void {
-    this.getMetadata();
+    this.getGlobal();
   }
-  async getMetadata(){
+
+  async getGlobal(){
     //@ts-ignore
-    this.metadata = await directus
-      .request<Metadata>(readSingleton("metadata"))
+    this.global = await directus
+      .request<Global>(readSingleton("global"))
   }
+
 }
 ```
-When this component is initialized, it will retrieve the singleton and store it in the `metadata` object. 
+When this component is initialized, it will retrieve the singleton and store it in the `global` object. 
 
-To display the contents of the object, replace the code in the `src/app/component/home/home.component.html` file with the following code.
+To display the contents of the object, replace the code in the `src/app/component/global/global.component.html` file with the following code:
 
 ```ts
-<div *ngIf="metadata">
-  <h1>{{metadata.title}}</h1>
-  <p>{{metadata.description}}</p>
+<div *ngIf="global">
+  <h1>{{global.title}}</h1>
+  <p>{{global.description}}</p>
 </div>
 ```
-### Add Routing for the Metadata
-In your project, go to `app.routes.ts` and replace the code in the file with the following code.
+### Add Routing for the Global Metadata
+In `app.routes.ts` replace the code in the file with the following code:
 
 ```ts
 import { Routes } from '@angular/router';
-import {HomeComponent} from "./component/home/home.component";
+import {GlobalComponent} from "./component/global/global.component";
 
 export const routes: Routes = [
-  {path: '', component: HomeComponent},
+  {path: '', component: GlobalComponent}
 ];
 ```
-Once the application reloads, go to `https://localhost:4200`. As a result, the home component containing the metadata is loaded on the page.
+Once the application reloads, go to `https://localhost:4200`. As a result, the global component containing the global metadata is loaded on the page.
 
-## Serving Dynamic Pages
-In your Directus project, create a new collection named `job` with the fields `id`, `title` , and `description`.
+## Creating Pages with Directus
 
-However, the collection should not be a singleton. In addition, grant public access and add some job items to the collection. 
+### Configure Directus
+In your Directus project, create a new collection named `pages` - make the Priary ID Field a "Manually Entered String" called `slug`, which will correlate with the URL for the page. For example, `privacy` will later correlate to the page `localhost:4200/privacy`.
 
-Angular uses path variables and query parameters to serve dynamic data. As a result, you will leverage the `id` as the path variable to display different type of job items.
+Create a text input field called `title` and a text area input field called `content`. In the Access Control settings, give the Public role read access to the new collection.
 
-### Create a Component for Dynamic Pages
-In your terminal, generate the the job detail component:
+Create some items in the new collection - [here is some sample data](https://github.com/directus-community/getting-started-demo-data).
+
+### Dynamic Routes in Angular
+Navigate to your project directory in a terminal and generate the page component:
 
 ```bash
-ng g c component/job-detail
+ng g c component/page
 ```
-Replace the code in the `src/app/component/job-detail/job-detail.component.ts` file with the following code.
+Replace the code in the `src/app/component/page/page.component.ts` file with the following code:
 
 ```ts
 import {Component, OnInit} from '@angular/core';
-import {directus, Job} from "../../../../directus";
+import {directus, Page} from "../../../../directus";
 import {ActivatedRoute} from "@angular/router";
-import {CommonModule, NgIf} from "@angular/common";
+import {CommonModule} from "@angular/common";
 import {readItem} from "@directus/sdk";
 
 @Component({
-  selector: 'app-job-detail',
+  selector: 'app-page',
   standalone: true,
-  imports: [
-    CommonModule
-  ],
-  templateUrl: './job-detail.component.html',
-  styleUrl: './job-detail.component.css'
+  imports: [CommonModule],
+  templateUrl: './page.component.html',
+  styleUrl: './page.component.css'
 })
-export class JobDetailComponent implements OnInit{
-  job: Job;
+export class PageComponent implements OnInit{
+  page: Page;
+
   constructor(private route: ActivatedRoute) {
   }
+
   ngOnInit(): void {
-    this.getJobById(+this
-      .route
-      .snapshot
-      .paramMap.get('id'))
+    this.route.paramMap.subscribe(params => {
+      const slug = params.get("slug");
+      if (slug){
+        this.getPageBySlug(slug);
+      }
+    })
   }
-  async getJobById(id: number){
+
+  async getPageBySlug(slug: string){
     //@ts-ignore
-    this.job = await directus
-      .request<Job>(readItem("job", id))
+    this.page = await directus
+      .request<Page>(readItem("pages", slug));
   }
+
 }
 ```
-When the component is initialized, the `id` path variable is retrieved using `ActivatedRoute` and passed to the `readItem()` method to get a job with that id.
+When the component is initialized, the `slug` path parameter is retrieved using `ActivatedRoute` and passed to the `readItem()` method to get a page with that slug.
 
-The retrieved job item is stored in the object named `job`. To display the contents of the job item, replace the code in the `src/app/component/job-detail/job-detail.component.html` file with the following code.
+The retrieved page is stored in the object named `page`. To display the contents of the page, replace the code in the `src/app/component/page/page.component.html` file with the following code:
 
 ```html
-<div *ngIf="job">
-  <h2>{{job.title}}</h2>
-  <p>{{job.description}}</p>
+<div *ngIf="page">
+  <h1>{{page.title}}</h1>
+  <p>{{page.content}}</p>
 </div>
 ```
-### Add Routing for Dynamic Pages
+### Add Routing for the Pages
 In `src/app/app.routes.ts` add the following route in the `Routes` array:
 
 ```ts
-  {path: 'job/:id', component: JobDetailComponent},
+   {path: ':slug', component: PageComponent},
 ```
-when the application reloads, go to `http://localhost:4200/job/id` to view a job item based on its id. Replace the `id` path variable with an appropriate primary key. In addition, replace the id with other keys to view different job items.
+when the application reloads, go to `http://localhost:4200/privacy` to view the privacy page. Replace the `slug` path parameter with `about` and `conduct` to view the content of about and conduct pages.
 
-## List All the Blog Posts
-In your Directus project, create a collection named `gallery` with the fields `id`, `image`, `title`, and `description`. 
+## Creating Blog Posts with Directus
+In your Directus project, create a new collection called `authors` with a single text input field called `name`. Add some authors to the collection.
 
-Next, add some items to the collection and grant public access. 
 
-You also need to grant public access to the files to access images. To achieve this, go to **Settings > Access Control > Public > System Collections** and allow read permission for `directus_files`.
+Next, create a new collection named `posts` - make the Primary ID Field an "Auto-incremented integer" called `id` which will correlate with the URL for the page. For example, `1` will later correlate to the page `localhost:3000/blog/1`.
 
-### Create a Component for the Gallery List
-On an existing terminal window of your project, use the following command to generate the gallery list component.
+Create the following fields for the `posts` data model.
+
+- a text input field called `title`
+- an image relational field called `image`
+- a text area input field called `content`
+- a datetime selection field called `published_date` of type date.
+- a many-to-one relational field called `author` with the related collection set to `authors`
+
+In Settings -> Access Control, give the Public role read access to the `authors`, `posts`, and `directus_files` collections.
+
+Create some items in the posts collection - [here's some sample data](https://github.com/directus-community/getting-started-demo-data).
+
+### Create Blog Post Listing
+Navigate to your project directory in a terminal and generate the posts component:
 
 ```bash
-ng g c component/gallery-list
+ng g c component/posts
 ```
-Replace the code in the `src/app/component/gallery-list/gallery-list.component.ts` file with the following code.
+Replace the code in the `src/app/component/posts/posts.component.ts` file with the following code:
 
 ```ts
 import {Component, OnInit} from '@angular/core';
-import {directus, Gallery} from "../../../../directus";
+import {directus, Post} from "../../../../directus";
+import {RouterLink} from "@angular/router";
 import {CommonModule} from "@angular/common";
 import {readItems} from "@directus/sdk";
 
 @Component({
-  selector: 'app-gallery-list',
+  selector: 'app-posts',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './gallery-list.component.html',
-  styleUrl: './gallery-list.component.css'
+  templateUrl: './posts.component.html',
+  styleUrl: './posts.component.css'
 })
-export class GalleryListComponent implements OnInit{
-  galleries: Gallery[];
+export class PostsComponent implements OnInit{
+  posts: Post[];
+
   ngOnInit(): void {
-    this.getAllGalleries();
+    this.getAllPosts();
   }
 
-  async getAllGalleries(){
+  async getAllPosts(){
     //@ts-ignore
-    this.galleries = await directus
-      .request<Gallery[]>(readItems("gallery"))
+    this.posts = await directus
+      .request<Post[]>(readItems("posts", {
+        fields: ["id","title", "published_date", {author: ["name"]}]
+      }))
   }
 }
-```
-When the component is initialized, it will retrieve all the gallery items using the `readItems()` method and store them in the `galleries` array.
 
-To list the gallery items, replace the code in the `src/app/component/gallery-list/gallery-list.component.html` file with the following code.
+```
+When the component is initialized, it will retrieve all the posts using the `readItems()` method and store them in the `posts` array.
+
+To list the posts, replace the code in the `src/app/component/posts/posts.component.html` file with the following code:
 
 ```html
 <h1>Blog Posts</h1>
 <ol>
-  <li *ngFor="let gallery of galleries">
-    <a routerLink="#"> {{gallery.title}}</a>
+  <li *ngFor="let post of posts">
+    <a routerLink="#">
+      <h2>{{post.title}}</h2>
+    </a>
+    <span>
+      {{post.published_date}} &bull; {{post.author.name}}
+    </span>
   </li>
 </ol>
 ```
-### Add Routing for Gallery List
-Go to `src/app/app.routes.ts` file and add the following route in the `Routes` array.
+### Add Routing for Posts
+Go to `src/app/app.routes.ts` file and add the following route in the `Routes` array:
 
 ```ts
-  {path: 'blog', component: GalleryListComponent},
+ {path: 'blog', component: PostsComponent},
 ```
-Once the application reloads, go to `http://localhost:4200/blog` and the list of gallery items will be displayed on the page.
+Once the application reloads, go to `http://localhost:4200/blog` and the list of posts will be displayed on the page.
 
-![list of all gallery items](list-of-all-gallery-items.png)
+:::info Navigation
 
-## View a Single Blog Post
-You have learned how to create dynamic pages in a previous section, you will leverage the feature in this section to display individual gallery items.
+In Angular, the order in which you put the routes in the `Routes` array will affect how components are loaded in your application. In this case, you don't want the path to `blog` to be consumed as a `slug`. As a result, ensure the blog route is put before slug in the Routes array.
+
+:::
+
+![blog post listing](post-listing.png)
+
+## Create Blog Post Pages
+You have learned how to create dynamic pages in a previous section, you will leverage the skill in this section to display individual post pages for the blog post listing.
 
 ### Create a Component for Gallery Detail
-On an existing terminal window of your project, use the following command to generate the gallery detail component.
+Navigate to your project directory in a terminal and create the post component:
 
 ```bash
-ng g c component/gallery-detail
+ng g c component/post
 ```
-Replace the code in the `src/app/component/gallery-detail/gallery-detail.component.ts` file with the following code.
+Replace the code in the `src/app/component/post/post.component.ts` file with the following code.
 
 ```ts
 import {Component, OnInit} from '@angular/core';
-import {directus, Gallery} from "../../../../directus";
+import {directus, Post} from "../../../../directus";
 import {ActivatedRoute} from "@angular/router";
 import {CommonModule} from "@angular/common";
 import {readItem} from "@directus/sdk";
 
 @Component({
-  selector: 'app-gallery-detail',
+  selector: 'app-post',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './gallery-detail.component.html',
-  styleUrl: './gallery-detail.component.css'
+  templateUrl: './post.component.html',
+  styleUrl: './post.component.css'
 })
-export class GalleryDetailComponent implements OnInit{
-  gallery: Gallery;
+export class PostComponent implements OnInit{
+  post: Post;
   baseUrl = "YOUR_DIRECTUS_URL";
   constructor(private route: ActivatedRoute) {
   }
   ngOnInit(): void {
     this
-      .getGalleryById(+this
+      .getPostById(+this
       .route
       .snapshot
       .paramMap.get('id'))
   }
-  async getGalleryById(id: number){
+
+  async getPostById(id: number){
     //@ts-ignore
-    this.gallery = await directus
-      .request<Gallery>(readItem("gallery", id));
+    this.post = await directus
+      .request<Post>(readItem("posts", id));
   }
+
 }
 ```
-When the component is initialized, it will retrieve the path variable using the `ActivatedRoute` and pass it to the `readItem()` method to get the gallery with that id.
+When the component is initialized, it will retrieve the path variable using the `ActivatedRoute` and pass it to the `readItem()` method to get the post with that id.
 
 Note that this will happen when you click on a blog post from the list of blog posts. 
 
-The retrieved gallery item is stored in the `gallery` object. To display the contents of the object, replace the code in the `src/app/component/gallery-detail/gallery-detail.component.html` file with the following code.
+The retrieved post is stored in the `post` object. To display the contents of the object, replace the code in the `src/app/component/post/post.component.html` file with the following code:
 
 ```html
-<div *ngIf="gallery">
+<div *ngIf="post">
   <div style="width: 500px">
-    <img style="width: 100%" [src]="baseUrl+'assets/'+gallery.image"
-         alt="{{gallery.title}}">
+    <img style="width: 100%" [src]="baseUrl+'assets/'+post.image"
+         alt="{{post.title}}">
   </div>
-  <h2>{{gallery.title}}</h2>
-  <p>{{gallery.description}}</p>
+  <h2>{{post.title}}</h2>
+  <p>{{post.content}}</p>
 </div>
 ```
-### Add a Method to Handle a Click on the Gallery Items
-Go to `src/app/component/gallery-list/gallery-list.component.ts` file and add the following code.
+### Add a Method to Handle a Click on the Blog Posts
+In `src/app/component/posts/posts.component.ts` file add the following code.
 
 ```ts
   constructor(private router: Router) {}
 
-  goToGalleryDetail(id: number){
+  goToPost(id: number){
     this.router.navigate(['/blog', id]);
   }
 ```
-This method will redirect you to `/blog/id` using `Route` when you click on an item on the gallery list. The `id` path variable will be associated with the clicked item.
- As a result, an item will be loaded dynamically depending on which item you click.
+This method will redirect you to `/blog/id` using `Route` when you click on an post on the blog post listing. The `id` path variable will be associated with the clicked item.
 
-### Add a Click Listener for the Gallery Items
-Go to `src/app/component/gallery-list/gallery-list.component.html` and add the method you have created in the previous section in the following line.
+As a result, a post will be loaded dynamically depending on which post you click.
 
-```ts
- <a routerLink="#" (click)="goToGalleryDetail(gallery.id)"> {{gallery.title}}</a>
-```
-Since the method expects the `id` parameter, pass `gallery.id` as the argument of the method. As a result, this will bind the method with the current id of a gallery item at runtime.
-
-### Add Routing for Gallery Detail
-Go to `src/app/app.routes.ts` file and add the following route in the `Routes` array.
+### Add a Click Listener for the Blog Posts
+In `src/app/component/posts/posts.component.html` add the method you have created in the previous section in the following line.
 
 ```ts
-  {path: 'blog/:id', component: GalleryDetailComponent}
+<a routerLink="#" (click)="goToPost(post.id)">
+      <h2>{{post.title}}</h2>
+</a>
 ```
-Once the application reloads, go to `http://localhost:4200/blog` and click on a gallery item. As a result, the individual gallery item will be displayed on the page via the path `http://localhost:4200/blog/id`.
+Since the method expects the `id` parameter, pass `post.id` as the argument of the method. As a result, this will bind the method with the current id of a post at runtime.
 
-![displaying a single blog post](individual-gallery-item.png)
+### Add Routing for the Blog Post Page
+In `src/app/app.routes.ts` file add the following route in the `Routes` array:
+
+```ts
+{path: 'blog/:id', component: PostComponent}
+```
+Once the application reloads, go to `http://localhost:4200/blog` and click on a post. As a result, the individual post will be displayed on the page via the path `http://localhost:4200/blog/id`.
+
+![blog post pages](blog-post-page.png)
 
 ## Add Navigation
 To avoid navigating through the application manually, you should add navigation links that will dynamically route you to different components. To achieve this, go to `src/app/app.component.html` and add the following code before the `<router-outlet/>` tag.
@@ -385,14 +427,16 @@ To avoid navigating through the application manually, you should add navigation 
 <nav>
   <ul>
     <li><a routerLink="/">Home</a> </li>
+    <li><a routerLink="/about">About</a> </li>
+    <li><a routerLink="/conduct">Code of Conduct</a> </li>
+    <li><a routerLink="/privacy">Privacy Policy</a> </li>
     <li><a routerLink="/blog">Blog</a> </li>
-    <li><a routerLink="/jobs">Jobs</a></li>
   </ul>
 </nav>
 ```
 
 ## Recap
-In this tutorial, you have learned how to integrate directus with Angular. You have covered how to serve singleton collections for global metadata, how to serve dynamic pages, how to show a blog listing, how to show a single blog post, and lastly how to add navigation in your application.
+In this tutorial, you have learned how to integrate directus with Angular. You have covered how to use global metadata and settings, how to create pages, how to create a post listing, how to show blog post pages, and lastly how to add navigation in your application.
 
 The Directus CMS is quite diverse and it can accomodate any type of blog that you might want to create. For instance, one of the features of Directus you can leverage is authentication of requests. The Directus SDK makes authentication very easy for you. Go to the authentication [guide](https://docs.directus.io/guides/sdk/authentication.html) to learn how to authenticate your requests.
 
