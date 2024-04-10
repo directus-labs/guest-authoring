@@ -164,7 +164,7 @@ However, the collection should not be a singleton. In addition, grant public acc
 Angular uses path variables and query parameters to serve dynamic data. As a result, you will leverage the `id` as the path variable to display different type of job items.
 
 ### Create a Component for Dynamic Pages
-On an existing terminal window of your project, use the following command to generate the the job detail component.
+In your terminal, generate the the job detail component:
 
 ```bash
 ng g c component/job-detail
