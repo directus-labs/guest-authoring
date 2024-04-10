@@ -2,7 +2,7 @@
 
 ## Prerequisites
 - Some knowledge of TypeScript and [Angular](https://angular.io/)
-- A Directus project either locally or on [Directus cloud](https://directus.cloud/register)
+- A Directus project. Follow the [Quickstart guide](https://docs.directus.io/getting-started/quickstart.html) to create one.
 - [Node.js](https://nodejs.org/en/download) and a development environment of your choice
 - Install the Angular CLI - use the Angular [guide](https://angular.io/guide/setup-local) to achieve this. Note that Angular and TypeScript versions must be compatible. Since the SDK requires a minimum TypeScript version of 5.0, you need to use Angular version 17 for your project.
 
