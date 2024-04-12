@@ -97,7 +97,7 @@ We will also need  some permissions to post items to our Collection. You can gra
 
 ![Set permission](permissions.png)
 
-## Developing the Script to Export to Directus
+## Creating Import Scripts
 
 In this section, we will work on the code to export the JSON data into our Directus fields. We will use Python to develop the script but if you are not familiar with Python don’t worry, I will explain everything and show you how to run the code.
 Like I mentioned before some images are in the the posts and we need to extract those images and save to Directus. After a file is saved to Directus, the JSON file is updated with the Directus image URL. Then, after the changes are completed, the new JSON file is saved locally.
