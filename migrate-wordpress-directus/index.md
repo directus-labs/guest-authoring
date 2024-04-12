@@ -18,8 +18,10 @@ To follow along with this tutorial you must have the following:
 
 ## Understanding the Differences
 
-Before going into the migration, let’s try to understand some major differences between WordPress and Directus. WordPress is often used as an integrated CMS, meaning it tightly couples content management with presentation. This approach simplifies many tasks but can limit flexibility and performance. 
-Directus on the other hand, being a headless CMS, separates the content repository from the presentation layer, offering freedom to use any frontend technology while managing content through a RESTful API or GraphQL.
+WordPress is often used as an integrated CMS, meaning it tightly couples content management with presentation. This approach simplifies many tasks but can limit flexibility and performance. 
+
+Directus on the other hand, being a headless CMS, separates the content repository from the presentation layer, offering freedom to use any frontend technology while managing content through a REST or GraphQL API.
+
 This separation implies a paradigm shift in how content is being managed and served.
 
 ## Reasons for Migrating to Directus
