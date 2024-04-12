@@ -74,7 +74,7 @@ After the installation select “**WP Imp Exp**” on the tab then select “**P
 
 **2. Designing Your Directus Schema**
 Before importing data into Directus, design your schema in Directus by creating collections (equivalent to WordPress's custom post types), fields (similar to WordPress's custom fields), and relationships. This step is critical and requires a deep understanding of your content structure to ensure the data is imported correctly into your Directus setup.
-To begin log in to Directus and create a collection with the name “Posts” 
+In the Directus Data Studio, create a collection with the name “Posts”.
 In an actual app you might have other pages asides the Posts, so you can go ahead and create the Collection for those.
 Now we will create the fields that will hold the data items. If you are using my JSON data create the following fields:
 
