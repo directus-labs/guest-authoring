@@ -57,7 +57,9 @@ Directus exposes a RESTful API and a GraphQL API, allowing external applications
 Before the migration, audit your WordPress plugins to understand their functionality and the need they fulfill. Unlike WordPress, Directus might not offer direct plugin equivalents, so it is important to understand the **why** behind each plugin being used. This understanding will guide you in seeking or developing alternatives that align with Directus's architecture.
 Start by making a comprehensive list of all the plugins currently active on your WordPress site. For each plugin, note down what it does. 
 You might have something like **Yoast SEO** for your blog which enhances SEO capabilities, including meta tags, sitemaps, and readability analysis.
-Directus doesn't have a built-in SEO plugin equivalent. However, you can manage SEO metadata by creating custom fields in your collections for titles, meta descriptions, and other SEO-related information. You might also develop or use existing extensions to generate sitemaps.
+Directus doesn't have a built-in SEO plugin equivalent as a headless system - it is down to your application to implement features based on data held in Directus. 
+
+For example, you can manage SEO metadata by creating custom fields in your collections for titles, meta descriptions, and other SEO-related information. You might also develop or use existing extensions to generate sitemaps.
 
 ## Steps to Migrate Content From WordPress
 
