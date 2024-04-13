@@ -81,57 +81,21 @@ To use the API we need to get the API token at User Directory → Administrator 
 ## Creating Import Scripts
 
 In this section, we will work on the code to export the JSON data into our Directus fields. We will use Python to develop the script but if you are not familiar with Python don’t worry, I will explain everything and show you how to run the code.
-## Export Script
-Here we will build the script to store our posts in our Fields in Directus. Create a new file with the name *directus.py* and paste the following code:
-```python
-import json
-import requests
-
-def import_posts_to_directus(json_file_path, directus_url, api_key):
-    """
-    Reads posts from a JSON file and imports them into Directus, including handling featured images.
-    """
-    with open(json_file_path, "r") as file:
-        posts = json.load(file)
-    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-    for post in posts:
-        # Extract the first image URL from the content and simulate its upload to Directus
-        # Prepare the payload for Directus
-        payload = {
-            "Title": post["Title"],
-            "Content": post["Content"],
-            "Date": post["Date"],
-        }
-        # POST the data to the Directus API
-        response = requests.post(
-            f"{directus_url}/items/posts", headers=headers, json=payload
-        )
-        if response.status_code in [200, 201]:
-            print(f"Post '{post['Title']}' imported successfully.")
-        else:
-            print(f"Failed to import post '{post['Title']}': {response.text}")
-
-# Example usage
-json_file_path = "modified_WP-data.json"
-directus_url = "https://your.directus.app"
-api_key = "your-api-token"
-# Uncomment the line below to run the function with your actual Directus URL and API key
-import_posts_to_directus(json_file_path, directus_url, api_key)
-``` 
-:::info Box title
-Note: Replace `https://your.directus.app` and `*your-api-token*` with the appropriate details.
-:::
-For the pages, replace `f"{directus_url}/items/posts",` with `f"{directus_url}/items/pages"`. Also replace the the JSON file with that of the pages.
-
-The code above:
-1. Opens and reading a JSON file specified by `json_file_path`. It expects the file to contain an array of posts, with each post represented as a dictionary. These dictionaries must at least include keys for `"Title"`, `"Content"`, and `"Date"`.
-2. Sets up HTTP headers for the request to the Directus API, including authorization via a Bearer token (specified by `api_key`) and setting `"Content-Type"` to `"application/json"` to indicate that the payload will be in JSON format.
-3. For each post in the JSON file, it constructs a payload dictionary that contains the post's title, content, and date. 
-4. Sends a `POST` request to the Directus API to create a new item in the `article` collection (or table) using the prepared payload. The Directus URL and the specific endpoint (`/items/article`) are constructed using the `directus_url` parameter. Authentication and content type are handled by the previously prepared headers.
-
-### Script for Image Fixing
-As I mentioned, some images are in the posts and we need to extract those images and save them to Directus. After a file is saved to Directus, the JSON file is updated with the Directus image URL. Then, after the changes are completed, the new JSON file is saved locally.
-First, create a file with the name `extract-image.py`. The name is arbitrary.
+The files gotten from WordPress have the following keys, but what we will be extracting will be "Title", "Content", and "Date". 
+```json
+{
+    "ID": "2",
+    "Title": "Sample Page",
+    "Content": "...",
+    "Excerpt": "...",
+    "Date": "2024-04-08 15:33:50",
+    "Post Type": "...",
+    "Permalink": "..."
+  },
+```
+### The URL replacer
+As I mentioned before, some images are in the posts and we need to extract those images and save them to Directus. After a file is saved to Directus, the JSON file is updated with the Directus image URL. Then, after the changes are completed, the new JSON file is saved locally.
+To start, first create a file with the name `extract-image.py`. The name is arbitrary.
 *Note: The Python file should be in the same directory as the JSON file.*
 We will start with the code below. Paste it in the file you just created.
 
@@ -163,15 +127,16 @@ print("The JSON data has been updated with Directus image URLs.")
 
 The code above opens and reads a JSON file specified by `json_file_path`. It then loops through `"Content"` field.  Within each post's content, the code checks for the presence of an `<img>` tag by looking for the substring `'<img src="'`. If such a substring is found, it means the post contains an image. The code then extracts the URL of this image by locating the substring that starts immediately after `'<img src="'` and ends at the next double-quote (`"`). 
 The extracted image URL is then passed to a function named `upload_to_directus` (this will be created next) to upload the image to Directus. The function returns `new_image_url` to this loop to replace the old URL in the post's content with this new URL.
-Now we will develop the function that will post the images to Directus and get the new URL.
-Paste the following code in above the code you have already.
+
+### The image uploader
+Now we will develop the function that will post the images to Directus and get the new URL. Paste the following code in above the code you have already.
 
 ```python
 import json
 import requests
 import os
 # Replace with the path to your JSON file
-json_file_path = "WP-data.json"  # Replace this if you want to fix the images in pages JSON file
+json_file_path = "WP-data.json" # Change this with the Pages JSON file to extract images for pages.
 
 # Simulated function to upload an image to Directus and return the new image URL
 def upload_to_directus(image_url):
@@ -206,12 +171,58 @@ Assuming you have Python installed already you can run the code to create the ne
 ```bash
 python extract-image.py
 ```
+### The post uploader
 
-Now run with the following command to push the data to Directus:
+Now we will build the script to store our posts in our Fields in Directus. Create a new file with the name *directus.py* and paste the following code:
+```python
+import json
+import requests
+
+def import_posts_to_directus(json_file_path, directus_url, api_key):
+    """
+    Reads posts from a JSON file and imports them into Directus, including handling featured images.
+    """
+    with open(json_file_path, "r") as file:
+        posts = json.load(file)
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+    for post in posts:
+        # Extract the first image URL from the content and simulate its upload to Directus
+        # Prepare the payload for Directus
+        payload = {
+            "Title": post["Title"],
+            "Content": post["Content"],
+            "Date": post["Date"],
+        }
+        # POST the data to the Directus API
+        response = requests.post(
+            f"{directus_url}/items/Posts", headers=headers, json=payload
+        ) # path for pages is /Pages
+        if response.status_code in [200, 201]:
+            print(f"Post '{post['Title']}' imported successfully.")
+        else:
+            print(f"Failed to import post '{post['Title']}': {response.text}")
+
+# Example usage
+json_file_path = "modified_WP-data.json" # change to modified file to post Pages to Directus
+directus_url = "https://your.directus.app"
+api_key = "your-api-token"
+# Uncomment the line below to run the function with your actual Directus URL and API key
+import_posts_to_directus(json_file_path, directus_url, api_key)
+``` 
+:::info Box title
+Note: Replace `https://your.directus.app` and `*your-api-token*` with the appropriate details.
+:::
+The code above:
+1. Opens and reading a JSON file specified by `json_file_path`. It expects the file to contain an array of posts, with each post represented as a dictionary. These dictionaries must at least include keys for `"Title"`, `"Content"`, and `"Date"`.
+2. Sets up HTTP headers for the request to the Directus API, including authorization via a Bearer token (specified by `api_key`) and setting `"Content-Type"` to `"application/json"` to indicate that the payload will be in JSON format.
+3. For each post in the JSON file, it constructs a payload dictionary that contains the post's title, content, and date. 
+4. Sends a `POST` request to the Directus API to create a new item in the `article` collection (or table) using the prepared payload. The Directus URL and the specific endpoint (`/items/article`) are constructed using the `directus_url` parameter. Authentication and content type are handled by the previously prepared headers.
+
+Now run with the following command:
 ```bash
 python directus.py
 ```
-After the code is complete you should be able to see your items on Directus.
+After the code is complete you sshould be able to see your items on Directus.
 
 ![Items on Directus](items export.png)
 
