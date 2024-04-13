@@ -212,7 +212,9 @@ api_key = "your-api-token"
 import_posts_to_directus(json_file_path, directus_url, api_key)
 ``` 
 :::info Box title
+
 Note: Replace `https://your.directus.app` and `*your-api-token*` with the appropriate details.
+
 :::
 The code above:
 1. Opens and reading a JSON file specified by `json_file_path`. It expects the file to contain an array of posts, with each post represented as a dictionary. These dictionaries must at least include keys for `"Title"`, `"Content"`, and `"Date"`.
