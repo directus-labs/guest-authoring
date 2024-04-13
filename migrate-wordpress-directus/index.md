@@ -7,7 +7,7 @@ author:
 ---
 
 ## Introduction
-If you are considering transitioning your content management system from Wordpress to Directus, this tutorial is for you. By the end, you will understand the process in migrating content, data, and other functionality from WordPress to Directus.
+If you are considering transitioning your content management system from WordPress to Directus, this tutorial is for you. By the end, you will understand the process in migrating content, data, and other functionality from WordPress to Directus.
 
 ## Understanding the Differences
 
@@ -54,39 +54,84 @@ Start by exporting your WordPress data. Here it is assumed you already have a Wo
 On your Wordpress Admin, in the **Plugins** tab search for “**WP Import Export Lite”**. Install and activate it. 
 After the installation select “**WP Imp Exp**” on the tab then select “**Post**” and select the format JSON in “**Advanced Options**” dropdown. Now you can download the [JSON file](https://github.com/khabdrick/wordpress-directus/blob/main/WP-data.json).
 The JSON file we will use in this tutorial is a collection of blog posts from a WordPress site, each containing information such as the post ID, title, content, date, and permalink. 
+You can use this same step to export the [Pages JSON data](https://github.com/khabdrick/wordpress-directus/tree/main). This file contains two pages with its title, content, and date it was created.
 
 ![JSON export from Wordpress](wp-exp.png)
 
 ### Designing Your Directus Schema
-Before importing data into Directus, design your schema in Directus by creating collections (equivalent to WordPress's custom post types), fields (similar to WordPress's custom fields), and relationships. This step is critical and requires a deep understanding of your content structure to ensure the data is imported correctly into your Directus setup.
-In the Directus Data Studio, create a collection with the name “Posts”.
-In an actual app you might have other pages asides the Posts, so you can go ahead and create the Collection for those.
-Now we will create the fields that will hold the data items. If you are using my JSON data create the following fields:
+Before importing data into Directus, design your schema in Directus by creating collections (equivalent to WordPress's post types. In the JSON exports Post Type "post" and "page" )), and fields (similar to WordPress's fields: Title, Content, Date, etc.). This step is critical and requires a deep understanding of your content structure to ensure the data is imported correctly into your Directus setup.
 
-![FIelds for Collection](fields-creation.png)
+In our case, we have two export with post types "post" and "page" so in the Directus Data Studio, create a collection with the name “Posts” and "Pages".
+Now we will create the fields that will hold the data items. If you are using my JSON exports create the following fields:
+![Pages fields](pages-collection.png)
+![Fields for Collection](fields-creation.png)
 
 :::info Box title
-*Note that the “Content” field has a Field type of ***WYSIWYG***, the rest are ***Input*** type. we are using ***WYSIWYG*** because the exported data is 
+*Note that the “Content” field has a Field type of ***WYSIWYG***, the rest are ***Input*** type. we are using ***WYSIWYG*** because the exported data is in raw HTML
 :::
 
 ## Importing Data into Directus
 After the JSON file is extracted and the schema is developed on Directus, you can go to your Collections page on Directus admin and you will see a button there to import and export. Just choose export and select the JSON file you downloaded. 
 
-![IMport in Directus Collection](import-items.png)
+![Import in Directus Collection](import-items.png)
 
-
-The problem with this method is, if you have images in the post, you won’t be able to access them. This is the advantage of Directus having a REST API. This the RESTAPI we will be able to manipulate the JSON to extact the images and save to Directus Files so we can access the files in the post.
+If you have images in the post or pages, you won’t be able to access them. With the Directus REST API we will be able to manipulate the JSON to extact the images and save to Directus Files so we can access the files in the post.
 To use the API we need to get the API token at User Directory → Administrator → Admin User → Token. Copy the token and Keep it somewhere, we will use it later.
  
-We will also need  some permissions to post items to our Collection. You can grant those permissions at **Settings** → **Access Control** → **Public.** Allow all Permissions or whatever permisions you prefer.
-
-![Set permission](permissions.png)
-
 ## Creating Import Scripts
 
 In this section, we will work on the code to export the JSON data into our Directus fields. We will use Python to develop the script but if you are not familiar with Python don’t worry, I will explain everything and show you how to run the code.
-Like I mentioned before some images are in the the posts and we need to extract those images and save to Directus. After a file is saved to Directus, the JSON file is updated with the Directus image URL. Then, after the changes are completed, the new JSON file is saved locally.
-To start, first create a file with the name `extract-image.py`. The name is arbitrary.
+## Export Script
+Here we will build the script to store our posts in our Fields in Directus. Create a new file with the name *directus.py* and paste the following code:
+```python
+import json
+import requests
+
+def import_posts_to_directus(json_file_path, directus_url, api_key):
+    """
+    Reads posts from a JSON file and imports them into Directus, including handling featured images.
+    """
+    with open(json_file_path, "r") as file:
+        posts = json.load(file)
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+    for post in posts:
+        # Extract the first image URL from the content and simulate its upload to Directus
+        # Prepare the payload for Directus
+        payload = {
+            "Title": post["Title"],
+            "Content": post["Content"],
+            "Date": post["Date"],
+        }
+        # POST the data to the Directus API
+        response = requests.post(
+            f"{directus_url}/items/posts", headers=headers, json=payload
+        )
+        if response.status_code in [200, 201]:
+            print(f"Post '{post['Title']}' imported successfully.")
+        else:
+            print(f"Failed to import post '{post['Title']}': {response.text}")
+
+# Example usage
+json_file_path = "modified_WP-data.json"
+directus_url = "https://your.directus.app"
+api_key = "your-api-token"
+# Uncomment the line below to run the function with your actual Directus URL and API key
+import_posts_to_directus(json_file_path, directus_url, api_key)
+``` 
+:::info Box title
+Note: Replace `https://your.directus.app` and `*your-api-token*` with the appropriate details.
+:::
+For the pages, replace `f"{directus_url}/items/posts",` with `f"{directus_url}/items/pages"`. Also replace the the JSON file with that of the pages.
+
+The code above:
+1. Opens and reading a JSON file specified by `json_file_path`. It expects the file to contain an array of posts, with each post represented as a dictionary. These dictionaries must at least include keys for `"Title"`, `"Content"`, and `"Date"`.
+2. Sets up HTTP headers for the request to the Directus API, including authorization via a Bearer token (specified by `api_key`) and setting `"Content-Type"` to `"application/json"` to indicate that the payload will be in JSON format.
+3. For each post in the JSON file, it constructs a payload dictionary that contains the post's title, content, and date. 
+4. Sends a `POST` request to the Directus API to create a new item in the `article` collection (or table) using the prepared payload. The Directus URL and the specific endpoint (`/items/article`) are constructed using the `directus_url` parameter. Authentication and content type are handled by the previously prepared headers.
+
+### Script for Image Fixing
+As I mentioned, some images are in the posts and we need to extract those images and save them to Directus. After a file is saved to Directus, the JSON file is updated with the Directus image URL. Then, after the changes are completed, the new JSON file is saved locally.
+First, create a file with the name `extract-image.py`. The name is arbitrary.
 *Note: The Python file should be in the same directory as the JSON file.*
 We will start with the code below. Paste it in the file you just created.
 
@@ -126,7 +171,7 @@ import json
 import requests
 import os
 # Replace with the path to your JSON file
-json_file_path = "WP-data.json"
+json_file_path = "WP-data.json"  # Replace this if you want to fix the images in pages JSON file
 
 # Simulated function to upload an image to Directus and return the new image URL
 def upload_to_directus(image_url):
@@ -156,73 +201,23 @@ def upload_to_directus(image_url):
     return directus_image_url
 ```
 
-Replace `your-api-token` in in the code above with the token you generated earlier. Also replace `*https://your.directus.app*` with your Directus app URL.
+Replace `your-api-token` in the code above with the token you generated earlier. Also replace `*https://your.directus.app*` with your Directus app URL.
 Assuming you have Python installed already you can run the code to create the new JSON file.
 ```bash
 python extract-image.py
 ```
 
-Now we will build the script to store our posts in our Fields in Directus. Create a new file with the name *directus.py* and paste the following code:
-```python
-import json
-import requests
-
-def import_posts_to_directus(json_file_path, directus_url, api_key):
-    """
-    Reads posts from a JSON file and imports them into Directus, including handling featured images.
-    """
-    with open(json_file_path, "r") as file:
-        posts = json.load(file)
-    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-    for post in posts:
-        # Extract the first image URL from the content and simulate its upload to Directus
-        # Prepare the payload for Directus
-        payload = {
-            "Title": post["Title"],
-            "Content": post["Content"],
-            "Date": post["Date"],
-        }
-        # POST the data to the Directus API
-        response = requests.post(
-            f"{directus_url}/items/article", headers=headers, json=payload
-        )
-        if response.status_code in [200, 201]:
-            print(f"Post '{post['Title']}' imported successfully.")
-        else:
-            print(f"Failed to import post '{post['Title']}': {response.text}")
-
-# Example usage
-json_file_path = "modified_WP-data.json"
-directus_url = "https://your.directus.app"
-api_key = "your-api-token"
-# Uncomment the line below to run the function with your actual Directus URL and API key
-import_posts_to_directus(json_file_path, directus_url, api_key)
-``` 
-:::info Box title
-
-*Note: Replace `https://your.directus.app` and `*your-api-token*` *with the appropriate details.*
-:::
-The code above:
-1. Opens and reading a JSON file specified by `json_file_path`. It expects the file to contain an array of posts, with each post represented as a dictionary. These dictionaries must at least include keys for `"Title"`, `"Content"`, and `"Date"`.
-2. Sets up HTTP headers for the request to the Directus API, including authorization via a Bearer token (specified by `api_key`) and setting `"Content-Type"` to `"application/json"` to indicate that the payload will be in JSON format.
-3. For each post in the JSON file, it constructs a payload dictionary that contains the post's title, content, and date. 
-4. Sends a `POST` request to the Directus API to create a new item in the `article` collection (or table) using the prepared payload. The Directus URL and the specific endpoint (`/items/article`) are constructed using the `directus_url` parameter. Authentication and content type are handled by the previously prepared headers.
-
-Now run with the following command:
+Now run with the following command to push the data to Directus:
 ```bash
 python directus.py
 ```
-After the code is complete you sshould be able to see your items on Directus.
+After the code is complete you should be able to see your items on Directus.
 
 ![Items on Directus](items export.png)
 
-
-Now that you have your data in Directus you can start looking at how you  can develop the Frontend with a library like [React](https://docs.directus.io/guides/real-time/chat/react.html) or any one you prefer. 
-
 ## Testing and Validation
 
-Because you are moving from one platform to another, you might have some text formating not appearing right. It’s unlikely but possible so look through the imported content in Directus to ensure all data has been accurately migrated and maintains its formating. 
-If the data you moved is like integer or normal textfield you have nothing to worry about. 
+Because you are moving from one platform to another, you might have some text formatting not appearing right. It’s unlikely but possible so look through the imported content in Directus to ensure all data has been accurately migrated and maintains its formatting. 
 
 ## Conclusion
 
