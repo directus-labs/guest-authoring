@@ -7,14 +7,7 @@ author:
 ---
 
 ## Introduction
-[WordPress](https://wordpress.org/) and [Directus](https://directus.cloud/) are two notable platforms each with its unique strengths. WordPress, the titan of traditional CMS, offers a vast ecosystem of themes and plugins. In contrast, Directus is a headless CMS that provides greater flexibility and control over how and where content appears. This guide goes into the technicalities of migrating from WordPress to Directus. This will enable you to understand the process and how you can apply it in your specific use case.
 If you are considering transitioning your content management system from Wordpress to Directus, this tutorial is for you. By the end, you will understand the process in migrating content, data, and other functionality from WordPress to Directus.
-
-## Before You Start
-To follow along with this tutorial you must have the following:
-
-1. WordPress site or you can use [my data](https://github.com/khabdrick/wordpress-directus/blob/main/WP-data.json).
-2. A [Directus account](https://directus.cloud/).
 
 ## Understanding the Differences
 
@@ -24,37 +17,29 @@ Directus on the other hand, being a headless CMS, separates the content reposito
 
 This separation implies a paradigm shift in how content is being managed and served.
 
-## Reasons for Migrating to Directus
-
-Migrating to Directus usually stems from the need for:
-
-- **Greater Flexibility**: Directus allows for a more flexible content structure and presentation.
-- **Improved Performance**: By decoupling the backend from the frontend, Directus can help with  performance, especially for content-heavy sites.
-- **Enhanced Control over Content Delivery**: Directus provides more control over how and where content is delivered.
-- Easily deliver content across various platforms and devices using their API or SDK
 ## Directus Terminologies
-
-Here are some key terminologies you will come accross while following this article or while trying to migrate your specific app to Directus:
-**1. Collections**
+Here are some key terminologies you will come across while following this article or while trying to migrate your specific app to Directus:
+### Collections
 Collections in Directus are similar to tables in a database. They are used to organize and store data of a similar type. For example, you might have a collection for blog posts, another for users, and another for products. Each collection contains fields that define the structure of the data stored within it.
-**2. Fields**
+
+### Fields
 Fields are the individual data points within a collection, similar to columns in a database table. Fields define the type of data that can be stored in them, such as text, numbers, dates, or relationships to other collections. 
-**3. Items**
+
+### Items
 Items are the individual records within a collection, similar to rows in a database table. An item is a single unit of data that adheres to the structure defined by the fields in its collection. For instance, in a blog post collection, each blog post would be an item.
-**4. Relationships**
+
+### Relationships
 Relationships are connections between items in different collections. Directus allows you to create one-to-one, one-to-many, and many-to-many relationships, enabling complex data structures and interconnections. This may come in handy if you want to create a relational content structure, such as linking authors to their blog posts or products to their categories.
 
-5. **Roles and Permissions**
-
+### Roles and Permissions
 Directus provides a powerful role-based access control system. Roles are assigned to users to define what actions they can perform within the Directus App, and permissions are set at a granular level to control access to collections, fields, and items based on the user’s role. This ensures that users only have access to the content and functionalities relevant to them.
 
-6. **Directus** **API (Application Programming Interface)**
-
+### Directus API (Application Programming Interface)
 Directus exposes a RESTful API and a GraphQL API, allowing external applications and services to interact with the content stored in Directus programmatically. These APIs make it possible to retrieve, create, update, and delete content dynamically, enabling headless CMS functionalities for any frontend or application.
 
 ## Auditing WordPress Plugins
-
-Before the migration, audit your WordPress plugins to understand their functionality and the need they fulfill. Unlike WordPress, Directus might not offer direct plugin equivalents, so it is important to understand the **why** behind each plugin being used. This understanding will guide you in seeking or developing alternatives that align with Directus's architecture.
+Before the migration, audit your WordPress plugins to understand their functionality and the need they fulfill. Unlike WordPress, Directus might not offer direct plugin equivalents, so it is important to understand the **why** behind each plugin being used. Also note that not all plugins need alternatives and the outcomes might be achievable within the Directus' core functionality.
+This understanding will guide you in seeking or developing alternatives that align with Directus's architecture. 
 Start by making a comprehensive list of all the plugins currently active on your WordPress site. For each plugin, note down what it does. 
 You might have something like **Yoast SEO** for your blog which enhances SEO capabilities, including meta tags, sitemaps, and readability analysis.
 Directus doesn't have a built-in SEO plugin equivalent as a headless system - it is down to your application to implement features based on data held in Directus. 
@@ -62,17 +47,17 @@ Directus doesn't have a built-in SEO plugin equivalent as a headless system - it
 For example, you can manage SEO metadata by creating custom fields in your collections for titles, meta descriptions, and other SEO-related information. You might also develop or use existing extensions to generate sitemaps.
 
 ## Steps to Migrate Content From WordPress
+This transition requires a systematic approach to ensure that all data is accurately transferred and that the new system is configured to meet your specific needs. In the following sections, you will export your posts and pages from WordPress. We will then use a Python script to import the data into Directus.
 
-Migrating from WordPress to Directus involves some steps, primarily focusing on data migration.
-**1. Exporting WordPress Data**
-Start by exporting your WordPress data. Here it is assumed you already have a Wordpresss site. WordPress offers a built-in export tool that generates an XML file of your content. However, for a more comprehensive export, especially for custom post types and metadata, we will be using plugin that can export to formats more conducive to manipulation like JSON. 
+### Exporting WordPress Data
+Start by exporting your WordPress data. Here it is assumed you already have a Wordpress site. WordPress offers a built-in export tool that generates an XML file of your content. However, for a more comprehensive export, especially for custom post types and metadata, we will be using a plugin that can export to formats more conducive to manipulation like JSON. 
 On your Wordpress Admin, in the **Plugins** tab search for “**WP Import Export Lite”**. Install and activate it. 
-After the installation select “**WP Imp Exp**” on the tab then select “**Post**” and select the format JSON in “**Advanced Options**”. Now you can download the JSON file.
+After the installation select “**WP Imp Exp**” on the tab then select “**Post**” and select the format JSON in “**Advanced Options**” dropdown. Now you can download the [JSON file](https://github.com/khabdrick/wordpress-directus/blob/main/WP-data.json).
+The JSON file we will use in this tutorial is a collection of blog posts from a WordPress site, each containing information such as the post ID, title, content, date, and permalink. 
 
 ![JSON export from Wordpress](wp-exp.png)
 
-
-**2. Designing Your Directus Schema**
+### Designing Your Directus Schema
 Before importing data into Directus, design your schema in Directus by creating collections (equivalent to WordPress's custom post types), fields (similar to WordPress's custom fields), and relationships. This step is critical and requires a deep understanding of your content structure to ensure the data is imported correctly into your Directus setup.
 In the Directus Data Studio, create a collection with the name “Posts”.
 In an actual app you might have other pages asides the Posts, so you can go ahead and create the Collection for those.
@@ -81,10 +66,10 @@ Now we will create the fields that will hold the data items. If you are using my
 ![FIelds for Collection](fields-creation.png)
 
 :::info Box title
-*Note that the “Content” field has a Field type of* ***WYSIWYG****, the rest are* ***Input*** *type.*
+*Note that the “Content” field has a Field type of ***WYSIWYG***, the rest are ***Input*** type. we are using ***WYSIWYG*** because the exported data is 
 :::
 
-**3. Importing Data into Directus**
+## Importing Data into Directus
 After the JSON file is extracted and the schema is developed on Directus, you can go to your Collections page on Directus admin and you will see a button there to import and export. Just choose export and select the JSON file you downloaded. 
 
 ![IMport in Directus Collection](import-items.png)
