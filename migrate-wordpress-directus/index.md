@@ -67,7 +67,9 @@ Now we will create the fields that will hold the data items. If you are using my
 ![Fields for Collection](fields-creation.png)
 
 :::info Box title
+
 *Note that the “Content” field has a Field type of ***WYSIWYG***, the rest are ***Input*** type. we are using ***WYSIWYG*** because the exported data is in raw HTML
+
 :::
 
 ## Importing Data into Directus
