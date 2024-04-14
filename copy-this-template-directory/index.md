@@ -8,7 +8,7 @@ author:
 
 ## Introduction
 
-In this tutorial, you will learn how to configure an iOS project that authenticates with Directus. You'll cover registering, logging in, viewing all posts from all users, creating a post, and editing and deleting posts from your user account.
+In this tutorial, you will learn how to configure an iOS project that authenticates with Directus. You'll cover registering, logging in, logging out, viewing all posts from all users, creating a post, and editing and deleting posts from your user account.
 
 ## Before You Start
 
