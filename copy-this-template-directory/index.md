@@ -1,9 +1,9 @@
 ---
 title: 'Auth with Directus and iOS'
-description: '120-160 characters'
+description: 'Directus auth for an iOS project'
 author:
   name: 'Harshpal Bhirth'
-  avatar_file_name: 'add-to-directory'
+  avatar_file_name: 'Harshpal.jpeg'
 ---
 
 ## Introduction
@@ -69,7 +69,7 @@ struct ContentView: View {
                                 .background(Color.blue)
                                 .cornerRadius(10)
                         })
-                        .padding()
+                    .padding()
                     
                     NavigationLink(
                         destination: PostsView(isLoggedIn: $isLoggedIn, accessToken: $accessToken),
@@ -81,36 +81,40 @@ struct ContentView: View {
                                 .background(Color.green)
                                 .cornerRadius(10)
                         })
-                        .padding()
-                }
-                
-                Spacer()
-                
-                Button(action: {
-                    showLoginView = true
-                }) {
-                    Text("Login")
-                        .font(.title)
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.green)
-                        .cornerRadius(10)
-                }
-                .sheet(isPresented: $showLoginView) {
-                    LoginView(isLoggedIn: $isLoggedIn, accessToken: $accessToken)
-                }
-                
-                NavigationLink(
-                    destination: UserRegisterView(isActive: .constant(false)),
-                    label: {
-                        Text("Register")
+                    .padding()
+                    
+                    Button("Logout") {
+                        logout()
+                    }
+                    .foregroundColor(.red)
+                    .padding()
+                } else {
+                    Button(action: {
+                        showLoginView = true
+                    }) {
+                        Text("Login")
                             .font(.title)
                             .foregroundColor(.white)
                             .padding()
-                            .background(Color.orange)
+                            .background(Color.green)
                             .cornerRadius(10)
-                    })
+                    }
+                    .sheet(isPresented: $showLoginView) {
+                        LoginView(isLoggedIn: $isLoggedIn, accessToken: $accessToken)
+                    }
+                    
+                    NavigationLink(
+                        destination: UserRegisterView(isActive: .constant(false)),
+                        label: {
+                            Text("Register")
+                                .font(.title)
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color.orange)
+                                .cornerRadius(10)
+                        })
                     .padding()
+                }
                 
                 Spacer()
             }
@@ -118,13 +122,61 @@ struct ContentView: View {
             .navigationTitle("Welcome")
         }
     }
-}
+    
+    func logout() {
+        guard let refreshToken = accessToken
+        else {
+            print("Refresh token is missing")
+            return
+        }
+        
+        guard let url = URL(string: "https://directus.lws.io/auth/logout") else {
+            print("Invalid logout URL")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body: [String: Any] = [
+            "refresh_token": refreshToken
+        ]
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        } catch {
+            print("Error encoding request body: \(error.localizedDescription)")
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error logging out: \(error.localizedDescription)")
+                return
+            }
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                if (200..<300).contains(httpResponse.statusCode) {
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+                    DispatchQueue.main.async {
+                        isLoggedIn = false
+                        accessToken = nil
+                    }
+                } else {
+                    print("Failed to logout. Status code: \(httpResponse.statusCode)")
+                }
+            }
+        }.resume()
+    }
+    
+    struct ContentView_Previews: PreviewProvider {
+        static var previews: some View {
+            ContentView()
+        }
     }
 }
+
 ```
 ### ContentView Struct
 
@@ -146,12 +198,11 @@ The `body` property defines the view's layout and behavior.
 - **VStack**: Vertical stack layout for arranging child views.
 - **Spacer**: Flexible space to push content to the top and bottom.
 
-### Conditional Views:
+### Conditional Rendering:
 
-Display different views based on the user's login status:
-
-- If logged in, show navigation links for creating posts and viewing posts.
-- If not logged in, display a login button.
+Depending on the `isLoggedIn` state:
+- If logged in, it displays navigation links for creating posts and viewing posts, along with a logout button.
+- If not logged in, it displays buttons to login and register.
 
 ### Create Post NavigationLink:
 
@@ -161,21 +212,18 @@ Navigates to the `CreatePostView` when tapped.
 
 Navigates to the `PostsView` when tapped.
 
-### Login Button:
+### Logout Button:
 
-Triggers the display of the login view when tapped.
+Triggers the `logout()` function when tapped.
 
-### LoginView Sheet:
+### Logout Function:
 
-Presents the login view as a modal sheet when `showLoginView` is true.
+- When the logout button is tapped, this function is called.
+- It retrieves the `refreshToken` from the `accessToken` state variable.
+- Constructs a POST request to the `/auth/logout` endpoint with the `refresh_token` included in the request body.
+- If the logout request is successful (status code between 200 and 299), it updates the `isLoggedIn` state to `false` and clears the `accessToken`.
+- If the logout request fails, it prints an error message with the status code.
 
-### Register NavigationLink:
-
-Navigates to the user registration view.
-
-### Closing VStack and NavigationView:
-
-Ends the VStack and NavigationView sections.
 
 ## UserRegisterView
 ```swift
@@ -275,12 +323,12 @@ Defines a view for user registration.
 
 ### Properties:
 
-- **@Binding var isActive: Bool**: This is a binding variable that determines whether the view is active or not. Changes in this view propagate back to the parent.
-- **@State private var email: String = ""**: State variable to hold the user's email address.
-- **@State private var password: String = ""**: State variable to hold the user's password.
-- **@State private var showAlert: Bool = false**: State variable to control whether to show an alert.
-- **@State private var alertMessage: String = ""**: State variable to hold the message to be displayed in the alert.
-- **@Environment(\.presentationMode) var presentationMode**: Environment variable to access the presentation mode, which allows the view to dismiss itself.
+- **`@Binding var isActive: Bool`**: This is a binding variable that determines whether the view is active or not. Changes in this view propagate back to the parent.
+- **`@State private var email`: String = ""**: State variable to hold the user's email address.
+- **`@State private var password`: String = ""**: State variable to hold the user's password.
+- **`@State private var showAlert`: Bool = false**: State variable to control whether to show an alert.
+- **`@State private var alertMessage`: String = ""**: State variable to hold the message to be displayed in the alert.
+- **`@Environment(\.presentationMode)` var presentationMode**: Environment variable to access the presentation mode, which allows the view to dismiss itself.
 
 ### Body View:
 
@@ -292,14 +340,18 @@ Defines a view for user registration.
 
 ### registerUser Function:
 
-- This function is called when the user taps the "Register" button.
+This function is called when the user taps the "Register" button.
+
 - It first checks if the email and password fields are not empty. If they are empty, it sets the alertMessage and shows the alert.
-- Then it constructs a URL for the user registration endpoint.
+- Then it constructs a URL for the user registration endpoint `/user`.
 - It creates a dictionary body containing the email and password.
 - Converts the body dictionary to JSON data.
 - Constructs a POST request with the JSON data in the HTTP body.
 - Executes the request asynchronously using URLSession.shared.dataTask.
-- Handles the response or any error that occurs during the network request. If successful, it dismisses the view using the presentationMode.
+- Handles the response or any error that occurs during the network request.
+- If successful, it dismisses the view using the presentationMode.
+
+
 
 ### showAlert Function:
 
@@ -437,13 +489,14 @@ Codable protocol indicates that instances of this type can be encoded and decode
 
 ### loginUser Function:
 
-- Validates the URL for the login endpoint.
+- Validates the URL for the login endpoint (`/auth/login`).
 - Constructs the login data dictionary with email and password.
 - Creates a POST request with JSON-encoded login data.
 - Performs a data task to execute the request asynchronously.
 - Checks for errors, response status, and decodes the response if the status code indicates success (200..<300).
 - If successful, updates `accessToken` with the received access token, sets `isLoggedIn` to true, and dismisses the view.
 - If unsuccessful, the app shows an alert with an error message.
+
 
 ## CreatePostView
 ```swift
@@ -547,7 +600,7 @@ Defines a SwiftUI view named `CreatePostView`.
 
 ### createPost Function:
 
-- Validates the URL for the endpoint where posts are created.
+- Validates the URL for the endpoint where posts are created `/items/posts`.
 - Constructs the post data dictionary with title and content.
 - Creates a POST request with JSON-encoded post data.
 - Adds necessary headers, including the authorization header with the provided access token.
@@ -555,6 +608,7 @@ Defines a SwiftUI view named `CreatePostView`.
 - Checks for errors and response status.
 - If the status code indicates success (between 200 and 299), it prints a success message.
 - If the status code indicates a failure, it shows an alert with an appropriate error message.
+
 
 ## Token Manager 
 
@@ -713,12 +767,13 @@ Defines a SwiftUI view named `PostsView`.
 - Calls `fetchPosts()` to retrieve posts when the view appears.
 
 ### fetchPosts Function:
-
 - Fetches posts from the server using an HTTP GET request.
-- It constructs a request with the provided access token in the authorization header.
+- Constructs a request with the provided access token in the authorization header.
 - Performs a data task to execute the request asynchronously.
 - Handles errors, data reception, and decoding of the response.
-- If successful, it decodes the response into a `PostResponse` object and updates the `posts` array with the received posts on the main thread.
+- If successful, it decodes the response into a PostResponse object and updates the posts array with the received posts on the main thread.
+- Uses the `/items/posts` endpoint to fetch posts.
+
 
 ## PostDetailView 
 ```swift
@@ -892,13 +947,15 @@ struct EditPostView: View {
 - Provides a "Save" button that triggers the `updatePost()` function when tapped.
 - Uses the `onAppear` modifier to set the initial values of the `editedTitle` and `editedContent` when the view appears.
 
-### updatePost() Function:
+### updatePost Function:
 
 - Updates the post with the edited title and content.
 - Constructs a PATCH request with the updated data and the access token in the authorization header.
 - Performs a data task to execute the request asynchronously.
 - Handles errors and response status codes.
 - If successful (status code 200), sets `isEditMode` to false to exit the edit mode.
+- Uses the `/items/posts/\(postId)` endpoint.
+
 
 ## Delete Post View 
 ``` swift 
@@ -987,4 +1044,7 @@ This is the main SwiftUI view struct. It has several properties and a body.
 - It creates a `URLRequest` object with the appropriate HTTP method (DELETE) and headers (including the authorization header with the access token).
 - It makes an asynchronous URLSession data task to perform the request.
 - Upon receiving a response, it checks if the request was successful (HTTP status code in the range 200-299). If successful, it prints a success message. Otherwise, it prints an error message.
+- Uses the `/items/posts/\(postId)` endpoint.
 
+## Summary 
+By following this tutorial you've integrated Directus APIs for authentication in a SwiftUI iOS app. You've covered user registration, login, post creation, viewing, editing, deletion, and logout functionalities. This knowledge equips you to develop efficient and secure social apps, enabling users to interact seamlessly with content and manage their accounts with ease.
