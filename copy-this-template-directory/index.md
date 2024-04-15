@@ -28,7 +28,7 @@ You will need:
 6. Under the `Create` option, choose `Use Custom`.
 7. Enable field permissions for `Email` and `Password` options.
 
-## Creating A New Role 
+## Creating A New iOS App User Role 
 
 1. On the Access Control page, click the plus button.
 2. Name your new role, such as `iOS App User`.
