@@ -46,7 +46,7 @@ Directus doesn't have a built-in SEO plugin equivalent as a headless system - it
 
 For example, you can manage SEO metadata by creating custom fields in your collections for titles, meta descriptions, and other SEO-related information. You might also develop or use existing extensions to generate sitemaps.
 
-## Steps to Migrate Content From WordPress
+## Migrating Content From WordPress
 This transition requires a systematic approach to ensure that all data is accurately transferred and that the new system is configured to meet your specific needs. In the following sections, you will export your posts and pages from WordPress. We will then use a Python script to import the data into Directus.
 
 ### Exporting WordPress Data
