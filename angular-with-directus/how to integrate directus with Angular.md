@@ -289,7 +289,7 @@ export class PostsComponent implements OnInit{
 }
 
 ```
-When the component is initialized, it will retrieve all the posts using the `readItems()` method and store them in the `posts` array.
+When the component is initialized, it will retrieve all the posts using the `readItems()` function and store them in the `posts` array.
 
 To list the posts, replace the code in the `src/app/component/posts/posts.component.html` file with the following code:
 
