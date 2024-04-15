@@ -24,7 +24,7 @@ You will need:
 2. Select `Access Control`.
 3. Click on the `Public Role`.
 4. Access the `System Collection`.
-5. Locate `Directus_users`.
+5. Locate `directus_users`.
 6. Under the `Create` option, choose `Use Custom`.
 7. Enable field permissions for `Email` and `Password` options.
 
