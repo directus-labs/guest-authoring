@@ -99,7 +99,7 @@ To ensure the collection is a singleton, select the **Singleton** checkbox. This
 Once the collection is defined go to the **Content** section and add the title and description for the metadata. Go to **Settings > Access Control > Public** and allow read permissions for the global collection.
 
 ### Create a Component for the Global Metadata
-Navigate to your project directory in a terminal and create the global metadata component:
+Navigate to your project directory in a terminal and create a `global` component:
 
 ```bash
 ng g c component/global
