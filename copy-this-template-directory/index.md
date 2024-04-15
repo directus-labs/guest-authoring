@@ -32,7 +32,7 @@ You will need:
 1. On the Access Control page, click the plus button.
 2. Name your new role, such as `iOS App User`.
 3. Under the "Post" collection, enable `Create` and `Read`.
-4. For `Write` and `DELETE`, select `Use Custom`.
+4. For `Edit` and `Delete`, select `Use Custom`.
 5. Add Filter `user_created -> id Equals $CURRENT_USER.id` for both update and delete options.
 6. This configuration ensures users can create and read all posts, but only update and delete their own posts.
 7. Copy the Primary Key from the iOS App User role.
