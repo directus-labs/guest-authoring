@@ -368,7 +368,7 @@ export class PostComponent implements OnInit{
 
 }
 ```
-When the component is initialized, it will retrieve the path variable using the `ActivatedRoute` and pass it to the `readItem()` method to get the post with that id.
+When the component is initialized, it will retrieve the path variable using the `ActivatedRoute` and pass it to the `readItem()` function to get the post with that id.
 
 Note that this will happen when you click on a blog post from the list of blog posts. 
 
