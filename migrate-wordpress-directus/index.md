@@ -95,7 +95,7 @@ The files gotten from WordPress have the following keys, but what we will be ext
     "Permalink": "..."
   },
 ```
-### The URL replacer
+### Replacing Image URLs
 If there are images present in posts, they must be extracted and saved to Directus. After a file is saved, the JSON file is updated with the new Directus asset URL. Then, after the changes are completed, the new JSON file is saved locally.
 To start, first create a file with the name `extract-image.py`. The name is arbitrary.
 *Note: The Python file should be in the same directory as the JSON file.*
