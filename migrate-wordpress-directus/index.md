@@ -59,7 +59,7 @@ You can use this same step to export the [Pages JSON data](https://github.com/kh
 ![JSON export from Wordpress](wp-exp.png)
 
 ### Designing Your Directus Schema
-Before importing data into Directus, design your schema in Directus by creating collections (equivalent to WordPress's post types. In the JSON exports Post Type "post" and "page" )), and fields (similar to WordPress's fields: Title, Content, Date, etc.). This step is critical and requires a deep understanding of your content structure to ensure the data is imported correctly into your Directus setup.
+Before importing data into Directus, design your schema in Directus by creating collections (equivalent to WordPress's post types. In the JSON exports Post Type "post" and "page" ) and fields (similar to WordPress's fields: Title, Content, Date, etc). This step is critical and requires a deep understanding of your content structure to ensure the data is imported correctly into your Directus setup.
 
 In our case, we have two export with post types "post" and "page" so in the Directus Data Studio, create a collection with the name “Posts” and "Pages".
 Now we will create the fields that will hold the data items. If you are using my JSON exports create the following fields:
