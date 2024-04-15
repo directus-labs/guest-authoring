@@ -421,7 +421,7 @@ Once the application reloads, go to `http://localhost:4200/blog` and click on a 
 ![blog post pages](blog-post-page.png)
 
 ## Add Navigation
-To avoid navigating through the application manually, you should add navigation links that will dynamically route you to different components. To achieve this, go to `src/app/app.component.html` and add the following code before the `<router-outlet/>` tag.
+While not strictly Directus-related, there are now several pages that aren't linked to each other. Open `src/app/app.component.html` and add the following code before the `<router-outlet/>` tag:
 
 ```html
 <nav>
@@ -435,13 +435,5 @@ To avoid navigating through the application manually, you should add navigation 
 </nav>
 ```
 
-## Recap
+## Summary
 In this tutorial, you have learned how to integrate directus with Angular. You have covered how to use global metadata and settings, how to create pages, how to create a post listing, how to show blog post pages, and lastly how to add navigation in your application.
-
-
-
-
-
-
-
-
