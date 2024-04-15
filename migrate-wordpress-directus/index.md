@@ -54,7 +54,7 @@ Start by exporting your WordPress data. Here it is assumed you already have a Wo
 On your Wordpress Admin, in the **Plugins** tab search for “**WP Import Export Lite”**. Install and activate it. 
 After the installation select “**WP Imp Exp**” on the tab then select “**Post**” and select the format JSON in “**Advanced Options**” dropdown. Now you can download the [JSON file](https://github.com/khabdrick/wordpress-directus/blob/main/WP-data.json).
 The JSON file we will use in this tutorial is a collection of blog posts from a WordPress site, each containing information such as the post ID, title, content, date, and permalink. 
-You can use this same step to export the [Pages JSON data](https://github.com/khabdrick/wordpress-directus/tree/main). This file contains two pages with its title, content, and date it was created.
+You can use this same step to export the [Pages JSON data](https://github.com/khabdrick/wordpress-directus/blob/main/pages-export.json). This file contains two pages with its title, content, and date it was created.
 
 ![JSON export from Wordpress](wp-exp.png)
 
