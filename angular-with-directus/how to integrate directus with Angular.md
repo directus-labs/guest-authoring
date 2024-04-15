@@ -228,7 +228,7 @@ The retrieved page is stored in the object named `page`. To display the contents
 In `src/app/app.routes.ts` add the following route in the `Routes` array:
 
 ```ts
-   {path: ':slug', component: PageComponent},
+{path: ':slug', component: PageComponent},
 ```
 when the application reloads, go to `http://localhost:4200/privacy` to view the privacy page. Replace the `slug` path parameter with `about` and `conduct` to view the content of about and conduct pages.
 
