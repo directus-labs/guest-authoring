@@ -230,7 +230,7 @@ In `src/app/app.routes.ts` add the following route in the `Routes` array:
 ```ts
 {path: ':slug', component: PageComponent},
 ```
-when the application reloads, go to `http://localhost:4200/privacy` to view the privacy page. Replace the `slug` path parameter with `about` and `conduct` to view the content of about and conduct pages.
+Visit `http://localhost:4200/about` to view the privacy page. Replace the `slug` path parameter with `about` and `conduct` to view the content of about and conduct pages held in Directus.
 
 ## Creating Blog Posts with Directus
 In your Directus project, create a new collection called `authors` with a single text input field called `name`. Add some authors to the collection.
