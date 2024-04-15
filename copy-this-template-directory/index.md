@@ -17,7 +17,7 @@ You will need:
 2. Knowledge of the Swift programming language.
 3. A Directus project - follow our [quickstart guide](docs.directus.io/getting-started/quickstart) if you don't already have one.
 
-## Setting Up Public Role
+## Allowing Public Role To Create Users
 
 1. Navigate to `Settings`.
 2. Select `Access Control`.
