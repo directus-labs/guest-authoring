@@ -130,7 +130,7 @@ print("The JSON data has been updated with Directus image URLs.")
 The code above opens and reads a JSON file specified by `json_file_path`. It then loops through `"Content"` field.  Within each post's content, the code checks for the presence of an `<img>` tag by looking for the substring `'<img src="'`. If such a substring is found, it means the post contains an image. The code then extracts the URL of this image by locating the substring that starts immediately after `'<img src="'` and ends at the next double-quote (`"`). 
 The extracted image URL is then passed to a function named `upload_to_directus` (this will be created next) to upload the image to Directus. The function returns `new_image_url` to this loop to replace the old URL in the post's content with this new URL.
 
-### The image uploader
+### Uploading Images
 Now we will develop the function that will post the images to Directus and get the new URL. Paste the following code in above the code you have already.
 
 ```python
