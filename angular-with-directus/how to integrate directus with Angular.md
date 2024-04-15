@@ -54,13 +54,13 @@ In your project, create a file named `./directus.ts` with the following code:
 import {createDirectus, rest} from "@directus/sdk";
 
 type Global = {
-  id: number;
+  slug: string;
   title: string;
   description: string;
 }
 
 type Author = {
-  id: number;
+  slug: string;
   name: string;
 }
 
@@ -71,7 +71,7 @@ type Page = {
 }
 
 type Post = {
-  id: number;
+  slug: string;
   image: string;
   title: string;
   content: string;
@@ -91,8 +91,10 @@ const directus =
 
 export {directus, Global, Post, Page}
 ```
+The Schema contains three types which match the data model we will create in Directus throughout this tutorial. As `global` is a singleton, we do not define it as an array in the Schema. If you add new fields, or rename them, they will also need updating in the type definations.
+
 ## Using Global Metadata and Settings
-In your Directus project, go to **Settings > Data Model** and create a singleton collection named `global` with the fields `title` and `description`. The primary key named `id` will be created for you by default.
+In your Directus project, go to **Settings > Data Model** and create a singleton collection named `global` with the Primary ID Field as a "Manually Entered String" called `slug`. Next, add the fields `title` and `description`.
 
 To ensure the collection is a singleton, select the **Singleton** checkbox. This collection's fields match the `Global` type you created when defining the Schema for the Directus SDK.
 
@@ -230,13 +232,13 @@ In `src/app/app.routes.ts` add the following route in the `Routes` array:
 ```ts
 {path: ':slug', component: PageComponent},
 ```
-Visit `http://localhost:4200/about` to view the privacy page. Replace the `slug` path parameter with `about` and `conduct` to view the content of about and conduct pages held in Directus.
+Visit `http://localhost:4200/about` to view the about page. Replace the `slug` path parameter with `privacy` and `conduct` to view the content of about and conduct pages held in Directus.
 
 ## Creating Blog Posts with Directus
 In your Directus project, create a new collection called `authors` with a single text input field called `name`. Add some authors to the collection.
 
 
-Next, create a new collection named `posts` - make the Primary ID Field an "Auto-incremented integer" called `id` which will correlate with the URL for the page. For example, `1` will later correlate to the page `localhost:3000/blog/1`.
+Next, create a new collection named `posts` - make the Primary ID Field a "Manually Entered String" called `slug` which will correlate with the URL for the page. For example, `hello-world` will later correlate to the page `localhost:3000/blog/hello-world`.
 
 Create the following fields for the `posts` data model.
 
@@ -283,7 +285,7 @@ export class PostsComponent implements OnInit{
     //@ts-ignore
     this.posts = await directus
       .request<Post[]>(readItems("posts", {
-        fields: ["id","title", "published_date", {author: ["name"]}]
+        fields: ["slug","title", "published_date", {author: ["name"]}]
       }))
   }
 }
@@ -354,21 +356,21 @@ export class PostComponent implements OnInit{
   }
   ngOnInit(): void {
     this
-      .getPostById(+this
+      .getPostBySlug(+this
       .route
       .snapshot
-      .paramMap.get('id'))
+      .paramMap.get('slug'))
   }
 
-  async getPostById(id: number){
+  async getPostBySlug(slug: string){
     //@ts-ignore
     this.post = await directus
-      .request<Post>(readItem("posts", id));
+      .request<Post>(readItem("posts", slug));
   }
 
 }
 ```
-When the component is initialized, it will retrieve the path variable using the `ActivatedRoute` and pass it to the `readItem()` function to get the post with that id.
+When the component is initialized, it will retrieve the path variable using the `ActivatedRoute` and pass it to the `readItem()` function to get the post with that slug.
 
 Note that this will happen when you click on a blog post from the list of blog posts. 
 
@@ -390,11 +392,11 @@ In `src/app/component/posts/posts.component.ts` file add the following code.
 ```ts
   constructor(private router: Router) {}
 
-  goToPost(id: number){
-    this.router.navigate(['/blog', id]);
+  goToPost(slug: string){
+    this.router.navigate(['/blog', slug]);
   }
 ```
-This method will redirect you to `/blog/id` using `Route` when you click on an post on the blog post listing. The `id` path variable will be associated with the clicked item.
+This method will redirect you to `/blog/slug` using `Route` when you click on an post on the blog post listing. The `slug` path variable will be associated with the clicked item.
 
 As a result, a post will be loaded dynamically depending on which post you click.
 
@@ -402,19 +404,19 @@ As a result, a post will be loaded dynamically depending on which post you click
 In `src/app/component/posts/posts.component.html` add the method you have created in the previous section in the following line.
 
 ```ts
-<a routerLink="#" (click)="goToPost(post.id)">
+<a routerLink="#" (click)="goToPost(post.slug)">
       <h2>{{post.title}}</h2>
 </a>
 ```
-Since the method expects the `id` parameter, pass `post.id` as the argument of the method. As a result, this will bind the method with the current id of a post at runtime.
+Since the method expects the `slug` parameter, pass `post.slug` as the argument of the method. As a result, this will bind the method with the current slug of a post at runtime.
 
 ### Add Routing for the Blog Post Page
 In `src/app/app.routes.ts` file add the following route in the `Routes` array:
 
 ```ts
-{path: 'blog/:id', component: PostComponent}
+{path: 'blog/:slug', component: PostComponent}
 ```
-Once the application reloads, go to `http://localhost:4200/blog` and click on a post. As a result, the individual post will be displayed on the page via the path `http://localhost:4200/blog/id`.
+Once the application reloads, go to `http://localhost:4200/blog` and click on a post. As a result, the individual post will be displayed on the page via the path `http://localhost:4200/blog/slug`.
 
 ![blog post pages](blog-post-page.png)
 
@@ -435,8 +437,6 @@ To avoid navigating through the application manually, you should add navigation 
 
 ## Recap
 In this tutorial, you have learned how to integrate directus with Angular. You have covered how to use global metadata and settings, how to create pages, how to create a post listing, how to show blog post pages, and lastly how to add navigation in your application.
-
-The Directus CMS is quite diverse and it can accomodate any type of blog that you might want to create. For instance, one of the features of Directus you can leverage is authentication of requests. The Directus SDK makes authentication very easy for you. Go to the authentication [guide](https://docs.directus.io/guides/sdk/authentication.html) to learn how to authenticate your requests.
 
 
 
