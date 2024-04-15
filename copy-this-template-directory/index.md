@@ -263,7 +263,7 @@ struct UserRegisterView: View {
             return
         }
         
-        guard let url = URL(string: "https://directus.lws.io/users") else {
+        guard let url = URL(string: "https://your-directus-project-url/users") else {
             showAlert(message: "Invalid URL")
             return
         }
