@@ -173,7 +173,7 @@ Assuming you have Python installed already you can run the code to create the ne
 ```bash
 python extract-image.py
 ```
-### The post uploader
+### Uploading Posts
 
 Now we will build the script to store our posts in our Fields in Directus. Create a new file with the name *directus.py* and paste the following code:
 ```python
