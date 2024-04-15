@@ -17,7 +17,7 @@ Directus on the other hand, being a headless CMS, separates the content reposito
 
 This separation implies a paradigm shift in how content is being managed and served.
 
-## Directus Terminologies
+## Directus Terminology
 Here are some key terminologies you will come across while following this article or while trying to migrate your specific app to Directus:
 ### Collections
 Collections in Directus are similar to tables in a database. They are used to organize and store data of a similar type. For example, you might have a collection for blog posts, another for users, and another for products. Each collection contains fields that define the structure of the data stored within it.
