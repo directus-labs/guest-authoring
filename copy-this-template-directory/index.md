@@ -27,6 +27,8 @@ You will need:
 6. Under the `Create` option, choose `Use Custom`.
 7. Enable field permissions for `Email` and `Password` options.
 
+Add screenshot
+
 ## Creating A New iOS App User Role 
 
 1. On the Access Control page, click the plus button.
@@ -34,12 +36,15 @@ You will need:
 3. Under the "Post" collection, enable `Create` and `Read`.
 4. For `Edit` and `Delete`, select `Use Custom`.
 5. Add Filter `user_created -> id Equals $CURRENT_USER.id` for both update and delete options.
-6. This configuration ensures users can create and read all posts, but only update and delete their own posts.
-7. Copy the Primary Key from the iOS App User role.
-8. In the Public Role settings, under `Directus_users`, select `Use Custom` for the create option.
-9. Click `Field Presets` and paste the Primary Key.
+6. This configuration ensures that users can read all posts but are restricted to updating and deleting only      their own posts.
+7. Retrieve the `Primary Key` associated with the iOS App User role by selecting the 'iOS APP User' option and 
+   then tapping the information icon where you'll be able to copy the `Primary Key`
+8. On the Access Control page, click `Public`. Click `create` for `directus_users` from the options, then 
+   click on `Use custom`. Proceed to `field presets` and paste the Primary Key.
 
-By following these steps, you'll set up a role in Directus that grants users of your iOS app the ability to view all posts but restricts editing and deleting permissions to posts associated with their authenticated user account.
+By following these steps users created by the public role will be given the iOS App User role.
+
+add a screenshot here of the field preset being filled in.
 
 
 ## Content View
@@ -177,9 +182,6 @@ struct ContentView: View {
 }
 
 ```
-### ContentView Struct
-
-Defines the main view of the application.
 
 ### State Properties:
 
@@ -189,27 +191,12 @@ Three `@State` properties are declared to manage the state of the view:
 - **isLoggedIn**: Tracks whether the user is logged in.
 - **accessToken**: Stores the access token after successful login.
 
-### Body Property:
-
-The `body` property defines the view's layout and behavior.
-
-- **NavigationView**: Wraps the content and provides navigation functionality.
-- **VStack**: Vertical stack layout for arranging child views.
-- **Spacer**: Flexible space to push content to the top and bottom.
-
 ### Conditional Rendering:
 
 Depending on the `isLoggedIn` state:
 - If logged in, it displays navigation links for creating posts and viewing posts, along with a logout button.
 - If not logged in, it displays buttons to login and register.
 
-### Create Post NavigationLink:
-
-Navigates to the `CreatePostView` when tapped.
-
-### Posts NavigationLink:
-
-Navigates to the `PostsView` when tapped.
 
 ### Logout Button:
 
@@ -223,6 +210,7 @@ Triggers the `logout()` function when tapped.
 - If the logout request is successful (status code between 200 and 299), it updates the `isLoggedIn` state to `false` and clears the `accessToken`.
 - If the logout request fails, it prints an error message with the status code.
 
+*Add register screenshot* 
 
 ## UserRegisterView
 ```swift
@@ -316,9 +304,6 @@ struct UserRegisterView_Previews: PreviewProvider {
     }
 }
 ```
-### UserRegisterView Struct:
-
-Defines a view for user registration.
 
 ### Properties:
 
@@ -341,7 +326,7 @@ Defines a view for user registration.
 
 This function is called when the user taps the "Register" button.
 
-- It first checks if the email and password fields are not empty. If they are empty, it sets the alertMessage and shows the alert.
+- It first checks if the email and password fields are not empty. If they are empty, it sets the `alertMessage` and shows the alert.
 - Then it constructs a URL for the user registration endpoint `/user`.
 - It creates a dictionary body containing the email and password.
 - Converts the body dictionary to JSON data.
@@ -617,45 +602,25 @@ import Foundation
 struct TokenManager {
     static let accessTokenKey = "accessToken"
 
-    static func saveToken(_ accessToken: String, expirationTime: Date) {
+    static func saveToken(_ accessToken: String) {
         UserDefaults.standard.set(accessToken, forKey: accessTokenKey)
     }
     
-    static func getToken() -> (accessToken: String, expirationTime: Date)? {
+    static func getToken() -> (String)? {
         guard let accessToken = UserDefaults.standard.string(forKey: accessTokenKey) else {
             return nil
         }
-        return (accessToken, Date())
+        return (accessToken)
     }
 }
+
 ```
+- `accessTokenKey`: This static constant represents the key used to store and retrieve the access token in UserDefaults. It ensures consistency and avoids hardcoding the key value multiple times.
 
-## TokenManager Struct:
+- `saveToken(_ accessToken: String)`: This static method is used to save the access token to UserDefaults. It takes an access token (`accessToken`) as input and sets it in UserDefaults under the specified key (`accessTokenKey`).
 
-Declares a struct named `TokenManager`, which handles operations related to access tokens.
+- `getToken() -> String?`: This static method retrieves the access token from UserDefaults. It returns an optional String, representing the access token stored in UserDefaults. If no access token is found in UserDefaults, it returns nil.
 
-### Properties:
-
-- **static let accessTokenKey = "accessToken"**: Defines a static constant property `accessTokenKey` which holds the key used for storing and retrieving the access token in UserDefaults.
-
-### Functions:
-
-#### `saveToken` Function:
-
-- **static func saveToken(_ accessToken: String, expirationTime: Date)**: This function is responsible for saving the access token and its expiration time.
-    - It takes two parameters: `accessToken`, the access token string to be saved, and `expirationTime`, the expiration time of the token.
-    - Inside the function, it uses `UserDefaults.standard.set(_:forKey:)` to save the access token to the user defaults with the key defined by `accessTokenKey`.
-
-#### `getToken` Function:
-
-- **static func getToken() -> (accessToken: String, expirationTime: Date)?**: This function retrieves the access token and its expiration time from UserDefaults.
-    - It returns an optional tuple containing the access token and its expiration time, or nil if the token is not found in UserDefaults.
-    - Inside the function, it retrieves the access token from UserDefaults using `UserDefaults.standard.string(forKey:)`. If the access token is found, it returns a tuple containing the access token and the current date as the expiration time.
-
-### Usage:
-
-- To save an access token, you would call `TokenManager.saveToken(_:expirationTime:)` with the access token string and its expiration time.
-- To retrieve the access token, you would call `TokenManager.getToken()`, which returns an optional tuple containing the access token and its expiration time.
 
 ## PostView 
 ``` swift 
