@@ -96,9 +96,7 @@ In your Directus project, go to **Settings > Data Model** and create a singleton
 
 To ensure the collection is a singleton, select the **Singleton** checkbox. This collection's fields match the `Global` type you created when defining the Schema for the Directus SDK.
 
-Once the collection is defined go to the **Content** section and add the title and description for the metadata. 
-
-To permit public access to the metadata, go to **Settings > Access Control > Public** and permit the read permission under the metadata section.
+Once the collection is defined go to the **Content** section and add the title and description for the metadata. Go to **Settings > Access Control > Public** and allow read permissions for the global collection.
 
 ### Create a Component for the Global Metadata
 Navigate to your project directory in a terminal and create the global metadata component:
