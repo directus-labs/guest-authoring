@@ -310,7 +310,7 @@ To list the posts, replace the code in the `src/app/component/posts/posts.compon
 Go to `src/app/app.routes.ts` file and add the following route in the `Routes` array:
 
 ```ts
- {path: 'blog', component: PostsComponent},
+{path: 'blog', component: PostsComponent},
 ```
 Once the application reloads, go to `http://localhost:4200/blog` and the list of posts will be displayed on the page.
 
