@@ -214,7 +214,7 @@ export class PageComponent implements OnInit{
 
 }
 ```
-When the component is initialized, the `slug` path parameter is retrieved using `ActivatedRoute` and passed to the `readItem()` method to get a page with that slug.
+When the component is initialized, the `slug` path parameter is retrieved using `ActivatedRoute` and passed to the `readItem()` function to get a page with that slug.
 
 The retrieved page is stored in the object named `page`. To display the contents of the page, replace the code in the `src/app/component/page/page.component.html` file with the following code:
 
