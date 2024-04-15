@@ -94,7 +94,7 @@ export {directus, Global, Post, Page}
 ## Using Global Metadata and Settings
 In your Directus project, go to **Settings > Data Model** and create a singleton collection named `global` with the fields `title` and `description`. The primary key named `id` will be created for you by default.
 
-To ensure the collection is a singleton, select the **Singleton** checkbox. Note that this collection matches the `Global` type you created in the previous section.
+To ensure the collection is a singleton, select the **Singleton** checkbox. This collection's fields match the `Global` type you created when defining the Schema for the Directus SDK.
 
 Once the collection is defined go to the **Content** section and add the title and description for the metadata. 
 
