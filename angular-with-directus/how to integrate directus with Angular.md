@@ -91,7 +91,7 @@ const directus =
 
 export {directus, Global, Post, Page}
 ```
-The Schema contains three types which match the data model we will create in Directus throughout this tutorial. As `global` is a singleton, we do not define it as an array in the Schema. If you add new fields, or rename them, they will also need updating in the type definations.
+The Schema contains three types which match the data model we will create in Directus throughout this tutorial - each property being a field in the collection. As `global` is a singleton, we do not define it as an array in the Schema. If you add new fields, or rename them, they will also need updating in the type definations.
 
 ## Using Global Metadata and Settings
 In your Directus project, go to **Settings > Data Model** and create a singleton collection named `global` with the Primary ID Field as a "Manually Entered String" called `slug`. Next, add the fields `title` and `description`.
