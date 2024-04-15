@@ -158,7 +158,7 @@ export const routes: Routes = [
   {path: '', component: GlobalComponent}
 ];
 ```
-Once the application reloads, go to `https://localhost:4200`. As a result, the global component containing the global metadata is loaded on the page.
+Open the application in your browser (`http://localhost:4200`) and the global component containing the data from Directus will be shown.
 
 ## Creating Pages with Directus
 
