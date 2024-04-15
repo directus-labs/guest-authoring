@@ -1,6 +1,5 @@
 ---
-title: 'Auth with Directus and iOS'
-description: 'Directus auth for an iOS project'
+title: 'Learn how to implement user registration and login in iOS with SwiftUI. Also discover how to lock down publishing and editing content with advanced user access control.'
 author:
   name: 'Harshpal Bhirth'
   avatar_file_name: 'Harshpal.jpeg'
