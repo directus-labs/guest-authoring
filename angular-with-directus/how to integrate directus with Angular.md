@@ -163,7 +163,7 @@ Open the application in your browser (`http://localhost:4200`) and the global co
 ## Creating Pages with Directus
 
 ### Configure Directus
-In your Directus project, create a new collection named `pages` - make the Priary ID Field a "Manually Entered String" called `slug`, which will correlate with the URL for the page. For example, `privacy` will later correlate to the page `localhost:4200/privacy`.
+In your Directus project, create a new collection named `pages` - make the Primary ID Field a "Manually Entered String" called `slug`, which will correlate with the URL for the page. For example, `about` will later correlate to the page `localhost:4200/about`.
 
 Create a text input field called `title` and a text area input field called `content`. In the Access Control settings, give the Public role read access to the new collection.
 
