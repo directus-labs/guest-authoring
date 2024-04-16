@@ -173,14 +173,6 @@ struct ContentView: View {
             }
         }.resume()
     }
-    
-    struct ContentView_Previews: PreviewProvider {
-        static var previews: some View {
-            ContentView()
-        }
-    }
-}
-
 ```
 
 ### State Properties:
@@ -210,7 +202,7 @@ Triggers the `logout()` function when tapped.
 - If the logout request is successful (status code between 200 and 299), it updates the `isLoggedIn` state to `false` and clears the `accessToken`.
 - If the logout request fails, it prints an error message with the status code.
 
-*Add register screenshot* 
+**Add register screenshot and explainer** 
 
 ## UserRegisterView
 ```swift
@@ -297,12 +289,6 @@ struct UserRegisterView: View {
         showAlert = true
     }
 }
-
-struct UserRegisterView_Previews: PreviewProvider {
-    static var previews: some View {
-        UserRegisterView(isActive: .constant(false))
-    }
-}
 ```
 
 ### Properties:
@@ -327,19 +313,15 @@ struct UserRegisterView_Previews: PreviewProvider {
 This function is called when the user taps the "Register" button.
 
 - It first checks if the email and password fields are not empty. If they are empty, it sets the `alertMessage` and shows the alert.
-- Then it constructs a URL for the user registration endpoint `/user`.
-- It creates a dictionary body containing the email and password.
-- Converts the body dictionary to JSON data.
-- Constructs a POST request with the JSON data in the HTTP body.
-- Executes the request asynchronously using URLSession.shared.dataTask.
-- Handles the response or any error that occurs during the network request.
-- If successful, it dismisses the view using the presentationMode.
+- It sends a POST request to the '/user' endpoint with a payload containing the email and password. The 
+   request is executed asynchronously using `URLSession.shared.dataTask`, and upon completion, it handles the 
+   response or any encountered errors. If successful, it dismisses the current view.
 
 
 
 ### showAlert Function:
 
-- This function sets the alertMessage and sets showAlert to true, triggering the display of the alert.
+- This function sets the `alertMessage` and sets showAlert to true, triggering the display of the alert.
 
 
 ## Login
@@ -348,6 +330,7 @@ import SwiftUI
 
 struct LoginData: Codable {
     let access_token: String
+    let refresh_token: String
 }
 
 struct LoginResponse: Codable {
@@ -558,11 +541,6 @@ struct CreatePostView: View {
     }
 }
 
-struct CreatePostView_Previews: PreviewProvider {
-    static var previews: some View {
-        CreatePostView(accessToken: "realAccessToken")
-    }
-}
 ```
 ### CreatePostView Struct:
 
@@ -601,6 +579,8 @@ import Foundation
 
 struct TokenManager {
     static let accessTokenKey = "accessToken"
+    static let acessTokenkey = "RefreshToken"
+
 
     static func saveToken(_ accessToken: String) {
         UserDefaults.standard.set(accessToken, forKey: accessTokenKey)
