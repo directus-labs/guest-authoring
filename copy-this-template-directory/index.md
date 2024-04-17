@@ -1003,14 +1003,14 @@ struct DeletePostView: View {
 
 ### deletePost Function:
 
-- This function is responsible for deleting the post from the server.
-- It first prints a message indicating that the post deletion process has started.
-- It checks if the access token is available.
-- Then it constructs a URL for deleting the post based on the post's ID.
-- It creates a `URLRequest` object with the appropriate HTTP method (DELETE) and headers (including the authorization header with the access token).
-- It makes an asynchronous URLSession data task to perform the request.
-- Upon receiving a response, it checks if the request was successful (HTTP status code in the range 200-299). If successful, it prints a success message. Otherwise, it prints an error message.
-- Uses the `/items/posts/\(postId)` endpoint.
+- Deletes a post from the server.
+- Verifies the availability of the access token.
+- Constructs the URL for deleting the post using its ID.
+- Creates a `URLRequest` with HTTP method DELETE and appropriate headers, including the authorization header with the access token.
+- Performs an asynchronous URLSession data task to execute the request.
+- Upon receiving a response, checks if the request was successful (HTTP status code 200-299). If successful, prints a success message; otherwise, prints an error message.
+- Endpoint: `/items/posts/\(postId)`.
+
 
 ## Summary 
 By following this tutorial you've integrated Directus APIs for authentication in a SwiftUI iOS app. You've covered user registration, login, post creation, viewing, editing, deletion, and logout functionalities. This knowledge equips you to develop efficient and secure social apps, enabling users to interact seamlessly with content and manage their accounts with ease.
