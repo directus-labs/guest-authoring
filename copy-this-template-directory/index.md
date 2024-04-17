@@ -27,7 +27,7 @@ You will need:
 6. Under the `Create` option, choose `Use Custom`.
 7. Enable field permissions for `Email` and `Password` options.
 
-Add screenshot
+![Email and Password](./Email.png)
 
 ## Creating A New iOS App User Role 
 
@@ -44,10 +44,17 @@ Add screenshot
 
 By following these steps users created by the public role will be given the iOS App User role.
 
-add a screenshot here of the field preset being filled in.
+![Field presets](./Field.png)
+
 
 
 ## Content View
+
+In Xcode, create a new project and add the following code to the ContentView.swift file. This code presents a welcome screen with two buttons `Register` and `Login`. After logging in, users will see a `create post` along with a `logout` button. Additionally, the view includes the function responsible for making the `POST` request from logging out.
+
+
+<img src="ContentView.png" alt="ContentView" width="200"/>
+
 ```swift
 
 import SwiftUI
@@ -134,7 +141,7 @@ struct ContentView: View {
             return
         }
         
-        guard let url = URL(string: "https://directus.lws.io/auth/logout") else {
+        guard let url = URL(string: "https://your-directus-project-url/auth/logout") else {
             print("Invalid logout URL")
             return
         }
@@ -202,9 +209,13 @@ Triggers the `logout()` function when tapped.
 - If the logout request is successful (status code between 200 and 299), it updates the `isLoggedIn` state to `false` and clears the `accessToken`.
 - If the logout request fails, it prints an error message with the status code.
 
-**Add register screenshot and explainer** 
+
 
 ## UserRegisterView
+Create a file named UserRegisterView.swift, which facilitates user registration by providing two input fields for email and password. The registration process involves sending a POST request.
+
+<img src="Register.png" alt="RegistertView" width="200"/>
+
 ```swift
 import SwiftUI
 
@@ -314,9 +325,7 @@ This function is called when the user taps the "Register" button.
 
 - It first checks if the email and password fields are not empty. If they are empty, it sets the `alertMessage` and shows the alert.
 - It sends a POST request to the '/user' endpoint with a payload containing the email and password. The 
-   request is executed asynchronously using `URLSession.shared.dataTask`, and upon completion, it handles the 
-   response or any encountered errors. If successful, it dismisses the current view.
-
+   request is executed asynchronously using `URLSession.shared.dataTask`, and upon completion, it handles the response or any encountered errors. If successful, it dismisses the current view.
 
 
 ### showAlert Function:
@@ -325,6 +334,8 @@ This function is called when the user taps the "Register" button.
 
 
 ## Login
+Create a file named LoginView.swift, designed to facilitate user login with two input fields for email and password. The login process is executed through a `POST`request.
+
 ```swift
 import SwiftUI
 
@@ -378,7 +389,7 @@ struct LoginView: View {
     }
     
     func loginUser() {
-        guard let url = URL(string: "https://directus.lws.io/auth/login") else {
+        guard let url = URL(string: "https://your-directus-project-url/auth/login") else {
             showAlert = true
             alertMessage = "Invalid URL"
             return
@@ -466,6 +477,8 @@ Codable protocol indicates that instances of this type can be encoded and decode
 
 
 ## CreatePostView
+Create a file named CreatePostView.swift, intended for creating a new post with two input fields for title and content. The creation process is executed through a `POST` request.
+
 ```swift
 import SwiftUI
 
@@ -503,7 +516,7 @@ struct CreatePostView: View {
     }
     
     func createPost() {
-        guard let url = URL(string: "https://directus.lws.io/items/posts") else {
+        guard let url = URL(string: "https://your-directus-project-url/items/posts") else {
             showAlert = true
             alertMessage = "Invalid URL"
             return
@@ -540,7 +553,6 @@ struct CreatePostView: View {
         }.resume()
     }
 }
-
 ```
 ### CreatePostView Struct:
 
@@ -574,35 +586,48 @@ Defines a SwiftUI view named `CreatePostView`.
 
 ## Token Manager 
 
-``` swift 
+Create a new file named TokenManager.swift. This Swift code defines a struct named TokenManager responsible for managing access tokens.
+
+
+``` swift
 import Foundation
 
 struct TokenManager {
     static let accessTokenKey = "accessToken"
-    static let acessTokenkey = "RefreshToken"
-
+    static let refreshTokenKey = "refreshToken"
 
     static func saveToken(_ accessToken: String) {
         UserDefaults.standard.set(accessToken, forKey: accessTokenKey)
     }
     
-    static func getToken() -> (String)? {
-        guard let accessToken = UserDefaults.standard.string(forKey: accessTokenKey) else {
-            return nil
-        }
-        return (accessToken)
+    static func saveRefreshToken(_ refreshToken: String) {
+        UserDefaults.standard.set(refreshToken, forKey: refreshTokenKey)
+    }
+    
+    static func getToken() -> String? {
+        return UserDefaults.standard.string(forKey: accessTokenKey)
+    }
+    
+    static func getRefreshToken() -> String? {
+        return UserDefaults.standard.string(forKey: refreshTokenKey)
     }
 }
 
 ```
-- `accessTokenKey`: This static constant represents the key used to store and retrieve the access token in UserDefaults. It ensures consistency and avoids hardcoding the key value multiple times.
+- `accessTokenKey` and `refreshTokenKey`: These are static constants representing the keys used to store access and refresh tokens in UserDefaults.
 
-- `saveToken(_ accessToken: String)`: This static method is used to save the access token to UserDefaults. It takes an access token (`accessToken`) as input and sets it in UserDefaults under the specified key (`accessTokenKey`).
+- `saveToken(_:)`: This static method takes an access token as input and saves it to UserDefaults using the `accessTokenKey`.
 
-- `getToken() -> String?`: This static method retrieves the access token from UserDefaults. It returns an optional String, representing the access token stored in UserDefaults. If no access token is found in UserDefaults, it returns nil.
+- `saveRefreshToken(_:)`: This static method takes a refresh token as input and saves it to UserDefaults using the `refreshTokenKey`.
+
+- `getToken()`: This static method retrieves the access token stored in UserDefaults using the `accessTokenKey`. It returns an optional String representing the access token.
+
+- `getRefreshToken()`: This static method retrieves the refresh token stored in UserDefaults using the `refreshTokenKey`. It returns an optional String representing the refresh token.
+
 
 
 ## PostView 
+Create a new file named PostView.swift. This code fetches and displays the current posts by users by sending a `GET` request.
 ``` swift 
 import SwiftUI
 
@@ -647,7 +672,7 @@ struct PostsView: View {
     }
     
     func fetchPosts() {
-        guard let token = accessToken, let url = URL(string: "https://directus.lws.io/items/posts") else {
+        guard let token = accessToken, let url = URL(string: "https://your-directus-project-url/items/posts") else {
             return
         }
         
@@ -720,6 +745,8 @@ Defines a SwiftUI view named `PostsView`.
 
 
 ## PostDetailView 
+Create a new file named PostDetailView.swift. This view enables users to click on a post to expand it, providing options to edit and delete the post.
+
 ```swift
 import SwiftUI
 
@@ -751,10 +778,6 @@ struct PostDetailView: View {
 }
 ```
 
-### PostDetailView Struct:
-
-Defines a SwiftUI view named `PostDetailView`.
-
 ### Properties:
 
 - **post**: Represents the post to be displayed in detail.
@@ -782,6 +805,7 @@ Defines a SwiftUI view named `PostDetailView`.
 - Renders a `DeletePostView`, passing the post's ID and access token. It also passes the `showAlert` state variable, allowing the `DeletePostView` to control the display of an alert if needed.
 
 ## EditPostView 
+Create a new file named EditPostView.swift. This code allows the editing of an existing post by sending a PATCH request.
 ``` swift
 import SwiftUI
 
@@ -829,7 +853,7 @@ struct EditPostView: View {
         
         let postId = post.id
         
-        guard let url = URL(string: "https://directus.lws.io/items/posts/\(postId)") else {
+        guard let url = URL(string: "https://your-directus-project-url/items/posts/\(postId)") else {
             print("Invalid URL")
             return
         }
@@ -902,6 +926,7 @@ struct EditPostView: View {
 
 
 ## Delete Post View 
+Create a new file named DeletePostView.swift. This code enables the deletion of a post by sending a DELETE request.
 ``` swift 
 import SwiftUI
 
@@ -930,7 +955,7 @@ struct DeletePostView: View {
             return
         }
         
-        guard let url = URL(string: "https://directus.lws.io/items/posts/\(postId)") else {
+        guard let url = URL(string: "https://your-directus-project-url/items/posts/\(postId)") else {
             print("Invalid URL")
             return
         }
@@ -957,9 +982,6 @@ struct DeletePostView: View {
     }
 }
 ```
-### DeletePostView Struct:
-
-This is the main SwiftUI view struct. It has several properties and a body.
 
 ### Properties:
 
