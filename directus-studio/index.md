@@ -6,29 +6,21 @@ author:
   avatar_file_name: "ayodele.png"
 ---
 
-## Introduction
-
 This article will guide you through using [Directus Studio](https://directus.io) to build a support ticket form that allows customers to submit their queries or issues on your product offerings.
 
-## You will need
-
-<!-- ## Your Sections Here -->
+## Before You Start
 
 - A Directus project. Follow the [Quickstart guide](https://docs.directus.io/getting-started/quickstart) to create one.
 
 Log into your Directus account to set up the different collections of your support system, which revolves around three key components:
 
 - Support Tickets: These is the main records where customer issues are logged and tracked through various stages from opening to resolution.
-
-- Agents: Support agents are assigned to tickets to manage responses and updates, ensuring each ticket is handled efficiently.
-
+- Support Agents: Support agents are assigned to tickets to manage responses and updates, ensuring each ticket is handled efficiently.
 - Ticket Messages: This feature facilitates communication between customers and agents directly within the ticket, allowing for a smooth issue resolve.
 
 Each component plays an important role in the workflow, enabling both customers and agents to interact effectively within the system.
 
-The next section explains the setup of each collection and the configuration of roles and permissions, ensuring a comprehensive support system.
-
-## Create the Agent Collection
+## Creating the Agent Collection
 
 The support agent collection is useful for managing a dedicated support team. Create an `agents` collection and add the following fields:
 
@@ -37,7 +29,7 @@ The support agent collection is useful for managing a dedicated support team. Cr
 
 This collection does not require any specific access control settings as only project admins should be able to create agents.
 
-## Create the Support Ticket Collection
+## Creating the Ticket Collection
 
 The support ticket collection is useful for managing the support request from customers. Create a `support_ticket` collection and add the following fields:
 
@@ -52,20 +44,11 @@ The support ticket collection is useful for managing the support request from cu
 - `message` type: textarea
 - `assigned_to` many-to-one to `agent collection` (agent_id)
 
-```
-:::hint
-
-After giving your collection a name, the next page allow you to select some fields such as `status`, `created on`, `updated on`, and `updated by`.
-
-:::
-```
-
-**:bulb: Note**:
 Make sure to check the "required" option for critical fields like customer_email and issue_type to prevent incomplete submissions.
 
 ![fields and layout of a sample support ticket form](schema.png)
 
-## Create the Ticket_message Collection
+## Creating the Ticket Message Collection
 
 The support ticket collection is useful for managing the support request from customers. Create a `support_ticket` collection and add the following fields:
 
@@ -81,25 +64,23 @@ The message collection is useful for follow-up messages between an assigned supp
 
 > Following all the above listed steps, you will have three collections by now. The collection for the ticket_submission, agents, and ticket message. All linked together.
 
-## Implementing the communication flow
+## How It Works
 
-This section highlight the communication flow of your support ticket system between customers and support agents:
+### For Customers
 
-**For Customers:**
-
-- Customers submit tickets through a Directus form, detailing their issue or inquiry.
+- Customers submit tickets by creating a new item in the Support Tickets collection, detailing their issue or inquiry.
 - They can view the status of their submitted tickets.
-- Access to a direct message with the support agent handling their case.
+- They can also access a direct message with the support agent handling their case.
 
-**For Support Agents:**
+### For Support Agents
 
 - Agents can view incoming tickets assigned to them.
-- They update ticket statuses (e.g., from Open to In Progress to Resolved) and communicate directly with customers through the ticket's messaging system.
+- They update ticket statuses (e.g., from Open to In Progress or Resolved) and communicate directly with customers through the ticket's messaging system.
 
-**For Admin:**
+### For Admins
 
-- Admin can view incoming tickets and assign the ticket to an available agent (sales, support) to act on them.
-- Admin can update ticket statuses (e.g., from Open to In Progress to Resolved) and communicate directly with customers through the ticket's messaging system.
+- Admins can view incoming tickets and assign the ticket to an available agent (sales, support) to act on them.
+- Admins can update ticket statuses and communicate directly with customers through the ticket's messaging system.
 
 ## Configuring Roles and Permissions
 
@@ -113,27 +94,23 @@ Directus’s flexibility in permissions allows you to control access precisely:
 
 ![Applying rules to Agent, to limit what they can see](directus-agent-role.gif)
 
-```
-:::Rule Setting
+:::info Using Filters In Permissions
 
-Directus allows you to apply filters to permissions. To ensure users can only see their own tickets, you'll apply a filter on the Read permission. According to the image above, you'll allow the user to see only the tickets they created. You need to choose the field that links the ticket to the user. This is often a user ID or user email field in the ticket collection that references the user who submitted the ticket. This same goes to the permission set on the Agent role as well. You can read more about user fileds on the [documentation](https://docs.directus.io/reference/system/users.html).
-
-> Test this setting with a test account before going live.
+Directus allows you to apply filters to permissions. To ensure users can only see their own tickets, you'll apply a filter on the Read permission. According to the image above, you'll allow the user to see only the tickets they created.
 
 :::
-```
+
 
 ## Inviting Customers to Use the Form
 
 To allow customers to submit tickets, you must add them to Directus and assign them the `Customer`/`User` role based on what the configuration is:
 
 1. Add Users in Directus Studio: Go to the Users section and invite customers via email.
-   ![Invite user to your directus platform](user-directory.png)
-2. **Assign Roles:** Ensure each customer user is assigned the `Customer` role to access and submit the support ticket form.
+2. Ensure each customer user is assigned the `Customer` role to access and submit the support ticket form.
 
 ## Basic System Walkthrough
 
-### Admin
+### Admins
 
 1. The admin logs into the Directus platform and navigates to the available support tickets.
 2. Admin can assign the ticket to an agent or resolve the ticket's issue.
@@ -141,13 +118,15 @@ To allow customers to submit tickets, you must add them to Directus and assign t
 
 ![Admin dashboard walkthrough](adminCollection.gif)
 
-### Customer
+### Customers
 
 1. The customer logs into the Directus platform and navigates to the support ticket form.
 2. They fill out the form with their details and issue description and submit the ticket.
 3. The customer can then go to their ticket overview page to see the status of their ticket and any messages from support agents.
 
 ![user dashboard walkthrough](userAccount.gif)
+
+Of course, the customer contact details could be replaced by the `user_created` optional collection field.
 
 ### Support Agents
 
@@ -157,7 +136,7 @@ To allow customers to submit tickets, you must add them to Directus and assign t
 
 ![Support Agent dashboard walkthrough](agentCollection.gif)
 
-## Setting up Notifications for new Messages
+## Setting up Notifications for Updates
 
 Webhooks in Directus are used to automate actions outside of Directus itself, such as sending notifications. When configured, Directus will send an HTTP POST request to a specified URL (your server endpoint) every time a defined event occurs, such as the creation of a `new ticket` or a `new message`.
 
