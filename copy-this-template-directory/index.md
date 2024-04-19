@@ -213,7 +213,6 @@ Triggers the `logout()` function when tapped.
 ## UserRegisterView
 Create a file named UserRegisterView.swift, which facilitates user registration by providing two input fields for email and password. The registration process involves sending a POST request.
 
-<img src="Register.png" alt="RegistertView" width="200"/>
 ![The app shows an email and password field and register button](Register.png)
 
 ```swift
