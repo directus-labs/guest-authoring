@@ -27,7 +27,7 @@ You will need:
 6. Under the `Create` option, choose `Use Custom`.
 7. Enable field permissions for `Email` and `Password` options.
 
-![Email and Password](./Email.png)
+![Public role directus_users create field permissions only allow Email and Password](./Email.png)
 
 ## Creating A New iOS App User Role 
 
@@ -44,7 +44,7 @@ You will need:
 
 By following these steps users created by the public role will be given the iOS App User role.
 
-![Field presets](./Field.png)
+![Public role directus_users create field presets set the role to the a unique ID](./Field.png)
 
 
 
@@ -52,8 +52,7 @@ By following these steps users created by the public role will be given the iOS 
 
 In Xcode, create a new project and add the following code to the ContentView.swift file. This code presents a welcome screen with two buttons `Register` and `Login`. After logging in, users will see a `create post` along with a `logout` button. Additionally, the view includes the function responsible for making the `POST` request from logging out.
 
-
-<img src="ContentView.png" alt="ContentView" width="200"/>
+![An app displays a large login and register button](./ContentView.png)
 
 ```swift
 
@@ -215,6 +214,7 @@ Triggers the `logout()` function when tapped.
 Create a file named UserRegisterView.swift, which facilitates user registration by providing two input fields for email and password. The registration process involves sending a POST request.
 
 <img src="Register.png" alt="RegistertView" width="200"/>
+![The app shows an email and password field and register button](Register.png)
 
 ```swift
 import SwiftUI
