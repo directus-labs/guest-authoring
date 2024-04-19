@@ -5,8 +5,6 @@ author:
   avatar_file_name: 'Harshpal.jpeg'
 ---
 
-## Introduction
-
 In this tutorial, you will learn how to configure an iOS project with Directus Auth. You'll cover registering, logging in, logging out, viewing all posts from all users, creating a post, and editing and deleting posts from your user account.
 
 ## Before You Start
@@ -48,7 +46,7 @@ By following these steps users created by the public role will be given the iOS 
 
 
 
-## Content View
+## ContentView
 
 In Xcode, create a new project and add the following code to the ContentView.swift file. This code presents a welcome screen with two buttons `Register` and `Login`. After logging in, users will see a `create post` along with a `logout` button. Additionally, the view includes the function responsible for making the `POST` request from logging out.
 
@@ -185,13 +183,14 @@ struct ContentView: View {
 
 Three `@State` properties are declared to manage the state of the view:
 
-- **showLoginView**: Tracks whether the login view should be displayed.
-- **isLoggedIn**: Tracks whether the user is logged in.
-- **accessToken**: Stores the access token after successful login.
+- `showLoginView`: Tracks whether the login view should be displayed.
+- `isLoggedIn`: Tracks whether the user is logged in.
+- `accessToken`: Stores the access token after successful login.
 
 ### Conditional Rendering:
 
 Depending on the `isLoggedIn` state:
+
 - If logged in, it displays navigation links for creating posts and viewing posts, along with a logout button.
 - If not logged in, it displays buttons to login and register.
 
@@ -208,10 +207,9 @@ Triggers the `logout()` function when tapped.
 - If the logout request is successful (status code between 200 and 299), it updates the `isLoggedIn` state to `false` and clears the `accessToken`.
 - If the logout request fails, it prints an error message with the status code.
 
-
-
 ## UserRegisterView
-Create a file named UserRegisterView.swift, which facilitates user registration by providing two input fields for email and password. The registration process involves sending a POST request.
+
+Create a file named `UserRegisterView.swift`, which facilitates user registration by providing two input fields for email and password. The registration process involves sending a POST request.
 
 ![The app shows an email and password field and register button](Register.png)
 
@@ -303,20 +301,12 @@ struct UserRegisterView: View {
 
 ### Properties:
 
-- **`@Binding var isActive: Bool`**: This is a binding variable that determines whether the view is active or not. Changes in this view propagate back to the parent.
-- **`@State private var email`: String = ""**: State variable to hold the user's email address.
-- **`@State private var password`: String = ""**: State variable to hold the user's password.
-- **`@State private var showAlert`: Bool = false**: State variable to control whether to show an alert.
-- **`@State private var alertMessage`: String = ""**: State variable to hold the message to be displayed in the alert.
-- **`@Environment(\.presentationMode)` var presentationMode**: Environment variable to access the presentation mode, which allows the view to dismiss itself.
-
-### Body View:
-
-- **VStack**: A vertical stack that arranges its child views in a vertical line.
-- **TextField**: Text field for entering the user's email.
-- **SecureField**: Secure text field for entering the user's password.
-- **Button**: Button to register the user.
-- **.alert(isPresented: $showAlert)**: Modifier to present an alert when showAlert is true.
+- `@Binding var isActive: Bool`: This is a binding variable that determines whether the view is active or not. Changes in this view propagate back to the parent.
+- `@State private var email`: String = "": State variable to hold the user's email address.
+- `@State private var password`: String = "": State variable to hold the user's password.
+- `@State private var showAlert`: Bool = false: State variable to control whether to show an alert.
+- `@State private var alertMessage`: String = "": State variable to hold the message to be displayed in the alert.
+- `@Environment(\.presentationMode)` var presentationMode: Environment variable to access the presentation mode, which allows the view to dismiss itself.
 
 ### registerUser Function:
 
@@ -326,14 +316,13 @@ This function is called when the user taps the "Register" button.
 - It sends a POST request to the '/user' endpoint with a payload containing the email and password. The 
    request is executed asynchronously using `URLSession.shared.dataTask`, and upon completion, it handles the response or any encountered errors. If successful, it dismisses the current view.
 
-
 ### showAlert Function:
 
-- This function sets the `alertMessage` and sets showAlert to true, triggering the display of the alert.
+- This function sets the `alertMessage` and sets `showAlert` to true, triggering the display of the alert.
 
+## LoginView
 
-## Login
-Create a file named LoginView.swift, designed to facilitate user login with two input fields for email and password. The login process is executed through a `POST`request.
+Create a file named `LoginView.swift`, designed to facilitate user login with two input fields for email and password. The login process is executed through a POST request.
 
 ```swift
 import SwiftUI
@@ -437,32 +426,17 @@ Codable protocol indicates that instances of this type can be encoded and decode
 
 ### Properties:
 
-- Declares a struct `LoginData` with two properties: `access_token` and `refresh_token`, both of type String.
+- Declares a struct `LoginData` with two properties: `access_token` and `refresh_token`, both strings.
 
 ### LoginResponse Struct:
 
-**Purpose**: Defines a struct `LoginResponse` conforming to Codable, representing the structure of the response expected from the login API.
-
-### Properties:
-
-- It contains a single property `data` of type `LoginData`.
-
-### LoginView Struct:
-
-**Purpose**: Defines a SwiftUI view named `LoginView`.
+**Purpose**: Defines a struct `LoginResponse` conforming to `Codable`, representing the structure of the response expected from the login API.
 
 ### State Variables:
 
 - Contains several `@State` variables to hold the user's email, password, whether to show an alert, and the alert message.
 - Takes two `@Binding` variables: `isLoggedIn` to track whether the user is logged in and `accessToken` to hold the access token received upon successful login.
 - Accesses the presentation mode environment variable to control the navigation flow.
-
-### Body View:
-
-- Sets up a `NavigationView` for navigation-related functionalities.
-- Contains a `VStack` with two `TextField` views for email and password input, and a `Button` for logging in.
-- The button triggers the `loginUser()` function when tapped.
-- Applies a modifier to show an alert if `showAlert` is true.
 
 ### loginUser Function:
 
@@ -474,9 +448,9 @@ Codable protocol indicates that instances of this type can be encoded and decode
 - If successful, updates `accessToken` with the received access token, sets `isLoggedIn` to true, and dismisses the view.
 - If unsuccessful, the app shows an alert with an error message.
 
-
 ## CreatePostView
-Create a file named CreatePostView.swift, intended for creating a new post with two input fields for title and content. The creation process is executed through a `POST` request.
+
+Create a file named `CreatePostView.swift`, intended for creating a new post with two input fields for title and content. The creation process is executed through a POST request.
 
 ```swift
 import SwiftUI
@@ -553,23 +527,10 @@ struct CreatePostView: View {
     }
 }
 ```
-### CreatePostView Struct:
-
-Defines a SwiftUI view named `CreatePostView`.
-
-### State Variables:
-
-- Contains several `@State` variables to hold the post's title, content, whether to show an alert, and the alert message.
 
 ### Parameters:
 
 - Takes an `accessToken` parameter, which represents the access token needed to authenticate the user's request to create a post.
-
-### Body View:
-
-- Sets up a `VStack` containing two `TextField` views for inputting the post's title and content, respectively.
-- Also contains a `Button` titled "Create Post", which triggers the `createPost()` function when tapped.
-- Applies a modifier to show an alert if `showAlert` is true.
 
 ### createPost Function:
 
@@ -582,11 +543,9 @@ Defines a SwiftUI view named `CreatePostView`.
 - If the status code indicates success (between 200 and 299), it prints a success message.
 - If the status code indicates a failure, it shows an alert with an appropriate error message.
 
+## TokenManager 
 
-## Token Manager 
-
-Create a new file named TokenManager.swift. This Swift code defines a struct named TokenManager responsible for managing access tokens.
-
+Create a new file named `TokenManager.swift`. This defines a struct named `TokenManager` responsible for managing access tokens.
 
 ``` swift
 import Foundation
@@ -613,20 +572,17 @@ struct TokenManager {
 }
 
 ```
+
 - `accessTokenKey` and `refreshTokenKey`: These are static constants representing the keys used to store access and refresh tokens in UserDefaults.
-
 - `saveToken(_:)`: This static method takes an access token as input and saves it to UserDefaults using the `accessTokenKey`.
-
 - `saveRefreshToken(_:)`: This static method takes a refresh token as input and saves it to UserDefaults using the `refreshTokenKey`.
-
 - `getToken()`: This static method retrieves the access token stored in UserDefaults using the `accessTokenKey`. It returns an optional String representing the access token.
-
 - `getRefreshToken()`: This static method retrieves the refresh token stored in UserDefaults using the `refreshTokenKey`. It returns an optional String representing the refresh token.
 
-
-
 ## PostView 
-Create a new file named PostView.swift. This code fetches and displays the current posts by users by sending a `GET` request.
+
+Create a new file named `PostView.swift`. This code fetches and displays the current posts by users by sending a GET request.
+
 ``` swift 
 import SwiftUI
 
@@ -703,29 +659,12 @@ struct PostsView: View {
 }
 ```
 
-### PostResponse Struct:
+The `PostResponse` struct conforming to `Codable` and represents the structure of the response expected from the API when fetching posts.
 
-Declares a struct `PostResponse` conforming to `Codable`. It represents the structure of the response expected from the API when fetching posts.
-
-### Properties:
-
-- It contains a property `data` which is an array of `Post` objects.
-
-### Post Struct:
-
-Declares a struct `Post` conforming to `Codable` and `Identifiable`. It represents the structure of a post.
-
-### Properties:
-
-- Properties such as `id`, `title`, `content`, `user_created`, and `date_created`.
-
-### PostsView Struct:
-
-Defines a SwiftUI view named `PostsView`.
-
-### State Variables:
-
-- Contains several `@State` variables: `posts` to hold an array of posts, `isLoggedIn` to track whether the user is logged in, and `accessToken` to hold the access token.
+- The `data` property is an array of `Post` objects.
+- The `Post` struct conforms to `Codable` and `Identifiable`. It represents the structure of a post.
+- Properties include `id`, `title`, `content`, `user_created`, and `date_created`.
+- The `posts` `@State` variable holds an array of posts, `isLoggedIn` to track whether the user is logged in, and `accessToken` to hold the access token.
 
 ### Body View:
 
@@ -742,13 +681,12 @@ Defines a SwiftUI view named `PostsView`.
 - If successful, it decodes the response into a PostResponse object and updates the posts array with the received posts on the main thread.
 - Uses the `/items/posts` endpoint to fetch posts.
 
-
 ## PostDetailView 
-Create a new file named PostDetailView.swift. This view enables users to click on a post to expand it, providing options to edit and delete the post.
+
+Create a new file named `PostDetailView.swift`. This view enables users to click on a post to expand it, providing options to edit and delete the post.
 
 ```swift
 import SwiftUI
-
 
 struct PostDetailView: View {
     var post: Post
@@ -779,10 +717,10 @@ struct PostDetailView: View {
 
 ### Properties:
 
-- **post**: Represents the post to be displayed in detail.
-- **accessToken**: Optional access token for authentication purposes.
-- **showAlert**: A boolean state variable to control the display of an alert.
-- **isEditMode**: A boolean state variable to track whether the view is in edit mode.
+- `post`: Represents the post to be displayed in detail.
+- `accessToken`: Optional access token for authentication purposes.
+- `showAlert`: A boolean state variable to control the display of an alert.
+- `isEditMode`: A boolean state variable to track whether the view is in edit mode.
 
 ### Body View:
 
@@ -804,7 +742,9 @@ struct PostDetailView: View {
 - Renders a `DeletePostView`, passing the post's ID and access token. It also passes the `showAlert` state variable, allowing the `DeletePostView` to control the display of an alert if needed.
 
 ## EditPostView 
-Create a new file named EditPostView.swift. This code allows the editing of an existing post by sending a PATCH request.
+
+Create a new file named `EditPostView.swift`. This code allows the editing of an existing post by sending a PATCH request.
+
 ``` swift
 import SwiftUI
 
@@ -893,20 +833,19 @@ struct EditPostView: View {
     }
 }
 ```
-### EditPostView Struct:
 
 ### Properties:
 
-- **post**: Represents the post to be edited.
-- **isEditMode**: A binding to a boolean indicating whether the view is in edit mode.
-- **accessToken**: Optional access token for authentication.
-- **editedTitle**: A state variable to hold the edited title of the post.
-- **editedContent**: A state variable to hold the edited content of the post.
+- `post`: Represents the post to be edited.
+- `isEditMode`: A binding to a boolean indicating whether the view is in edit mode.
+- `accessToken`: Optional access token for authentication.
+- `editedTitle`: A state variable to hold the edited title of the post.
+- `editedContent`: A state variable to hold the edited content of the post.
 
 ### Initializer:
 
 - Initializes the view with the provided `post`, `isEditMode`, and `accessToken`.
-- Initializes the `editedTitle` and `editedContent` state variables with the initial values of the post's title and content, respectively.
+- Initializes the `editedTitle` and `editedContent` state variables with the initial values of the post's `title` and `content`.
 
 ### Body View:
 
@@ -923,9 +862,10 @@ struct EditPostView: View {
 - If successful (status code 200), sets `isEditMode` to false to exit the edit mode.
 - Uses the `/items/posts/\(postId)` endpoint.
 
-
 ## Delete Post View 
-Create a new file named DeletePostView.swift. This code enables the deletion of a post by sending a DELETE request.
+
+Create a new file named `DeletePostView.swift`. This code enables the deletion of a post by sending a DELETE request.
+
 ``` swift 
 import SwiftUI
 
@@ -984,14 +924,9 @@ struct DeletePostView: View {
 
 ### Properties:
 
-- **postId**: Represents the ID of the post to be deleted.
-- **accessToken**: A string representing the access token required for authorization.
-- **showAlert**: A binding to a boolean value indicating whether to show an alert for confirming the deletion.
-
-### Body:
-
-- This is where the layout of the view is defined using SwiftUI components.
-- The body consists of a single `Button` labeled "Delete". When tapped, it toggles the `showAlert` boolean to true, which triggers the display of an alert for confirming the deletion.
+- `postId`: Represents the ID of the post to be deleted.
+- `accessToken`: A string representing the access token required for authorization.
+- `showAlert`: A binding to a boolean value indicating whether to show an alert for confirming the deletion.
 
 ### Alert:
 
@@ -1012,4 +947,5 @@ struct DeletePostView: View {
 
 
 ## Summary 
+
 By following this tutorial you've integrated Directus APIs for authentication in a SwiftUI iOS app. You've covered user registration, login, post creation, viewing, editing, deletion, and logout functionalities. This knowledge equips you to develop efficient and secure social apps, enabling users to interact seamlessly with content and manage their accounts with ease.
