@@ -4,30 +4,33 @@ Digital education platforms engage students with different courses, instructors,
 
 ## Key Concepts
 
-An interactive learning platform has several key concepts:
+An interactive learning platform has several key concepts which:
 
-1. Courses are...
-2. Students and Instructors are...
-3. Lessons are...
-4. Quizzes are...
+1. Courses.
+2. Students and Instructors.
+3. Lessons.
+4. Quizzes.
 
 In your Directus project, create a `courses` collection with a primary key type of UUID. Check all of the optional fields and complete setup. Your collection should look like this:
 ![](https://lh7-us.googleusercontent.com/gpxJbPSFhEFGIdhmX52qhRu5WCJqndzQbFvZDZjfIblIz3JjQsetsP-gIGAHfGFQUelLh-DNgEWNxSAQgpBrUDaq2SVtgy1EsKo1QiT7XJgQXxPLX_gDegu2HZs09KBeDWfuq6d3oxWsNKP1oLf-Cdc)
 
 Create the following additional fields:
 
-- Name: Input interface
-- Description: WYSIWYG interface
-- Course_Code: Input interface
-- Start_Date and End_Date: DateTime interfaces
-- Course_Image: Image interface
-- slug: Input interface
+- name: input interface
+- description: WYSIWYG interface
+- course_Code: dnput interface
+- start_date and end_date: dateTime interfaces
+- image: image interface
+- slug: input interface
 
 When creating the slug, enable the slugify option to ensure the value is kept URL-safe.
 
 Create a `lesson` collection with a primary key type of UUID. Check all of the optional fields and complete setup. Create the following additional fields:
 
+- name: input interface
+- description: WYSIWYG interface
 - number: Input interface with Integer type
+- video_url: input interface
 - content: WYSIWYG interface
 - passing_score: Input interface with Integer type
 
@@ -35,11 +38,11 @@ Create a `lesson` collection with a primary key type of UUID. Check all of the o
 
 At the end of lessons we normally have quizzes or test. Let's go ahead and create a collection for this, name it Quiz to follow up in this tutorial. Our first and second fields will be name and description, go ahead and create those. Following up we will have questions, as good practice questions should have their collection, then linked to the quiz collection, this will be discussed later on in the blog.
 
-Going further Time limit field, which will be a text, and passing score which will be text but an integer, setting the minimum value to 0 and maximum to one hundred, or ten depending on your grade, in this blog we will leave it 100.
+Going further Time limit field, which will be a text, and passing score which will be text-interface but an integer, setting the minimum value to 0 and maximum to one hundred, or ten depending on your grade, in this blog we will leave it 100.
 
 ![](https://lh7-us.googleusercontent.com/3RWuxpL3dlE8OO3y9iKCt1yJOGOTt9_XA3rILELxhjMhI3IZn50A1wCXZXBcNnEiL6pPnuLANlFz61Yn3gzzR0VGuHiZFGNVcoOTJ7BdaNIbTDpqdno2hUAF65gFTcb0YIy228LRj5lEnGQli1MwrUk)
 
-Lastly, we will create the question collection and for the field, we will be using the WYSIWYG interface.
+Lastly, we will create the question collection and for the field, we will be using the WYSIWYG interface only.
 
 ### Instructor Collection,
 
@@ -57,7 +60,7 @@ The enrollment would be kind of tricky as it deals with linking a few of the oth
 
 -   Enrollment Date: Date Field 
 
--   Status: Text or Select Field 
+-   Status: Text  Field 
 
 -   Grades/Progress: Text or Numeric Field
 
@@ -75,123 +78,73 @@ We can go ahead, and add the icons it should look like the image below.
 
 ![](https://lh7-us.googleusercontent.com/j-0FOXFC2FN0v1U7SdNwIoEv1d3QIzVtnxTpm9a3_WQUbRVN2HuaKyzRMNuBfZ3RkNAVe_pV7LmdqshdakNguHFdCIJosJHi6r1i_p0AvD9gRLWUQtrtP8d33LWU-OPX9gHmne2jBMzPjhQrG608xT0)
 
-We can now go ahead to understand and fix the relationship between these collections because they are supposedly dependent on each other. Let's break it down a bit; 
+## Creating Relationships
 
-You do have course, and each course could have multiple lessons, and each lesson could have its quiz, right? We can also say each course should have its instructor.
+The `courses` collection can have a one-to-many relationship with the `lessons` collection. This means that one course can have multiple lessons associated with it.
 
-As we can see they are heavily connected to give optimum value. Directus has a field for these kinds of relationships, it is called the Relational field. Under this field we have one-to-many, many-to-one, and many-to-many, we need to understand which one fleshes out the described relationship better, so it can be used.
-
-#### One-to-Many Relationship: 
-
-In a one-to-many relationship, one record in a collection can be related to multiple records in another collection. This relationship is typically represented by adding a "Many" field in the collection where there are multiple related records.
-
-For example, in our scenario, the "Courses" collection can have a one-to-many relationship with the "Lessons" collection. This means that one course can have multiple lessons associated with it.
-
-In Directus, you establish this relationship by adding a "One-to-Many" field in the "Courses" collection that links back to the "Lessons" collection. Each lesson record will then reference the ID of the course it belongs to. Behind the scenes, Directus will set this relationship inside your sequel database and make sure everything plays nice with each other.
-
-So we will navigate into courses(courses seem to be the mother collection), click the Create field, scroll down to the relational fields, and select the one-to-many:
-
-![](https://lh7-us.googleusercontent.com/Fo6OyKHB1BcdnK8fcqNHYdtRsj5Okq_VImsW-pw4ZmipOQjtfZWaWj4B5-WzKY83ldGx_IxPnwGL2bpqhAgvasFBNW3P245knu9JxuAEWI_b75S3ai24sYga-Xtqqm6CXDhqRI0O4nGxP7_ufZw8cXw)
-
-For our key we will call it "Lessons", the related collection will be Lesson, and the foreign key, which is our key inside the Lesson collection will be course;
+In the `courses` collection, create a One to Many field called `lessons`. The related collection will be `lessons`, and the foreign key, which is our key inside the related collection will be `course`.
 
 ![](https://lh7-us.googleusercontent.com/vlz0BeZQYgajzhOUO_3srP-lzk6ZhbeU5Ex0NwdhlKAYJH7RtbOciIJSzMnkEMdRCyVhXDVu5MxobZeNpo339d3yPJRPSqPKoJB5hLHpPCC5cpoa9zkm-7fjB5cLNxDJZolEFC_BJ0dGOoAcF54OfY4)
 
-For our display template, we will use the name "name"
+To make this easier to select, set the display template to the `name` variable:
 
 ![](https://lh7-us.googleusercontent.com/jC-HlWxNsjjZFMYTTekHtok9GjkTXJUAt5czDdWOVWilH7UIQU3_wVv0yItmuJi7hBqIoN4lQzb5n42lO0-LWOEsPTBkRkBFWgssWBPtjBys79VBospZKaMIvS7XKfApVGxoxeu6RVDM1Xm3-iOwDS4)
 
-Scroll below and enable the item link, then save.
-
-![](https://lh7-us.googleusercontent.com/nFNE86v5Qit2Iol0OFq_ORsJvPSlRDY2F_PjrcinuyRtM6pXf_ZjWEnXKwrQJh_9_a0ZVlS9CoxL5ejAdpjU4jxTVGUdELvKA2x1MaaIZTo7pcJd8QIwfGdpvTaCanwNl2wJB7zAwN9jQ0vxrVfUH00)
-
-Now if we go to our courses we can find lessons as one of the fields;
-
-![](https://lh7-us.googleusercontent.com/dKheQgAF8nxtLj8-EG8ddOv9EbkNWAvjNjl3V6jTpaGeF_oTKGxBJOafVSRY2t7WJ_InbrEplvn66PjOtB9qZRJhUMQHmbSyAZ852JxlGXI1y-L_Yksu2r8XMQgy8rcnpwqh4vwgXIYn3ZmjJx82EqA)
-
-The same will be for lessons too, we will find courses there;
-
-![](https://lh7-us.googleusercontent.com/H0wgWBjSElWxVGTbUuTqqTdNYO6D1lD9GuSyhBapvtF84icJbmJQpauO1DOtq9GJ5_H-kzsLW_XcIfDoaZYmZoJ78aHc1zRY5-BFClqR4XO4Tlovg5UWYF7I5rJHEF2yIlBWsnSFqZ0YNrqVIIX4QU0)
-
-
 Also create the folowing One to Many fields:
 
-- We should do the same for Lesson and the quiz. In the lesson collection create a field with the a related colelction of quiz. 
-- In the quizzes collection create a field called x with a related collection of y
-- If you think further you could see another good example of one-to-many. In the quizzes collection, create a field with the a related colelction questions.
+- We should do the same for Lesson and quiz. In the lesson collection create a field with the a related colelction of quiz. 
+- In the quizzes collection, create a field with the a related collection of questions.
 
 Also for Many to Many relationships:
-Like an instructor could take many courses, and a course could have more than one instructor. We will have to go to the courses or instructors collection, it could be any actually, in our case we wiil go to instructors, just because we  haven't used it yet. We will use the many to many relationship, our related collection will be courses;
+
+Like an instructor could take many courses, and a course could have more than one instructor. We will have to go to the courses or instructors collection, it could be any actually, in our case we wiil go to instructors, just because we  haven't used it yet. We will use the many to many relationship, our related collection will be courses;
 
 ![](https://lh7-us.googleusercontent.com/TBYw6vogrDkTFBk6dlPUTT726VnXzpd2hB6-LgNaUCK_yT6EzgdKIf58gvX5a-Sn_mSu93ggqRTAus42z1lfFEM5mUHRmSsuu1Yh1a_uhisu-OjazkAe7pJ8DIywo9864UjQeRWcNSIklyNPGioc-jM)
 
-If we go back to the data model, Directus will do it's magic and viola we have a hidden collection, below;
+
+If we go back to the data model Directus will have created a junction collection on your behalf:
 
 ![](https://lh7-us.googleusercontent.com/X4LzpJXQn9PDZeUdfYbVp9tyvHrFc0OEJnKJvfeS7BoevGZdpczYmidUcbbxdN0GjhgDyIBQkBRHN57OKxEZr3oqPn8MOCdkYzf2y7PdvkHtDPLzwzK-q5rV-BKwWQPJo2TwEtGmlDP1AH7GWYIVncw)
 
-If you click on it, we have this;
+Create 3 courses to test with, and then test accessing it via API by navigating to `https://your-directus-url/items/courses`. You would normally see the same data you authored in the Data Studio as JSON, except you don't. Let's talk about why.
 
-![](https://lh7-us.googleusercontent.com/_yIlUTgXhUC1TcOaJAXqi10CjRcCJOk2sk51bUe5bWDs1G421eAXo2ysK8F-wa4LgaFUZNmf_RJU8zBvEeFOINCTBjoyW-4hiZimLX08UdhfjtoT2m1OeseLYP3eUtx1O5aay3628MKKLwMsyCjXlxA)
+Your request to access data via the Items API provides no authentication details, meaning it is a public request. The public role has no permission to do this, now this takes us to the next section, where we will talk about roles and permissions.
 
-At this point, we are done with our data model, let's navigate to our content;
+## Roles and Permissions
 
-![](https://lh7-us.googleusercontent.com/Y5LREObxI1Dug3eOClw0IqmV8RLXqnbxC_kygIfZR3pgtavzUAHIAupQNMiGoBpdURuPqZ3QBMr7gkeoXuZWOiVMOVZJ8GB_JNQCO0A_3PgU0oLmCCeKcetDQn8CG1BzKsN5-fRD6FF7qZJzDmlwF3I)
+You can configure roles and their permissions in the Access Control area of the settings module. 
 
-This will take you to the dashboard below;
+You want to be careful with those you give administrator roles to, as it has access to administer all data, and you will want to restrict the public role from certain things, like courses enrollment, because you may only want authenticated users to access them.
 
-![](https://lh7-us.googleusercontent.com/eCQn-8QraTeRhoF9EHyEomf51uLE0XWTTYDn449Kp8s9GHBtm6eMW80ZeNTYJSFaFalhiC18T0BMG9c00GqzyH1WqXHPRkV3jrNXvKYJh23RFAawjG3-8K6bj2l9kJtWNIkGeApUF4qkVriPO7cziSY)
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-We can go ahead and create our items, by selecting any of the collections above. In our case we will do courses first;
-
-We will create items in our courses;
-
-![](https://lh7-us.googleusercontent.com/xIC1ODpTfX5iSlRi5_QD0BUjYdt2Kf0Hskrz_GTfOKy_Ixi8wEGlJirkJx5U1HKqgv_nsNRGGwjys-IAOpawuiJFlNDZvj-ZpQ5pw192tpHoekr6F-s5JtKPG3B5R71lfO5boAVLhCsP2xhmnQeRsgg)
-
-If we navigate to: <https://interactive-educational-platform.directus.app/items/Courses>, we will see our raw data for our courses;
-
-![](https://lh7-us.googleusercontent.com/0py2EvtrdkF6LaREhqb20F_kuZ0jaukRHzgDj9nHByPfvnX7bpk28q-_m3uFLaBsM1nKS6h5LFS6emXsTdmyaWDJviRthHd45xYekfq2VvQEBBfr9c1AcChVuQEYt_hv_eh3GOtv46k2HSsVgdDBYKM)
-
-If we navigate to: <https://interactive-educational-platform.directus.app/items/Lesson>, we will see our raw data for our Lesson; we do have one lesson here, we could create more than one lessons if need be;
-
-![](https://lh7-us.googleusercontent.com/c2UkDhLS2PVgBiUm0zSGLgzqRcqXgqoC-RThI4s9QBYp00wW5Jvw6fPZ0w3IyIPycKbUVVRGSea1IqAuKWfPr0vkljU20xHEcpYCCtjZnOXo0GLZuSTE-FtObR7RbeCIoeLw58ZyL1gdPKSASqpRrIo)
-
-Replace the last words of the links above with the collection name so we can see our raw collections.  Well, the truth is you will not be able to do so, and here is why. You do not have permission to do so, that takes us to our next section, roles, and permissions. Let me break it down a bit, as of now whatever you are seeing is for the public eyes, and directus would not allow you see these contents until the right permissions are given.
-
-Roles and Permissions
----------------------
-
-Roles in Directus can be easily created, navigate to the settings, and select Access Control,
-
-![](https://lh7-us.googleusercontent.com/iQrk7gZ_26xp2Q7H2AMPsUVHItEZTEg0cBX3yzh4UY1P2XJwTeTvtH0Hww-l4UOI75FJVpoiOzM8v8X7sGkAqgz7DmTw4BpQdgmVmpCw4ezd0Mq5VoTQYhhaSjz9aRx9lOiIXKfHMM9qFiYNRGndFxc)
-
-At the top right you will find a plus icon, click it create a role, and save. In our case we will create two roles the Students and the Instructors.
-
-![](https://lh7-us.googleusercontent.com/o_JTTKDATPEJ04qM9KEZ_J2EMu2gkOpYwsKBx6CKprmIRTflQNRgChJ5nNjDuPZNZSRfseIy-H3eA500cMPvuPAi6A8YT4I3W2sRlNovXRe4FBY12uv8PTtjQDDybu3lv3VQXb1jrSqiOU-rXhKCF3Y)
-
-By default we do have the Public and the Admin, we do not need to set permissions for the admin as it has all permissions.
-
-![](https://lh7-us.googleusercontent.com/BIdQat51I19KIs3vA3ahnTCxVHJcgqWvTBO9jILTB-k5dgxdghbBrRgboqA5SJB7h7gRWriBrkTCChPzLdlldrsX928dwb2WZzjf1u56KZKAoI9iSRB73VdCAulNXQ1S2subXi7pVMYaDp0-cewq9Bo)
-
-You want to be careful with those you give administrator roles to, as it has access to administer all data, and restrict the public role from certain things, like courses enrollment, because you may only want authenticated users to access them.
-
-Each role has a set of permissions for each collection which describe the ability to see, create, edit, and delete content. Using Directus, you can also apply custom permissions which are more granular than a "yes" or "no", but perhaps only allow instructors to edit their own courses, and students to see those that they are enrolled in.
+Each role has a set of permissions for each collection which describe the ability to see, create, edit, and delete content. Using Directus, you can also apply custom permissions which are more granular than a "yes" or "no", but perhaps only allow instructors to edit their own courses, and students to see those that they are enrolled in. 
 
 Let's create permissions for the students and instructors.
 
 ### Student Role:
 
+### ![](https://lh7-us.googleusercontent.com/nO2Y5acNRKDoHRe7K6XKbccWqD2Y6sUxiSMuAHiBO7W0IHrhrnLaHdb0oJEVmDvhfxmvo8mSgRT14EZv1YvNnd_qkNQx6jESfWelh6Z6QnpkKZc7JEL5dGzPTkcT-5t9YTKxnfVvkU962eiSZe9FhNA)
+
 Students should be permitted to;
 
 -   View Courses: Students should be able to view all available courses. 
 
--   View Lessons: Students should be able to view lessons within their enrolled courses: Students should be able to view assignments within the courses they are enrolled in. 
+-   View Lessons: Students should be able to view lessons within their enrolled courses
 
--   View Quizzes: Students should be able to view quizzes within their enrolled courses. View Own Profile: Students should be able to view their own profile information. Restricted 
+-   View Quizzes: Students should be able to view quizzes within their enrolled courses.
+
+- View Own Profile: Students should be able to view their own profile information. 
 
 -   No creation/editing/deletion permissions: Students should not be able to create, edit, or delete courses, lessons, assignments, quizzes, or any other content.
 
-### ![](https://lh7-us.googleusercontent.com/nO2Y5acNRKDoHRe7K6XKbccWqD2Y6sUxiSMuAHiBO7W0IHrhrnLaHdb0oJEVmDvhfxmvo8mSgRT14EZv1YvNnd_qkNQx6jESfWelh6Z6QnpkKZc7JEL5dGzPTkcT-5t9YTKxnfVvkU962eiSZe9FhNA)
+- Custom permissions: Students should only  view published courses, lessons, and quizzes
+    - Quiz: We will open up the read permission click custom permissions, and under item permissions, we will create a role using a dynamic variable, by clicking the add filter drop dropdown, we are going to go to the quiz questions field, and use the ' Quiz questions to equals `$CURRENT_USER.id`, and now they would only be able to see the quizzes that belongs to them alone.
+
+![](https://lh7-us.googleusercontent.com/TsilbdWhcx2I1Oy_uNME4cO-BfJMBcHWmyNCZBtj-obb5NGCnfBsrFrSsP8stVrfz12xI2jm1MXIlK4W0ZhX4nk31YJL62EFbie0f59NYZe4K659T3gi5skIkA3FoT5ZN20jtjOJM87MWAgr8-6Q-OI)
+
+- 
+    - Courses: we navigate to the courses collection, the custom permissions, then item permissions, then we click the add filter dropdown under the rules, select status and let it be equal to published. And viola students can only see published courses, we will go ahead to do same for, lessons, and quiz.
+
+![](https://lh7-us.googleusercontent.com/hZBD0NEPySG1pe8Y1hQzGAcf8h-QQJvr9qoEDiphvUaX6p0Mkag2TRs-KRPTOIVMYTlLMBjLZoUejxlv4a5SlIBPwtqLc19qXH943GJs3-bkd8ZbdggqOBi7J8K16seeEv0BLlQuoqJ3WUnqvlOPvbg)
 
 ### Instructor Role: 
 
@@ -201,39 +154,75 @@ Instructors should be permitted to;
 
 -   Create/Edit/Delete Lessons: Instructors should be able to create, edit, and delete lessons within the courses they are assigned to. 
 
--   Create/Edit/Delete Assignments: Instructors should be able to create, edit, and delete assignments within the courses they are assigned to. 
-
 -   Create/Edit/Delete Quizzes: Instructors should be able to create, edit, and delete quizzes within the courses they are assigned to. 
 
--   View All Data: Instructors should have access to view all data within the platform. Restricted 
+-   View All Data: Instructors should have access to view all data within the platform.
 
 -   Limited administrative access: Instructors should not have access to manage users, roles, or other administrative settings.
 
 ![](https://lh7-us.googleusercontent.com/YGWsatZncTynyPnj8p5a9ANJzu3irWvKQ4S3btPUr6GUPJTIfHBLKYXhfSCwJuV8_kkHwNopI2mkRALEsYuik--jck8gLalu3-CGJrPFz_LGh4fqV290UCJs0TYEHFtY5ZKp0L8AB-tKJ3M2KdJOFio)
 
-### Custom Permissions
+Now for the instructors, since they do have a little more hedge of control, we would want to insist on them having limited rights to do certain things.
 
-![](https://lh7-us.googleusercontent.com/RHP_HpUinE5HzuVJOPQBYXrx1kyZJRw04Qil8wL3CmnJiuBTM_AO-lWkFtcRfpALgmhYPBoRKikjrAF6vModJfcROIuWLJjE07TXJEw3ty01X76KO-sG5VGtNRNAvg7eUIyDSDrC4IKmbDtzVRSihzE)
+We do want instructors to create a course, but we also would want them not to update other instructors' courses.
 
-Now for the instructors, since they do have a little more hedge of control, we would want to insist on them having limited rights to do certain things, and there's where custom permissions come into play, Directus in its mass quality didn't leave tables empty on this one, with Directus you could easily restrict certain rights as we earlier mentioned.
-
-We do want instructors to create a course quite alright, but we also would want them not to update other instructors' courses.
-
-So in the instructors roles, we will go instructor-courses collection, click edit, select  custom item, go to rules, click the filter drop down, click instructor -Id then set it to $CURRENT_USER.id. This should make only instructors who created certain courses be able to edit them.
+So in the instructors roles, we will go to instructor-courses collection, click edit, select  custom item, go to rules, click the filter drop down, click instructor -Id then set it to `$CURRENT_USER.id`. This should make only instructors who created certain courses be able to edit them.
 
 ![](https://lh7-us.googleusercontent.com/eszZASHeqR49PsGeZQF7dJwKeJ-2R27676PFkVcFGlZKLbe-xRoCrgBZW3lXTDBfLjjpATpWINEYTQRdFGToRD9zmQTefOwpDufFvWVyYNgQGkQThs6F6FZPR1Sj7uba5CFA6CHWSVUJOyDAm3ddEUk)
 
-You thought we had finished, but not quite right, we do need custom permissions for the students, as we only want students to view published courses, lessons, and quizzes.
 
-We will open up the read permission click custom permissions, and under item permissions, we wiil create a role using a dynamic variable, by clicking the add filter drop dropdown, we are going to go to the quiz questions field, and use the ' Quiz questions to equals $CURRENT_USER.id", and now they would only be able to see the quizzes that belongs to them alone.
+## Directus APIs'
+Directus provides API_URL (`https://your-directus-url`) layer that can be used to build in the front end. To set up your project, you'll first need to install Directus SDK for easy querying. 
 
-![](https://lh7-us.googleusercontent.com/TsilbdWhcx2I1Oy_uNME4cO-BfJMBcHWmyNCZBtj-obb5NGCnfBsrFrSsP8stVrfz12xI2jm1MXIlK4W0ZhX4nk31YJL62EFbie0f59NYZe4K659T3gi5skIkA3FoT5ZN20jtjOJM87MWAgr8-6Q-OI)
+`npm install @directus/sdk`
 
-Lastly, we only want students to see published courses, or lessons; we navigate to the courses collection, the custom permissions, then item permissions, then we click the add filter dropdown under the rules, select status and let it be equal to published. And viola students can only see published courses, we will go ahead to do same for, lessons, and quiz.
+Once your Directus instance is installed and running, you'll need to start by accessing your Directus instance through its URL. You might query your courses data via:
 
-![](https://lh7-us.googleusercontent.com/hZBD0NEPySG1pe8Y1hQzGAcf8h-QQJvr9qoEDiphvUaX6p0Mkag2TRs-KRPTOIVMYTlLMBjLZoUejxlv4a5SlIBPwtqLc19qXH943GJs3-bkd8ZbdggqOBi7J8K16seeEv0BLlQuoqJ3WUnqvlOPvbg)
+`https://your-directus-url/items/courses`
 
-Conclusion
-----------
+Below is a imaginary breakdown of how it should look, we will be considering API endpoints for students and instructors:
 
-In this article, we have been able to go through the exercise of Data model and oermissions for Interactive Educational platforms, in directus, thank you for sticking this far, I really do appreciate. Keep using Directus!
+
+### Student: 
+- GET `/users/:id` - Get current user information (requires authentication) 
+- GET `/Courses` - Get all available courses 
+- GET `/Courses/:id` - Get details of a specific course 
+- GET `/Courses/Lessons` - Get all lessons for a course 
+- GET `/Courses/:Courses_id/:Quiz_id` - Get details of a specific quiz 
+- POST `/Courses/:id/Enrollment` - Enroll in a course (requires authentication) 
+
+
+In building this API endpoints comes in handy:
+- Student Login: The student logs in, and the front-end retrieves user information using the `/users/:id` endpoint.
+- Check Courses: The front-end retrieves a list of available courses using the `/Courses` endpoint and displays them to the student.
+- Enroll in Course: The student clicks to enroll in a course. The front-end sends a POST request to the `/Courses/Enrollment` endpoint.
+- View Lessons: The student opens a course. The front-end retrieves lesson details using the `/Courses/lessons` endpoint and displays them.
+- Attempt Quiz: The student starts a quiz. The front-end retrieves quiz details using the `/courses/Lessons/Quiz_id` endpoint and displays questions.
+
+### Instructors:
+Instructor API Endpoints:
+
+-   `POST /api/Courses`: Allows instructors to create new courses(requires authentication).
+-   `DELETE /api/Courses/:Course_id`: Deletes a course and associated content.
+-   `GET /users/:id` - Get current user information (requires authentication)
+-   `GET /Courses` - Get all courses (including unpublished ones)
+-   `GET /Courses/:id` - Get details of a specific course
+-   `PUT /Courses/:id` - Update an existing course (requires authentication)
+-   `GET /Courses/:id/Lessons` - Get all lessons for a course (can include unpublished lessons)
+-   `POST /Courses/:id/Lessons` - Create a new lesson for a course (requires authentication)
+-   `PUT /Lessons/:id` - Update an existing lesson (requires authentication)
+-   `DELETE /Lessons/:id` - Delete a lesson (requires authentication)
+-   `GET /Courses/:id/Quiz` - Get all quizzes for a course (can include unpublished quizzes)
+-   `POST /Courses/:id/Quiz` - Create a new quiz for a course (requires authentication)
+-   `PUT /Quiz/:id` - Update an existing quiz (requires authentication)
+-   `DELETE /Quiz/:id` - Delete a quiz (requires authentication)
+
+### Instructor Workflow Brief Example:
+
+-  Create Course: The instructor creates a new course using the `/Courses` endpoint.
+-  Develop Course Content: The instructor creates lessons and quizzes using the respective endpoints (`/Courses/Lessons` and `/Courses/Lesson/Quiz`).
+-  Refine Content (Optional): The instructor can edit the course, lessons, and quizzes using the update endpoints (PUT /Courses/:id, PUT /Lessons/:id, PUT /Quiz/:id) before publishing.
+
+
+## Conclusion
+In this article, we have been able to go through the exercise of Data model and permissions for Interactive Educational platforms in directus, thank you for sticking this far, I really do appreciate. For further details refer to the our docs Keep using Directus!
