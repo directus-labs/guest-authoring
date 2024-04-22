@@ -14,53 +14,16 @@ This platform has several key concepts:
 In your Directus project, create a `courses` collection with a primary key type of UUID. Check all of the optional fields and complete setup. Your collection should look like this:
 ![](https://lh7-us.googleusercontent.com/gpxJbPSFhEFGIdhmX52qhRu5WCJqndzQbFvZDZjfIblIz3JjQsetsP-gIGAHfGFQUelLh-DNgEWNxSAQgpBrUDaq2SVtgy1EsKo1QiT7XJgQXxPLX_gDegu2HZs09KBeDWfuq6d3oxWsNKP1oLf-Cdc)
 
-In the page above we have our previously selected fields, and also a button to create more as we build. In our courses we will need fields such as Course Name, Description, Course Code, Start Date, End Date, Course Image, this should be enough fields for a professional educational platform Courses. We will go ahead to create them, at this point, we can click the Create Field button.
+Create the following additional fields:
 
-For our Course Name, we will select the input field. 
+- Name: Input interface
+- Description: WYSIWYG interface
+- Course_Code: Input interface
+- Start_Date and End_Date: DateTime interfaces
+- Course_Image: Image interface
+- slug: Input interface
 
-![](https://lh7-us.googleusercontent.com/_OIgdPKEiYSCMn31_EbNDqZrbUpS2chq_fChw6GkikD2dEcyvjuMKdlG9Vtt0bS8v_-jrpYg73jausOMIRuoZ9CyPIcPEkWpaRvO1h0XdySB9eUeSEY44IyKcv7pDH3LHC2I9qXzWcFHBOhz3ijLbI4)
-
-Fill in the name as an option:
-
-![](https://lh7-us.googleusercontent.com/8hRqFmDP274-mwGMo2rW5y7kXkWk7Jz8rX0M4CjSKmQNdegRoRJYERDPtH8gkQ4TWRylOhfjfBEPH6PS9jfqSau8SmUBv3UKItcnBo1HLXXUMb5ofzWdw6Y_5Cs7zhnRL_oDWOlXMuhEnOiqjIsEEPw)
-
-Scroll below to save.
-
-![](https://lh7-us.googleusercontent.com/gVtXDivgi_Yf4WyqENsgdnyQXyKcajqv_3yb-FOGk5ofLm5XEwmL7YyrMRNeklmBTi8SlG8EA0biXAoP_ww0QBlZI9XSk-Q6vUZ6bn_DW94pg62rWynBFmgBtHIwkCIaa6Yr1yP1bvgqjbSlDN0iwFI)
-
-At this point, we just easily created our first field, in our Course collection, and we will go ahead to do the rest. Next, we will create a Course Description, we will repeat the process of creating a field, but for this field, we will be using the WYSIWYG field option.
-
-![](https://lh7-us.googleusercontent.com/o9w-A6mNJ6q3K6xhml5qriasAXy-tI71rGbF_KC8QjTrLWfy5n1SgKMowSESgqr5fzSBZ2kuhHIB0KUsRYFjcg258lWisbzGecSy6ROF-aIevtAuCq24odRDSg9KaqvSeTg7yjS9foGpzJSqW96V5vo)
-
-After filling in the key, we will go ahead to save it. For the Next Field which is the course code. We will be using the Input field, fill it up, and save it as seen below.
-
-![](https://lh7-us.googleusercontent.com/BpdRFsja0EPFCoFWJ7UnkWjisPTBh2P0iVkk3SIQMw627dhKv6TsG-7JEWc1DtgiYjmCk0hOJa3n4bAWquqXFxxh3wOZiW-4iJkfTAEVvBwVuiEhH-8fr_b4GO4eLbFg0x4TrVXrRd4t8vp_R4V4Q4o)
-
-For the Next fields, we have the start date and the end dates. For these fields, we will be using the Directus Datetime field option as seen below:
-
-Start Date
-
-![](https://lh7-us.googleusercontent.com/beP60zdwrugn17yUPXwEol6z6Bia8Zcp1yrQTK0-tNjZ1HN0XyAxbd1wUbLI8eJk8mT0OPm8Wx1ydlW0i_2go5-9YfbQY7L7v5GN0qYBdvtLyeFV5mbFPw5mUg-LlZF23kmeykr3qU8vLhnxpV0TZtU)
-
-End Date
-
-![](https://lh7-us.googleusercontent.com/FEo-UYTeMpMYiF_m4V3Tsos0nedvTklLlcEpSJdT7d5mlwEVFDbTJNv8jsglHQheHZH_vF8NyIbVcQsLIJKz9nfnfYyyYhh6k3DW2PGLweVlHP8GKDVmMX3bIcG9LhBpEFW9tasOQ-z3jbslmZX9jIM)
-
-Lastly, for the course collection, we have, our image and our URL slug, as you can guess already Directus has an Image field option for the image, and for the slug, we will use the input option. let's create and save them as seen below.
-
-![](https://lh7-us.googleusercontent.com/AHQxPKN5eCjslLAr0LIBVc6mY9PWRRbBCqmWhrq2fKmiT3p2l-lhCmuCsnuSfV0WAogPBKZKBsdcD7SsiygLjSp1WDXcrooPgsIdxc_u0o7ykYD4oUHHPDEXyu_FQlEGgliaUEefedZ98j4SFR0ncg0)
-
-While for the slug we will want to make it URL safe, after creating it we will. Select it:
-
-![](https://lh7-us.googleusercontent.com/7Gpboo0vTxeACYdLu7Su9QGe5m51cOuJ9l2So_xz2-Y0elE58_cK5RSiQGNLPtWtmJVZgp4HT0u36BLHrQXx9ie2hLddIKunBoYC1fQjS1crGd18qqWq_L4NLX-0ci_pOyvDA8GwL3EqogABY8C7x8c)
-
-The dashboard below pops, navigate to Interface:
-
-![](https://lh7-us.googleusercontent.com/QyWPK0PzVd1iP0Js_m5pcgQbr5rRkTGKG3T_A6v-Y9LLEB5S4acMsZP5iCjtyp9bEHfe33D9HRo989ms61D8aUgDg-N8SyxUQ0KNgYh-alOwwWJR3bgaeh1YzxnEKUpUA3MtFejg0oKSTl3ch6aD-og)
-
-Scroll below, select Slugify, enable the "make entered value URL safe" and save with the good icon at the top right.
-
-![](https://lh7-us.googleusercontent.com/DXnba-E_7qkJ_G05j_td3hqn3gzQpXcCQYieZZOSwPaGVzRhEXjfC-LCsovSmsaKKghIStJE_TYgXsB4oM_buSsC25TMuvVRU3eVjcR99Ey0lJhEbmKj2uP1-rEbe4sx7bMySvypiBUu9hg9N2E0m-I)
+When creating the slug, enable the slugify option to ensure the value is kept URL-safe.
 
 ### Lesson Collection
 
