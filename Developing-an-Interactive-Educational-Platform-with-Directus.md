@@ -25,33 +25,11 @@ Create the following additional fields:
 
 When creating the slug, enable the slugify option to ensure the value is kept URL-safe.
 
-### Lesson Collection
+Create a `lesson` collection with a primary key type of UUID. Check all of the optional fields and complete setup. Create the following additional fields:
 
-For our lesson collection, we will add fields such as Lesson Name, Description, Content, video URL, and Lesson Number. Let's go ahead to create this collection. Navigate to the settings as seen below, That is where you will find the Data Model, and every previously created collection, click on the plus icon at the top right to create a new collection.
-
-![](https://lh7-us.googleusercontent.com/YMWX9dqmuC9P-CJpLXyp6iwy9UM7sH2bs2TeDDonhPyCY0NQn8qhTymO9FAX4m4A9eJ4UhXjBuHqGYLStpN9cTj7117gwp-qKQMxUDReODB1Pa1AjswFZm-s9xljk1M-jUxtJ8-VvXLB_XGJXT8GPY8)
-
-Give the collection the name "Lesson";
-
-![](https://lh7-us.googleusercontent.com/y3mjx1SqZmw4iGp3eKRrhvAPZEtudUMD813MmT0GYD7H7gezDbimiUKCdlXEoyUmI4EXBklAT5susrvpdze0GtMlqirt8Y8-43iy5ncj5NODiDEYY9dARLE5oxper-ON4I7YkzpCJuz7dJKm98AlAQk)
-
-Navigate to the optional field and select everything, this will be the norm for all collections to be created, these fields being selected are not necessarily mandatory but they could also come in handy in the development, so it is advisable to always select them. I may not repeat this initial process of naming collections and selecting these fields in our future collections but note these steps as they are important and should not be overlooked. 
-
-![](https://lh7-us.googleusercontent.com/IKBxJdFT-ZN5V90IgMxfm1TDtmRTujbXQPMzT0ODQtTbRFnkICZxyropNih8v1nmwiPzSznKT8BIPVqutNBRVQXApIZ3QZaC1O237ZBWxLK0SEWwN-6C3X3Li25X1Vzz5t5syfoEAWpYxjBstFW0CZk)
-
-We can go ahead and save it.
-
-At this point, we will be creating the fields, we will start by creating the name and Description, the fields are the same as the course collection kindly do the same, and if you have forgotten which is normal, you can simply scroll up to revisit it.
-
-The new field is the Content field which is used to hold lesson contents, we will be using the WYSIWYG field as seen below: 
-
- ![](https://lh7-us.googleusercontent.com/EiGlXJDGfZUaBvT39lxnVG-57qFFag-PnS5OIpfHV7UyHk_wKswiDa55S1BDNjIOxpHPaFGMnkWtk53-CVKvAA6BNzVXPYQUrRArTte4IE9c0j824ubK2E2AsF1t4yKMs1gpF235Ln5htpSMhM17R5Y)
-
-We can save afterwards. For the next field, we will have the Lesson number. For this field we will use the input field and select an integer as all lessons would be whole numbers then we go ahead and save.
-
-![](https://lh7-us.googleusercontent.com/P8UwtU5DYrLjQSY3YX_icJIZ9y-yar58hfPboB0IlUyhhvNTEiSmMfDKBc7szGU-vNRU5op0kmkbL5qcOU8w-BLE4IdGoPDWck0elCmaflUvSfSBgPk_BRaiMo6mtPuuRnpxg_fW-PyL3IwwPaDyrRw)
-
-Lastly, most lessons are videos, and Directus allows you to manually upload videos or you could opt for a URL, which could be much easier, and for this field, we will use the input option, save afterward. This will be all for our Lesson collection.
+- number: Input interface with Integer type
+- content: WYSIWYG interface
+- passing_score: Input interface with Integer type
 
 ### Quiz Collection
 
