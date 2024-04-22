@@ -134,17 +134,7 @@ Replace the last words of the links above with the collection name so we can see
 Roles and Permissions
 ---------------------
 
-Roles in Directus can be easily created, navigate to the settings, and select Access Control,
-
-![](https://lh7-us.googleusercontent.com/iQrk7gZ_26xp2Q7H2AMPsUVHItEZTEg0cBX3yzh4UY1P2XJwTeTvtH0Hww-l4UOI75FJVpoiOzM8v8X7sGkAqgz7DmTw4BpQdgmVmpCw4ezd0Mq5VoTQYhhaSjz9aRx9lOiIXKfHMM9qFiYNRGndFxc)
-
-At the top right you will find a plus icon, click it create a role, and save. In our case we will create two roles the Students and the Instructors.
-
-![](https://lh7-us.googleusercontent.com/o_JTTKDATPEJ04qM9KEZ_J2EMu2gkOpYwsKBx6CKprmIRTflQNRgChJ5nNjDuPZNZSRfseIy-H3eA500cMPvuPAi6A8YT4I3W2sRlNovXRe4FBY12uv8PTtjQDDybu3lv3VQXb1jrSqiOU-rXhKCF3Y)
-
-By default we do have the Public and the Admin, we do not need to set permissions for the admin as it has all permissions.
-
-![](https://lh7-us.googleusercontent.com/BIdQat51I19KIs3vA3ahnTCxVHJcgqWvTBO9jILTB-k5dgxdghbBrRgboqA5SJB7h7gRWriBrkTCChPzLdlldrsX928dwb2WZzjf1u56KZKAoI9iSRB73VdCAulNXQ1S2subXi7pVMYaDp0-cewq9Bo)
+You can configure roles and their permissions in the Access Control area of the settings module. 
 
 You want to be careful with those you give administrator roles to, as it has access to administer all data, and restrict the public role from certain things, like courses enrollment, because you may only want authenticated users to access them.
 
