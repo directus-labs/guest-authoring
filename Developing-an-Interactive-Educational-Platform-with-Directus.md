@@ -189,7 +189,7 @@ By default we do have the Public and the Admin, we do not need to set permission
 
 ![](https://lh7-us.googleusercontent.com/BIdQat51I19KIs3vA3ahnTCxVHJcgqWvTBO9jILTB-k5dgxdghbBrRgboqA5SJB7h7gRWriBrkTCChPzLdlldrsX928dwb2WZzjf1u56KZKAoI9iSRB73VdCAulNXQ1S2subXi7pVMYaDp0-cewq9Bo)
 
-You want to be careful with those you give administrator roles to, as it has no restricted access, well for the public, you want to restrict the public from certain things, like courses, because it most likely going to be a paid course, and even if they weren't, you would only want authenticated users to access the courses, other things we would want to restrict the public from would be everything except the enrollment, we could allow access to contact and chat interfaces if there was. 
+You want to be careful with those you give administrator roles to, as it has access to administer all data, and restrict the public role from certain things, like courses enrollment, because you may only want authenticated users to access them.
 
 Each role has a set of permissions for each collection which describe the ability to see, create, edit, and delete content. Using Directus, you can also apply custom permissions which are more granular than a "yes" or "no", but perhaps only allow instructors to edit their own courses, and students to see those that they are enrolled in.
 
