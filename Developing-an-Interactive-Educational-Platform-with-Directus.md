@@ -125,11 +125,7 @@ If we go back to the data model Directus will do it's magic and viola we have a 
 
 Create 3 courses to test with, and then test accessing it via API by navigating to `https://your-directus-url/items/courses`. You would normally see the same data you authored in the Data Studio as JSON, except you don't. Let's talk about why.
 
-If we navigate to: <https://interactive-educational-platform.directus.app/items/Lesson>, we will see our raw data for our Lesson; we do have one lesson here, we could create more than one lessons if need be;
-
-![](https://lh7-us.googleusercontent.com/c2UkDhLS2PVgBiUm0zSGLgzqRcqXgqoC-RThI4s9QBYp00wW5Jvw6fPZ0w3IyIPycKbUVVRGSea1IqAuKWfPr0vkljU20xHEcpYCCtjZnOXo0GLZuSTE-FtObR7RbeCIoeLw58ZyL1gdPKSASqpRrIo)
-
-Replace the last words of the links above with the collection name so we can see our raw collections.  Well, the truth is you will not be able to do so, and here is why. You do not have permission to do so, that takes us to our next section, roles, and permissions. Let me break it down a bit, as of now whatever you are seeing is for the public eyes, and directus would not allow you see these contents until the right permissions are given.
+Your request to access data via the Items API provides no authentication details, meaning it is a public request. The public role has no permission to do this.
 
 ## Roles and Permissions
 
