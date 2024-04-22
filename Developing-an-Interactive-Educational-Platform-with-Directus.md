@@ -195,7 +195,7 @@ You want to be careful with those you give administrator roles to, as it has no 
 
 In permissions, we may want to be precise as to who should see content, create content, make a change to content, and delete content(CRUD). Directus makes the work much easier. We can also apply custom permissions, this will be important in scenarios where we want instructors to be able to create and update courses, remember this is permission given to all instructors, so by doing this, instructors could as well, not just update their courses but that of others, and we do not want that. With custom permissions, we can avoid this.
 
-We will want to go ahead to create permissions for the student, and the instructors.
+Let's create permissions for the students and instructors.
 
 ### Student Role:
 
