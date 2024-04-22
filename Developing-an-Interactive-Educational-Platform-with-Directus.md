@@ -131,8 +131,7 @@ If we navigate to: <https://interactive-educational-platform.directus.app/items/
 
 Replace the last words of the links above with the collection name so we can see our raw collections.  Well, the truth is you will not be able to do so, and here is why. You do not have permission to do so, that takes us to our next section, roles, and permissions. Let me break it down a bit, as of now whatever you are seeing is for the public eyes, and directus would not allow you see these contents until the right permissions are given.
 
-Roles and Permissions
----------------------
+## Roles and Permissions
 
 You can configure roles and their permissions in the Access Control area of the settings module. 
 
