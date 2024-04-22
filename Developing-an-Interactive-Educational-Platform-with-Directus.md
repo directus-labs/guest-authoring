@@ -25,17 +25,14 @@ Another prominent platform is [edX, established in 2012 by Harvard University an
 
 [Udemy, founded in 2010 by Eren Bali, Oktay Caglar, and Gagan Biyani](https://en.wikipedia.org/wiki/Udemy#:~:text=It%20was%20founded%20in%20May,Udemy%2C%20Inc.&text=San%20Francisco%2C%20California%2C%20U.S.&text=As%20of%20June%202023%2C%20the,over%20870%20million%20course%20enrollments.), is another leading platform that allows individuals to create and sell online courses on various topics. While Udemy's courses vary widely in quality and subject matter, its platform has independently helped educators by enabling anyone to become an instructor or learner. 
 
-### Data Model
+## Key Concepts
 
-Let's sketch our Data model. Learning as we know it, is a collaborative effort, which requires participants. In building platforms like this, we need to enroll two groups of individuals: INSTRUCTORS and STUDENTS. Instructors are important as they provide experienced knowledge in various subjects, which we'll call COURSES.
+This platform has several key concepts:
 
-Rather than overwhelming students with so much information at a go, these courses will be broken down into smaller units called LESSONS, facilitating better comprehension.
-
-Lastly, assessing students' performance is crucial for their learning journey, although we do not enjoy it. Hence, we'll employ quizzes to test their level of understanding and progress.
-
-Let's draw our plan, and go ahead to implement it with our backend service.
-
-![](https://lh7-us.googleusercontent.com/OffXUVEuxFVsTpvDx_LpdxP9PghXi2OdnZWgeMf8xi8Rb3iiNzVjgBYvbsn__nsb__IGhEpdEeoTnslv2CUnwLlE9o6El7eb4ro5LbRr_EGYtJl79le3cx9FPr-DcDcXg8CESfizbjIBoSLE3JAzAlM)
+1. Courses are...
+2. Students and Instructors are...
+3. Lessons are...
+4. Quizzes are...
 
 Now we have a picture of what it looks like, we can go ahead to implement this. For the backend we will use Directus, and to do that we will navigate to [Directus.io](http://directus.io). The onboarding page looks like this:
 
