@@ -123,28 +123,7 @@ If we go back to the data model Directus will do it's magic and viola we have a 
 
 ![](https://lh7-us.googleusercontent.com/X4LzpJXQn9PDZeUdfYbVp9tyvHrFc0OEJnKJvfeS7BoevGZdpczYmidUcbbxdN0GjhgDyIBQkBRHN57OKxEZr3oqPn8MOCdkYzf2y7PdvkHtDPLzwzK-q5rV-BKwWQPJo2TwEtGmlDP1AH7GWYIVncw)
 
-If you click on it, we have this;
-
-![](https://lh7-us.googleusercontent.com/_yIlUTgXhUC1TcOaJAXqi10CjRcCJOk2sk51bUe5bWDs1G421eAXo2ysK8F-wa4LgaFUZNmf_RJU8zBvEeFOINCTBjoyW-4hiZimLX08UdhfjtoT2m1OeseLYP3eUtx1O5aay3628MKKLwMsyCjXlxA)
-
-At this point, we are done with our data model, let's navigate to our content;
-
-![](https://lh7-us.googleusercontent.com/Y5LREObxI1Dug3eOClw0IqmV8RLXqnbxC_kygIfZR3pgtavzUAHIAupQNMiGoBpdURuPqZ3QBMr7gkeoXuZWOiVMOVZJ8GB_JNQCO0A_3PgU0oLmCCeKcetDQn8CG1BzKsN5-fRD6FF7qZJzDmlwF3I)
-
-This will take you to the dashboard below;
-
-![](https://lh7-us.googleusercontent.com/eCQn-8QraTeRhoF9EHyEomf51uLE0XWTTYDn449Kp8s9GHBtm6eMW80ZeNTYJSFaFalhiC18T0BMG9c00GqzyH1WqXHPRkV3jrNXvKYJh23RFAawjG3-8K6bj2l9kJtWNIkGeApUF4qkVriPO7cziSY)
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-We can go ahead and create our items, by selecting any of the collections above. In our case we will do courses first;
-
-We will create items in our courses;
-
-![](https://lh7-us.googleusercontent.com/xIC1ODpTfX5iSlRi5_QD0BUjYdt2Kf0Hskrz_GTfOKy_Ixi8wEGlJirkJx5U1HKqgv_nsNRGGwjys-IAOpawuiJFlNDZvj-ZpQ5pw192tpHoekr6F-s5JtKPG3B5R71lfO5boAVLhCsP2xhmnQeRsgg)
-
-If we navigate to: <https://interactive-educational-platform.directus.app/items/Courses>, we will see our raw data for our courses;
-
-![](https://lh7-us.googleusercontent.com/0py2EvtrdkF6LaREhqb20F_kuZ0jaukRHzgDj9nHByPfvnX7bpk28q-_m3uFLaBsM1nKS6h5LFS6emXsTdmyaWDJviRthHd45xYekfq2VvQEBBfr9c1AcChVuQEYt_hv_eh3GOtv46k2HSsVgdDBYKM)
+Create 3 courses to test with, and then test accessing it via API by navigating to `https://your-directus-url/items/courses`. You would normally see the same data you authored in the Data Studio as JSON, except you don't. Let's talk about why.
 
 If we navigate to: <https://interactive-educational-platform.directus.app/items/Lesson>, we will see our raw data for our Lesson; we do have one lesson here, we could create more than one lessons if need be;
 
