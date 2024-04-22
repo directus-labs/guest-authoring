@@ -75,51 +75,21 @@ We can go ahead, and add the icons it should look like the image below.
 
 ![](https://lh7-us.googleusercontent.com/j-0FOXFC2FN0v1U7SdNwIoEv1d3QIzVtnxTpm9a3_WQUbRVN2HuaKyzRMNuBfZ3RkNAVe_pV7LmdqshdakNguHFdCIJosJHi6r1i_p0AvD9gRLWUQtrtP8d33LWU-OPX9gHmne2jBMzPjhQrG608xT0)
 
-We can now go ahead to understand and fix the relationship between these collections because they are supposedly dependent on each other. Let's break it down a bit; 
+## Creating Relationships
 
-You do have course, and each course could have multiple lessons, and each lesson could have its quiz, right? We can also say each course should have its instructor.
+The `courses` collection can have a one-to-many relationship with the `lessons` collection. This means that one course can have multiple lessons associated with it.
 
-As we can see they are heavily connected to give optimum value. Directus has a field for these kinds of relationships, it is called the Relational field. Under this field we have one-to-many, many-to-one, and many-to-many, we need to understand which one fleshes out the described relationship better, so it can be used.
-
-#### One-to-Many Relationship: 
-
-In a one-to-many relationship, one record in a collection can be related to multiple records in another collection. This relationship is typically represented by adding a "Many" field in the collection where there are multiple related records.
-
-For example, in our scenario, the "Courses" collection can have a one-to-many relationship with the "Lessons" collection. This means that one course can have multiple lessons associated with it.
-
-In Directus, you establish this relationship by adding a "One-to-Many" field in the "Courses" collection that links back to the "Lessons" collection. Each lesson record will then reference the ID of the course it belongs to. Behind the scenes, Directus will set this relationship inside your sequel database and make sure everything plays nice with each other.
-
-So we will navigate into courses(courses seem to be the mother collection), click the Create field, scroll down to the relational fields, and select the one-to-many:
-
-![](https://lh7-us.googleusercontent.com/Fo6OyKHB1BcdnK8fcqNHYdtRsj5Okq_VImsW-pw4ZmipOQjtfZWaWj4B5-WzKY83ldGx_IxPnwGL2bpqhAgvasFBNW3P245knu9JxuAEWI_b75S3ai24sYga-Xtqqm6CXDhqRI0O4nGxP7_ufZw8cXw)
-
-For our key we will call it "Lessons", the related collection will be Lesson, and the foreign key, which is our key inside the Lesson collection will be course;
+In the `courses` collection, create a One to Many field called `lessons`. The related collection will be `lessons`, and the foreign key, which is our key inside the related collection will be `course`.
 
 ![](https://lh7-us.googleusercontent.com/vlz0BeZQYgajzhOUO_3srP-lzk6ZhbeU5Ex0NwdhlKAYJH7RtbOciIJSzMnkEMdRCyVhXDVu5MxobZeNpo339d3yPJRPSqPKoJB5hLHpPCC5cpoa9zkm-7fjB5cLNxDJZolEFC_BJ0dGOoAcF54OfY4)
 
-For our display template, we will use the name "name"
+To make this easier to select, set the display template to the `name` variable:
 
 ![](https://lh7-us.googleusercontent.com/jC-HlWxNsjjZFMYTTekHtok9GjkTXJUAt5czDdWOVWilH7UIQU3_wVv0yItmuJi7hBqIoN4lQzb5n42lO0-LWOEsPTBkRkBFWgssWBPtjBys79VBospZKaMIvS7XKfApVGxoxeu6RVDM1Xm3-iOwDS4)
 
-Scroll below and enable the item link, then save.
+...[see comment]
 
-![](https://lh7-us.googleusercontent.com/nFNE86v5Qit2Iol0OFq_ORsJvPSlRDY2F_PjrcinuyRtM6pXf_ZjWEnXKwrQJh_9_a0ZVlS9CoxL5ejAdpjU4jxTVGUdELvKA2x1MaaIZTo7pcJd8QIwfGdpvTaCanwNl2wJB7zAwN9jQ0vxrVfUH00)
-
-Now if we go to our courses we can find lessons as one of the fields;
-
-![](https://lh7-us.googleusercontent.com/dKheQgAF8nxtLj8-EG8ddOv9EbkNWAvjNjl3V6jTpaGeF_oTKGxBJOafVSRY2t7WJ_InbrEplvn66PjOtB9qZRJhUMQHmbSyAZ852JxlGXI1y-L_Yksu2r8XMQgy8rcnpwqh4vwgXIYn3ZmjJx82EqA)
-
-The same will be for lessons too, we will find courses there;
-
-![](https://lh7-us.googleusercontent.com/H0wgWBjSElWxVGTbUuTqqTdNYO6D1lD9GuSyhBapvtF84icJbmJQpauO1DOtq9GJ5_H-kzsLW_XcIfDoaZYmZoJ78aHc1zRY5-BFClqR4XO4Tlovg5UWYF7I5rJHEF2yIlBWsnSFqZ0YNrqVIIX4QU0)
-
-We should do the same for Lesoon and the quiz, each lesson could have its quiz. If you think further you could see another good example of one-to-many, maybe you guessed rightly, yes the quiz should have many questions.
-
-Going further we could do more of these relationships, like an instructor could take many courses, and a course could have more than one instructor, this is a good example for many to many. We will have to go to the courses or instructors collection, it could be any actually, in our case we wiil go to instructors, just because we  havent used it yet. We will use the many to many relationship, our key will be courses, our related collection will still be courses;
-
-![](https://lh7-us.googleusercontent.com/TBYw6vogrDkTFBk6dlPUTT726VnXzpd2hB6-LgNaUCK_yT6EzgdKIf58gvX5a-Sn_mSu93ggqRTAus42z1lfFEM5mUHRmSsuu1Yh1a_uhisu-OjazkAe7pJ8DIywo9864UjQeRWcNSIklyNPGioc-jM)
-
-If we go back to the data model Directus will do it's magic and viola we have a hidden collection, below;
+If we go back to the data model Directus will have created a junction collection on your behalf:
 
 ![](https://lh7-us.googleusercontent.com/X4LzpJXQn9PDZeUdfYbVp9tyvHrFc0OEJnKJvfeS7BoevGZdpczYmidUcbbxdN0GjhgDyIBQkBRHN57OKxEZr3oqPn8MOCdkYzf2y7PdvkHtDPLzwzK-q5rV-BKwWQPJo2TwEtGmlDP1AH7GWYIVncw)
 
