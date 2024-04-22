@@ -34,61 +34,7 @@ This platform has several key concepts:
 3. Lessons are...
 4. Quizzes are...
 
-Now we have a picture of what it looks like, we can go ahead to implement this. For the backend we will use Directus, and to do that we will navigate to [Directus.io](http://directus.io). The onboarding page looks like this:
-
-![](https://lh7-us.googleusercontent.com/UwHUe-8AjACnVx0yD_8KvISLi63cXI2pzDgP_Rs1eOGl-sCgL78VKaIwJzSf7OT9LJtz3W81mFjLWZaqqFoB8RBhz2SwB8t2drTBWmE8ZPI6fkao4SNdffnqUJFftCQ8w51irZEm0ih0fzvB3VB4twk)
-
-Click "Start building for free" at the top right corner of your screen to register for a free 15-day trial. Input the requested credentials, follow the displayed step, and in less than 120 seconds you should be up and running.
-
-Our next step will be creating a project, in our case we will call it an "Interactive Educational Platform"
-
-![](https://lh7-us.googleusercontent.com/gekPVHMXgVnoF8HYC7EGJKaQ-6y7yf6D0xtJ6z6GGgGuXCZXNP2HpjkRtcMYA7dlfuDr5QJhxihiQVxra9ysfn2x-xfvpT-xG-HXjA9GBvgLQ58JRTvcNYlG15JZ2t4M1jv-AGlNG00oy8Ln0yCeIYc)
-
-Go ahead and launch the project by selecting the icon below:
-
-![](https://lh7-us.googleusercontent.com/cfoH8sjsevNrOE5lqCbRnf9ZwLfgdZy-eCQnsifEe3vhGI-gaB2CRy6LUHZA2GwNfGx6wP8NpPD1RbD5Jg7b4YA_TvdGRQ4H0FZA93Pky7l3QpTDQ1uvwaRBTt7mcMozPrPxYz26D5OttJ6H16p5MJc)
-
-You will be asked to sign in to this project as an Admin, and you will see the dashboard below:
-
-![](https://lh7-us.googleusercontent.com/j1Njhpi_b01RZ-l1XhMMQ9GVshveZdeNa95qCNAKKwbHM3bS6lLq_yJXlD8vXaMUIFJ_zrE8T8u93jIWlc2cecFvxI1UtfOmPxVHiu8v3tRuwHPqW_uQWpYIcc4gvArotSYxHH1vtO6hAMtcdljdKtI)
-
-We will go ahead and Navigate to the content as seen below:\
-![](https://lh7-us.googleusercontent.com/3GdOlQpgXOsE_Qdjw5rW1eDcog8kIcWneq2XGh6T6tllb7yotaDOEQzAiTWg-0i_8_qbT4VSBlhVACBLyd83Ivp-FyUoH31Jnwn7iem4nKkmbTvraj-0pwmct8xNUWeWr__-Tl7D5ygWjEuInqxCm-c)
-
-The first thing we will do is implement our fleshed out Data model done earlier in this blog, which includes the following;
-
--   Enrollment 
-
--   Instructors
-
--   Students
-
--   Courses
-
--   Lessons
-
--   Quiz
-
-We are to create our first collection which is the Admin User collection, luckily for us, Directus gives us this out of the box. If you want to see this collection, Navigate to the user Directory as seen below:
-
-![](https://lh7-us.googleusercontent.com/x0Z-oeiZcpS22ohNJ6JicD8jX7v9QeLOr5McZtGo1MCxwmaPYl-7TUzAGyfr4bUukC46N_6cRlr0N4UrYU0Jm4Mqd6n4Jy5MV5nIvbd26ds7ZWyEsWJL_ZyhvnI6ColFnvW2S7ZnmvHsJCjjKbQmqq8)
-
-To create our second collection which is Courses. Navigate to the content and go ahead and click the "Create collection" button. When we do so it takes us to an in-route page where we can quickly do few collection setups and optional fields.
-
-For the collection setup, we do have the Name of the collection, which in our case is "Courses", we also do have singleton and primary key fields which will be left as default.
-
-![](https://lh7-us.googleusercontent.com/IVLziaEaOWC2qARe94FIqqMdLwYmyU5BwX0GKIziVLNuE9Gq2IjjqSHQlekItzJejHG71JqrKkjoyv8rS8dcSAchmGtJ4UzHY7wiTMqRRZxquWFnz-Eti8SZuXSbrjl7HCuSYORNXLd0AYttYnjnD6Q)
-
-For our type, we will use the generated UUID, as seen below:
-
-![](https://lh7-us.googleusercontent.com/OdXR1AEjxm3JwBfW10Hwe-H5AuQKtHjFEF8YIx5ztH_QqkNt-f8jxZQ8Msiwj1-Mb-H3w0zMYel_yQtBRb22gBn3iKTN8J3nNJnBvoiLXAWyCWjOE8WZEt_i8Z94QmPlFzFtK8QZZH_z4u4oa9wtUU8)
-
-Now, navigate to the optional field, we will select all the default options Directus has made available for a start.
-
-![](https://lh7-us.googleusercontent.com/PWg5dMbwlwFjpwVX4jQefCfcV36L5hFwp5HgZHOyhLQ33yCMEVj0Qr52uEcIAtJmEydVNJFg4_qQC_OlcLQfKzsBY1erBmCyMqbe9I34H74VEzXX-CTKgruRNGZ3Og3LvBgXG1T9IrDQwyRmJGA_YiE)
-
-Afterward, click the good icon at the top right of the page to finish the setup. When you do so it takes us to the page below:
-
+In your Directus project, create a `courses` collection with a primary key type of UUID. Check all of the optional fields and complete setup. Your collection should look like this:
 ![](https://lh7-us.googleusercontent.com/gpxJbPSFhEFGIdhmX52qhRu5WCJqndzQbFvZDZjfIblIz3JjQsetsP-gIGAHfGFQUelLh-DNgEWNxSAQgpBrUDaq2SVtgy1EsKo1QiT7XJgQXxPLX_gDegu2HZs09KBeDWfuq6d3oxWsNKP1oLf-Cdc)
 
 In the page above we have our previously selected fields, and also a button to create more as we build. In our courses we will need fields such as Course Name, Description, Course Code, Start Date, End Date, Course Image, this should be enough fields for a professional educational platform Courses. We will go ahead to create them, at this point, we can click the Create Field button.
