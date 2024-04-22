@@ -1,4 +1,4 @@
-## Developing an Interactive Educational Platform with Directus
+## Data Modeling and Permissions for a Leaning Management System
 
 Introduction
 ------------
