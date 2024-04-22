@@ -4,7 +4,7 @@ Digital education platforms engage students with different courses, instructors,
 
 ## Key Concepts
 
-This platform has several key concepts:
+An interactive learning platform has several key concepts:
 
 1. Courses are...
 2. Students and Instructors are...
@@ -39,7 +39,7 @@ Going further Time limit field, which will be a text, and passing score which wi
 
 ![](https://lh7-us.googleusercontent.com/3RWuxpL3dlE8OO3y9iKCt1yJOGOTt9_XA3rILELxhjMhI3IZn50A1wCXZXBcNnEiL6pPnuLANlFz61Yn3gzzR0VGuHiZFGNVcoOTJ7BdaNIbTDpqdno2hUAF65gFTcb0YIy228LRj5lEnGQli1MwrUk)
 
-Lastly, we will create the question collection and for the field, we will be using the WYSIWYG option.
+Lastly, we will create the question collection and for the field, we will be using the WYSIWYG interface.
 
 ### Instructor Collection,
 
@@ -113,13 +113,19 @@ The same will be for lessons too, we will find courses there;
 
 ![](https://lh7-us.googleusercontent.com/H0wgWBjSElWxVGTbUuTqqTdNYO6D1lD9GuSyhBapvtF84icJbmJQpauO1DOtq9GJ5_H-kzsLW_XcIfDoaZYmZoJ78aHc1zRY5-BFClqR4XO4Tlovg5UWYF7I5rJHEF2yIlBWsnSFqZ0YNrqVIIX4QU0)
 
-We should do the same for Lesoon and the quiz, each lesson could have its quiz. If you think further you could see another good example of one-to-many, maybe you guessed rightly, yes the quiz should have many questions.
 
-Going further we could do more of these relationships, like an instructor could take many courses, and a course could have more than one instructor, this is a good example for many to many. We will have to go to the courses or instructors collection, it could be any actually, in our case we wiil go to instructors, just because we  havent used it yet. We will use the many to many relationship, our key will be courses, our related collection will still be courses;
+Also create the folowing One to Many fields:
+
+- We should do the same for Lesson and the quiz. In the lesson collection create a field with the a related colelction of quiz. 
+- In the quizzes collection create a field called x with a related collection of y
+- If you think further you could see another good example of one-to-many. In the quizzes collection, create a field with the a related colelction questions.
+
+Also for Many to Many relationships:
+Like an instructor could take many courses, and a course could have more than one instructor. We will have to go to the courses or instructors collection, it could be any actually, in our case we wiil go to instructors, just because we  haven't used it yet. We will use the many to many relationship, our related collection will be courses;
 
 ![](https://lh7-us.googleusercontent.com/TBYw6vogrDkTFBk6dlPUTT726VnXzpd2hB6-LgNaUCK_yT6EzgdKIf58gvX5a-Sn_mSu93ggqRTAus42z1lfFEM5mUHRmSsuu1Yh1a_uhisu-OjazkAe7pJ8DIywo9864UjQeRWcNSIklyNPGioc-jM)
 
-If we go back to the data model Directus will do it's magic and viola we have a hidden collection, below;
+If we go back to the data model, Directus will do it's magic and viola we have a hidden collection, below;
 
 ![](https://lh7-us.googleusercontent.com/X4LzpJXQn9PDZeUdfYbVp9tyvHrFc0OEJnKJvfeS7BoevGZdpczYmidUcbbxdN0GjhgDyIBQkBRHN57OKxEZr3oqPn8MOCdkYzf2y7PdvkHtDPLzwzK-q5rV-BKwWQPJo2TwEtGmlDP1AH7GWYIVncw)
 
