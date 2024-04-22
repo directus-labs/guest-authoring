@@ -1,29 +1,6 @@
 ## Data Modeling and Permissions for a Leaning Management System
 
-Introduction
-------------
-
-Building a mini project and managing information may not dazzle you, but when it comes to large projects with extensive data from various sources, including user-generated content and administrative inputs, can be overwhelming without good organized assistance.
-
-Interactive educational platforms, for instance, engage students with different courses, instructors, and quizzes, all of which require structured data management. Platforms like Directus remain important because they help easily manage a great amount of this data.
-
-They provide a place where you can organize data, control who can access it, and make changes without needing technical skills. This doesn't only saves time but also simplifies collaboration on projects.
-
-Goals
------
-
-This is an article that focuses on Data Modelling, Roles, and permissions in Directus. The reader would be able to harness the totality of how good Directus could be in CRUD projects like this.
-
-Interactive Educational Platform 
----------------------------------
-
-Interactive educational platforms are platforms that engage students with courses, great instructors, and quizzes. Interactive educational platforms have been evolving over the past few decades, gaining more engagement in recent years due to advancements in technology and the increasing demand for online learning.
-
-One notable example is [Coursera, founded in 2012 by Stanford professors Andrew Ng and Daphne Koller.](https://en.wikipedia.org/wiki/Coursera#:~:text=6%20External%20links-,History,left%20Stanford%20to%20launch%20Coursera.) Coursera offers various courses from universities and institutions worldwide, providing interactive content, assessments, and certifications.
-
-Another prominent platform is [edX, established in 2012 by Harvard University and MIT](https://press.edx.org/inside-the-first-year-data-from-mitx-and-harvardx#:~:text=edX%20is%20the%20global%20online,to%20meet%20every%20professional%20moment.). edX offers courses from top universities, colleges, and organizations, with a focus on interactive learning experiences and open-access education.
-
-[Udemy, founded in 2010 by Eren Bali, Oktay Caglar, and Gagan Biyani](https://en.wikipedia.org/wiki/Udemy#:~:text=It%20was%20founded%20in%20May,Udemy%2C%20Inc.&text=San%20Francisco%2C%20California%2C%20U.S.&text=As%20of%20June%202023%2C%20the,over%20870%20million%20course%20enrollments.), is another leading platform that allows individuals to create and sell online courses on various topics. While Udemy's courses vary widely in quality and subject matter, its platform has independently helped educators by enabling anyone to become an instructor or learner. 
+Digital education platforms engage students with different courses, instructors, and quizzes, with type of user needing different access to data in the platform. This tutorial focuses on the data modeling, roles, and permissions needed to build an education platform.
 
 ## Key Concepts
 
