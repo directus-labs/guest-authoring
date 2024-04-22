@@ -191,9 +191,7 @@ By default we do have the Public and the Admin, we do not need to set permission
 
 You want to be careful with those you give administrator roles to, as it has no restricted access, well for the public, you want to restrict the public from certain things, like courses, because it most likely going to be a paid course, and even if they weren't, you would only want authenticated users to access the courses, other things we would want to restrict the public from would be everything except the enrollment, we could allow access to contact and chat interfaces if there was. 
 
-### Permissions
-
-In permissions, we may want to be precise as to who should see content, create content, make a change to content, and delete content(CRUD). Directus makes the work much easier. We can also apply custom permissions, this will be important in scenarios where we want instructors to be able to create and update courses, remember this is permission given to all instructors, so by doing this, instructors could as well, not just update their courses but that of others, and we do not want that. With custom permissions, we can avoid this.
+Each role has a set of permissions for each collection which describe the ability to see, create, edit, and delete content. Using Directus, you can also apply custom permissions which are more granular than a "yes" or "no", but perhaps only allow instructors to edit their own courses, and students to see those that they are enrolled in.
 
 Let's create permissions for the students and instructors.
 
