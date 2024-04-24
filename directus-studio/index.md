@@ -141,26 +141,10 @@ Of course, the customer contact details could be replaced by the `user_created` 
 [Flows](https://docs.directus.io/app/flows.html) in Directus are used to automate actions within and outside of Directus itself, such as sending notifications. When configured, Directus will send the request based on your configuration.
 
 
-1. To setup a flow, navigate to to the `Settings` menu.
-2. In the settings, select the flow option.
-3. Click on `Create Flow`.
-4. Give your flow a name, set the status (active or inactive), add a description, and select `track activity & log` if you want the flow to track acitivity.
-![How to create a flow](createFlow.png)
-5. Click `Trigger Setup`
-6. Select `Event hook`.
-5. Type, Action (non blocking).
-6. Scope, select `items.create` & `items.update`
-6. Collections, select `Support Ticket` and `Ticket Message`.
-7. Click the check mark at the top right
-![Applying rules to what user can see](rule-setting.png)
-8. Click the `+` sign in the flow image view
-![Set up the flow](flowView.png)
-9. Add a `name` the `key`
-10. Choose `Webhook/Request URL`
-11. Method should be set to `POST`.
-12. Enter the URL where Directus should send the webhook POST request
-13. Compelete this action by clicking the check mark at the top right.
-![Webhook Operation](webhook.png)
+1. Within `Settings`, open `Flows` and create a new flow.
+2. Use the `Event Hook` trigger as a non-blocking action. Use the `items.create` and `items.update`scoped on the `Support Ticket` and `Ticket Message` collections.
+3. Create one Webhook / Request URL operation to trigger a HTTP POST request.
+4. Enter a URL of an external Webhook monitoring service and it will trigger whenever there is support activity.
 
 ## Best Practices
 
