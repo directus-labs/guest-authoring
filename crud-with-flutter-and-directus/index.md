@@ -170,7 +170,7 @@ Directus allows you to create and manage pages, which you can then use in your F
 
 Then in your Access Control settings, give the Public role read access to the pages collection.
     
-![creating the pages collection](./Screenshot%202024-04-17%20at%2009.12.20.png)
+![creating the pages collection](./Screenshot%202024-04-25%20at%2012.21.16.png)
 
 Now add a new method to fetch pages in your `DirectusService` class from Directus in the `directus_service.dart` file:
     
@@ -291,20 +291,21 @@ class MyApp extends StatelessWidget {
 
   
 ## Creating Blog Posts With Directus
+Similar to creating pages, you can also create and manage blog posts using Directus CMS. Create a new collection called `authors` with a single text input field called `name`. Add one or more authors to the collection.
 
-Similar to creating pages, you can also create and manage blog posts using Directus CMS. To do that, create a new collection named posts with the following fields:
+Create another collection called `posts` and add the following fields:
   
 - **slug**: Primary key field, Manually entered string
 - **title**: Text input field
 - **content**: WYSIWYG input field
-- **status**: Dropdown filed
-- **date_created**: Datetime field
-    
-![Creating the posts collection in Directus CMS](./Screenshot%202024-04-17%20at%2011.13.45.png)
+- **image**: Image relational field
+- **author**: Many-to-one relational field with the related collection set to `authors`
 
-Now add a couple of blog data to the `posts` collection.
-    
-![Adding entries to Directus collection](./Screenshot%202024-04-17%20at%2011.26.32.png)
+![Creating the posts collection in Directus CMS](./Screenshot%202024-04-25%20at%2011.59.26.png)
+
+Now add 3 items in the `posts` collection - [here's some sample data](https://github.com/directus-community/getting-started-demo-data).
+
+![Adding entries to Directus collection](./Screenshot%202024-04-25%20at%2012.08.36.png)
 
 
 ## Create Blog Post Listing
@@ -468,7 +469,7 @@ class MyApp extends StatelessWidget {
   }
 }
 ```
-![Display the contents fron the posts collection](./Screenshot%202024-04-17%20at%2018.06.09.png)
+![Display the contents fron the posts collection](./Screenshot%202024-04-25%20at%2018.13.57.png)
 
 ## Create Blog Post Single
 Next, create a new file called `post_single.dart` file in the `lib/screens` folder. Then create a `BlogPostWidget`:
@@ -550,7 +551,7 @@ class BlogPostItem extends StatelessWidget {
 ```
 With the above code, when the user taps on the `BlogPostItem`, it triggers the `onTap` callback function. Inside this function, we use `Navigator.push` to navigate to a new screen. We create a `MaterialPageRoute`, defining the widget to be displayed on the new screen as `BlogPostWidget`. Also, we pass the `blogPost` data as a parameter to the `BlogPostWidget` widget. This allows us to display detailed information about the selected `blog` post on the new screen.
     
-![Navigating to the blog single page](./Screenshot%202024-04-17%20at%2018.27.22.png)
+![Navigating to the blog single page](./Screenshot%202024-04-25%20at%2018.14.17.png)
 
 ## Summary
 Throughout this tutorial, you've learned how to build a Flutter application that uses data from a Directus project. We started by creating a new project, set up environment variables and everything we need to call Directus. We then created pages and posts collections in Directus and integrated them with the the Flutter.
