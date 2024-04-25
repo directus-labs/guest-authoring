@@ -1,5 +1,5 @@
 ---
-title: 'Build a Multilingual News app using Sveltekit with Directus i18n API'
+title: 'Implementing Internationalization with SvelteKit and Directus'
 description: 'This tutorial will guide you through building a SvelteKit application with multilingual content.'
 author:
   name: 'Ekekenta Clinton'
