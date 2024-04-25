@@ -224,7 +224,7 @@ class PageWidget extends StatelessWidget {
   }
 }
 ```
-The above will render the contents in your pages collection and use the `flutter_html` package to convert the WYSIWYG content to HTML. Then update the the code in your `main.dart` file to use the page widget:
+This will render the content of your `pages` collection and use the `flutter_html` package to convert the WYSIWYG content to HTML. Update the the code in your `main.dart` file to use the page widget:
 
 ```
 import 'package:flutter/material.dart';
