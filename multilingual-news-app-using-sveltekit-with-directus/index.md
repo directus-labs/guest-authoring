@@ -10,13 +10,15 @@ author:
 In this tutorial, you'll learn how to build an application using Sveltekit with Directus and multilingual content.
 
 ## Before You Start
+
 You will need:
-- [Node.js v20.11.1](https://nodejs.org/) or later
+
+- [Node.js v20.11.1](https://nodejs.org/) or later.
 - A code editor on your computer.
-- Create and login to your [Directus Cloud account](https://directus.cloud/) and have install the Directus SDK `npm install @directus/sdk`.
+- A Directus project - follow our [quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one.
 - Some knowledge of React and Svelte.
 
-The code for this tutorial is available on my [GitHub repository](https://github.com/icode247/directus-i18n-app); feel free to clone it to follow along.
+The code for this tutorial is available on my [GitHub repository](https://github.com/icode247/directus-i18n-app).
 
 ## The Concept of i18n
 
