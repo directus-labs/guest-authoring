@@ -1,5 +1,5 @@
 ---
-title: 'How to Build CRUD Application Using Directus and Flutter'
+title: 'Getting Started with Directus and Flutter'
 description: 'This tutorial covers the process of building a CRUD (Create, Read, Update, Delete) application using Directus as the headless CMS (Content Management System) and Flutter as the front-end framework. Directus provides a flexible and customizable API for managing data, while Flutter allows for the rapid development of cross-platform mobile and web applications. The tutorial will cover setting up Directus, connecting to the API, and building the user interface with Flutter.'
 author:
   name: 'Clara Ekekenta'
