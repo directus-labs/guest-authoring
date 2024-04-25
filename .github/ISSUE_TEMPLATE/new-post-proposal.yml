@@ -26,9 +26,9 @@ body:
       label: What type of post is this?
       description: This helps us understand the rough structure and effort needed.
       options:
-        - Framework-Specific Guide (Realtime, Auth, Live Preview, i18n, etc)
-        - Full Project Build with Directus
         - Extension-Building Guide
+        - Full Project Build with Directus
+        - Framework-Specific Guide (Realtime, Auth, Live Preview, i18n, etc)
         - Tips, Tricks, or Best Practice
         - Self-Hosting Guide
         - Migration Guide
