@@ -7,7 +7,7 @@ author:
 ---
 
 ## Introduction
-Flutter is an open-source mobile app development framework created by Google. It is used to develop high-performance, visually attractive, and natively compiled applications for mobile, web, and desktop platforms from a single codebase. In this tutorial, you'll learn how to build a CRUD application using Directus and Flutter.
+Flutter is an open-source mobile app development framework created by Google. In this tutorial, you will learn how to build an application using Directus as a Headless CMS. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items, and build a blog.
 
 ## Before You Start
 You will need:
