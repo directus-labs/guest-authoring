@@ -41,6 +41,13 @@ Some additional guidelines you must follow when creating ideas to apply with:
 </details>
 
 <details>
+  <summary>How will I get paid?</summary>
+  <p>After your post is accepted, we will you to email us for further instructions.</p>
+  <p>We will require one of a W9, W8-BEN, or W8-BEN-E form to be completed. We will also require an invoice (we will share details with you over email). We expect the due date on invoices to be 30 days after issue, and will pay you within this timeframe.</p>
+  <p>To pay you, you will need to have a bank account in one of the countries listed on [this page](https://help.bill.com/direct/s/article/360007172671) or a PayPal account.</p>
+</details>
+
+<details>
 <summary>How long should posts be?</summary>
 <p>We’re flexible, and this is reflected in our multi-tier payment structure. Posts must be completed in one part (no
 multi-part series), and be over 1000 words.</p>
