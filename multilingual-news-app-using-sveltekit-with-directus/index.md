@@ -1,6 +1,6 @@
 ---
 title: 'Build a Multilingual News app using Sveltekit with Directus i18n API'
-description: 'This tutorial will guide you through building a multilingual news application using Sveltekit and Directus i18n API. Sveltekit is a modern frontend framework that enables fast and efficient development, while Directus i18n API provides a simple way to manage multilingual content. You will learn how to create a news app that supports multiple languages, fetch and display news articles, and manage translations using Directus i18n API. By the end of this tutorial, you will have a fully functional news app that can be easily extended and customized to meet your needs..'
+description: 'This tutorial will guide you through building a SvelteKit application with multilingual content.'
 author:
   name: 'Ekekenta Clinton'
   avatar_file_name: './ekekenta-clinton.png'
