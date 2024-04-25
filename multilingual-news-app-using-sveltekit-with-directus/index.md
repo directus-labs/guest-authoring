@@ -7,7 +7,7 @@ author:
 ---
 
 ## Introduction
-Svelte is a new JavaScript framework for building user interfaces for web applications. It offer a better way for handling UI updates when compared with React, Angular, or Vue.js. In this tutorial, you'll learn how to build a multilingual news application using Sveltekit with Directus i18n API.
+In this tutorial, you'll learn how to build an application using Sveltekit with Directus and multilingual content.
 
 ## Before You Start
 You will need:
