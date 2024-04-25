@@ -33,26 +33,30 @@ The Directus i18n API allows you to manage translations for various content type
 
 With the Directus i18n API, you can build multilingual applications or websites that serve localized content to users based on their preferred language or region. 
 
-## Setting up a new project.
-
-Let's start by setting up a new Svelte project using [degit](https://github.com/Rich-Harris/degit), by running the command below:
+Let's start by setting up a new Svelte project using the [degit scaffolding tool](https://github.com/Rich-Harris/degit):
 
 ```
- npx degit sveltejs/template directus-i18n-app
+npx degit sveltejs/template directus-i18n-app
 ```
 
-The above command will scalfold a new Svelte project with the required dependencies. 
-
-Next, change directory into the project folder and install the dependencies.
+Install the required dependencies:
 
 ```
-cd directus-i18n-app && npm install
+cd directus-i18n-app 
+npm install
+npm install @directus/sdk
+npm install --save-dev svelte-routing
 ```
 
-Then install the **svelte-routing** package as a dev dependency:
+In the `src/libs` directory, create a `directus.js` file to create and export a Directus SDK instance:
+
 ```
-npm i -D svelte-routing
+import { createDirectus, rest } from '@directus/sdk';
+const directus = createDirectus('<YOUR DIRECTUS URL>').with(rest());
+export default directus;
 ```
+
+Be sure to provide your real project URL.
 
 ## Designing the Data Model in Directus
 In your Directus dashboard, navigate to Settings -> Data Model and create a new collections for `news` and`languages`. Use the schema below for the articles collection:
