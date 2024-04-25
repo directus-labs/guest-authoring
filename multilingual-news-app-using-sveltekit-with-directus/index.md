@@ -58,62 +58,43 @@ export default directus;
 
 Be sure to provide your real project URL.
 
-## Designing the Data Model in Directus
-In your Directus dashboard, navigate to Settings -> Data Model and create a new collections for `news` and`languages`. Use the schema below for the articles collection:
+## Designing a Data Model
 
-```
-news
-- id (Primary Key Field, Type: Auto-incremented Integer )
-- author (Type: String, Type: Manually entered string )
-- cover (Type: Image)
-```
-![Creating Directus news collection](./creating-directus-news-collection.png)
+In the Directus Data Studio, navigate to Settings -> Data Model and create a new collection called `news`:
 
+- `id` (Primary Key Field, Type: Auto-incremented Integer)
+- `author` (Type: String, Interface: Input)
+- `cover` (Type: Image)
 
-For the languages collection, use the schema below:
+Create a collection called `languages`:
 
-```
-languages
+- `code` (Primary Key Field, Type: Manually entered string )
+- `name` (Type: String, Interface: Input)
+- `direction` (Type: String, Interface: Dropdown, Options: `ltr` and `rtl`. Default Value: `ltr`)
 
-- code (Primary Key Field, Type: Manually entered string )
-- name (Type: String, Inferface: Input)
-- direction (Type: String, Interface: Dropdown, Default Value: ltr)
-```
+The `direction` field enables support for languages that read right to left.
 
-The `diretion` field is to enable support for languages that read right to left.
-![Creating Dirctus languages collection](./creating-directus-language-collection.png)
-
-
-To enable content translation in your **news** collection, update the collection to create a new field for `translations`. The translation field will create a one-to-many relationship with the `languages` collection. So select the `languages` collection as the **Language Collection Field**, `name` field for the **Language Indicator Field** and the `direction` field for the **Language Direction Field**.
-
+To enable content translation in your `news` collection, add a new One to Many `translations` field with the `languages` collection. Select `name` as the **Language Indicator Field** and `direction` as the **Language Direction Field**.
 
 ![Creating Directus translations collection](./creating-news-translation-collection.png)
 
+Once you save, a new collection named `news_translations` will be created for you. In the `news_translations` collection, you will add the fields that need translations. 
 
-Once you Save, a new collection named `news_translations` will be created for you. In the `news_translations` collection, we'll add the fields that needs to translated. Update the collection to add the schema below:
+Add the following fields to the `news_translations` collection:
 
-```
-news_translations
+- `title` (Type: String, Interface: Input)
+- `slug` (Type: String, Interface: Input)
+- `body` (Type: Text, Interface: WYSIWYG)
 
-- title (Type: String, Interface: Input )
-- slug (Type: String, Interface: Input)
-- body (Type: Text, Inferface: WYSIWYG)
-```
-![Adding new fields to Directus news collection](./news-translation.png)
+Add each language you want to support as items in the `languages` collection. 
 
-Now, in the Language collection, create new entries for the language you'd want your contents to be translated to. You'll add entries for German, English (US) and French. 
 ![Creating new entries in the languages collections](./languages-entries.png)
 
-Then create some entries in your News collection.
+The item page for the `news` collection now includes a translations interface.
 
 ![Creating new entries in the news collections](./news-translation-entries.png)
 
-
-Now you can write your contents in different translations (German, French and English).
-
-Lastly allow the Public role to read the `news`, `languages` and `news_translations` collections in the Access Control settings.
-
-
+Allow the Public role to read the `news`, `languages` and `news_translations` collections in the Access Control settings to ensure the frontend can access these fields.
 ## Building the News App Frontend with SvelteKit
 In your Svelte project, create a `directus.js` file to initialize Dirctus SDK in your project:
 
