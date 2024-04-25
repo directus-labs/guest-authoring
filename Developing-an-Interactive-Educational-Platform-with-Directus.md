@@ -4,14 +4,15 @@ Digital education platforms engage students with different courses, instructors,
 
 ## Key Concepts
 
-An interactive learning platform has several key concepts which:
+An interactive learning platform is expected to have the following key concepts which are:
 
-1. Courses.
-2. Students and Instructors.
+1. Students and Instructors. 
+2. Courses.
 3. Lessons.
-4. Quizzes.
+4. Quiz.
+5. Enrollments.
 
-In your Directus project, create a `courses` collection with a primary key type of UUID. Check all of the optional fields and complete setup. Your collection should look like this:
+In your Directus project, we will create a `courses` collection with a primary key type of UUID. Check all of the optional fields and complete setup. Your collection should look like this:
 ![](https://lh7-us.googleusercontent.com/gpxJbPSFhEFGIdhmX52qhRu5WCJqndzQbFvZDZjfIblIz3JjQsetsP-gIGAHfGFQUelLh-DNgEWNxSAQgpBrUDaq2SVtgy1EsKo1QiT7XJgQXxPLX_gDegu2HZs09KBeDWfuq6d3oxWsNKP1oLf-Cdc)
 
 Create the following additional fields:
@@ -65,18 +66,6 @@ The enrollment would be kind of tricky as it deals with linking a few of the oth
 -   Grades/Progress: Text or Numeric Field
 
 We will go ahead to create the enrollment date, status, and grades placing them in their proper fields.
-
-This is what the Collections look like:
-
-![](https://lh7-us.googleusercontent.com/LwtV7Fv9iNLaFrbI2QbXvnXayspC7A7np3txo0PsMSpyG08RzEWPU6msdMuZgxOAHN87HQuI6DH8K8ZpD0G8h20K_T_la5cRoLcvEQe9Xsw3z-VZ-eFHYi57cnLFuAJykvuvUEFuKEXuhZm_Zt-uKwk)
-
-We could give it nice icons to make them look better and interactive. To do this on any collection, click any of your choices and scroll below the fields created, you will find the Icon option, and pick anyone that fits, Directus provides us with a lot of options, we can put in random names and get random icons too as seen below.
-
-![](https://lh7-us.googleusercontent.com/Amg-dwA9bXk2IH0GYgr3ncSC_HnUIQJZRa7GTm-_h5O75w8dNdoJacK1YGDCUYyAxC2J17nThYDWC7PD54Pp1BhMP81KuMyCgICRC9Xws8sBbkugmNyIH30Fl9dWetvz54pTaCKOiFmNvcDwhRd7wb8)
-
-We can go ahead, and add the icons it should look like the image below.
-
-![](https://lh7-us.googleusercontent.com/j-0FOXFC2FN0v1U7SdNwIoEv1d3QIzVtnxTpm9a3_WQUbRVN2HuaKyzRMNuBfZ3RkNAVe_pV7LmdqshdakNguHFdCIJosJHi6r1i_p0AvD9gRLWUQtrtP8d33LWU-OPX9gHmne2jBMzPjhQrG608xT0)
 
 ## Creating Relationships
 
@@ -225,4 +214,4 @@ Instructor API Endpoints:
 
 
 ## Conclusion
-In this article, we have been able to go through the exercise of Data model and permissions for Interactive Educational platforms in directus, thank you for sticking this far, I really do appreciate. For further details refer to the our docs Keep using Directus!
+In this article, we have been able to go through the exercise of Data model and permissions for Interactive Educational platforms in directus, thank you for sticking this far, I really do appreciate. For further details refer to the our [docs](https://docs.directus.io/) Keep using Directus!
