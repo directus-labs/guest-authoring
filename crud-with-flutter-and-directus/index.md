@@ -18,7 +18,6 @@ You will need:
 - Knowledge of Dart.
 
 ## Initialize Project
-
 On your terminal, navigate to the directory where you want to create your project, and run the following command:
 
 ```bash
@@ -186,7 +185,7 @@ Now add a new method to fetch pages in your `DirectusService` class from Directu
   }
   ...
 ```
-Next, create a page widget to display a single page using the data returned from the page collection. Create a `screens` folder in the `lib` directory. In the screens folder, create a `home_screen.dart` file and add the following code snippet:
+Next, create a page widget to display a single page using the data returned from the page collection. Create a `screens` directory in the `lib` directory. In the screens directory, create a `home_screen.dart` file and add the following code snippet:
     
 ```
 import 'package:flutter/material.dart';
@@ -472,7 +471,7 @@ class MyApp extends StatelessWidget {
 ![Display the contents fron the posts collection](./Screenshot%202024-04-25%20at%2018.13.57.png)
 
 ## Create Blog Post Single
-Next, create a new file called `post_single.dart` file in the `lib/screens` folder. Then create a `BlogPostWidget`:
+Next, create a new file called `post_single.dart` file in the `lib/screens` directory. Then create a `BlogPostWidget`:
 
 ```
 import 'package:flutter/material.dart';
