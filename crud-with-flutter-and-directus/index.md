@@ -18,23 +18,20 @@ You will need:
 - Knowledge of Dart.
 
 ## Initialize Project
-Once you have the above requirements in place, create a new Flutter project. Navigate to your terminal or command prompt, navigate to the directory where you want to create your project, and run the following command:
 
+On your terminal, navigate to the directory where you want to create your project, and run the following command:
 
-```
+```bash
 flutter create my_directus_app
 ```
-Replace `my_directus_app` with the desired name for your project.
 
-Then navigate to the project directory, after the project has been created and run the application with the command:
+Navigate to the project directory, after the project has been created and run the application with the command:
 
-```
+```bash
 cd my_directus_app && flutter run
 ```
 
-The above command will launch the app on an emulator or connected device. If everything is set up correctly, you should see the default Flutter app running.
-
-<screenshot>
+This will launch the app on an emulator or connected device. If everything is set up correctly, you should see the default Flutter app running.
 
 ## Set up requests/env vars/anything needed to call Directus
 Next, let's install the dependencies required to run your application. You'll need to install the following dependencies:
