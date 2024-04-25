@@ -408,7 +408,7 @@ class BlogPostItem extends StatelessWidget {
 }`
 ```
     
-The `PageWidget` accepts `blogPost` which are the blog posts from Directus as a required parameter. So you have to update the code in your `main.dart` file to pass it from the `DirectusService` class instance:
+The `PageWidget` accepts `blogPost` which are the blog posts from Directus as a required parameter. Update the code in your `main.dart` file to pass it from the `DirectusService` class instance:
     
 ```
 import 'package:flutter/material.dart';
