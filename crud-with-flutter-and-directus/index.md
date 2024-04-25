@@ -323,7 +323,7 @@ Add a new method to your `DirectusService` class to fetch blog posts from Direct
  ...
 ```
     
-Then update the code in your `lib/screens/home_screen.dart` file to render the blog posts in the `PageWidget`:
+Update the code in your `lib/screens/home_screen.dart` file to render the blog posts in the `PageWidget`:
     
 ```
 import 'package:flutter/material.dart';
