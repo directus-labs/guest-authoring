@@ -26,11 +26,12 @@ body:
       label: What type of post is this?
       description: This helps us understand the rough structure and effort needed.
       options:
-        - Getting Started With Directus and {Language/Framework/Environment}
+        - Framework-Specific Guide (Realtime, Auth, Live Preview, i18n, etc)
         - Full Project Build with Directus
         - Extension-Building Guide
         - Tips, Tricks, or Best Practice
         - Self-Hosting Guide
+        - Migration Guide
         - Other
     validations:
       required: true
@@ -48,7 +49,9 @@ body:
       options:
         - label: You understand that submitting this form does not mean we accept your proposal. We will accept proposals at our discretion. 
           required: true
-        - label: You understand that to be paid you will need to generate an invoice to us once the final draft of your work is completed. 
+        - label: You understand that to be paid you will need to generate an invoice with a 30 day payment term and send it to us once the final draft of your work is accepted (we will share how to do this once finished). 
+          required: true
+        - label: You understand that you will require either a bank account in one of the countries listed here (https://help.bill.com/direct/s/article/360007172671) or a PayPal account.
           required: true
         - label: You understand that you will grant us an unlimited license to post and promote your work as part of this program. You may repost, but using our copy as the canonical source.
           required: true
