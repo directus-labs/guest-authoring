@@ -160,7 +160,7 @@ Then in your Access Control settings, give the Public role read access to the pa
     
 ![creating the pages collection](./Screenshot%202024-04-25%20at%2012.21.16.png)
 
-Now add a new method to fetch pages in your `DirectusService` class from Directus in the `directus_service.dart` file:
+Add a new method to fetch pages in your `DirectusService` class from Directus in the `directus_service.dart` file:
     
 ```
   ...
