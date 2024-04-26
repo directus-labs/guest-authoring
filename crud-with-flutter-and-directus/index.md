@@ -32,32 +32,24 @@ cd my_directus_app && flutter run
 
 This will launch the app on an emulator or connected device. If everything is set up correctly, you should see the default Flutter app running.
 
-## Set up requests/env vars/anything needed to call Directus
-Next, let's install the dependencies required to run your application. You'll need to install the following dependencies:
-- **http**: A package for making HTTP requests.
-- **flutter_dotenv**: A package for loading environment variables from a .env file.
-- **flutter_html**: A package to convert WYSIWYG contents to HTML.
-    
 Add these dependencies to your `pubspec.yaml` file under the dependencies section:
 
-```
+```yaml
 dependencies:
   http: ^0.13.5
   flutter_dotenv: ^5.0.2
   flutter_html: ^3.0.0-alpha.6
 ```
 
-Then create an `assets/.env` file in the root directory of your Flutter project. This file will store your Directus API URL and any other environment variables you might need.
+Create an `.env` file in an `assets` directory of your Flutter project. This file will store your Directus Project URL.
 
 ```
-DIRECTUS_API_URL=https://your-directus-instance.com
+DIRECTUS_API_URL=https://your-directus-project.com
 ```
 
-Replace `https://your-directus-instance.com` with the actual URL of your Directus instance.
+In your `main.dart` file, import the `flutter_dotenv` package and load the environment variables:
 
-Then in your `main.dart` file, import the `flutter_dotenv` package and load the environment variables:
-
-```
+```dart
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future main() async {
