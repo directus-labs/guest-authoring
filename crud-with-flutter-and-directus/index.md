@@ -59,21 +59,18 @@ Future main() async {
 ```
     
 ## Using Global Metadata and Settings
-Directus provides a way for you to store global metadata and settings, which can be accessed and used throughout your application. To use the global metadata and settings, navigate to **Settings -> Data Model** and create a new collection called `global`. Check the Singleton option box to 'Treat as a single object' because this collection will have just a single entry containing global application metadata and settings. Create the following fields in the your `global` collection:
 
-- **title**: text input
-- **description**: text input
+In your Directus project, navigate to Settings -> Data Model and create a new collection called `global`. Under the Singleton option, select 'Treat as a single object', as this collection will have just a single entry containing global website metadata.
 
-    
-Then navigate to the content module, select the global collection, enter information in the `title` and `description` fields, and hit save.
-    
-![creating a global collection](./Screenshot%202024-04-16%20at%2017.36.50.png)
+Create two text input fields - one with the key of `title` and one `description`.
 
-Then, navigate to **Settings -> Access Control -> Public** and give public read access to the `global` collection.
+Navigate to the content module and enter the global collection. Collections will generally display a list of items, but as a singleton, it will launch directly into the one-item form. Enter information in the title and description field and hit save.
+
+By default, new collections are not accessible to the public. Navigate to Settings -> Access Control -> Public and give Read access to the Global collection.
     
-Next, we'll setup a `DirectusService` class to retrieve all the global settings and use them in your project Create a new file named `directus_service.dart` in your `lib` directory and add the code snippets:
+Set up a `DirectusService` class to retrieve all the global settings and use them in your project. Create a new file named `directus_service.dart` in your `lib` directory and add the code snippets:
     
-```
+```dart
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -97,7 +94,7 @@ In the above code, we created a method to fetch the global metadata settings fro
     
 Now import the `DirectusService` class and use it to retrieve global settings and metadata:
     
-```
+```dart
 import 'package:flutter/material.dart';
 import 'services/directus_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -150,8 +147,8 @@ class MyApp extends StatelessWidget {
 ```
 
 In the above code, we use a `FutureBuilder` to fetch the global metadata from Directus. Once the data is loaded, we use it throughout your application for the app title, and description.
-    
-![Rendering the content fron Directus global collection](./Screenshot%202024-04-16%20at%2018.27.02.png)
+
+You should see data from your Directus global collection in your app.
 
 ## Creating Pages With Directus
 Directus allows you to create and manage pages, which you can then use in your Flutter app. To begin, create a new collection named `pages`. The Primary ID Field should be a "Manually Entered String" named `slug`, and you should include the following fields in your pages collection:
