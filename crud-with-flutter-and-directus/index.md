@@ -536,4 +536,4 @@ With the above code, when the user taps on the `BlogPostItem`, it triggers the `
 ![Navigating to the blog single page](./Screenshot%202024-04-25%20at%2018.14.17.png)
 
 ## Summary
-Throughout this tutorial, you've learned how to build a Flutter application that uses data from a Directus project. We started by creating a new project, set up environment variables and everything we need to call Directus. We then created pages and posts collections in Directus and integrated them with the the Flutter.
+Throughout this tutorial, you've learned how to build a Flutter application that uses data from a Directus project. You started by creating a new project, set up environment variables and everything you need to call Directus. You then created pages and posts collections in Directus and integrated them with the the Flutter.
