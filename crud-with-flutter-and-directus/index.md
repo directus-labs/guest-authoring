@@ -151,12 +151,9 @@ In the above code, we use a `FutureBuilder` to fetch the global metadata from Di
 You should see data from your Directus global collection in your app.
 
 ## Creating Pages With Directus
-Directus allows you to create and manage pages, which you can then use in your Flutter app. To begin, create a new collection named `pages`. The Primary ID Field should be a "Manually Entered String" named `slug`, and you should include the following fields in your pages collection:
+Create a new collection called pages - make the Primary ID Field a "Manually Entered String" called slug, which will correlate with the URL for the page. For example about will later correlate to the page localhost:3000/about.
 
-- **title**: text input field
-- **content**: WYSIWYG input field
-
-Then in your Access Control settings, give the Public role read access to the pages collection.
+Create a text input field called title and a WYSIWYG input field called content. In Access Control, give the Public role read access to the new collection. Create 3 items in the new collection - [here's some sample data](https://github.com/directus-labs/getting-started-demo-data).
     
 ![creating the pages collection](./Screenshot%202024-04-25%20at%2012.21.16.png)
 
@@ -174,7 +171,7 @@ Add a new method to fetch pages in your `DirectusService` class from Directus in
   }
   ...
 ```
-Next, create a page widget to display a single page using the data returned from the page collection. Create a `screens` directory in the `lib` directory. In the screens directory, create a `home_screen.dart` file and add the following code snippet:
+Create a page widget to display a single page using the data returned from the page collection. Create a `screens` directory in the `lib` directory. In the `screens` directory, create a `home_screen.dart` file and add the following code snippet:
     
 ```
 import 'package:flutter/material.dart';
