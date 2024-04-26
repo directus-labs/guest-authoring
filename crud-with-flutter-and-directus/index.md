@@ -1,6 +1,6 @@
 ---
 title: 'Getting Started with Directus and Flutter'
-description: 'Learn how to integrate Directus with Angular. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items.'
+description: 'Learn how to integrate Directus with Flutter. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items.'
 author:
   name: 'Clara Ekekenta'
   avatar_file_name: './clara-ekekenta.avif'
