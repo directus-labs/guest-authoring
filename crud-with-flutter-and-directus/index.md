@@ -90,9 +90,9 @@ class DirectusService {
 }
 ```
     
-In the above code, we created a method to fetch the global metadata settings from Directus.
+The above code creates a method to fetch the global metadata settings from Directus.
     
-Now import the `DirectusService` class and use it to retrieve global settings and metadata:
+Import the `DirectusService` class and use it to retrieve global settings and metadata:
     
 ```dart
 import 'package:flutter/material.dart';
@@ -146,14 +146,12 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-In the above code, we use a `FutureBuilder` to fetch the global metadata from Directus. Once the data is loaded, we use it throughout your application for the app title, and description.
-
-You should see data from your Directus global collection in your app.
+This will use the `FutureBuilder` to fetch the global metadata from Directus. Once the data is loaded, you will use it throughout your application for the app `title`, and `description` of your application.
 
 ## Creating Pages With Directus
 Create a new collection called pages - make the Primary ID Field a "Manually Entered String" called slug, which will correlate with the URL for the page. For example about will later correlate to the page localhost:3000/about.
 
-Create a text input field called title and a WYSIWYG input field called content. In Access Control, give the Public role read access to the new collection. Create 3 items in the new collection - [here's some sample data](https://github.com/directus-labs/getting-started-demo-data).
+Create a text input field called `title` and a WYSIWYG input field called `content`. In Access Control, give the Public role read access to the new collection. Create 3 items in the new collection - [here's some sample data](https://github.com/directus-labs/getting-started-demo-data).
     
 ![creating the pages collection](./Screenshot%202024-04-25%20at%2012.21.16.png)
 
@@ -273,7 +271,6 @@ class MyApp extends StatelessWidget {
 ```
 
 ![Showing the contents from the pages collection in flutter application](./Screenshot%202024-04-17%20at%2017.41.14.png)
-
   
 ## Creating Blog Posts With Directus
 Similar to creating pages, you can also create and manage blog posts using Directus CMS. Create a new collection called `authors` with a single text input field called `name`. Add one or more authors to the collection.
@@ -288,7 +285,7 @@ Create another collection called `posts` and add the following fields:
 
 ![Creating the posts collection in Directus CMS](./Screenshot%202024-04-25%20at%2011.59.26.png)
 
-Now add 3 items in the `posts` collection - [here's some sample data](https://github.com/directus-community/getting-started-demo-data).
+Add 3 items in the `posts` collection - [here's some sample data](https://github.com/directus-community/getting-started-demo-data).
 
 ![Adding entries to Directus collection](./Screenshot%202024-04-25%20at%2012.08.36.png)
 
@@ -457,7 +454,7 @@ class MyApp extends StatelessWidget {
 ![Display the contents fron the posts collection](./Screenshot%202024-04-25%20at%2018.13.57.png)
 
 ## Create Blog Post Single
-Next, create a new file called `post_single.dart` file in the `lib/screens` directory. Then create a `BlogPostWidget`:
+Create a new file called `post_single.dart` file in the `lib/screens` directory. Then create a `BlogPostWidget`:
 
 ```
 import 'package:flutter/material.dart';
@@ -497,7 +494,7 @@ The `BlogPostWidget` serves as the single blog post view. When a user clicks on 
     
     
 ## Add Navigation
-Now update the `BlogPostItem` class in the `lib/screens/home_screen.dart` to add navigation to the project:
+Update the `BlogPostItem` class in the `lib/screens/home_screen.dart` file to add navigation to the project:
 ```
 class BlogPostItem extends StatelessWidget {
   final dynamic blogPost;
@@ -534,8 +531,8 @@ class BlogPostItem extends StatelessWidget {
   }
 }
 ```
-With the above code, when the user taps on the `BlogPostItem`, it triggers the `onTap` callback function. Inside this function, we use `Navigator.push` to navigate to a new screen. We create a `MaterialPageRoute`, defining the widget to be displayed on the new screen as `BlogPostWidget`. Also, we pass the `blogPost` data as a parameter to the `BlogPostWidget` widget. This allows us to display detailed information about the selected `blog` post on the new screen.
-    
+With the above code, when the user taps on the `BlogPostItem`, it triggers the `onTap` callback function. Inside this function, the `Navigator.push` will navigate to a new screen. `MaterialPageRoute` will define the widget to be displayed on the new screen as `BlogPostWidget`. Also, the `blogPost` data is passed as a parameter to the `BlogPostWidget` widget. This will allow you to display detailed information about the selected `blog` post on the new screen.
+
 ![Navigating to the blog single page](./Screenshot%202024-04-25%20at%2018.14.17.png)
 
 ## Summary
