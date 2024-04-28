@@ -26,7 +26,7 @@ source .venv/bin/activate  # On Windows you should use `.venv\Scripts\activate`
 pip install Flask requests python-dotenv
 ```
 
-To make *.env* file variables available on the project, create a file called *config.py* and add the following content to it:
+To make `.env` file variables available on the project, create a `config.py` file:
 
 ```py
 from dotenv import load_dotenv
@@ -34,7 +34,7 @@ from dotenv import load_dotenv
 load_dotenv()
 ```
 
-Then create an *app.py* file to start the Flask app:
+Then create an `app.py` file to start the Flask app:
 
 ```py
 from flask import Flask
@@ -47,17 +47,13 @@ def home():
     return "Hello world"
 ```
 
-And run the following command to run your flask server, which will start a server at [http://localhost:3000](http://localhost:3000):
+And run the following command to run your flask server, which will start a server at `http://localhost:3000`:
 
 ```sh
 flask run --debug
 ```
 
-:::info
 
-The `--debug` flag enables the autoreload feature on the project, which is very useful while developing.
-
-:::
 
 ## Creating Global Metadata And Settings Collection
 
@@ -73,9 +69,9 @@ By default, new collections are not accessible to the public. Navigate to **Sett
 
 ## Creating a Directus Module
 
-Since your data will be fetched via the Directus REST API, you will need to create a module that encapsulates all that logic and exposes a simple interface to the outside world.
+Since your data will be fetched via the Directus REST API, you will need to create a module that encapsulates all that logic and exposes an interface to the outside world.
 
-To accomplish this, create a *directus.py* file and add the following content to it:
+To accomplish this, create a `directus.py` file and add the following content to it:
 
 ```py
 import requests
@@ -97,7 +93,7 @@ To render the site home page, create a new route that uses the directus module t
 
 ### Creating Page Templates
 
-First of all, you have to create a base template to be used by all your pages. Create a *templates* directory and a file called *base.html* in it. Now place the following content on this file:
+First of all, you have to create a base template to be used by all your pages. Create a `templates` directory and a file called `base.html` in it. Now place the following content on this file:
 
 ```jinja
 <!DOCTYPE html>
@@ -141,7 +137,7 @@ Note there is a stylesheet in this code that imports [Pico](https://picocss.com/
 
 :::
 
-Now create a *templates/home.html* file that will extend the base template and display some data on it. This file will have the following content:
+Now create a `templates/home.html` file that will extend the base template and display some data on it. This file will have the following content:
 
 ```jinja
 {% extends "base.html" %}
@@ -156,7 +152,7 @@ Now create a *templates/home.html* file that will extend the base template and d
 
 ### Updating Home Route
 
-After creating the templates, update the *app.py* file:
+After creating the templates, update the `app.py` file:
 
 ```py
 from flask import Flask // [!code --]
@@ -176,7 +172,7 @@ def home():
     ) // [!code ++]
 ```
 
-Then go to [http://localhost:3000](http://localhost:3000) and you will see a page like this:
+Then go to `http://localhost:3000` and you will see a page like this:
 
 ![Home page displaying configured global data](home-page.png)
 
@@ -193,7 +189,7 @@ Create a text input field called `title` and a WYSIWYG input field called `conte
 
 ### Rendering Dynamic Pages
 
-To get data of pages registered on the `pages` collection you will need to add the following code at the end of the *directus.py* file:
+To get data of pages registered on the `pages` collection you will need to add the following code at the end of the `directus.py` file:
 
 ```py
 def get_page_by_slug(slug):
@@ -201,7 +197,7 @@ def get_page_by_slug(slug):
     return response.json().get("data")
 ```
 
-Create the *templates/dynamic-page.html* file with the following content:
+Create the `templates/dynamic-pag.html` file with the following content:
 
 ```jinja
 {% extends "base.html" %}
@@ -212,7 +208,7 @@ Create the *templates/dynamic-page.html* file with the following content:
 {% endblock %}
 ```
 
-Then, on the *app.py* file import `render_template_string` from `Flask` and define a new app route with the following code at the end of the file:
+Then, on the `app.py` file import `render_template_string` from `Flask` and define a new app route with the following code at the end of the file:
 
 ```py
 @app.get("/<slug>")
@@ -231,7 +227,7 @@ def dynamic_page(slug):
 
 This route fetches page data using the `directus.get_page_by_slug` method and then renders a simple not found page (defined as an inline template string) if the page does not exist, and if it exists it renders the `dynamic-page.html` template with page data on it.
 
-Now navigate to [http://localhost:3000](http://localhost:3000) and see the result
+Now navigate to `http://localhost:3000` and see the result
 
 ![About page displaying configured data](about-page.png)
 
@@ -255,7 +251,7 @@ Create 3 items in the posts collection - [here's some sample data](https://githu
 
 ### Create Blog Post Listing Page
 
-To fetch the blog post data add this function at the end of the *directus.py* file:
+To fetch the blog post data add this function at the end of the `directus.py` file:
 
 ```py
 def get_posts():
@@ -273,7 +269,7 @@ You can learn more about it [here](https://docs.directus.io/reference/query.html
 
 :::
 
-Then create a *templates/blog.html* file to display the posts data to users.
+Then create a `templates/blog.html` file to display the posts data to users.
 
 ```jinja
 {% extends "base.html" %}
@@ -309,7 +305,7 @@ Then create a *templates/blog.html* file to display the posts data to users.
 {% endblock %}
 ```
 
-And add the following route at the end of *app.py*:
+And add the following route at the end of `app.py`:
 
 ```py
 @app.get("/blog")
@@ -319,13 +315,13 @@ def blog_page():
     return render_template("blog.html", posts=posts)
 ```
 
-Now navigate to [http://localhost:5000/blog](http://localhost:5000/blog) and you will see this result:
+Now navigate to`http://localhost:5000/blog` and you will see this result:
 
 ![Blog page displaying data stored in Directus collection](blog-page.png)
  
 ### Create Blog Post Page
 
-For this page you will need to add the following function at the end of *directus.py* file:
+For this page you will need to add the following function at the end of `directus.py` file:
 
 ```py
 def get_post_by_slug(slug):
@@ -345,7 +341,7 @@ You can read more about it [here](https://docs.directus.io/reference/files.html#
 
 :::
 
-Then create the page template on the *templates/post.html* file:
+Then create the page template on the `templates/post.html` file:
 
 ```jinja
 {% extends "base.html" %}
@@ -369,7 +365,7 @@ You can learn more about this [here](https://docs.directus.io/reference/files.ht
 
 :::
 
-Lastly, create the page route handler at the end of *app.py*:
+Lastly, create the page route handler at the end of `app.py`:
 
 ```py
 @app.get("/blog/<slug>")
