@@ -6,9 +6,7 @@ author:
   avatar_file_name: 'guilherme-souza-avatar.png'
 ---
 
-## Introduction
-
-[Flask](https://flask.palletsprojects.com/en/3.0.x/) is a well-known Python framework used to build web APIs, and Directus is a powerful tool that helps developers and their teams integrate data with new or existing applications. In this tutorial, you will learn how to create a simple website using Directus as a [headless CMS](https://directus.io/solutions/headless-cms), creating and retrieving data such as global metadata, dynamic pages, and blog posts.
+[Flask](https://flask.palletsprojects.com/en/3.0.x/) is a minimal Python framework used to build web applications. In this tutorial, you will store, retrieve, and use global metadata, pages, and posts based on a Directus project.
 
 ## Before You Start
 
