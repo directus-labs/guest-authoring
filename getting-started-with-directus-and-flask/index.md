@@ -1,6 +1,6 @@
 ---
-title: 'Getting Started With Directus And Flask'
-description: 'This guide will show you how to create an application using Flask framework and Directus as a headless CMS'
+title: 'Getting Started With Directus and Flask'
+description: 'Learn how to integrate Directus with Flask. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items.'
 author:
   name: 'Guilherme Souza'
   avatar_file_name: 'guilherme-souza-avatar.png'
