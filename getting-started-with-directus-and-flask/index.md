@@ -261,12 +261,8 @@ def get_posts():
     return response.json().get("data")
 ```
 
-:::info Directus query params
-
-Note there is a `fields[]` query string with a list of names as its value. This informs the Directus API to return only the specified fields for each post, instead of returning all fields, and also informs that you want to receive the `author.name` data from the author relationship.
-In the same way, the `sort` query string informs the API to return posts with the most recent ones first.
-You can learn more about it [here](https://docs.directus.io/reference/query.html).
-
+:::info Directus Query Parameters
+The `fields` parameter instructs Directus to return only the specified fields. The `sort` parameter instructs Directus to return the most recent posts first.
 :::
 
 Then create a `templates/blog.html` file to display the posts data to users.
