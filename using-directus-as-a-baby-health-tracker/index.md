@@ -184,7 +184,8 @@ Within `rtnData` we now store all the relevant values such as battery details, h
 ```
 
 Some of the keys are self-speaking while others are not clear. Due to the lack of documentation, I can only compare the values with the data from the original app to identify what is what. Also, the mentioned GitHub projects have some details from other users that were helping to understand the keys here.
-In our case, we are using `ox` as the oxgenlevel, `hr` as heartrate, and `bat` as battery level. Also `st` is used which should be the skin temperature.
+
+In our case, we are using `ox` as the oxgenlevel, `hr` as heartrate, `bat` as battery level, and `st` as the skin temperature.
 
 ##### Saving the data within Directus
 The last step within the flow is to save the gathered data within the collection we've set up already. The payload of the create operation  looks like this:
