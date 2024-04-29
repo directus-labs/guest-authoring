@@ -218,16 +218,26 @@ For the basic Metric values, you use the following configuration:
 !(Pasted image 20240223105348.png)
 To make the values more self-speaking, the style and format can be adjusted e.g. by different colours based on the current values.
 !(Pasted image 20240223105507.png)
-### 3rd Party Integration
-Last, we've added some external services to get a robust alerting system and a handy quick view of the current status directly on my mobile phone.
-#### Evaluate the Data and create an alert record
+## 3rd Party Alerting Integration
+
+You can integrate this system with external services to get a robust alerting system and a handy quick view of the current status directly on my mobile phone.
+
+### Creating an Alert Item
+
 For the alerting system, we're using OpsGenie, usually used for system, infrastructure or app health status. But why not for the actual health use case?
-To build this, a simple flow listens to every created event within the data collection. Every new record in this collection is evaluated and under certain conditions, a new item is created within an additional collection called "OpsGenie alert". The collection looks something like this to store all relevant data that OpsGenie can use:
+
+To build this, a new Flow listens to every created event within the `sensor_data` collection. Every new record in this collection is evaluated and under certain conditions, a new item is created within an additional collection called `opsgenie_alert`. The collection looks something like this to store all relevant data that OpsGenie can use:
+
 !(Pasted image 20240304172941.png)
+
 The related Flow looks like this:
+
 !(Pasted image 20240304173609.png)
+
 Within the Run Script operation the data is evaluated and based on the met conditions, the returning JSON is passed over to the next operation.
+
 For checking the battery level the code looks like this:
+
 ```javascript
 module.exports = async function(data) {
     var rtn = {
@@ -250,7 +260,6 @@ module.exports = async function(data) {
 }
 ```
 
-
 The next Condition Operation within the Flow checks the value of `create_alert` and either stops here if `false` or passes the data to the final Create operation if set to `true`. This can be done easily by the following condition rule:
 
 ```json
@@ -262,9 +271,11 @@ The next Condition Operation within the Flow checks the value of `create_alert` 
     }
 }
 ```
+
 You can build in several other logic like checking if there is an open alert already and stuff like this. To keep it simple we're skipping this at the moment. (And trust OpsGenie to not raise two alerts for the same incoming data)
 
-Within the create operation, the following payload is used to create the Alert item:
+Within the create operation, the following payload is used to create the OpenGenie Alert item:
+
 ```json
 {
     "category": "{{exec_alert_logic.alert_data.category}}",
