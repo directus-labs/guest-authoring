@@ -6,8 +6,8 @@ author:
   avatar_file_name: 'Andreas_Morgner.jpg'
 ---
 
-## Summary
 In this article, we will explore Directus as a backend for a smart wearable device, and how to extend the functionality of the the apps shipped with the device.
+
 We will cover data model configuration, how to grab data from the wearable using Directus Flows, and how to integrate Directus into 3rd party tools for reporting, such as OpsGenie and screen widgets on an iPhone.
 
 ## Before You Start
