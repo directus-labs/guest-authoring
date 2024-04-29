@@ -44,19 +44,16 @@ This collection is for integration into the OpsGenie alerting system. As Direcut
 
 There are also a couple of other fields that we can use and populate such as severity, type, description, tags, links, or alias. To find our more about each field, check out the OpsGenie docs
 
-### Flows
-A Flow inside Direcuts can be used to automate things. Each Flow contains of a trigger and one or more operations. A trigger could be time based, manual, or based on events coming from actions like creating or updating items. As operations we can use CRUD operations to work with items or create new items, if-else condtions, web requests, and even more operations.
+## Authenticating with the Sensor
 
-#### Read Data Flow
-The by far most complex Flow of this use case is the one we need to extract the data. This is due to the lack of publicly documented API of the used health-tracking gadget. 
-As there are a couple of Python libraries fetching the data, it was not the easiest way, but with a basic understanding of Python and programming in general, it was possible to kind of reverse-engineer this code and translate each step into an Operation for the Flow.
-The very rough workflow looks like this:
-1. Define the trigger
-2. Authenticate and get all the needed tokens
-3. Get a list of connected devices
-4. Get the data of our target device
-5. Transform the data to our needs
-6. Save the data
+The Owlet lacks a publicly-documented API, so some reverse-engineering was required. This Flow will roughly follow this workflow:
+
+1. Trigger every minute.
+2. Authenticate and get all the needed tokens.
+3. Get a list of connected devices.
+4. Get the data of our target device.
+5. Transform the data to our needs.
+6. Save the data.
 ##### The Trigger
 The easiest way to get regular data fetched automatically with a Flow is a scheduled trigger.
 During the setup, we've set the trigger to the following settings:
