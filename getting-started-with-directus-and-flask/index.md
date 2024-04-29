@@ -137,7 +137,7 @@ Note there is a stylesheet in this code that imports [Pico](https://picocss.com/
 
 :::
 
-Now create a `templates/home.html` file that will extend the base template and display some data on it. This file will have the following content:
+Create a `templates/home.html` file that will extend the base template and display additional data:
 
 ```jinja
 {% extends "base.html" %}
@@ -152,7 +152,7 @@ Now create a `templates/home.html` file that will extend the base template and d
 
 ### Updating Home Route
 
-After creating the templates, update the `app.py` file:
+Update the `app.py` file:
 
 ```py
 from flask import Flask // [!code --]
@@ -172,10 +172,9 @@ def home():
     ) // [!code ++]
 ```
 
-Then go to `http://localhost:3000` and you will see a page like this:
+Then go to `http://localhost:3000` in your browser and you will see a page like this:
 
 ![Home page displaying configured global data](home-page.png)
-
 
 ## Creating Pages With Directus
 
