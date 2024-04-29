@@ -215,7 +215,7 @@ To achieve the dynamic time window, we have to create the "Global Variable" with
 
 Within the dynamic "Time Series" charts we can reuse the global variable by adding its name to the date range:
 !(Pasted image 20240223104315.png)
-Again we can use the `{{…}}` syntax, followed by a lower `h` to identify the value that should work as hours. If you use the same variable for all three slides, they will change altogether once you've selected a new amount of hours within the global variable slider.
+You can use the <span v-pre>`{{…}}`</span> syntax, followed by a lower `h` to identify the value that should work as hours. If you use the same variable for all three slides, they will change altogether once you've selected a new amount of hours within the global variable slider.
 
 For the basic Metric values, you use the following configuration:
 !(Pasted image 20240223105348.png)
