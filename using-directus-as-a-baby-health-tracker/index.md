@@ -15,7 +15,7 @@ We will cover data model configuration, how to grab data from the wearable using
 - A wearable with an API to consume the data. For this project, we will use the [Owlet](https://owletcare.com/).
 
 ## Implementation
-### Collections
+## Creating Collections
 #### The data storage collection
 As we want to track sensor data over time, we will frequently pull the data with some details from the external API. Create a collection called `sensor_data` with a auto-generated UUID as an ID. Allow Directus to create `sort`, `status`, and `date_created` fields as well.
 For each element of the data provided by the sensor, we want to save these values. Depending on the used sensor, you may come up with a different set of fields. In our case we've created the following important additional fields:
