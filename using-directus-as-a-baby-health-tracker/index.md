@@ -121,7 +121,7 @@ If everything works so far, the JSON we receive looks something like this, but f
 
 The device object has exactly one tracker and provides us with the `dsn` as well as the flag for `has_properties`. With the next operation, we will request all of these properties to extract the sensor data from the tracker.
 
-The last Web-Request to get the properties of the device looks like this:
+Create one more Request operation to actually, finally, fetch sensor data.
 
 | Method | URL |
 | --- | --- |
@@ -133,21 +133,20 @@ As a header parameter, we set the following:
 | Authorization | `auth_token {{token_sign_in.data.access_token}}` |
 As you can see, the named operation becomes handy now.
 
-This request returns every property the device currently has. In total, we received over 1600 lines of JSON this time. The good thing, we only have a single property object here. All properties have a name attribute. A very easy way is to loop over all properties and find the one we need. To achieve this within the flow, the Script-Operation can be used.
+This request returns every property the device currently has. In total, we received over 1600 lines of JSON this time. The good thing, we only have a single property object here. All properties have a name attribute. 
 
-The run operation looks like this
-   ```Javascript
+Create a Run Script operation to find the properties we need:
+
+```Javascript
 module.exports = async function(data) {
-    //console.log(data.read_dns.data[0])
-    let rtnData
+  let rtnData
 	data.read_dns.data.forEach(p => {
-      if (p.property.name === "REAL_TIME_VITALS") {
-        //console.log(JSON.parse(p.property.value))
-        rtnData = JSON.parse(p.property.value)
-      }
-    });
-    
-    return rtnData
+    if (p.property.name === "REAL_TIME_VITALS") {
+      //console.log(JSON.parse(p.property.value))
+      rtnData = JSON.parse(p.property.value)
+    }
+  });
+  return rtnData;
 }
 ```
 
