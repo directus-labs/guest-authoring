@@ -904,7 +904,7 @@ Click on the `READ MORE`  link in a post to get to the corresponding detail blog
 
 ## Update Post Implementation
 
-## Server Action to Update Post
+### Server Action to Update Post
 
 To update post data from `Directus` backend, navigate to the `lib/action.js` file and add the following:
 
@@ -1017,7 +1017,7 @@ Click on the `Edit`  link in a detail post page to get to the corresponding upda
 
 ## Delete Post Implementation
 
-## Server Action to Delete Post
+### Server Action to Delete Post
 
 To delete post data from the `Directus` backend, navigate to the `lib/action.js` file and add the following:
 
