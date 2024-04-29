@@ -252,7 +252,7 @@ To fetch the blog post data add this function at the end of the `directus.py` fi
 ```py
 def get_posts():
     response = requests.get(
-        f"{DIRECTUS_BASE_URL}/items/posts?fields[]=slug,title,description,publish_date,author.name&sort=-publish_date"
+        f"{DIRECTUS_BASE_URL}/items/posts?fields=slug,title,description,publish_date,author.name&sort=-publish_date"
     )
     return response.json().get("data")
 ```
@@ -318,7 +318,7 @@ For this page you will need to add the following function at the end of `directu
 ```py
 def get_post_by_slug(slug):
     response = requests.get(
-        f"{DIRECTUS_BASE_URL}/items/posts/{slug}?fields[]=*,author.name"
+        f"{DIRECTUS_BASE_URL}/items/posts/{slug}?fields=*,author.name"
     )
     post = response.json().get("data")
     post["image"] = f'{DIRECTUS_BASE_URL}/assets/{post["image"]}'
