@@ -179,13 +179,9 @@ Then go to `http://localhost:3000` and you will see a page like this:
 
 ## Creating Pages With Directus
 
-Note that the base template has some links on its navbar pointing to pages like **About** that typically have just some text content and some images, but also need to be updated frequently and by people who do not have access to the code base.
+Create a new collection called pages - make the Primary ID Field a "Manually Entered String" called slug, which will correlate with the URL for the page. For example, about will later correlate to the page `localhost:3000/about`.
 
-Using Directus you can make these pages dynamically available on your site and editable by non-technical users.
-
-To accomplish this, create a new collection called `pages` - make the Primary ID Field a "Manually Entered String" called `slug`, which will correlate with the URL for the page. For example, `about` will later correlate to the page `localhost:3000/about`.
-
-Create a text input field called `title` and a WYSIWYG input field called `content`. In Access Control, give the Public role read access to the new collection. Create 3 items in the new collection - [here's some sample data](https://github.com/directus-community/getting-started-demo-data).
+Create a text input field called title and a WYSIWYG input field called content. In the Access Control settings, give the Public role read access to the new collection. Create 3 items in the new collection - [here's some sample data](https://github.com/directus-community/getting-started-demo-data).
 
 ### Rendering Dynamic Pages
 
