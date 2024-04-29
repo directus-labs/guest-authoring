@@ -16,6 +16,24 @@ You will need:
 - A Directus project - [follow our quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one.
 - Basic knowledge of Python and Flask
 
+### Creating Page Templates
+
+First of all, you have to create a base template to be used by all your pages. Create a `templates` directory and a file called `base.html` in it with the following content:
+
+```jinja
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{% block title %}Directus x Flask{% endblock %}</title>
+	</head>
+	<body>
+		<main>{% block content %}{% endblock %}</main>
+	</body>
+</html>
+```
+
 ## Setting Up A Flask Project
 
 To create a new Flask project using `venv`, create your project directory and enter it, then run the following commands:
@@ -52,8 +70,6 @@ And run the following command to run your flask server, which will start a serve
 ```sh
 flask run --debug
 ```
-
-
 
 ## Creating Global Metadata And Settings Collection
 
@@ -92,50 +108,6 @@ By now this is all you need, but in the following sections, you will also create
 To render the site home page, create a new route that uses the directus module to get the global data and use it on a page template.
 
 ### Creating Page Templates
-
-First of all, you have to create a base template to be used by all your pages. Create a `templates` directory and a file called `base.html` in it. Now place the following content on this file:
-
-```jinja
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
-		/>
-		{% block head %}{% endblock %}
-
-		<title>{% block title %}Directus blog post with Flask{% endblock %}</title>
-	</head>
-	<body>
-		<header class="container">
-			<nav>
-				<ul>
-					<li>
-						<a href="/"><strong>Home</strong></a>
-					</li>
-				</ul>
-				<ul>
-					<li><a href="/blog">Blog</a></li>
-					<li><a href="/about">About</a></li>
-					<li><a href="/conduct">Code of Conduct</a></li>
-					<li><a href="/privacy">Privacy Policy</a></li>
-				</ul>
-			</nav>
-		</header>
-
-		<main class="container">{% block content %}{% endblock %}</main>
-	</body>
-</html>
-```
-
-:::info
-
-Note there is a stylesheet in this code that imports [Pico](https://picocss.com/), a minimal class-less CSS library used to add some basic styles on the website. It was only used on this article to make things look better, but you can feel free to use whichever library you prefer and even use the default browser styles.
-
-:::
 
 Create a `templates/home.html` file that will extend the base template and display additional data:
 
@@ -192,7 +164,7 @@ def get_page_by_slug(slug):
     return response.json().get("data")
 ```
 
-Create the `templates/dynamic-pag.html` file with the following content:
+Create the `templates/dynamic-page.html` file with the following content:
 
 ```jinja
 {% extends "base.html" %}
@@ -265,20 +237,10 @@ Then create a `templates/blog.html` file to display the posts data to users.
 ```jinja
 {% extends "base.html" %}
 
-{% block head %}
-<style>
-	/* This is only needed to prevent cards list from receiving the default list style provided by Pico  */
-	.blog-posts { 
-		list-style: none;
-		padding: 0;
-	}
-</style>
-{% endblock %}
-
 {% block content %}
 <section>
 	<h1>Blog posts</h1>
-	<ol class="blog-posts">
+	<ol>
 		{% for post in posts %}
 		<li>	
 			<article>
@@ -369,6 +331,24 @@ def post_page(slug):
 Now navigate to one of your posts listed on the previous page an see the result.
 
 ![Post page displaying post data that came from Directus posts collection](post-page.png)
+
+## Add Navigation
+
+While not strictly Directus-related, there are now several pages that aren't linked to each other. In `templates/base.html`, above the `<main>` tag, add a navigation. Don't forget to use your specific page slugs.
+
+```jinja
+<header>
+	<nav>
+		<ul>
+			<li><a href="/">Home</a></li>
+			<li><a href="/blog">Blog</a></li>
+			<li><a href="/about">About</a></li>
+			<li><a href="/conduct">Code of Conduct</a></li>
+			<li><a href="/privacy">Privacy Policy</a></li>
+		</ul>
+	</nav>
+</header>
+```
 
 ## Next steps
 
