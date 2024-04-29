@@ -77,24 +77,27 @@ The screenshot shows the last request. As a key, we've set `token_sign_in` which
 
 !(Pasted image 20240216105507.png)
  
-##### Getting actual user data
-Compared to the auth process, fetching actual data from the API is done with fewer requests – just two are needed. As the vendor supports multiple devices, we have to get a list of devices first. In theory, we can also do this in preparation and hard-code the device ID within the next operation. But again, as there is no official documentation of the API this might change or the ID (which is more of a name) might not that unique and may change within any future updates. 
+## Reading Data From the Sensor
 
-So let's catch the device name, or `dsn` as it is called by the external API. Again we are using a Web request with the last token we got from the auth-process.
+Compared to the auth process, fetching actual data from the API is done with fewer requests – just two are needed. As the vendor supports multiple devices, we have to get a list of devices first. In theory, we can also do this in preparation and hard-code the device ID within the next operation. But again, as there is no official documentation of the API this might change or the ID might not that unique and may change within any future updates. 
 
-The GET URL is static and does not contain any dynamic value this time.
+So let's identify the device name, or `dsn` as it is called by the external API. 
+
+Create a Request operation with the final token we got from the authentication operations.
+
 
 | Method | URL |
 | --- | --- |
 | GET | https://ads-field-eu-1a2039d9.aylanetworks.com/apiv1/devices.json |
+
 As header parameter, we set the following:
 
 | Header | Value |
 | --- | --- |
 | Authorization | `auth_token {{$last.data.access_token}}` |
-As you can see, we use the `{{ … }}` to pass the access_token from the last auth request.
 
-If everything works so far, the JSON we receive looks something like this, but for security reasons, some data was removed or masked as it also contains coordinates, MAC addresses, IP addresses and so on:
+If everything works so far, the JSON we receive looks something like this, but for security reasons, some data was removed or masked as it also contains coordinates, MAC addresses, IP addresses, and so on:
+
 ```json
 {
   "status": 200,
@@ -119,7 +122,7 @@ If everything works so far, the JSON we receive looks something like this, but f
 }
 ```
 
-The device object has exactly one tracker and provides us with the `dsn` as well as the flag for `has_properties`. With the next operation, we will request all of these properties to extract the sensor data from the tracker.
+The device object has exactly one tracker and provides us with the `dsn` as well as the flag for `has_properties`.
 
 Create one more Request operation to actually, finally, fetch sensor data.
 
