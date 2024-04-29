@@ -7,121 +7,62 @@ author:
 ---
 
 ## Introduction
-Next.js is a React.js server-side rendering framework that allows front-end developers to build full-stack applications with a single codebase. It has turborpack the rust-based bundler built-in for enhanced code optimization and fast code compilation. It’s a great choice for performance, efficiency and developer experience. In this tutorial, you will learn how to implement Authentication on a Next.js blog website using Directus as a Headless CMS. You’ll register new users, login, handle refresh tokens, create posts, list all posts, and edit/delete posts where the auth user is the post creator.
+In this tutorial, you will learn how to implement Authentication on a Next.js blog website using Directus as a Headless CMS. You’ll register new users, login, handle refresh tokens, create posts, list all posts, and edit/delete posts where the auth user is the post creator.
 
 ## Before You Start
 To follow along with this tutorial, you will need the following knowledge and tools:
 
 - [Node.js](https://nodejs.org/en/download/) v18 and above installed on your computer.
-- A Directus project - you can use [Directus Cloud or run it yourself](https://docs.directus.io/getting-started/quickstart).
-- Prior experience with Nextjs.
-- Clone the [project repo](https://github.com/emmanuelhashy/Next-directus-auth-demo) to get the CSS styles for the demo project.
+- A Directus project - follow our [quickstart guide](https://docs.directus.io/blog/docs.directus.io/getting-started/quickstart.html) if you don't already have one.
+- Prior experience with Next.js.
 
 <!-- ## Your Sections Here -->
-## Setting Up Directus
+## Allowing Public Role To Create Users
 
-### Creating a New User Role
-
-Log into your Directus dashboard with your admin credentials, head over to `Settings > Access Control`, and create a new role for users accessing your Directus project from the Next.js application. Name this role `Author`. Uncheck the app access checkbox; you do not want users to access your Directus project via the dashboard but only from the Next.js application.
-
-![Directus create role screenshot](directus-create-role.png)
-
-**Setting Public Role Permission for Directus Users**
-Now, you should find two categories of users when you navigate to the User Directory: Administrator and Author.
-To ensure that a new user on your frontend application can only sign up as an author, navigate to the Access Control settings, click on the Author role, look at the info icon in the top right corner of the screen, and copy the `Primary Key`.
-
-![Directus author role settings](directus-role-settings.png)
-
-Navigate to the Public role settings and in the `directus_users` system collection, configure custom create permissions to allow user creation where `role` equals the Author role `Primary Key` you copied earlier.
-
+1. Navigate to `Settings`.
+2. Select `Access Control`.
+3. Click on the `Public Role`.
+4. Access the `System Collection`.
+5. Locate `directus_users`.
+6. Under the `Create` option, choose `Use Custom`.
+7. Enable field permissions for `first_name`, `last_name`, `role`, `Email` and `Password` options.
+![Directus public role field permission settings](public-role-field-permission-settings.png)
+8. Enable field validation where `role` equals the Author role `Primary Key`
 ![Directus public role field validation settings](public-role-field-validation-settings.png)
 
-Click on `Field Permission` and check the fields required to create a user.
+## Creating posts collection
 
-![Directus public role field permission settings](public-role-field-permission-settings.png)
-
-The required fields are:
-
-- first_name
-- last_name
-- email
-- password
-- role
-
-**Creating posts collection**
-Navigate to `Settings/Data Model` and create a new collection named `posts`. This is where all the posts created by users with an Author role will be stored.
-
-![Directus posts collection setup](Directus-posts-collection-setup.png)
-
-Check the fields that you want returned on the `posts` data
-
+1. Navigate to `Settings`.
+2. Select `Data Model`.
+3. Create a new collection named `posts`.
+4. Check the fields that you want returned on the `posts` data
 ![Directus posts optional fields settings](Directus-posts-optional-fields-settings.png)
-
-Create additional fields for the post:
+5. Create additional fields for the post:
 
 - title => Input field
 - content => WYSIWYG
 - image => Image
-
 The `title` and `content` fields should be required.
+![Directus post additional fields settings](Directus-post-additional-fields-settings-1.png)
 
-![Directus post additional fields settings](![alt text](Directus-post-additional-fields-settings-1.png)
+## Creating a New User Role
 
-## **Initialize Next.js Project**
+1. On the Access Control page, click the plus button.
+2. Name your new role, as `Author`.
+3. Under the "Posts" collection, enable `Create` and `Read`.
+4. For `Edit` and `Delete`, select `Use Custom`.
+5. Add Filter `user_created -> id Equals $CURRENT_USER.id` for both update and delete options.
+6. This configuration ensures that users can read all posts but are restricted to updating and deleting only their own posts.
+7. Retrieve the `Primary Key` associated with the `Author` role by selecting the `Author Role` option and then tapping the information icon where you'll be able to copy the `Primary Key`
+8. On the Access Control page, click `Public`. Click `create` for `directus_users` from the options, then click on `Use custom`. Proceed to `field presets` and paste the Primary Key.
 
-Open your terminal and run the following command to create a new Next.js project:
+By following these steps users created by the public role will be given the `Author` role.
 
-```bash
-npx create-next-app@latest
-```
-
-On installation, choose the following configurations when prompted:
-
-```text
-What is your project named? next-blog
-Would you like to use TypeScript? No
-Would you like to use ESLint? Yes
-Would you like to use Tailwind CSS? No
-Would you like to use `src/` directory? Yes
-Would you like to use App Router? Yes
-Would you like to customize the default import alias (@/*)? Yes
-```
-
-After the prompts, `create-next-app` will create a folder with your project name and install the required dependencies.
-
-Install the required dependencies:
-
-```bash
-    npm i next-auth @directus/sdk
-```
-
-## Set Up the ENV Variables
-
-Create a `.env` file in your Next.js project root directory and add the following:
+Add the following to your `.env` file:
 
 ```text
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=YOUR_NEXT_RANDOM_SECRET
 USER_ROLE=USER_ROLE_ID_FROM_YOUR_DIRECTUS_PROJECT
-BACKEND_URL=YOUR_DIRECTUS_PROJECT_URL
-NEXT_PUBLIC_URL=http://localhost:3000
 ```
-
-You can access your Directus project from the Next.js application via `REST`, `GraphQL` and `SDK`. 
-
-## Set Up the Directus SDK
-
-Create an instance of the Directus SDK that will be used across the next.js application.
-In the `next-blog` project `src` directory, create a new directory called `lib` and a new file called `directus.js` inside `lib`, then add the following code:
-
-```javascript
-import { createDirectus, rest, authentication } from '@directus/sdk';
-const directus = createDirectus(process.env.BACKEND_URL)
-  .with(authentication("cookie", {credentials: "include", autoRefresh: true}))
-export default directus;
-```
-
-This code snippet sets up a client for interacting with the Directus backend with cookie-based authentication, ensuring that credentials are included in requests and enabling automatic token refresh.
 
 ## Setting up Layout Configuration
 
@@ -130,13 +71,15 @@ Create a `components` directory with `navbar` subdirectory. Inside  `navbar` cre
 ```javascript
 import Link from "next/link"
 import Links from "./links/Links"
-import styles from "./navbar.module.css"
 import { auth } from "@/lib/auth";
+
 const Navbar = async () => {
+
   const session = await auth();
+
   return (
-    <div className={styles.container}>
-      <Link href="/" className={styles.logo}>CRUD APP</Link>
+    <div>
+      <Link href="/">CRUD APP</Link>
       <div>
         <Links session={session}/>
       </div>
@@ -151,10 +94,9 @@ In `navbar` create a `links` directory with `Links.jsx` and add the following:
 ```javascript
 "use client";
 import { useState } from "react";
-import styles from "./links.module.css";
 import NavLink from "./navLink/navLink";
-import Image from "next/image";
 import { handleLogout } from "@/lib/action";
+
 const links = [
   {
     title: "Home",
@@ -169,60 +111,43 @@ const links = [
     path: "/create-post",
   },
 ];
+
 const Links = ({session}) => {
   const [open, setOpen] = useState(false);
+
   return (
-    <div className={styles.container}>
-      <div className={styles.links}>
+    <div>
+      <div>
         {links.map((link) => (
           <NavLink item={link} key={link.title} />
         ))}
         {session?.user ? (
           <>
             <form action={handleLogout}>
-              <button className={styles.logout}>Sign out</button>
+              <button>Sign out</button>
             </form>
           </>
         ) : (
           <NavLink item={{ title: "Sign in", path: "/login" }} />
         )}
       </div>
-      <Image
-        className={styles.menuButton}
-        src="/menu.png"
-        alt=""
-        width={30}
-        height={30}
-        onClick={() => setOpen((prev) => !prev)}
-      />
-      {open && (
-        <div className={styles.mobileLinks}>
-          {links.map((link) => (
-            <NavLink item={link} key={link.title} />
-          ))}
-        </div>
-      )}
     </div>
   );
 };
 export default Links;
 ```
 
-In `links` create a `navLink` directory with `navLinks.jsx` and add the following:
+In `links` create a `navLink` directory with `navLink.jsx` and add the following:
 
 ```javascript
 "use client";
 import Link from "next/link";
-import styles from "./navLink.module.css";
-import { usePathname } from "next/navigation";
+
 const NavLink = ({ item }) => {
-  const pathName = usePathname();
+
   return (
     <Link
       href={item.path}
-      className={`${styles.container} ${
-        pathName === item.path && styles.active
-      }`}
     >
       {item.title}
     </Link>
@@ -234,22 +159,20 @@ export default NavLink;
 To render the `Navbar` component on all pages, update `Layout.js` as follows:
 
 ```javascript
-import { Inter } from "next/font/google";
-import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
-const inter = Inter({ subsets: ["latin"] });
+
 export const metadata = {
   title: {
     default:"Next.js 14 Homepage",
-    template:"%s | Next.js 14"
   },
-  description: "Next.js starter app description",
+  description: "Next.js Directus app",
 };
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-          <div className="container">
+      <body>
+          <div>
             <Navbar />
             {children}
           </div>
@@ -509,16 +432,17 @@ The auth pages consist of the login and the register pages. To group these pages
 Create a `components` directory and a `loginForm` subdirectory. Inside `loginForm` create `loginForm.jsx` and add the following:
 
 ```javascript
-//src/app/(auth)/login
+//src/app/components/loginForm/loginForm.jsx
 "use client";
 import { login } from "@/lib/action";
-import styles from "./loginForm.module.css";
 import { useFormState } from "react-dom";
 import Link from "next/link";
+
 const LoginForm = () => {
   const [state, formAction] = useFormState(login, undefined);
+
   return (
-    <form className={styles.form} action={formAction}>
+    <form action={formAction}>
       <input type="email" placeholder="email" name="email" />
       <input type="password" placeholder="password" name="password" />
       <button>Login</button>
@@ -537,25 +461,28 @@ export default LoginForm;
 In the `components` directory, create a `registerForm` subdirectory. Inside `registerForm` create `registerForm.jsx` and add the following:
 
 ```javascript
-//src/app/(auth)/register
+//src/app/components/registerForm/registerForm.jsx
 "use client";
 import { register } from "@/lib/action";
-import styles from "./registerForm.module.css";
 import { useFormState } from "react-dom";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+
 const RegisterForm = () => {
   const [state, formAction] = useFormState(register, undefined);
+
   const router = useRouter();
   const [error, setError] = useState('')
+
   useEffect(() => {
     state?.status === 201 && router.push("/login");
     state?.status === 409 && setError('A user with this email already exist');
   }, [state?.status, router]);
   
+
   return (
-    <form className={styles.form} action={formAction}>
+    <form action={formAction}>
       <input type="text" placeholder="First name" name="first_name" />
       <input type="text" placeholder="Last name" name="last_name" />
       <input type="email" placeholder="email" name="email" />
@@ -577,12 +504,13 @@ export default RegisterForm;
 In the `(auth)` directory, create a `register` subdirectory. Inside `register` create `page.jsx` and add the following:
 
 ```javascript
-import styles from "./register.module.css";
+//src/app/(auth)/register/page.jsx
 import RegisterForm from "@/components/registerForm/registerForm";
+
 const RegisterPage = () => {
   return (
-    <div className={styles.container}>
-      <div className={styles.wrapper}>
+    <div>
+      <div>
         <RegisterForm/>
       </div>
     </div>
@@ -607,13 +535,14 @@ Navigate to `http://localhost:3000/register` in your browser and you should see 
 In the `(auth)` directory, create a `login` subdirectory. Inside `login` create `page.jsx` and add the following:
 
 ```javascript
-//(auth)/login/page.jsx
+//src/app/(auth)/login/page.jsx
 import LoginForm from "@/components/loginForm/loginForm";
-import styles from "./login.module.css";
+
 const LoginPage = () => {
+
   return (
-    <div className={styles.container}>
-      <div className={styles.wrapper}>
+    <div>
+      <div>
         <LoginForm />
       </div>
     </div>
@@ -623,7 +552,7 @@ export default LoginPage;
 ```
 
 With the above implementation, registered users should be able to sign in and sign out.
-Navigate to `http://localhost:3000/register` in your browser and you should see the following:
+Navigate to `http://localhost:3000/login` in your browser and you should see the following:
 
 ![Login page](login-page.png)
 
@@ -681,23 +610,24 @@ In the `app` directory, create a subdirectory `create-post`. Inside `create-post
 
 ```javascript
 //src/app/create-post/page.jsx
-import styles from "./create.module.css";
 import CreatePostForm from "@/components/createPostForm/createPostForm";
 import { cookies } from "next/headers";
-const AdminPage = async () => {
+
+const CreatePostPage = async () => {
   const cook = cookies().get("auth_user")
   const user = JSON.parse(cook.value)
+
   return (
-    <div className={styles.container}>
-      <div className={styles.row}>
-        <div className={styles.col}>
+    <div>
+      <div>
+        <div>
           <CreatePostForm userId = {user?.id} />
         </div>
       </div>
     </div>
   );
 };
-export default AdminPage;
+export default CreatePostPage;
 ```
 
 In the `components` directory, create a subdirectory `createPostForm`. Inside `createPostForm`  create `createPostForm.jsx` with the content:
@@ -706,21 +636,23 @@ In the `components` directory, create a subdirectory `createPostForm`. Inside `c
 //src/components/createPostForm/createPostForm.jsx
 "use client"
 import { addPost } from "@/lib/action";
-import styles from "./createPostForm.module.css";
 import { useFormState } from "react-dom";
+
 const CreatePostForm = ({userId}) => {
   const [state, formAction] = useFormState(addPost, undefined);
   
   return (
-    <form action={formAction} className={styles.container}>
-      <h1>Add New Post {userId}</h1>
-      <input type="hidden" name="userId" value={userId} />
-      <input type="text" name="title" placeholder="Title" />
-      <input type="file" name="image" placeholder="upload image" accept="image/*"/>
-      <textarea type="text" name="content" placeholder="content" rows={10} />
-      <button>Add</button>
-      {state?.error}
-    </form>
+    <div>
+      <form action={formAction} >
+        <h1>Add New Post</h1>
+        <input type="hidden" name="userId" value={userId} />
+        <input type="text" name="title" placeholder="Title" />
+        <input type="file" name="image" placeholder="upload image" accept="image/*"/>
+        <textarea type="text" name="content" placeholder="content" rows={10} />
+        <button>Add</button>
+        {state?.error}
+      </form>
+    </div>
   );
 };
 export default CreatePostForm;
@@ -769,14 +701,15 @@ In the `app` directory, create a `blog` subdirectory. Inside `blog` create `page
 ```javascript
 //src/app/blog/page.jsx
 import PostCard from "@/components/postCard/postCard";
-import styles from "./blog.module.css";
 import { getPosts } from "@/lib/action";
+
 const BlogPage = async () => {
   const posts = await getPosts()
+
   return (
-    <div className={styles.container}>
+    <div>
       {posts.map((post) => (
-        <div className={styles.post} key={post.id}>
+        <div key={post.id}>
           <PostCard post={post} />
         </div>
       ))}
@@ -786,32 +719,33 @@ const BlogPage = async () => {
 export default BlogPage;
 ```
 
-The blog page fetches the posts data asynchronously using the `getPosts` function and renders a `PostCard` component for each post fetched.
+The blog page fetches posts data asynchronously using the `getPosts` function and renders a `PostCard` component for each post fetched.
 
 In the `components` directory, create a `postCard` subdirectory. Inside `postCard` create `postCard.jsx` and add the following to render the posts data:
 
 ```javascript
 //src/components/postCard/postCard.jsx
-import styles from "./postCard.module.css"
 import Link from "next/link"
 import directus from "@/lib/directus"
 import PostUser from "../postUser/postUser"
+
 const PostCard = async ({post}) => {
+
   return (
-    <div className={styles.container}>
-      <div className={styles.top}>
-        {post.image && <div className={styles.imgContainer}>
-          <img src={`${directus.url}assets/${post.image.filename_disk}?width=300`} alt="" fill className={styles.img}/>
+    <div >
+      <div>
+        {post.image && <div >
+          <img src={`${directus.url}assets/${post.image.filename_disk}?width=300`} alt="" fill/>
         </div>}
       </div>
-      <div className={styles.bottom}>
-        <h1 className={styles.title}>{post.title}</h1>
-        
+      <div >
+        <h1>{post.title}</h1>
+       
         <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
-        <div className={styles.spaceY}>
+        <div >
           <PostUser user={post.user_created} />
         </div>
-        <Link className={styles.link} href={`/blog/${post.id}`}>READ MORE</Link>
+        <Link href={`/blog/${post.id}`}>READ MORE</Link>
       </div>
     </div>
   )
@@ -819,19 +753,18 @@ const PostCard = async ({post}) => {
 export default PostCard
 ```
 
-Click the `READ MORE`  link to get to the corresponding detail blog post page.
+Click on the `READ MORE`  link to get to the corresponding detail blog post page .
 
 In the `components` directory, create a `postUser` subdirectory. Inside `postUser` create `postUser.jsx` and add the following to render the post creator data:
 
 ```javascript
 //src/components/postUser/postUser.jsx
-import { getUser } from "@/lib/data";
-import styles from "./postUser.module.css";
-import Image from "next/image";
 import directus from "@/lib/directus";
+
 const PostUser = async ({ user }) => {
+
   return (
-    <div className={styles.container}>
+    <div>
       <img
         src={
           user?.photo
@@ -840,12 +773,10 @@ const PostUser = async ({ user }) => {
         }
         alt=""
         fill
-        className={styles.avatar}
       />
-      <div className={styles.texts}>
-        <span className={styles.title}>Author</span>
+      <div>
+        <span>Author</span>
         <span
-          className={styles.username}
         >{`${user?.first_name} ${user?.last_name}`}</span>
       </div>
     </div>
@@ -863,7 +794,7 @@ Navigate to `http://localhost:3000/blog` in your browser and you should see all 
 
 ### Server Action to Fetch a Single Post Data
 
-To fetch a single post data from the `Directus` backend, navigate to the `lib/action.js` file and add the following:
+To fetch a single post data from `Directus` backend, navigate to the `lib/action.js` file and add the following:
 
 ```JavaScript
 //src/lib/action.js
@@ -898,63 +829,66 @@ Each blog post links to a single post detail page. In the `blog` directory, crea
 ```JavaScript
 //src/app/blog/[slug]/page.jsx
 import { redirect } from 'next/navigation'
-import styles from "./singlePost.module.css";
 import PostUser from "@/components/postUser/postUser";
 import { Suspense } from "react";
-import { getPost } from "@/lib/data";
 import directus from "@/lib/directus";
-import { deletePost } from "@/lib/action";
+import { deletePost, getPost } from "@/lib/action";
 import Link from "next/link";
 import { cookies } from "next/headers";
+
 export const generateMetadata = async ({ params }) => {
   const { slug } = params;
   const post = await getPost(slug);
+
   return {
     title: post.title,
   };
 };
+
 const SinglePostPage = async ({ params }) => {
   const { slug } = params;
   const post = await getPost(slug);
   const cookie = cookies().get("auth_user")
   const user = JSON.parse(cookie.value)
+
   const handleDelete = async (data) => {
     "use server";
     const postId = data.get("postId");
     deletePost(postId)
     redirect('/blog')
   };
+
   return (
-    <div className={styles.container}>
+    <div>
       {post.image && (
-        <div className={styles.imgContainer}>
-          <img src={post.image ? `${directus.url}assets/${post.image.filename_disk}?width=400` : "/noavatar.png" } alt="" fill className={styles.img}/>
+        <div>
+          <img src={post.image ? `${directus.url}assets/${post.image.filename_disk}?width=400` : "/noavatar.png" } alt="" fill/>
         </div>
       )}
-      <div className={styles.textContainer}>
-        <h1 className={styles.title}>{post.title}</h1>
-        <div className={styles.detail}>
+      <div>
+        <h1>{post.title}</h1>
+        <div>
           {post && (
             <Suspense fallback={<div>Loading...</div>}>
               <PostUser user={post.user_created} />
             </Suspense>
           )}
-          <div className={styles.detailText}>
-            <span className={styles.detailTitle}>Published</span>
-            <span className={styles.detailValue}>
+          <div>
+            <span>Published</span>
+            <span>
               {post.date_created.toString().slice(2, 16)}
             </span>
           </div>
-          {user?.id === post?.user_created?.id &&  <div className={styles.btnContainer}>
-            <Link href={`/update-post/${post.id}`} style={{color: "white", backgroundColor: "green" }} className={styles.btn}>Edit</Link>
+          {user?.id === post?.user_created?.id &&  <div>
+            <Link href={`/update-post/${post.id}`}>Edit</Link>
             <form action={handleDelete}>
             <input name="postId" style={{visibility: "hidden"}} value={post?.id}/>
             <input name="userId" style={{visibility: "hidden"}} value={user?.id}/>
-            <button style={{color: "white", backgroundColor: "red" }} className={styles.btn}>Delete</button>
+            <button >Delete</button>
           </form>
           </div>}
         </div>
-        <div className={styles.content} dangerouslySetInnerHTML={{ __html: post.content }}></div>
+        <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
       </div>
     </div>
   );
@@ -1015,10 +949,11 @@ The `updatePost` function handles both the case of updating the post content and
 In the `app` directory, create a subdirectory `update-post`. Inside `update-post`  create a subdirectory `[slug]`. Inside `[slug]` create `pages.jsx` with the content:
 
 ```javascript
-import styles from "./update.module.css";
+//src/app/update-post/[slug]/page.jsx
 import { getPost } from "@/lib/action";
 import { cookies } from "next/headers";
 import UpdatePostForm from "@/components/updatePostForm/updatePostForm";
+
 const UpdatePage = async ({ params }) => {
   const { slug } = params;
   const post = await getPost(slug);
@@ -1026,9 +961,9 @@ const UpdatePage = async ({ params }) => {
   const user = JSON.parse(cook.value)
 
   return (
-    <div className={styles.container}>
-      <div className={styles.row}>
-        <div className={styles.col}>
+    <div>
+      <div>
+        <div>
           <UpdatePostForm post={post} userId = {user?.id} />
         </div>
       </div>
@@ -1041,10 +976,11 @@ export default UpdatePage;
 In the `components` directory, create a subdirectory `updatePostForm`. Inside `updatePostForm`  create `updatePostForm.jsx` with the content:
 
 ```javascript
+//src/components/updatePostForm/updatePostForm.jsx
 "use client"
 import { updatePost } from "@/lib/action";
-import styles from "./updatePostForm.module.css";
 import { useState } from "react";
+
 const UpdatePostForm = ({userId, post}) => {
   const [formState, setFormState] = useState({
     id: post.id,
@@ -1053,18 +989,21 @@ const UpdatePostForm = ({userId, post}) => {
     content: post.content,
     userId
   });
+
   const handleSubmit = () => {
     updatePost(formState)
   }
   
   return (
-    <form onSubmit={handleSubmit} className={styles.container}>
-      <h1>Update {post.title}</h1>
-      <input type="text" name="title" value={formState.title} onChange={(e)=> setFormState({...formState, title: e.target.value}) } placeholder="Title" />
-      <input type="file" name="image" onChange={(e)=> setFormState({...formState, image: e.target.files[0]}) } placeholder="upload image" accept="image/*"/>
-      <textarea type="text" name="content" value={formState.content} onChange={(e)=> setFormState({...formState, content: e.target.value}) } placeholder="content" rows={10} />
-      <button>Update</button>
-    </form>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <h1>Update {post.title}</h1>
+        <input type="text" name="title" value={formState.title} onChange={(e)=> setFormState({...formState, title: e.target.value}) } placeholder="Title" />
+        <input type="file" name="image" onChange={(e)=> setFormState({...formState, image: e.target.files[0]}) } placeholder="upload image" accept="image/*"/>
+        <textarea type="text" name="content" value={formState.content} onChange={(e)=> setFormState({...formState, content: e.target.value}) } placeholder="content" rows={10} />
+        <button>Update</button>
+      </form>
+    </div>
   );
 };
 export default UpdatePostForm;
@@ -1101,5 +1040,3 @@ Click the `Delete` button on a detail post page to delete the post.
 With this tutorial, you’ve learnt how to implement Directus authentication in a Next.js 14 Project, dynamically create, read, update, and delete posts, and successfully build a full-stack CRUD application with Directus for the backend and Next.js for the frontend.
 
 There are so many ways this can be improved, and I can’t wait to see what you build next with Directus and Next.js.
-
-## Summary
