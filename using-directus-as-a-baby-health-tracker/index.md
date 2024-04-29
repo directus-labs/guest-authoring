@@ -187,8 +187,9 @@ Some of the keys are self-speaking while others are not clear. Due to the lack o
 
 In our case, we are using `ox` as the oxgenlevel, `hr` as heartrate, `bat` as battery level, and `st` as the skin temperature.
 
-##### Saving the data within Directus
-The last step within the flow is to save the gathered data within the collection we've set up already. The payload of the create operation  looks like this:
+## Saving the Sensor Data
+
+The last step within the Flow is to save the gathered data within the collection we've set up already. The payload of the create operation looks like this:
 
 ```Json
 {
@@ -199,8 +200,6 @@ The last step within the flow is to save the gathered data within the collection
     "battery_level": "{{$last.bat}}"
 }
 ```
-
-From here, we have all the basic data saved within Directus, if the Flow runs without any issues, don't forget to turn off the logging of the flow and maybe also the logging for the data collection to reduce the amount of overhead data within the Flow log and activity table for the collection.
 ## Reporting
 ### Insights
 As the Insights module is built in Directus, you can create any report with the data just as you need it. In our case, we've created the following dashboard:
