@@ -6,7 +6,6 @@ author:
   avatar_file_name: './clara-ekekenta.avif'
 ---
 
-## Introduction
 Flutter is an open-source mobile app development framework created by Google. In this tutorial, you will learn how to build an application using Directus as a Headless CMS. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items, and build a blog.
 
 ## Before You Start
@@ -149,12 +148,11 @@ class MyApp extends StatelessWidget {
 This will use the `FutureBuilder` to fetch the global metadata from Directus. Once the data is loaded, you will use it throughout your application for the app `title`, and `description` of your application.
 
 ## Creating Pages With Directus
+
 Create a new collection called pages - make the Primary ID Field a "Manually Entered String" called slug, which will correlate with the URL for the page. For example about will later correlate to the page localhost:3000/about.
 
 Create a text input field called `title` and a WYSIWYG input field called `content`. In Access Control, give the Public role read access to the new collection. Create 3 items in the new collection - [here's some sample data](https://github.com/directus-labs/getting-started-demo-data).
     
-![creating the pages collection](./Screenshot%202024-04-25%20at%2012.21.16.png)
-
 Add a new method to fetch pages in your `DirectusService` class from Directus in the `directus_service.dart` file:
     
 ```
@@ -207,6 +205,7 @@ class PageWidget extends StatelessWidget {
   }
 }
 ```
+
 This will render the content of your `pages` collection and use the `flutter_html` package to convert the WYSIWYG content to HTML. Update the the code in your `main.dart` file to use the page widget:
 
 ```
@@ -283,14 +282,10 @@ Create another collection called `posts` and add the following fields:
 - **image**: Image relational field
 - **author**: Many-to-one relational field with the related collection set to `authors`
 
-![Creating the posts collection in Directus CMS](./Screenshot%202024-04-25%20at%2011.59.26.png)
-
 Add 3 items in the `posts` collection - [here's some sample data](https://github.com/directus-community/getting-started-demo-data).
 
-![Adding entries to Directus collection](./Screenshot%202024-04-25%20at%2012.08.36.png)
-
-
 ## Create Blog Post Listing
+
 Add a new method to your `DirectusService` class to fetch blog posts from Directus:
     
 ```
@@ -451,9 +446,11 @@ class MyApp extends StatelessWidget {
   }
 }
 ```
+
 ![Display the contents fron the posts collection](./Screenshot%202024-04-25%20at%2018.13.57.png)
 
-## Create Blog Post Single
+## Create Blog Post Detail
+
 Create a new file called `post_single.dart` file in the `lib/screens` directory. Then create a `BlogPostWidget`:
 
 ```
@@ -491,10 +488,11 @@ class BlogPostWidget extends StatelessWidget {
 ```
     
 The `BlogPostWidget` serves as the single blog post view. When a user clicks on a blog post from the listing, the app navigates to this widget, displaying the full content of the selected post.
-    
-    
+        
 ## Add Navigation
+
 Update the `BlogPostItem` class in the `lib/screens/home_screen.dart` file to add navigation to the project:
+
 ```
 class BlogPostItem extends StatelessWidget {
   final dynamic blogPost;
@@ -531,9 +529,11 @@ class BlogPostItem extends StatelessWidget {
   }
 }
 ```
+
 With the above code, when the user taps on the `BlogPostItem`, it triggers the `onTap` callback function. Inside this function, the `Navigator.push` will navigate to a new screen. `MaterialPageRoute` will define the widget to be displayed on the new screen as `BlogPostWidget`. Also, the `blogPost` data is passed as a parameter to the `BlogPostWidget` widget. This will allow you to display detailed information about the selected `blog` post on the new screen.
 
 ![Navigating to the blog single page](./Screenshot%202024-04-25%20at%2018.14.17.png)
 
 ## Summary
+
 Throughout this tutorial, you've learned how to build a Flutter application that uses data from a Directus project. You started by creating a new project, set up environment variables and everything you need to call Directus. You then created pages and posts collections in Directus and integrated them with the the Flutter.
