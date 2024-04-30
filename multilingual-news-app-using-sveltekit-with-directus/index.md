@@ -1,12 +1,13 @@
 ---
-title: 'Implementing Internationalization with SvelteKit and Directus'
-description: 'This tutorial will guide you through building a SvelteKit application with multilingual content.'
+title: "Implementing Internationalization with SvelteKit and Directus"
+description: "This tutorial will guide you through building a SvelteKit application with multilingual content."
 author:
-  name: 'Ekekenta Clinton'
-  avatar_file_name: './ekekenta-clinton.png'
+  name: "Ekekenta Clinton"
+  avatar_file_name: "./ekekenta-clinton.png"
 ---
 
 ## Introduction
+
 In this tutorial, you'll learn how to build an application using Sveltekit with Directus and multilingual content.
 
 ## Before You Start
@@ -20,40 +21,36 @@ You will need:
 
 The code for this tutorial is available on my [GitHub repository](https://github.com/icode247/directus-i18n-app).
 
-## The Concept of i18n
+## Installing SvelteKit and setting up a new project.
 
-i18n is the process of creating applications that support multiple languages. The phrase i18n represents the first and the last letters of the word **internationalization**. The number 18 denotes the number of letters between the first and the last letter. The main goal of i18n is to conveniently create applications that support multiple languages or locations without having to redesign the application to add those languages.
-
-
-## Understanding Directus i18n API
-
-Directus is an open-source headless Content Management System that provides a robust API for managing content. It offers an i18n API that enables the internationalization and localization of content within the system.
-
-The Directus i18n API allows you to manage translations for various content types, such as articles, products, or any other data stored in the Directus system.
-
-With the Directus i18n API, you can build multilingual applications or websites that serve localized content to users based on their preferred language or region. 
-
-Let's start by setting up a new Svelte project using the [degit scaffolding tool](https://github.com/Rich-Harris/degit):
+Start by setting up a new Svelte project and install the required dependencies and the Directus SDK:
 
 ```
-npx degit sveltejs/template directus-i18n-app
-```
-
-Install the required dependencies:
-
-```
-cd directus-i18n-app 
+npm create svelte@latest frontend # Select the Skeleton project
+cd directus-i18n-app
 npm install
 npm install @directus/sdk
-npm install --save-dev svelte-routing
 ```
 
 In the `src/libs` directory, create a `directus.js` file to create and export a Directus SDK instance:
 
 ```
 import { createDirectus, rest } from '@directus/sdk';
-const directus = createDirectus('<YOUR DIRECTUS URL>').with(rest());
-export default directus;
+import { PUBLIC_DIRECTUS_API_URL } from '$env/static/public';
+
+function getDirectusInstance(fetch) {
+  	const options = fetch ? { globals: { fetch } } : {};
+	const directus = createDirectus(PUBLIC_DIRECTUS_API_URL).with(rest());
+	return directus;
+}
+
+export default getDirectusInstance;
+```
+
+Then create a `.env` file in the root directory of your project and add your Directus API URL:
+
+```
+PUBLIC_DIRECTUS_API_URL='https://directus.example.com';
 ```
 
 Be sure to provide your real project URL.
@@ -62,31 +59,29 @@ Be sure to provide your real project URL.
 
 In the Directus Data Studio, navigate to Settings -> Data Model and create a new collection called `news`:
 
-- `id` (Primary Key Field, Type: Auto-incremented Integer)
+- `slug` (Primary Key Field, Type: Manually entered string)
 - `author` (Type: String, Interface: Input)
 - `cover` (Type: Image)
 
 Create a collection called `languages`:
-
 - `code` (Primary Key Field, Type: Manually entered string )
 - `name` (Type: String, Interface: Input)
 - `direction` (Type: String, Interface: Dropdown, Options: `ltr` and `rtl`. Default Value: `ltr`)
 
 The `direction` field enables support for languages that read right to left.
 
-To enable content translation in your `news` collection, add a new One to Many `translations` field with the `languages` collection. Select `name` as the **Language Indicator Field** and `direction` as the **Language Direction Field**.
+To enable content translation in your `news` collection, create a `translations` field using translation interface. Select `name` as the **Language Indicator Field**, `direction` as the **Language Direction Field** and `en-US` as the Default Language.
 
 ![Creating Directus translations collection](./creating-news-translation-collection.png)
 
-Once you save, a new collection named `news_translations` will be created for you. In the `news_translations` collection, you will add the fields that need translations. 
+Once you save, a new collection named `news_translations` will be created for you. In the `news_translations` collection, you will add the fields that need translations.
 
 Add the following fields to the `news_translations` collection:
 
 - `title` (Type: String, Interface: Input)
-- `slug` (Type: String, Interface: Input)
 - `body` (Type: Text, Interface: WYSIWYG)
 
-Add each language you want to support as items in the `languages` collection. 
+Add each language you want to support as items in the `languages` collection.
 
 ![Creating new entries in the languages collections](./languages-entries.png)
 
@@ -94,28 +89,20 @@ The item page for the `news` collection now includes a translations interface.
 
 ![Creating new entries in the news collections](./news-translation-entries.png)
 
-Allow the Public role to read the `news`, `languages` and `news_translations` collections in the Access Control settings to ensure the frontend can access these fields.
+Allow the Public role to read the `news`, `languages` and `news_translations` collections in the Access Control settings to ensure the frontend can access these collections.
+
 ## Building the News App Frontend with SvelteKit
-In your Svelte project, create a `directus.js` file to initialize Dirctus SDK in your project:
+
+In your Svelte project, update your `+page.js` file to fetch your content using the SDK:
 
 ```
-import { createDirectus, rest } from '@directus/sdk';
-
-const directus = createDirectus('<YOUR DIRECTUS URL>').with(rest());
-
-export default directus;
-```
-
-Then create an `news.js` file to fetch your content using the SDK:
-```
+import getDirectusInstance from "$lib/directus";
 import { readItems } from "@directus/sdk";
-import directus from './directus';
-
-export async function fetchNews() {
-  try {
-    const response = await directus.request(
-      readItems("news",
-       {
+export async function load({ fetch }) {
+  const directus = getDirectusInstance(fetch);
+  return {
+    global: await directus.request(readItems("global")),
+    news: await directus.request(readItems("news", {
         deep: {
           translations: {
             _filter: {
@@ -128,303 +115,235 @@ export async function fetchNews() {
           },
         },
         fields: ["*", { translations: ["*"] }],
-      }
-    )
-    );
-    
-    return response;
-  } catch (error) {
-    console.error("Error fetching news:", error);
-    return [];
-  }
+      })
+    ),
+  };
 }
 ```
 
 The above code snippet will use:
-- ReadItems function to fetch all the contents in the news collection.
-- Limit parameter to only return the a single result.
-- Deep parameter to filter the related collection to only show the translations in **en-US (English US)**.
 
+- `readItems` function to fetch all the contents in the news collection.
+- `deep` parameter to filter the related collection to only show the translations in **en-US (English US)**.
 
-Next create an `NewsList.svelte` file in the **src** folder to render the news:
+Update the code in `+page.svelte` file in the **src** directory to render the news:
 
 ```
 <script>
-  export let news;
-  import { Link } from "svelte-routing";
+  export let data;
 </script>
 
 <h1>Trending Today!</h1>
-
 <ul>
-  {#each news as article}
+  {#each data.news as article}
     <li>
       <div>
         <h2>
-          <Link to={`/article/${article.translations[0].slug}`}>{article.translations[0].title}</Link>
+          <a href={`/${article.id}`}>
+            {article.translations[0].title}
+          </a>
         </h2>
         <p>By {article.author}</p>
       </div>
     </li>
   {/each}
 </ul>
-
-<style>
-  ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  li {
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 20px;
-    display: flex;
-    align-items: center;
-  }
-
-  h1 {
-    margin-bottom: 20px;
-  }
-
-  p {
-    color: #888;
-  }
-</style>
 ```
 
 The above code will:
+- Loop through the news array returned in the `+page.js` file to display the contents.
+- Attach a link to each news list pointing to the news single page.
 
-- Loop through the news array returned in the `news.js` file to display the contents.
-- Attach a link to each news list pointing to the news single page using **svelte-routing**.
-- Add some simple styles to to the page.
-
-Next, create an `SingleNews.svelte` file to render the individual news contents:
+Create a `news/+page.js` file in the `routes` directory for the route that will render the individual news contents:
 
 ```
-<script>
-  import { onMount } from "svelte";
-  import { readItems } from "@directus/sdk";
-  import directus from './directus';
-  import { navigate } from "svelte-routing";
+import { readItem } from "@directus/sdk";
+import getDirectusInstance from "$lib/directus";
+import { error } from "@sveltejs/kit";
 
-  let article;
-  let languages;
-  export let slug;
-  
-  let languageCode = "en-US";
+/** @type {import('./$types').PageLoad} */
+export async function load({ fetch, params, url }) {
+  const directus = getDirectusInstance(fetch);
 
-  async function fetchNews(slug, languageCode) {
-    try {
-      const pages = await directus.request(
-        readItems("news", {
-          deep: {
-            translations: {
-              _filter: {
-                _and: [
-                  {
-                    languages_code: { _eq: languageCode },
-                  },
-                  {
-                    slug: { _eq: slug },
-                  },
-                ],
-              },
-            },
-          },
-          fields: ["*", { translations: ["*"] }],
-          limit: 1,
+  const slug = params.slug;
+  try {
+    const [newsData, languagesData] = await Promise.all([
+      directus.request(
+        readItem("news", slug, {
+          fields: ["*", { "*": ["*"] }],
         })
-      );
+      ),
+      directus.request(readItems("languages")),
+    ]);
 
-      article = pages[0];
-    } catch (error) {
-      console.error("Error fetching news:", error);
-      navigate("/404");
-    }
+    return {
+      article: newsData ? newsData : null,
+      languages: languagesData,
+    };
+  } catch (err) {
+    error(404, "Post not found");
   }
-
-  onMount(async () => {
-    try {
-      languages = await directus.request(readItems("languages"));
-      fetchNews(slug, languageCode);
-    } catch (error) {
-      console.error("Error fetching languages:", error);
-    }
-  });
-  
-</script>
-{#if article}
-  <h1>{article.translations[0].title}</h1>
-  {@html article.translations[0].body}
-  <select bind:value={languageCode}>
-    {#if languages}
-      {#each languages as language}
-        <option value={language.code}>{language.name}</option>
-      {/each}
-    {/if}
-  </select>
-{:else}
-  <p>Article not found.</p>
-{/if}
+}
 ```
 
 The above code will:
 
-- Use the deep parameter to filter the related collection to fetch an news article that matches the translation in en-US (English US), which is the default set in the `languageCode` and matches the slug of the clicked article.
-- Fetch all the available languages from the `languages` collection and render them, so users can choose the language they need the content to be translated into.
-- Use the `@html` decorator to properly render the **WYSIWYG** `body` field content.
+- Use the `readItem` funtion to find and get the news that matches the primary key field (slug) in the news collection. 
+- Fetch all the available languages from the `languages` collection.
 
-All the content fetching functionalities will happen once the component mounts. That is why we are calling the functions in the `onMount` method.
 
-Now update the code in the add to the routing to navigation between the `NewsList` and `SingleNews` components.
+Create a `+page.svelte` file in the `routes/news` directory and add the code:
 
 ```
 <script>
-    import { fetchNews } from './news.js';
-    import { Router, Route } from 'svelte-routing';
-    import NewsList from './NewsList.svelte';
-    import SingleNews from './SingleNews.svelte';
-
-    let news = [];
-
-    async function fetchArticleData() {
-      news = await fetchNews();
-    }
-
-    fetchArticleData();
+  export let data;
+  $: ({ article, languages } = data);
 </script>
-  
-<Router>
-    <Route path="/" component={NewsList} news={news} />
-    <Route path="/article/:slug" component={SingleNews} />
-</Router>
-```
 
-## Adding Multilingual Navigation and Search
-Now let's update your project to add the multilingual navigation and search functionalities. Update the code in the `SingleNews.svelte` file to add a handler to dynamically render the article translation based on the selected language.
-
-```
-<script>
-...
-function handleLanguageChange(event) {
-    languageCode = event.target.value;
-    fetchNews(slug, languageCode);
-}
-</script>
 {#if article}
   <h1>{article.translations[0].title}</h1>
   {@html article.translations[0].body}
-  <select bind:value={languageCode} on:change={handleLanguageChange}>
-    {#if languages}
-      {#each languages as language}
-        <option value={language.code}>{language.name}</option>
-      {/each}
-    {/if}
+  <select>
+    {#each languages as language}
+      <option value={language.code}>{language.name}</option>
+    {/each}
   </select>
 {:else}
   <p>News not found.</p>
 {/if}
 ```
 
+The above code will:
+
+ - Get the languages and selected news article data returned from `news/+page.js` file and render them.
+ - Render the languages in a select field so users can choose the language they need the content to be translated into.
+- Use the `@html` decorator to properly render the **WYSIWYG** `body` field content.
+
+## Adding Multilingual Navigation and Search
+Update your project to add the multilingual navigation and search functionalities. Update the code in the `routes/news/+page.svelte` file to add a handler to dynamically render the article translation based on the selected language.
+
+```
+<script>
+  import { goto } from '$app/navigation';
+  export let data;
+  $: ({ article, languages, languageCode } = data);
+
+  let selectedLanguageCode = languageCode;
+
+  function handleLanguageChange(event) {
+    const newLanguageCode = event.target.value;
+    selectedLanguageCode = newLanguageCode; // Update the selectedLanguageCode
+    goto(`?lang=${newLanguageCode}`, { replaceState: true });
+  }
+</script>
+
+{#if article}
+  <h1>{article.translations[0].title}</h1>
+  {@html article.translations[0].body}
+  <select value={selectedLanguageCode} on:change={handleLanguageChange}>
+    {#each languages as language}
+      {console.log(language)}
+      <option value={language.code}>{language.name}</option>
+    {/each}
+  </select>
+{:else}
+  <p>News not found.</p>
+{/if}
+```
+Then, update the code in your `routes/news/+page.js` file to add a filter that allows users to dynamically select the language they need the news to be translated by adding a new URL parameter for the desired language code and use it to filter the news translations.
+
+```
+import { readItem } from "@directus/sdk";
+import getDirectusInstance from "$lib/directus";
+import { error } from "@sveltejs/kit";
+
+/** @type {import('./$types').PageLoad} */
+export async function load({ fetch, params, url }) {
+  const directus = getDirectusInstance(fetch);
+
+  const slug = params.slug;
+  const languageCode = url.searchParams.get("lang") || "en-US";
+  try {
+    const [newsData, languagesData] = await Promise.all([
+      directus.request(
+        readItem("news", slug, {
+          deep: {
+            translations: {
+              _filter: {
+                _and: [
+                  { languages_code: { _eq: languageCode } },
+                ],
+              },
+            },
+          },
+          fields: ["*", { "*": ["*"] }],
+        })
+      ),
+      directus.request(readItems("languages")),
+    ]);
+
+    return {
+      article: newsData ? newsData : null,
+      languages: languagesData,
+      languageCode,
+    };
+  } catch (err) {
+    error(404, "Post not found");
+  }
+}
+```
+
+
 ![News translation using Directus i18n API](./news-translation-result.png)
 
 Now you translate the news in English, German, and French.
 
-Next, replace the code in your `NewsList.svelte` file with the code snippets below to add search functionality:
+Replace the code in your `routes/+page.svelte` file with the code snippets below to add search functionality:
 
 ```
 <script>
-  export let news;
-  import directus from "./directus";
-  import { readItems } from "@directus/sdk";
-  import { Link } from "svelte-routing";
+  import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
+  export let data;
 
-  let searchQuery = "";
-  let searchResults = [];
+  let searchQuery = $page.url.searchParams.get("q") || "";
 
-  async function searchNews() {
-    try {
-      const result = await directus.request(
-        readItems("news", {
-          search: {
-            _or: [
-              { translations: { title: { _contains: searchQuery } } },
-              { translations: { body: { _contains: searchQuery } } },
-            ],
-          },
-          fields: ["*", { translations: ["*"] }],
-        })
-      );
-      searchResults = result;
-    } catch (error) {
-      console.error("Error searching news:", error);
-    }
-  }
-
-  $: if (searchQuery !== "") {
-    searchNews();
+  function handleSearchChange() {
+    goto(`/?q=${searchQuery}`, { replaceState: true });
   }
 </script>
 
 <h1>Trending Today!</h1>
 <div>
-  <input
-    type="text"
-    bind:value={searchQuery}
-    placeholder="Search News..."
-  />
-  <button on:click={() => searchNews()}>Search</button>
+  <input type="text" bind:value={searchQuery} placeholder="Search News..." />
+  <button on:click={handleSearchChange}>Search</button>
 </div>
 <ul>
-  {#each searchResults.length > 0 ? searchResults : news as article}
+  {#each data.news as article}
     <li>
       <div>
         <h2>
-          <Link to={`/article/${article.translations[0].slug}`}>
+          <a href={`/${article.id}`}>
             {article.translations[0].title}
-          </Link>
+          </a>
         </h2>
         <p>By {article.author}</p>
       </div>
     </li>
   {/each}
 </ul>
-
-<style>
-  ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
-  li {
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 20px;
-    display: flex;
-    align-items: center;
-  }
-  h1 {
-    margin-bottom: 20px;
-  }
-  p {
-    color: #888;
-  }
-</style>
 ```
 
 The above code will:
 
-- Define variables `searchQuery` and `searchResults` to store the user's search input and the search results, respectively.
-- Define an async function `searchNews` that sends a request to the Directus API to fetch news based on the `searchQuery`. It searches for news where the title or body contains the search query string.
-- Use a reactive statement `$:` to call the `searchNews` function whenever the `searchQuery` changes.
+- Define variables `searchQuery` to store the user's search input.
+- Initialize the `searchQuery` variable with the value of the `q` query parameter from the current URL `($page.url.searchParams.get("q"))`. If no `q` parameter is present, it defaults to an empty string.
+- Use the `handleSearchChange` to update the URL with the current `searchQuery` value using the `goto` function from `$app/navigation`. The `replaceState: true` option will replace the current history entry instead of creating a new one.
 - Render an input field and a button to allow the user to enter a search query and trigger the search.
-- Loop through the `searchResults` array if it has results or the `news` array if `searchResults` is empty to display the article titles and authors.
+- Display the searched news or all the news if no search is made.
 
 ![News list with search functionlity](./news-with-search.png)
 
 ## Summary
-Throughout this tutorial, we've learned how to build a multilingual news application using Sveltekit with the Directus i18n API. We created collections using Directus's flexible CMS, and using the i18n feature provided in Directus, we translated the news article content into different languages.
 
-Perhaps you can improve the application by adding some advanced styles to the news application, creating an authors collection, and creating a relation with the articles collection to associate each news article with an author. Additionally, you can render the blog cover images to fine-tune the news application. To learn more about Directus, visit the [documentation](https://docs.directus.io/).
+Throughout this tutorial, you've learned how to build a multilingual news application using SvelteKit and Directus. You have set up a SvelteKit project, created a Directus Wrapper, and used it to query data. We created translation collections using Directus's flexible CMS and used the translation interface to translate the news article content into different languages.
