@@ -6,14 +6,6 @@ author:
   avatar_file_name: "osiheadshot.png"
 ---
 
----
-title: "Directus and IoT: Sensor Data with an ESP32"
-description: "IoT applications can write data to Directus and have this data visualized through Directus Dashboards. This is achieved through the Directus API and an ESP32."
-author:
-  name: "Osinachi Chukwujama"
-  avatar_file_name: "osiheadshot.png"
----
-
 # Directus and IoT: Sensor Data with an ESP32
 
 IoT systems will not be complete without connecting to the internet. One easy way to connect is through a Wifi module. You can purchase an external WiFi Module or use a built-in module in a board like an ESP32. So the general idea is to collect data from sensors connected to the ESP32 through GPIO pins and then send it off to a remote server. You can spend so much time configuring this server to accept HTTP connections and store data in a data database, or you can use a ready-made that gives you a database and an API like Directus.
