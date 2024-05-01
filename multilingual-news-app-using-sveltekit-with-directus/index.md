@@ -23,7 +23,7 @@ The code for this tutorial is available on my [GitHub repository](https://github
 
 ## Installing SvelteKit and setting up a new project.
 
-Start by setting up a new Svelte project and install the required dependencies and the Directus SDK:
+Start by setting up a new Svelte project and install the required dependencies including the Directus SDK:
 
 ```
 npm create svelte@latest frontend # Select the Skeleton project
@@ -53,9 +53,7 @@ Then create a `.env` file in the root directory of your project and add your Dir
 PUBLIC_DIRECTUS_API_URL='https://directus.example.com';
 ```
 
-Be sure to provide your real project URL.
-
-## Designing a Data Model
+## Designing the Data Model
 
 In the Directus Data Studio, navigate to Settings -> Data Model and create a new collection called `news`:
 
@@ -95,9 +93,10 @@ Allow the Public role to read the `news`, `languages` and `news_translations` co
 
 In your Svelte project, update your `+page.js` file to fetch your content using the SDK:
 
-```
+```js
 import getDirectusInstance from "$lib/directus";
 import { readItems } from "@directus/sdk";
+
 export async function load({ fetch }) {
   const directus = getDirectusInstance(fetch);
   return {
@@ -126,9 +125,9 @@ The above code snippet will use:
 - `readItems` function to fetch all the contents in the news collection.
 - `deep` parameter to filter the related collection to only show the translations in **en-US (English US)**.
 
-Update the code in `+page.svelte` file in the **src** directory to render the news:
+Update the code in `+page.svelte` file in the `src` directory to render the news:
 
-```
+```js
 <script>
   export let data;
 </script>
@@ -151,12 +150,13 @@ Update the code in `+page.svelte` file in the **src** directory to render the ne
 ```
 
 The above code will:
+
 - Loop through the news array returned in the `+page.js` file to display the contents.
 - Attach a link to each news list pointing to the news single page.
 
 Create a `news/+page.js` file in the `routes` directory for the route that will render the individual news contents:
 
-```
+```js
 import { readItem } from "@directus/sdk";
 import getDirectusInstance from "$lib/directus";
 import { error } from "@sveltejs/kit";
@@ -191,7 +191,6 @@ The above code will:
 - Use the `readItem` funtion to find and get the news that matches the primary key field (slug) in the news collection. 
 - Fetch all the available languages from the `languages` collection.
 
-
 Create a `+page.svelte` file in the `routes/news` directory and add the code:
 
 ```
@@ -220,9 +219,10 @@ The above code will:
 - Use the `@html` decorator to properly render the **WYSIWYG** `body` field content.
 
 ## Adding Multilingual Navigation and Search
+
 Update your project to add the multilingual navigation and search functionalities. Update the code in the `routes/news/+page.svelte` file to add a handler to dynamically render the article translation based on the selected language.
 
-```
+```js
 <script>
   import { goto } from '$app/navigation';
   export let data;
@@ -250,9 +250,10 @@ Update your project to add the multilingual navigation and search functionalitie
   <p>News not found.</p>
 {/if}
 ```
+
 Then, update the code in your `routes/news/+page.js` file to add a filter that allows users to dynamically select the language they need the news to be translated by adding a new URL parameter for the desired language code and use it to filter the news translations.
 
-```
+```js
 import { readItem } from "@directus/sdk";
 import getDirectusInstance from "$lib/directus";
 import { error } from "@sveltejs/kit";
@@ -300,7 +301,7 @@ Now you translate the news in English, German, and French.
 
 Replace the code in your `routes/+page.svelte` file with the code snippets below to add search functionality:
 
-```
+```js
 <script>
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
