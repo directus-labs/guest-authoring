@@ -6,9 +6,7 @@ author:
   avatar_file_name: "./ekekenta-clinton.png"
 ---
 
-## Introduction
-
-In this tutorial, you'll learn how to build an application using Sveltekit with Directus and multilingual content.
+In this tutorial, you'll learn how to build an application using Sveltekit with Directus and multilingual content using Directus' translations interface.
 
 ## Before You Start
 
