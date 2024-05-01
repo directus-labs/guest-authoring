@@ -95,7 +95,6 @@ import os
 
 DIRECTUS_BASE_URL = os.environ.get("DIRECTUS_BASE_URL")
 
-
 def get_global_data():
     response = requests.get(f"{DIRECTUS_BASE_URL}/items/global")
     return response.json().get("data")
@@ -132,7 +131,6 @@ from flask import Flask, render_template // [!code ++]
 import directus // [!code ++]
 
 app = Flask(__name__)
-
 
 @app.get("/")
 def home():
@@ -194,7 +192,7 @@ def dynamic_page(slug):
 
 This route fetches page data using the `directus.get_page_by_slug` method and then renders a simple not found page (defined as an inline template string) if the page does not exist, and if it exists it renders the `dynamic-page.html` template with page data on it.
 
-Now navigate to `http://localhost:3000` and see the result
+Navigate to `http://localhost:3000/about` and see the result
 
 ![About page displaying configured data](about-page.png)
 
@@ -229,7 +227,9 @@ def get_posts():
 ```
 
 :::info Directus Query Parameters
-The `fields` parameter instructs Directus to return only the specified fields. The `sort` parameter instructs Directus to return the most recent posts first.
+
+The `fields` parameter tells Directus to return only the specified fields. The `sort` parameter tells Directus to return the most recent posts first.
+
 :::
 
 Then create a `templates/blog.html` file to display the posts data to users.
