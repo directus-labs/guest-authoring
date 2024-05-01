@@ -132,21 +132,27 @@ You can run the cURL command with different values of temperature and humidity t
 
 ## Connecting the ESP32 and the DHT22 with Physical Components
 
-A DHT22 sensor can connect directly to an ESP32 using three pins. DHT22 comes in two types, 3-pin type and 4-pin type. The 3-pin type doesn't require extra configuration. You simply connect ground to ground, VCC to 5V output, and data to a GPIO pin, say pin 13. For the 4-pin type, simply ignore the 3rd pin from the left and connect as shown in the image below:
+A DHT22 sensor can connect directly to an ESP32 using three pins. DHT22 comes in two types, 3-pin type and 4-pin type. The 3-pin type doesn't require extra configuration. You connect ground to ground, VCC to 5V output, and data to a GPIO pin, say pin 13. For the 4-pin type, ignore the 3rd pin from the left and connect as shown in the image below:
 
 ![DHT22 to ESP32](https://github.com/vicradon/directus-guest-authoring/assets/40396070/f60a19c3-c728-4a59-ba1d-7e4a1f6a5865)
 
+### Installing DHT22 Sensor Library
 
+Since you will program your ESP32 using the Arduino IDE, you must install the [DHT sensor library by Adafruit](https://www.arduino.cc/reference/en/libraries/dht-sensor-library/). Search for the "DHT Sensor Library" in your library manager and install the corresponding library authored by Adafruit. Use the image below as a reference.
 
+![Installing the DHT22 sensor library](https://github.com/vicradon/directus-guest-authoring/assets/40396070/923c116e-1419-4b95-824f-298a5d650558)
 
-You can program your ESP32 using the Arudino IDE. You can follow the steps in this article.
+### Connecting the ESP32 Board to your Computer
 
-## Installing DHT22 sensor library
+You can see the values from the DHT22 sensor in the Arduino serial monitor. After connecting your ESP32 to your computer, choose a board and port that corresponds to your purchased board and available port on your computer. 
 
-You can use the DHT library from Adafruit to interface your DHT22 with ESP32. Simply search it up on the libraries section and install.
+![Board selector page](https://github.com/vicradon/directus-guest-authoring/assets/40396070/3a261b97-a37f-47f5-9d9b-764b7d56374e)
+
+If you are using the ESP32 Wroom 32D, choose the ESP 32 DA Module and the COM port that appears after you plug in the ESP32 to your computer via the USB cable.
 
 ### Logging temperature and humidity data to Serial
-You can see the values from the DHT22 sensor in the Arduino serial monitor. 
+
+
 
 ## Sending the temperature and humidity data to Directus
 
@@ -352,10 +358,7 @@ void loop() {
 }
 ```
 
-## Connecting the ESP32 to DHT22 on Wokwi
-To use the virtual simulation mode to carry out this tutorial, you need a Wokwi club account. This is necessary because the Wifi feature is a premium feature on Wokwi.
-
-## Sending temperature and humidity data to Directus from Wokwi
+## Visualizing the logged data using Directus Dashboard
 
 ## Conclusion
 In this tutorial you learned how to collect temperature and humidity data from a DHT22 sensor and log it to a database with the aid of Directus. You learned how to visualize how this data changes over time using Directus dashboards.
