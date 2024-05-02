@@ -33,7 +33,7 @@ For the IoT components you either use physical components or the simulator envir
 
 ### Using the Online Simulator Environment (Wokwi)
 
-1. A Wowki Club account 
+1. [A Wowki Club account](https://wokwi.com/club)
 
 ### Directus set up requirements
 
@@ -41,8 +41,8 @@ For setting up Directus, you either use a local instance of Directus using Docke
 
 #### Using the local setup
 
-1. Docker installecd locally
-2. Node.js if you cannot install Docker
+1. [Docker installed locally](https://docs.docker.com/get-docker/)
+2. [Node.js](https://nodejs.org/en/download), if you cannot install Docker
 
 #### Using the cloud setup
 
@@ -150,138 +150,66 @@ You can see the values from the DHT22 sensor in the Arduino serial monitor. Afte
 
 If you are using the ESP32 Wroom 32D, choose the ESP 32 DA Module and the COM port that appears after you plug in the ESP32 to your computer via the USB cable.
 
+![Selecting board and port](https://github.com/vicradon/directus-guest-authoring/assets/40396070/2f0dc444-f143-4e66-9187-ca6891d9077c)
+
+
 ### Logging temperature and humidity data to Serial
 
+You can log the values from the DHT22 to the serial monitor by defining variables for the temperature and humidity and then initializing the DHT object. Within the setup function, you must initialize the Serial logging and intialize the connection to the DHT22 module. Within the loop function, the sensor readings are obtained from the DHT22 and stored to the temperature and humidity variables. With all that done, these values can be logged to the serial monitor. There's a delay of 5 seconds to ensure that the DHT22 can handle accurate readings as it has a low sampling rate. When sending your data to Directus, you will increase the delay to 30 seconds or greater. Note that your Serial Monitor baud rate must be set as 115200 for you to see the values being logged.
 
+```ino
+#include <DHT.h>
+
+float temperature, humidity;
+DHT dht22_sensor(13, DHT22);
+
+void setup() {
+  Serial.begin(115200);
+  dht22_sensor.begin();
+}
+
+void loop() {
+  temperature = dht22_sensor.readTemperature();
+  humidity = dht22_sensor.readHumidity();
+
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.print("°C <-> Humidity: ");
+  Serial.print(humidity);
+  Serial.println("%");
+
+  delay(5000);
+}
+```
 
 ## Sending the temperature and humidity data to Directus
 
-#include <WiFi.h>
-#include <HTTPClient.h>
+At this point, you have your ESP32 logging data to the Serial monitor. But you actually want to send this data to Directus. You have to introduce the HTTP and WiFi libraries to achieve this. The WiFi library connects your ESP32 to the internet while the HTTP library turns your ESP32 into an HTTP agent that can make GET and POST requests among others. The script below is the complete code for logging data to Directus. Here are the things you must change for the script to work:
 
+1. Your WiFI SSID, i.e. the name of your WiFi network, as the value of the `ssid` variable on line 6.
+2. Your WiFi password on line 7.
+3.  Your Directus esp32-board user token that you used with cURL at the `Creating dummy temperature and humidity values` section of this article. You can still [regenerate the token if you lost it](https://github.com/vicradon/directus-guest-authoring/assets/40396070/ae03035a-3cfe-4238-a368-c9daf50bec65). If you have the token, set it as the <TOKEN> placeholder value on line 8.
+4.  Your WiFi gateway address is defined on line 9 as `directusEndpoint`. It won't start with localhost because the ESP32 is running as a separate system. So you must check the gateway address of your local network. This address will either start with 10, 172, or 192. Follow [this blog post](https://nordvpn.com/blog/find-router-ip-address/) for instructions for checking your gateway address on different operating systems. Note that your ESP32 and your computer running Directus must be connected to the same WiFi network for this to work.
 
-const char* ssid = "Vicradon-";
-const char* password = "bosslady";
-const char* directusToken = "Bearer Vi8m1wdXTEv0rhQtteUWaZKfHTqCOwDx";
-const char* directusEndpoint = "http://192.168.43.143:8055/items/temperature_and_humidity";
-// const char* directusEndpoint = "https://webhook.site/a004f461-5f53-450c-8d86-bc39d3ecb721";
+With all the changes made, you can upload your script to your ESP32 and observe it log temperature and humidity data on your Directus `temperature_and_humidity` collection.
 
-
-float temperature, humidity;
-
-
-
-
-
-
-void setup() {
- Serial.begin(115200);
- delay(4000);
-
-
- WiFi.mode(WIFI_STA);
- WiFi.begin(ssid, password);
- Serial.println("\nConnecting to WiFi");
- while (WiFi.status() != WL_CONNECTED) {
-   delay(500);
-   Serial.print(".");
- }
- Serial.println("Connected to WiFi");
-}
-
-
-void loop() {
- if (WiFi.status() == WL_CONNECTED) {  //Check WiFi connection status
-
-
-   temperature = 30.4;
-   humidity = 76.2;
-
-
-   HTTPClient http;
-   http.begin(directusEndpoint);
-   http.addHeader("Content-Type", "application/json");
-   http.addHeader("Authorization", directusToken);
-
-
-   String jsonPayload = "{\"temperature\":\"" + String(temperature) + "\",\"humidity\":\"" + String(humidity) + "\"}";
-
-
-   // String jsonPayload = "{\"temperature\": 23.4, \"humidity\": 34.2}";
-
-
-
-
-   Serial.println(jsonPayload);
-   // Send POST request
-   int httpResponseCode = http.POST(jsonPayload);
-
-
-   if (httpResponseCode > 0) {
-     Serial.print("HTTP Response code: ");
-     Serial.println(httpResponseCode);
-
-
-     String response = http.getString();
-     Serial.println(response);
-   } else {
-     Serial.print("Error in HTTP POST request: ");
-     Serial.println(httpResponseCode);
-   }
-
-
-   http.end();
-
-
-
-
-   Serial.print("Temperature: ");
-   Serial.print(temperature);
-   Serial.print("°C <-> Humidity: ");
-   Serial.print(humidity);
-   Serial.println("%");
-
-
- } else {
-   Serial.println("Error in WiFi connection");
- }
-
-
- delay(30000);
-}
-```
-
-
-Here’s the complete code for your use:
-
-```
+```ino
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <Arduino.h>
 #include <DHT.h>
 
-
-#define USE_SERIAL Serial
-
-
-
-
-const char* ssid = "Vicradon-Android";
-const char* password = "bosslady";
-const char* directusToken = "Bearer HKoo58BuCS2CwcttuKSYodkeqcY4beHn";
+const char* ssid = "<YOUR_WIFI_SSID>";
+const char* password = "<YOUR_WIFI_PASSWORD>";
+const char* directusToken = "Bearer <TOKEN>";
 const char* directusEndpoint = "http://192.168.43.143:8055/items/temperature_and_humidity";
 
-
 float temperature, humidity;
-
-
 DHT dht22_sensor(13, DHT22);
-
 
 void setup() {
  Serial.begin(115200);
- delay(4000);
-
+ delay(1000);
 
  WiFi.mode(WIFI_STA);
  WiFi.begin(ssid, password);
@@ -292,18 +220,13 @@ void setup() {
  }
  Serial.println("Connected to WiFi");
 
-
  dht22_sensor.begin();
 }
 
-
 void loop() {
- if (WiFi.status() == WL_CONNECTED) {  //Check WiFi connection status
-
-
+ if (WiFi.status() == WL_CONNECTED) { 
    temperature = dht22_sensor.readTemperature();
    humidity = dht22_sensor.readHumidity();
-
 
    if (!isnan(temperature) && !isnan(humidity)) {
      HTTPClient http;
@@ -311,56 +234,91 @@ void loop() {
      http.addHeader("Content-Type", "application/json");
      http.addHeader("Authorization", directusToken);
 
-
      String jsonPayload = "{\"temperature\":" + String(temperature) + ",\"humidity\":" + String(humidity) + "}";
 
-
      Serial.println(jsonPayload);
-     // Send POST request
+     
      int httpResponseCode = http.POST(jsonPayload);
-
 
      if (httpResponseCode > 0) {
        Serial.print("HTTP Response code: ");
        Serial.println(httpResponseCode);
 
-
        String response = http.getString();
        Serial.println(response);
      } else {
-       USE_SERIAL.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpResponseCode).c_str());
+       Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpResponseCode).c_str());
      }
 
-
      http.end();
-
-
-
 
      Serial.print("Temperature: ");
      Serial.print(temperature);
      Serial.print("°C <-> Humidity: ");
      Serial.print(humidity);
      Serial.println("%");
-
-
    } else {
      Serial.println("Error reading sensor data");
    }
-
-
  } else {
    Serial.println("Error in WiFi connection");
  }
-
-
  delay(30000);
 }
 ```
 
+When you open your Directus content section, you will see the values logged so far. You can increase the delay to reduce the number of logs you get per hour. Currently, the rate is 2 logs per minute (1 log every 30 seconds), so 120 logs per hour. This may or may not work for you depending on your use case.   
+
+![Dashboard with logs](https://github.com/vicradon/directus-guest-authoring/assets/40396070/a8286822-808c-4f9d-b087-3424d9e807a6)
+
 ## Visualizing the logged data using Directus Dashboard
 
+You can visualize how data in your collection change over time using Directus insights. You will find the insights dashboard under `/admin/insights`. On the insights page, create a new dashboard by clicking the central **Create Dashboard** button. This dashboard will display your temperature and humidity over time. Clicking the button opens up a modal with a form with the new dashboard's details.
+
+![Directus insights dashboard](https://github.com/vicradon/directus-guest-authoring/assets/40396070/ef098838-7e8c-4c4a-bec4-9eb9f2ee87fc)
+
+On this form, give your dashboard a name, temperature-and-humidity, and click the **Save** button
+
+![Dashboard name](https://github.com/vicradon/directus-guest-authoring/assets/40396070/49f2345b-4fcc-4946-8b81-671cc4b8986d)
+
+Directus dashboard allows you to create multiple charts in a dashboard. These charts are called panels. To create your first panel, click on the **Edit Panels** button at the top right. Clicking this button puts the dashboard's page in edit mode. In this mode, you can move already created panels around and create new panels. Click on the **Plus** button that appears to proceed with creating your first panel.
+
+![create-panel](https://github.com/vicradon/directus-guest-authoring/assets/40396070/2288f7f7-6539-40e9-a543-0b5cd9b93237)
+
+The panel creation flow starts with you choosing your chart type, and then inputting the details of that chart. The first panel you will create will display the temperature trends over time. Choose the bar chart and set the following following details:
+
+1. Collection - Temperature and Humidity
+2. X-Axis - Date Created
+3. Y-Axis - Temperature
+4. Y-Axis Function - Max
+5. Value Decimals - 2
+6. Color - #E35168
+
+After setting these details, click the checkmark icon button at the top right corner.
+
+![Bar chart details](https://github.com/vicradon/directus-guest-authoring/assets/40396070/780b20bd-878e-45b6-9a10-84a534c0a3ef)
+
+A scaled-down bar chart will be created. You can rescale it to increase the size. You can make it look even better by adding a title (Temperature over time) and an icon (Thermostat). Click on the edit button on the chart's card to set these details.
+
+![image](https://github.com/vicradon/directus-guest-authoring/assets/40396070/2ff69990-9ccc-42a1-ab36-4c6be383d8e7)
+
+With that done, repeat the process for the humidity chart. Use the following details for the panel for humidity:
+
+1. Collection - Temperature and Humidity
+2. X-Axis - Date Created
+3. Y-Axis - Humidity
+4. Y-Axis Function - Max
+5. Value Decimals - 2
+6. Color - #E35168
+7. Panel header title - Humidity over time
+8. Panel header icon - Water DO
+
+You should have the temperature and humidity charts displaying how your values changed over time. You can conclude this section by saving this dashboard.
+
+![temperature and humidity trends over time](https://github.com/vicradon/directus-guest-authoring/assets/40396070/246c5f09-1c0c-47bd-bde8-45b0fef6c607)
+
+
 ## Conclusion
-In this tutorial you learned how to collect temperature and humidity data from a DHT22 sensor and log it to a database with the aid of Directus. You learned how to visualize how this data changes over time using Directus dashboards.
+In this tutorial, you learned how to collect temperature and humidity data from a DHT22 sensor and log it to a database with the aid of Directus. You learned how to visualize how this data changes over time using Directus dashboards.
 
 Directus presents a complete BaaS solution allowing you to build content-focused and traditional web applications. It offers a plethora of services including database mirroring, user authentication, OAuth2, and HTTP APIs over data (REST and GraphQL). You can self-host Directus or use their cloud API with reasonable pricing. [Try Directus today](https://directus.cloud/)!
