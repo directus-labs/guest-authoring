@@ -69,7 +69,7 @@ directus/directus
 
 With the Directus server up and running, you should visit http://localhost:8085 to see the Directus dashboard.
 
-![Directus Dashboard](https://github.com/vicradon/directus-guest-authoring/assets/40396070/b92ae6b9-89e8-4f4f-a869-1def773f9cbc)
+![Directus Dashboard](./Directus_Dashboard.png)
 
 If you do not want to set up locally, you can easily set up on [Directus cloud](https://directus.cloud/). You can sign in using your Github account or via email. Follow this [guide to set up Directus cloud](https://docs.directus.io/getting-started/quickstart.html).
 
@@ -87,7 +87,7 @@ With all this done, you will now have a database table that can be queried via t
 
 Clicking the **Create Field** button opens up a sidebar with a form containing the details of the new field. Select **Input** as the field’s input type, then set its **Key** as **temperature** and the **type (datatype)** as **Float**.
 
-Scroll through the sidebar until you see a save button, then click on it. 
+Scroll through the sidebar until you see a save button, then click on it.
 
 Repeat the process for humidity, selecting the field type as **Input**, the key as **Humidity**, and the type (datatype) as **Float**. After both fields are created, you will have your collection ready to receive data from your IoT setup!
 
@@ -101,7 +101,7 @@ Clicking **Save** takes you to the next page where you can configure the details
 
 Now that this role has been created, create a user that will be assigned the role by scrolling to the end of the **ESP32-Writer** role page and clicking on the **Create New** button under the **Users in Role** section.
 
-Clicking the **Create New** button opens a sidebar with a form containing the new user’s details. Set the First Name as **ESP32-Board*
+Clicking the **Create New** button opens a sidebar with a form containing the new user’s details. Set the First Name as \*_ESP32-Board_
 
 Before saving the user’s details, scroll to the end of the sidebar to find the **Generate Token** button under admin options. Clicking on this button generates an authentication token you can use to create new data in your collection in an authorized manner.
 
@@ -120,8 +120,7 @@ curl --location 'http://localhost:8055/items/temperature_and_humidity' \
 --data '{"temperature": 33.34,"humidity": 80.42}'
 ```
 
-After running the curl command above, you will see a new value in the collection on your Directus dashboard (/admin/content/temperature_and_humidity). 
-
+After running the curl command above, you will see a new value in the collection on your Directus dashboard (/admin/content/temperature_and_humidity).
 
 You can run the cURL command with different values of temperature and humidity to see more data in your collection, but first, take a moment to look at the URL used in the cURL command above. It is your Directus root URL at localhost:8055 with a path /items/temperature_and_humidity. Directus gives a straightforward way to interact with collections via a REST API by appending /items to the root URL and then the collection name. You can perform API operations using the standard REST principles such as:
 
@@ -134,30 +133,29 @@ You can run the cURL command with different values of temperature and humidity t
 
 A DHT22 sensor can connect directly to an ESP32 using three pins. DHT22 comes in two types, 3-pin type and 4-pin type. The 3-pin type doesn't require extra configuration. You connect ground to ground, VCC to 5V output, and data to a GPIO pin, say pin 13. For the 4-pin type, ignore the 3rd pin from the left and connect as shown in the image below:
 
-![DHT22 to ESP32](https://github.com/vicradon/directus-guest-authoring/assets/40396070/f60a19c3-c728-4a59-ba1d-7e4a1f6a5865)
+![DHT22 to ESP32](./DHT22_to_ESP32.png)
 
 ### Installing DHT22 Sensor Library
 
 Since you will program your ESP32 using the Arduino IDE, you must install the [DHT sensor library by Adafruit](https://www.arduino.cc/reference/en/libraries/dht-sensor-library/). Search for the "DHT Sensor Library" in your library manager and install the corresponding library authored by Adafruit. Use the image below as a reference.
 
-![Installing the DHT22 sensor library](https://github.com/vicradon/directus-guest-authoring/assets/40396070/923c116e-1419-4b95-824f-298a5d650558)
+![Installing the DHT22 sensor library](./Installing_the_DHT22_sensor_library.png)
 
 ### Connecting the ESP32 Board to your Computer
 
-You can see the values from the DHT22 sensor in the Arduino serial monitor. After connecting your ESP32 to your computer, choose a board and port that corresponds to your purchased board and available port on your computer. 
+You can see the values from the DHT22 sensor in the Arduino serial monitor. After connecting your ESP32 to your computer, choose a board and port that corresponds to your purchased board and available port on your computer.
 
-![Board selector page](https://github.com/vicradon/directus-guest-authoring/assets/40396070/3a261b97-a37f-47f5-9d9b-764b7d56374e)
+![Board selector page](./Board_selector_page.png)
 
 If you are using the ESP32 Wroom 32D, choose the ESP 32 DA Module and the COM port that appears after you plug in the ESP32 to your computer via the USB cable.
 
-![Selecting board and port](https://github.com/vicradon/directus-guest-authoring/assets/40396070/2f0dc444-f143-4e66-9187-ca6891d9077c)
-
+![Selecting board and port](./Selecting_board_and_port.png)
 
 ### Logging temperature and humidity data to Serial
 
 You can log the values from the DHT22 to the serial monitor by defining variables for the temperature and humidity and then initializing the DHT object. Within the setup function, you must initialize the Serial logging and intialize the connection to the DHT22 module. Within the loop function, the sensor readings are obtained from the DHT22 and stored to the temperature and humidity variables. With all that done, these values can be logged to the serial monitor. There's a delay of 5 seconds to ensure that the DHT22 can handle accurate readings as it has a low sampling rate. When sending your data to Directus, you will increase the delay to 30 seconds or greater. Note that your Serial Monitor baud rate must be set as 115200 for you to see the values being logged.
 
-```ino
+```cpp
 #include <DHT.h>
 
 float temperature, humidity;
@@ -188,12 +186,12 @@ At this point, you have your ESP32 logging data to the Serial monitor. But you a
 
 1. Your WiFI SSID, i.e. the name of your WiFi network, as the value of the `ssid` variable on line 6.
 2. Your WiFi password on line 7.
-3.  Your Directus esp32-board user token that you used with cURL at the `Creating dummy temperature and humidity values` section of this article. You can still [regenerate the token if you lost it](https://github.com/vicradon/directus-guest-authoring/assets/40396070/ae03035a-3cfe-4238-a368-c9daf50bec65). If you have the token, set it as the <TOKEN> placeholder value on line 8.
-4.  Your WiFi gateway address is defined on line 9 as `directusEndpoint`. It won't start with localhost because the ESP32 is running as a separate system. So you must check the gateway address of your local network. This address will either start with 10, 172, or 192. Follow [this blog post](https://nordvpn.com/blog/find-router-ip-address/) for instructions for checking your gateway address on different operating systems. Note that your ESP32 and your computer running Directus must be connected to the same WiFi network for this to work.
+3. Your Directus esp32-board user token that you used with cURL at the `Creating dummy temperature and humidity values` section of this article. You can still [regenerate the token if you lost it](./regenerate_lost_token.png). If you have the token, set it as the <TOKEN> placeholder value on line 8.
+4. Your WiFi gateway address is defined on line 9 as `directusEndpoint`. It won't start with localhost because the ESP32 is running as a separate system. So you must check the gateway address of your local network. This address will either start with 10, 172, or 192. Follow [this blog post](https://nordvpn.com/blog/find-router-ip-address/) for instructions for checking your gateway address on different operating systems. Note that your ESP32 and your computer running Directus must be connected to the same WiFi network for this to work.
 
 With all the changes made, you can upload your script to your ESP32 and observe it log temperature and humidity data on your Directus `temperature_and_humidity` collection.
 
-```ino
+```cpp
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <Arduino.h>
@@ -224,7 +222,7 @@ void setup() {
 }
 
 void loop() {
- if (WiFi.status() == WL_CONNECTED) { 
+ if (WiFi.status() == WL_CONNECTED) {
    temperature = dht22_sensor.readTemperature();
    humidity = dht22_sensor.readHumidity();
 
@@ -237,7 +235,7 @@ void loop() {
      String jsonPayload = "{\"temperature\":" + String(temperature) + ",\"humidity\":" + String(humidity) + "}";
 
      Serial.println(jsonPayload);
-     
+
      int httpResponseCode = http.POST(jsonPayload);
 
      if (httpResponseCode > 0) {
@@ -267,23 +265,23 @@ void loop() {
 }
 ```
 
-When you open your Directus content section, you will see the values logged so far. You can increase the delay to reduce the number of logs you get per hour. Currently, the rate is 2 logs per minute (1 log every 30 seconds), so 120 logs per hour. This may or may not work for you depending on your use case.   
+When you open your Directus content section, you will see the values logged so far. You can increase the delay to reduce the number of logs you get per hour. Currently, the rate is 2 logs per minute (1 log every 30 seconds), so 120 logs per hour. This may or may not work for you depending on your use case.
 
-![Dashboard with logs](https://github.com/vicradon/directus-guest-authoring/assets/40396070/a8286822-808c-4f9d-b087-3424d9e807a6)
+![Dashboard with logs](./Dashboard_with_logs.png)
 
 ## Visualizing the logged data using Directus Dashboard
 
 You can visualize how data in your collection change over time using Directus insights. You will find the insights dashboard under `/admin/insights`. On the insights page, create a new dashboard by clicking the central **Create Dashboard** button. This dashboard will display your temperature and humidity over time. Clicking the button opens up a modal with a form with the new dashboard's details.
 
-![Directus insights dashboard](https://github.com/vicradon/directus-guest-authoring/assets/40396070/ef098838-7e8c-4c4a-bec4-9eb9f2ee87fc)
+![Directus insights dashboard](./Directus_insights_dashboard.png)
 
 On this form, give your dashboard a name, temperature-and-humidity, and click the **Save** button
 
-![Dashboard name](https://github.com/vicradon/directus-guest-authoring/assets/40396070/49f2345b-4fcc-4946-8b81-671cc4b8986d)
+![Dashboard name](./Dashboard_name.png)
 
 Directus dashboard allows you to create multiple charts in a dashboard. These charts are called panels. To create your first panel, click on the **Edit Panels** button at the top right. Clicking this button puts the dashboard's page in edit mode. In this mode, you can move already created panels around and create new panels. Click on the **Plus** button that appears to proceed with creating your first panel.
 
-![create-panel](https://github.com/vicradon/directus-guest-authoring/assets/40396070/2288f7f7-6539-40e9-a543-0b5cd9b93237)
+![create-panel](./create-panel.png)
 
 The panel creation flow starts with you choosing your chart type, and then inputting the details of that chart. The first panel you will create will display the temperature trends over time. Choose the bar chart and set the following following details:
 
@@ -296,11 +294,11 @@ The panel creation flow starts with you choosing your chart type, and then input
 
 After setting these details, click the checkmark icon button at the top right corner.
 
-![Bar chart details](https://github.com/vicradon/directus-guest-authoring/assets/40396070/780b20bd-878e-45b6-9a10-84a534c0a3ef)
+![Bar chart details](./Bar_chart_details.png)
 
 A scaled-down bar chart will be created. You can rescale it to increase the size. You can make it look even better by adding a title (Temperature over time) and an icon (Thermostat). Click on the edit button on the chart's card to set these details.
 
-![image](https://github.com/vicradon/directus-guest-authoring/assets/40396070/2ff69990-9ccc-42a1-ab36-4c6be383d8e7)
+![temperature chart details](./temperature_chart_details.png)
 
 With that done, repeat the process for the humidity chart. Use the following details for the panel for humidity:
 
@@ -315,10 +313,10 @@ With that done, repeat the process for the humidity chart. Use the following det
 
 You should have the temperature and humidity charts displaying how your values changed over time. You can conclude this section by saving this dashboard.
 
-![temperature and humidity trends over time](https://github.com/vicradon/directus-guest-authoring/assets/40396070/246c5f09-1c0c-47bd-bde8-45b0fef6c607)
-
+![temperature and humidity trends over time](./temperature_and_humidity_trends_over_time.png)
 
 ## Conclusion
+
 In this tutorial, you learned how to collect temperature and humidity data from a DHT22 sensor and log it to a database with the aid of Directus. You learned how to visualize how this data changes over time using Directus dashboards.
 
 Directus presents a complete BaaS solution allowing you to build content-focused and traditional web applications. It offers a plethora of services including database mirroring, user authentication, OAuth2, and HTTP APIs over data (REST and GraphQL). You can self-host Directus or use their cloud API with reasonable pricing. [Try Directus today](https://directus.cloud/)!
