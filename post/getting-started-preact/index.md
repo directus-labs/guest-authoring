@@ -1,6 +1,6 @@
 ---
 title: "Getting Started with Directus and Preact"
-description: "120-160 characters"
+description: ""Learn how to integrate Directus with Preact. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items"
 author:
     name: "jay bharadia"
     avatar_file_name: "my-avatar.jpg"
@@ -8,31 +8,118 @@ author:
 
 ## Introduction
 
-Fast 3kB alternative to React with the same modern API. In this tutorial, you will learn how to build a website using Directus as a headless CMS. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items, and build a blog.
+Preact is a Fast 3kB alternative to React with the same modern API.
+In this tutorial, you will learn
+
+1. How to build a website using Directus as a headless CMS using preact.
+2. You will store, retrieve, and use `global` metadata such as the site `title`, create new `pages` dynamically based on Directus items, and build a blog.
 
 Before You Start
 
 You will need:
 
-To install Node.js and a code editor on your computer.
+-   Install Node.js and a code editor on your computer.
 
-A Directus project - you can use Directus Cloud or run it yourself.
+-   A Directus project - you can use Directus Cloud or run it yourself.
 
-Some knowledge of Preact framework
+-   Some knowledge of Preact framework
 
 ## Initializing Preact
 
 The modern way to get started is using Vite bundler instead of old preact-cli
 
+`npm init preact`
+
+![Setup Preact in CLI](./images/setup-cli.png)
+
+```
+cd directus-preact
+npm run dev
+```
+
+## Install Directus SDK
+
+`npm install @directus/sdk`
+
+## Setup Directus
+
+1. Create `utils/directus.ts` file
+
+```ts
+import { createDirectus, rest } from "@directus/sdk";
+
+type Global = {
+    title: string;
+    description: string;
+};
+
+type Author = {
+    name: string;
+};
+
+type Page = {
+    title: string;
+    content: string;
+    slug: string;
+};
+
+type Post = {
+    image: string;
+    title: string;
+    author: Author;
+    content: string;
+    published_date: string;
+    slug: string;
+};
+
+type Schema = {
+    posts: Post[];
+    global: Global;
+    pages: Page[];
+};
+
+const directus = createDirectus<Schema>(
+    "https://directus-supabase.onrender.com"
+).with(rest());
+export default directus;
+```
+
 ## Using Global Metadata
 
 In your Directus project, navigate to Settings -> Data Model and create a new collection called global. Under the Singleton option, select 'Treat as a single object', as this collection will have just a single entry containing global website metadata.
 
-Create two text input fields - one with the key of title and one description.
+Create two text input fields - one with the key of `title` and one `description`.
 
-Navigate to the content module and enter the global collection. Collections will generally display a list of items, but as a singleton, it will launch directly into the one-item form. Enter information in the title and description field and hit save.
+Navigate to the `content` module and enter the `global` collection. Enter information in the title and description field and hit save.
 
-By default, new collections are not accessible to the public. Navigate to Settings -> Access Control -> Public and give Read access to the Global collection.
+In `pages/index.jsx` file, add the following code to fetch the data from Directus and display it.
+
+```js
+import directus from "../utils/directus";
+import { readSingleton } from "@directus/sdk";
+import { useState } from "preact/compat";
+
+export function Home() {
+    const [global, setGlobal] = useState({});
+    const fetchData = async () => {
+        const global = await directus.request(readSingleton("global"));
+
+        setGlobal(global);
+    };
+    fetchData();
+
+    return (
+        <div>
+            Home Page
+            <h1>{global.title}</h1>
+        </div>
+    );
+}
+```
+
+### Make Collection Public
+
+Navigate to Settings -> Access Control -> Public and give Read access to the `global` collection.
 
 ![Global Metadata](./images/global-metadata.png)
 
@@ -74,11 +161,11 @@ render(<App />, document.getElementById("app"));
 
 ## Creating Pages With Directus
 
-Create a new collection called pages - make the Primary ID Field a "Manually Entered String" called slug, which will correlate with the URL for the page. For example about will later correlate to the page localhost:3000/about.
+Create a new collection called pages - make the Primary ID Field a "Manually Entered String" called slug, which will correlate with the URL for the page. For example `about` will later correlate to the page `localhost:3000/about`.
 
-Create a text input field called title and a WYSIWYG input field called content. In Access Control, give the Public role read access to the new collection. Create 3 items in the new collection
+Create a text input field called `title` and a WYSIWYG input field called `content`. In Access Control, give the Public role read access to the new collection. Create 3 items in the new collection
 
-Inside of pages, create a new file called slug.jsx. This is a dynamic route, so a single file can be used for all of the top-level pages.
+Inside of `pages` , create a new file called `slug.jsx`. This is a dynamic route, so a single file can be used for all of the top-level pages.
 
 ```js
 import { useEffect, useState } from "preact/compat";
@@ -126,7 +213,7 @@ export function Page() {
 }
 ```
 
-Go to http://localhost:3000/about, replacing about with any of your item slugs. Using the Directus JavaScript SDK, the single item with that slug is retrieved, and the page should show your data. readItem() only checks against your slug Primary ID Field.
+Go to `http://localhost:3000/about`, replacing about with any of your item slugs. Using the Directus JavaScript SDK, the single item with the matching `slug` is retrieved, and the page should show your data. `readItem()` only checks against your slug Primary ID Field.
 
 ![About Page](./images/about-page.png)
 Note that we check if a returned value exists, and return a 404 if not. Please also note thatv-html should only be used for trusted content.
@@ -135,7 +222,7 @@ Note that we check if a returned value exists, and return a 404 if not. Please a
 
 Create a new collection called authors with a single text input field called name. Create one or more authors.
 
-Then, create a new collection called posts - make the Primary ID Field a "Manually Entered String" called slug, which will correlate with the URL for the page. For example hello-world will later correlate to the page localhost:3000/blog/hello-world.
+Then, create a new collection called `posts` - make the Primary ID Field a "Manually Entered String" called `slug`, which will correlate with the URL for the page. For example hello-world will later correlate to the page `localhost:3000/blog/hello-world`.
 
 Create the following fields in your posts data model:
 
@@ -226,9 +313,9 @@ export function BlogList() {
 }
 ```
 
-This query will retrieve the first 100 items (default), sorted by publish date (descending order, which is latest first). It will only return the specific fields we request - slug, title, publish_date, and the name from the related author item.
+This query will retrieve the first 100 items (default), sorted by publish date (descending order, which is latest first). It will only return the specific fields we request - `slug`, `title`, `publish_date`, and the `name` from the related author item.
 
-Visit http://localhost:3000/blogand you should now see a blog post listing, with latest items first.
+Visit `http://localhost:3000/blog` and you should now see a blog post listing, with latest items first.
 
 ![Blog Posts](./images/blog-posts.png)
 
@@ -236,7 +323,7 @@ Click on any of the blog post links, and it will take you to a blog post page co
 
 ## Create Blog Post Detail Page
 
-Each blog post links to a page that does not yet exist. In the pages/blog directory, create a new file called slug.jsx:
+Each blog post links to a page that does not yet exist. In the `pages/blog` directory, create a new file called `slug.jsx`:
 
 ```js
 import { useEffect, useState } from "preact/compat";
@@ -288,7 +375,7 @@ export function Blog() {
 
 ## Add Navigation
 
-While not strictly Directus-related, there are now several pages that aren't linked to each other. In index.jsx, above the <main /> component, add a navigation `<Header/>`. Don't forget to use your specific page slugs.
+While not strictly Directus-related, there are now several pages that aren't linked to each other. In `index.jsx`, above the `<main />` component, add a navigation `<Header/>`. Don't forget to use your specific page slugs.
 
 ```js
 import { useLocation } from "preact-iso";
@@ -315,7 +402,7 @@ export function Header() {
 ```
 
 Next Steps
-Through this guide, you have set up an Preact project, created a Directus instance, and used it to query data. You have used a singleton collection for global metadata, dynamically created pages, as well as blog listing and post pages.
+Through this guide, you have set up an Preact project, created a Directus instance, and used it to query data. You have used a singleton collection for `global` metadata, dynamically created `pages`, as well as blog listing and blog pages.
 
 ## Project Link
 
