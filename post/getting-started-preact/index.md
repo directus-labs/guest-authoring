@@ -1,6 +1,6 @@
 ---
 title: "Getting Started with Directus and Preact"
-description: ""Learn how to integrate Directus with Preact. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items"
+description: "Learn how to integrate Directus with Preact. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items"
 author:
     name: "jay bharadia"
     avatar_file_name: "my-avatar.jpg"
