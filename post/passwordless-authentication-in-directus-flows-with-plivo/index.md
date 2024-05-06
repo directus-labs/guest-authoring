@@ -226,11 +226,9 @@ module.exports = async function(data) {
 }
 ```
 
-## Testing the Flow
+### Testing the Flow
 
-- Back in the browser and navigate to the Trigger URL for the `Verify OTP Code` flow we noted earlier.
-- Staying in the browser, edit the Trigger URL appending `?otp={YOUR_OTP_CODE}&session_uuid={YOUR_OTP_SESSION}`. Replace {YOUR_OTP_CODE} with the OTP code you received via SMS and {YOUR_OTP_SESSION} with the `otp_session_uuid` you noted earlier.
-- Hit enter and you should see a response from our Directus flow with the `token`. This token is the session token that we will use to authenticate with Directus.
+Open your browser to your trigger URL appended with `?otp={YOUR_OTP_CODE}&session_uuid={YOUR_OTP_SESSION}`, replacing the values from the first flow run. If it works, Directus will respond with a `token`.
 
 ![](verify_flow.png)
 
