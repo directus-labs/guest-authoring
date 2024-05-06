@@ -64,11 +64,12 @@ Save the flow, open your browser and navigate to your Trigger URL appended with 
 
 If this is your response, then the Number Cleanup operation works.
 
-## Creating the Plivo OTP Session
+### Creating the Plivo OTP Session
 
-- Back in the Directus flow editor, we need to add a new node to create the Plivo OTP session.
-- Click the little plus sign on the "Number Cleanup" node.
-- Set the name to "Create OTP Session" and then select "Webhook / Request URL".
+Plivo's Verify API has two stages - creating a session will send the user a OTP and return a Session UUID. To verify the OTP later, a Session UUID and OTP must be sent to Plivo who will validate whether it was correct.
+
+To create a session, create a **Webhook / Request URL** operation with the following options:
+
 - Set the method to POST
 - In the URL field, enter `https://api.plivo.com/v1/Account/{PLIVO_AUTH_ID}/Verify/Session/`. Replace `{PLIVO_AUTH_ID}` with your Plivo Auth ID.
 - In the headers section, add the following header replacing `{AUTH_HEADER}` with the encoded Authentication Header we created earlier:
