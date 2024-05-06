@@ -130,14 +130,11 @@ module.exports = async function(data) {
 }
 ```
 
-## Testing the Flow
+### Testing the Flow
 
-- Back in the browser and navigate to the Trigger URL we noted earlier.
-- Staying in the browser, edit the Trigger URL appending `?phone_number={YOUR_NUMBER}&country_code={YOUR_COUNTRY_CODE}`. Replace {YOUR_NUMBER} with your phone number and {YOUR_COUNTRY_CODE} with your country code.
-- Hit enter and you should see a response from our Directus flow with the `otp_session_uuid`. This UUID is the OTP session ID that we will use to verify the OTP code.
-- You should also receive an OTP code via SMS to the phone number you provided. Make a note of the OTP code.
-- The `otp_session_uuid` has also been stored against the user account.
-- Make a note of this `otp_session_uuid` as we will need it later.
+Open your browser to your trigger URL appended with `?phone_number={YOUR_NUMBER}&country_code={YOUR_COUNTRY_CODE}`, replacing the values with your real number.
+
+Directus will respond with a `otp_session_uuid`. This UUID is the OTP session ID that we will use to verify the OTP code. You should also receive an OTP code via SMS to the phone number you provided. Make a note of the OTP code. The `otp_session_uuid` has also been stored against the user account.
 
 ![](login_flow.png)
 
