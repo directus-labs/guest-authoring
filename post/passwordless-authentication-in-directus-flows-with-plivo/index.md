@@ -33,16 +33,13 @@ The encoded value must be in the format `auth_id:auth_token`. You can use [this 
 
 ## The Login Flow
 
-- In Directus, create a new flow called "Passwordless Login". The description could be "Receives a country code & phone number to create a Plivo OTP session".
-- Click the next button.
-- Click webhook then uncheck the "Cache" checkbox
-- Click the save button.
+Create a new Flow from your project settings with a Webhook trigger and caching disabled. Your application will make a request to this URL when starting a login.
 
-We're presented with our new flow with a "Webhook Trigger" node. This node will be the entry point for our flow. Make a note of the Trigger URL presented on this node as we will need this later.
+### Number Cleanup
 
-- Click the little plus sign on the Webhook Trigger.
-- Set the name to "Number Cleanup" and then click "Run Script".
-- You will see a script editor. In the script editor, add the following code:
+Numbers must be formatted in E.164 format to be accepted by Plivo. That means a format such as `+447123456789` (a `+`, a country code, and a subscriber number). 
+
+Create a **Run Script** operation with the following code:
 
 ```javascript
 module.exports = async function(data) {
@@ -63,12 +60,9 @@ module.exports = async function(data) {
 }
 ```
 
-This code crudely cleans up the phone number which is great for testing purposes. It also ensures a standard format for the phone number stored against the user account. We'll get back to that later.
+Save the flow, open your browser and navigate to your Trigger URL appended with `?phone_number=07123456789&country_code=44` to the end. This will trigger the flow, clean up the phone number and return the following JSON: `{"phone_number":"+447123456789"}`
 
-- Click the save button and then save the flow.
-- In a browser, navigate to the Trigger URL we noted earlier.
-- Staying in the browser, edit the Trigger URL appending `?phone_number=07123456789&country_code=44` to the end. This will trigger the flow, clean up the phone number and return the following JSON: `{"phone_number":"+447123456789"}`
-- If you see that, then the cleanup script is working as expected.
+If this is your response, then the Number Cleanup operation works.
 
 ## Creating the Plivo OTP Session
 
