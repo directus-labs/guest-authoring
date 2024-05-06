@@ -214,152 +214,41 @@ const NotFound = () => {
 export default NotFound
 ```
 
-## Setting up Auth Configuration
+## Route Protections
 
-To set up authentication and authorization configurations for a Next.js application using NextAuth.js and Directus as the backend, in the `lib` directory, create `auth.config.js` file and add the following:
-
-```javascript
-//src/lib/auth.config.js
-import { cookies } from 'next/headers'
-import directus from "./directus";
-import { readMe, withToken } from "@directus/sdk";
-export const authConfig = {
-  pages: {
-    signIn: "/login",
-  },
-  secret: process.env.NEXTAUTH_SECRET,
-  providers: [],
-  callbacks: {
-    async jwt({ token, user, account }) {
-      if (account && user) {
-        const userData = await directus.request(
-          withToken(
-            user.data.access_token,
-            readMe({
-              fields: ["id", "first_name", "last_name"],
-            })
-          )
-        );
-        const formatedData = JSON.stringify(userData)
-        cookies().set("auth_user", formatedData )
-        return {
-          ...token,
-          accessToken: user.data.access_token,
-          refreshToken: user.data.refresh_token,
-          user: userData,
-        };
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user.accessToken = token.accessToken;
-        session.user.refreshToken = token.refreshToken;
-      }
-      return session;
-    },
-  },
-};
-```
-
-This contains functions that handle JWT creation, and session management logic.
-The `jwt` function runs when a JWT token is created. If the user is authenticated, it fetches user data from Directus using the provided access token and then sets a cookie named "auth_user" containing the user data.
-
-**Route Protections:**
-To handle route protection, update the `src/lib/auth.config.js` file with the `authorized` callback function as follows:
+To handle route protection, Create the `post/layout.jsx` file and add the following:
 
 ```javascript
-//src/lib/auth.config.js
-import { cookies } from 'next/headers'
-import directus from "./directus";
-import { readMe, withToken } from "@directus/sdk";
-export const authConfig = {
-  ...
-  callbacks: {
-    ...
-    authorized({ auth, request }) {
-      const user = auth?.user;
-      const isOnCreatePostPage =
-        request.nextUrl?.pathname.startsWith("/create-post");
-      const isOnLoginPage = request.nextUrl?.pathname.startsWith("/login");
-      // ONLY AUTHENTICATED USERS CAN REACH THE CREATE POST PAGE
-      if (isOnCreatePostPage && !user) {
-        return false;
+"use client"
+import { userSession } from "@/lib/action";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+export default function PostLayout({ children }) {
+  const [isSuccess, setIsSuccess] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    (async () => {
+      const user = await userSession();
+
+      if (!user.accessToken) {
+        router.push("/login");
+        return;
       }
-      // ONLY UNAUTHENTICATED USERS CAN REACH THE LOGIN PAGE
-      if (isOnLoginPage && user) {
-        return Response.redirect(new URL("/", request.nextUrl));
-      }
-      return true;
-    },
-  },
-};
-```
 
-This will ensure that only unauthenticated users can reach the login page and only authenticated users can access the create post page.
+      setIsSuccess(true);
+    })();
+  }, [router]);
 
-For the route protection to be effective without rendering the associated page, create `src/middleware.js` and add the following:
-
-```javascript
-import NextAuth from "next-auth";
-import { authConfig } from "./lib/auth.config";
-export default NextAuth(authConfig).auth;
-export const config = {
-  matcher: ["/((?!api|static|.*\\..*|_next).*)"],
-};
-```
-
-To implement log-in via user credentials, create `src/lib/auth.js` and add the following:
-
-```javascript
-//src/lib/auth.js
-import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { authConfig } from "./auth.config";
-const login = async (credentials) => {
-  try {
-    const res = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
-      method: 'POST',
-      body: JSON.stringify(credentials),
-      headers: { 'Content-Type': 'application/json' },
-    });
-    const user = await res.json();
-    // If no error and we have user data, return it
-    if (!res.ok && user) {
-      throw new Error('Wrong credentials!');
-    }
-    return user;
-  } catch (err) {
-    console.log(err);
-    throw new Error("Failed to login!");
+  if (!isSuccess) {
+    return <p>Loading...</p>;
   }
-};
-export const {
-  handlers: { GET, POST },
-  auth,
-  signIn,
-  signOut,
-} = NextAuth({
-  ...authConfig,
-  providers: [
-    CredentialsProvider({
-      async authorize(credentials) {
-        try {
-          const user = await login(credentials);
-          return user;
-        } catch (err) {
-          return null;
-        }
-      },
-    }),
-  ],
-  callbacks: {
-    ...authConfig.callbacks,
-  },
-});
+  return <div>{children}</div>;
+}
 ```
 
-The `login` function logs in a user by sending a POST request to the Directus backend authentication endpoint `${process.env.BACKEND_URL}/auth/login` with the provided credentials.
+This will ensure that only authenticated users can access the create post and update post pages.
 
 ## Implementing Server Actions for Auth Components
 
@@ -370,10 +259,22 @@ To send user credentials to the `Directus` backend on the user register form sub
 ```javascript
 "use server";
 import { revalidatePath } from "next/cache";
-import { signIn, signOut } from "./auth";
-import { createItem, createUser, deleteItem, readItems, updateItem, uploadFiles } from "@directus/sdk";
+import { directusLogin } from "./auth";
+import {
+  createItem,
+  createUser,
+  deleteItem,
+  readItem,
+  readItems,
+  readMe,
+  updateItem,
+  uploadFiles,
+  withToken,
+} from "@directus/sdk";
 import directus from "@/lib/directus";
 import { redirect } from "next/navigation";
+import { AUTH_USER, COOKIE_NAME } from "@/constants";
+import { cookies } from "next/headers";
 
 export const register = async (previousState, formData) => {
   try {
@@ -404,11 +305,15 @@ export const register = async (previousState, formData) => {
 
 export const login = async (prevState, formData) => {
   const { email, password } = Object.fromEntries(formData);
+
   try {
-    await signIn("credentials", { email, password });
+    const user = await directusLogin({ email, password });
+    if (user) {
+      redirect("/");
+    }
   } catch (err) {
     console.log(err);
-    if (err.message.includes("CredentialsSignin")) {
+    if (err.message.includes("Wrong credentials!")) {
       return { error: "Invalid username or password" };
     }
     throw err;
@@ -416,12 +321,41 @@ export const login = async (prevState, formData) => {
 };
 
 export const handleLogout = async () => {
-  await signOut();
-  await directus.logout();
+  cookies().delete(AUTH_USER);
+  cookies().delete(COOKIE_NAME);
+};
+
+export const userSession = async () => {
+  const cookieStore = cookies();
+  let token = undefined;
+  const cookie = cookieStore.get(COOKIE_NAME);
+  if (cookie?.value) {
+    token = JSON.parse(cookie?.value);
+  }
+
+  const user = {};
+  if (token != undefined) {
+    user.accessToken = token.data.access_token;
+    user.refreshToken = token.data.refresh_token;
+    getAuthUser(token)
+  }
+  return user;
+};
+
+export const getAuthUser = async (token) => {
+  const userData = await directus.request(
+    withToken(
+      token.data.access_token,
+      readMe({
+        fields: ["*"],
+      })
+    )
+  );
+  return userData;
 };
 ```
 
-These functions handle user logout, registration and login using the Directus SDK.
+These functions handle user logout, registration, login and users session using the Directus SDK.
 
 ## Creating the Auth Pages
 
@@ -606,16 +540,22 @@ The `uploadPostImage` function uploads an image associated with a new post and `
 
 ### Create Post Page
 
-In the `app` directory, create a subdirectory `create-post`. Inside `create-post`  create `page.jsx` with the content:
+In the `post` directory, create a subdirectory `create-post`. Inside `create-post`  create `page.jsx` with the content:
 
 ```javascript
-//src/app/create-post/page.jsx
+//src/app/post/create-post/page.jsx
 import CreatePostForm from "@/components/createPostForm/createPostForm";
+import { COOKIE_NAME } from "@/constants";
+import { getAuthUser } from "@/lib/action";
 import { cookies } from "next/headers";
 
 const CreatePostPage = async () => {
-  const cook = cookies().get("auth_user")
-  const user = JSON.parse(cook.value)
+  let user = {}
+  const cook = cookies().get(COOKIE_NAME)
+  if(cook) {
+    const formatedData = JSON.parse(cook?.value)
+    user = await getAuthUser(formatedData)
+  }
 
   return (
     <div>
@@ -627,6 +567,7 @@ const CreatePostPage = async () => {
     </div>
   );
 };
+
 export default CreatePostPage;
 ```
 
@@ -832,13 +773,14 @@ import { redirect } from 'next/navigation'
 import PostUser from "@/components/postUser/postUser";
 import { Suspense } from "react";
 import directus from "@/lib/directus";
-import { deletePost, getPost } from "@/lib/action";
+import { deletePost, getAuthUser, getPost } from "@/lib/action";
 import Link from "next/link";
 import { cookies } from "next/headers";
+import { COOKIE_NAME } from '@/constants';
 
 export const generateMetadata = async ({ params }) => {
   const { slug } = params;
-  const post = await getPost(slug);
+  const post =  await getPost(slug)
 
   return {
     title: post.title,
@@ -847,14 +789,18 @@ export const generateMetadata = async ({ params }) => {
 
 const SinglePostPage = async ({ params }) => {
   const { slug } = params;
-  const post = await getPost(slug);
-  const cookie = cookies().get("auth_user")
-  const user = JSON.parse(cookie.value)
+  const post = await getPost(slug)
+  let user = {}
+  const cook = cookies().get(COOKIE_NAME)
+  if(cook) {
+    const formatedData = JSON.parse(cook?.value)
+    user = await getAuthUser(formatedData)
+  }
 
   const handleDelete = async (data) => {
     "use server";
     const postId = data.get("postId");
-    deletePost(postId)
+    await deletePost(postId)
     redirect('/blog')
   };
 
@@ -876,11 +822,11 @@ const SinglePostPage = async ({ params }) => {
           <div>
             <span>Published</span>
             <span>
-              {post.date_created.toString().slice(2, 16)}
+              {post.date_created.toString().slice(3, 16)}
             </span>
           </div>
           {user?.id === post?.user_created?.id &&  <div>
-            <Link href={`/update-post/${post.id}`}>Edit</Link>
+            <Link href={`/post/update-post/${post.id}`}>Edit</Link>
             <form action={handleDelete}>
             <input name="postId" style={{visibility: "hidden"}} value={post?.id}/>
             <input name="userId" style={{visibility: "hidden"}} value={user?.id}/>
@@ -893,6 +839,7 @@ const SinglePostPage = async ({ params }) => {
     </div>
   );
 };
+
 export default SinglePostPage;
 ```  
 
@@ -904,7 +851,7 @@ Click on the `READ MORE`  link in a post to get to the corresponding detail blog
 
 ## Update Post Implementation
 
-### Server Action to Update Post
+## Server Action to Update Post
 
 To update post data from `Directus` backend, navigate to the `lib/action.js` file and add the following:
 
@@ -946,19 +893,24 @@ The `updatePost` function handles both the case of updating the post content and
 
 ### Update Post Page
 
-In the `app` directory, create a subdirectory `update-post`. Inside `update-post`  create a subdirectory `[slug]`. Inside `[slug]` create `pages.jsx` with the content:
+In the `post` directory, create a subdirectory `update-post`. Inside `update-post`  create a subdirectory `[slug]`. Inside `[slug]` create `pages.jsx` with the content:
 
 ```javascript
-//src/app/update-post/[slug]/page.jsx
-import { getPost } from "@/lib/action";
+//src/app/post/update-post/[slug]/page.jsx
+import { getAuthUser, getPost } from "@/lib/action";
 import { cookies } from "next/headers";
 import UpdatePostForm from "@/components/updatePostForm/updatePostForm";
+import { COOKIE_NAME } from "@/constants";
 
 const UpdatePage = async ({ params }) => {
   const { slug } = params;
-  const post = await getPost(slug);
-  const cook = cookies().get("auth_user")
-  const user = JSON.parse(cook.value)
+  const post = getPost(slug)
+  let user = {}
+  const cook = cookies().get(COOKIE_NAME)
+  if(cook) {
+    const formatedData = JSON.parse(cook?.value)
+    user = await getAuthUser(formatedData)
+  }
 
   return (
     <div>
@@ -970,6 +922,7 @@ const UpdatePage = async ({ params }) => {
     </div>
   );
 };
+
 export default UpdatePage;
 ```
 
@@ -1033,10 +986,10 @@ export const deletePost = async (postId) => {
 };
 ```
 
-Click the `Delete` button on a detail post page to delete the post.
+Click on the `Delete` button on a detail post page to delete the post.
 
 ## Conclusion
 
-With this tutorial, you’ve learnt how to implement Directus authentication in a Next.js 14 Project, dynamically create, read, update, and delete posts, and successfully build a full-stack CRUD application with Directus for the backend and Next.js for the frontend.
+With this tutorial, you’ve learnt how to implement Directus authentication in a Next.js 14 Project, dynamically create, read, update, delete posts, and successfully built a full-stack CRUD application with Directus for the backend and Next.js for the frontend.
 
 There are so many ways this can be improved, and I can’t wait to see what you build next with Directus and Next.js.
