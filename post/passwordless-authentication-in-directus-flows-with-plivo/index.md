@@ -16,7 +16,7 @@ This solution can be used once a user already exists in your project and has a u
 
 You will need...
 
-- A Directus project set up and running.
+- A Directus project - follow our [quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one.
 - A [Plivo account](https://console.plivo.com/accounts/request-trial/).
 - A phone number that you can use to test receiving SMS messages (such as your own mobile phone number).
 - The `directus_users` table should have a `phone` field that is a `String`.
