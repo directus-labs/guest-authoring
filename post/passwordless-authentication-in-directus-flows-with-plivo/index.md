@@ -196,14 +196,9 @@ module.exports = async function(data) {
 }
 ```
 
-## Updating the User Account
+### Saving and Sending the Static Token
 
-- We need to add a new node to update the user account with the session token.
-- Click the little plus sign on the "Generate Session Token" node.
-- Set the name to "Update User Account" and then click "Update Data".
-- In the "Collection" field, click the word "Collection" and select "Edit Raw Value" and set the value to "directus_users".
-- Set the Permissions to "Full Access"
-- In the `Payload` section, add the following JSON:
+Create a new **Update Data** operation. In the collection field, edit the raw value and set the value to `directus_users`. Set full access permissions and the following payload:
 
 ```json
 {
@@ -211,7 +206,7 @@ module.exports = async function(data) {
 }
 ```
 
-- In the `Query` section, add the following JSON:
+Set the following query:
 
 ```json
 {
@@ -223,14 +218,7 @@ module.exports = async function(data) {
 }
 ```
 
-- Click `Done`
-
-## Delivering the Directus Session Token to the Client
-
-- We need to add a new node to deliver the Directus session token to the client.
-- Click the little plus sign to the right of the "Update User Account" node.
-- Set the name to "Deliver Session Token" and then click "Run Script".
-- In the script editor, add the following code:
+Your application will need the new static token. Create a **Run Script** operation:
 
 ```javascript
 module.exports = async function(data) {
