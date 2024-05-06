@@ -151,7 +151,7 @@ module.exports = async function(data) {
 
 ![](login_flow.png)
 
-## Verifying the OTP Code
+## The Verification Flow
 
 The second flow will accept a Session UUID and a One Time Password. If correct, it will generate and save a new static token against the user and deliver it. The token can then be used to authenticate requests.
 
