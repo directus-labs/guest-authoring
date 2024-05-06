@@ -118,12 +118,9 @@ Set the following query:
 }
 ```
 
-## Delivering the OTP Session to the Client
+### Returning the OTP Session
 
-- We need to add a new node to deliver the OTP session UUID to the client.
-- Click the little plus sign to the right of the "Update User Account" node.
-- Set the name to "Deliver OTP Session" and then click "Run Script".
-- In the script editor, add the following code:
+Your application will need the Session UUID. Create a **Run Script** operation:
 
 ```javascript
 module.exports = async function(data) {
