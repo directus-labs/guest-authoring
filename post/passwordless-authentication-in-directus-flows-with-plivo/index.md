@@ -25,30 +25,11 @@ You will need...
 
 ## Setting Up Plivo
 
-- Using your internet browser, Log in to your Plivo account.
-- In the Plivo Console, navigate to the [Plivo Verify Overview](https://console.plivo.com/verify/overview/).
-- In the Overview, make a note of your Auth ID and Auth Token. You will need these later.
+In the [Plivo Verify Overview](https://console.plivo.com/verify/overview/), take note of your Auth ID and Auth Token. Create a new application and also take note of it's UUID.
 
-![](plivo_overview.png)
+Plivo uses BasicAuth to authenticate requests, but Directus Automate does not support this natively. Fortunately, you can use BasicAuth through headers by encoding the username and password as a Base64 string. 
 
-- In the Overview, click on the "Create Application" button.
-- In the Create Application form, give your application a name and then click "Save and Continue".
-- In the next form, set "Brand Name" to the name of your app or service and click "Submit".
-- In the applications list, you will see the name of your application. Underneath it, you will see a truncated set of random numbers and letters, this is your App UUID. Make a note of this as you will need it later.
-
-![](plivo_applications.png)
-
-You should now have your Auth ID, Auth Token and App UUID so we can move onto creating the Plivo Authentication Header.
-
-## Creating the Plivo Authentication Header
-
-- In your browser, navigate to https://www.base64encode.org/
-- In text area, enter your Plivo Auth ID and Auth Token separated by a colon. For example, `auth_id:auth_token`.
-- Click the "Encode" button.
-
-![](base64_encode.png)
-
-Make a note of the encoded string (Authentication Header) as we will need this later.
+The encoded value must be in the format `auth_id:auth_token`. You can use [this web tool to encode the string](https://www.base64encode.org/). Take note of the string.
 
 ## The Login Flow
 
