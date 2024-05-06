@@ -96,14 +96,9 @@ A typical response from Plivo will look like this:
 }
 ```
 
-## Updating the User Account
+### Saving the Session UUID
 
-- Back in the Directus flow editor, we need to add a new node to update the user account with the OTP session UUID.
-- Click the little plus sign on the "Create OTP Session" node.
-- Set the name to "Update User Account" and then click "Update Data".
-- In the "Collection" field, click the word "Collection" and select "Edit Raw Value" and set the value to "directus_users".
-- Set the Permissions to "Full Access"
-- In the `Payload` section, add the following JSON:
+Create a new **Update Data** operation. In the collection field, edit the raw value and set the value to `directus_users`. Set full access permissions and the following payload:
 
 ```json
 {
@@ -111,7 +106,7 @@ A typical response from Plivo will look like this:
 }
 ```
 
-- In the `Query` section, add the following JSON:
+Set the following query:
 
 ```json
 {
@@ -122,8 +117,6 @@ A typical response from Plivo will look like this:
     }
 }
 ```
-
-- Click `Done` and then click `Save`.
 
 ## Delivering the OTP Session to the Client
 
