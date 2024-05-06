@@ -234,6 +234,6 @@ Open your browser to your trigger URL appended with `?otp={YOUR_OTP_CODE}&sessio
 
 ## Summary
 
-You have now successfully set up Passwordless Authentication in Directus Flows using the Plivo Verify API. This will allow users to sign in to your Directus project by sending a one-time password (OTP) to their phone number.
+You have now successfully set up passwordless authentication in Directus using the Plivo Verify API. This will allow users to sign in to your Directus project by sending a one time password (OTP) to their phone number.
 
-Beyond Passwordless Mobile authentication, email and magic link could also work the same way. The only difference is the way the user receives the code.
+This same general workflow could be used for emails and magic links could also work the same way. It's important to note that static tokens do not expire and are stored in plaintext, so you should consider a strategy for invalidating tokens.
