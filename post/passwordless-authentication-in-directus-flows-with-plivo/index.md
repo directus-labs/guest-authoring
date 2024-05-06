@@ -6,17 +6,11 @@ author:
   avatar_file_name: 'avatar.png'
 ---
 
-## Introduction
+In this tutorial, we will be setting up Passwordless Authentication using Directus Automate and the [Plivo Verify API](https://www.plivo.com/verify/).
 
-In this tutorial, we will be setting up [Passwordless Authentication](https://en.wikipedia.org/wiki/Passwordless_authentication) in [Directus Flows](https://docs.directus.io/app/flows.html) using the [Plivo Verify API](https://www.plivo.com/verify/).
-This will allow users to sign in to your Directus project by sending a [one-time password](https://en.wikipedia.org/wiki/One-time_password) (OTP) to their phone number.
+This will allow users to sign in to your Directus project by sending a one-time password (OTP) to their phone number, and then validating that it is correct before returning a token for further requests.
 
-## Noteworthy Assumptions
-
-This solution assumes...
-
-- that your user exists and has a unique phone number assigned to it. You will need to handle the case where a user with that phone number does not exist.
-- that your user has entered in a valid phone number, however, this is not always the case. The [Plivo Lookup API](https://www.plivo.com/lookup/) can be used to validate a phone number.
+This solution can be used once a user already exists in your project and has a unique, correctly-formatted, phone number. Formatting numbers can be hard and the [Plivo Lookup API](https://www.plivo.com/lookup/) can be used to validate a phone number.
 
 ## Before You Start
 
