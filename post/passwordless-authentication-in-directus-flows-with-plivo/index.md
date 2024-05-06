@@ -21,7 +21,7 @@ You will need...
 - A phone number that you can use to test receiving SMS messages (such as your own mobile phone number).
 - The `directus_users` table should have a `phone` field that is a `String`.
 - The `directus_users` table should have a `otp_session_uuid` field that is a `String`.
-- A directus user account with a valid mobile phone number added to the `phone` field.
+- A Directus user account with a valid mobile phone number added to the `phone` field.
 
 ## Setting Up Plivo
 
