@@ -158,31 +158,23 @@ module.exports = async function(data) {
 
 ## Verifying the OTP Code
 
-Now we will need to create a new flow to verify the OTP code.
+The second flow will accept a Session UUID and a One Time Password. If correct, it will generate and save a new static token against the user and deliver it. The token can then be used to authenticate requests.
 
-- In Directus, create a new flow called "Verify OTP Code". The description could be "Verifies the OTP code against the OTP session".
-- Click the next button.
-- Click webhook then uncheck the "Cache" checkbox.
-- Click "Finish Setup".
+Create a new Flow from your project settings with a Webhook trigger and caching disabled. Your application will make a request to this URL when verifying a OTP.
 
-We're presented with our new flow with a "Webhook Trigger" node. This node will be the entry point for our flow. Make a note of the Trigger URL presented on this node as we will need this later.
+To create a session, create a **Webhook / Request URL** operation with the following options:
 
-- Click the little plus sign on the Webhook Trigger.
-- Set the name to "Verify OTP Code" and then click "Webhook/Request URL".
 - Set the method to POST
 - In the URL field, enter `https://api.plivo.com/v1/Account/{PLIVO_AUTH_ID}/Verify/Session/{{$trigger.query.session_uuid}}/`. Replace `{PLIVO_AUTH_ID}` with your Plivo Auth ID.
 - In the headers section, add the following header replacing `{AUTH_HEADER}` with the encoded Authentication Header we created earlier:
   - Header: Authorization
   - Value: Basic {AUTH_HEADER}
-- In the body section, add the following JSON:
+- In the body section, add the following JSON replacing `{PLIVO_APP_UUID}` with your Plivo App UUID:
 
 ```json
 {
     "otp": "{{$trigger.query.otp}}"
 }
-```
-
-- Click "Done"
 
 ## Generating a Directus session token
 
