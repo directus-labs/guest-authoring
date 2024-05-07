@@ -217,10 +217,6 @@ Within the dynamic "Time Series" charts we can reuse the global variable by addi
 ![Usage of the syntax for variables within the dashboard panels.](Pasted image 20240223104315.png)
 You can use the <span v-pre>`{{…}}`</span> syntax, followed by a lower `h` to identify the value that should work as hours. If you use the same variable for all three slides, they will change altogether once you've selected a new amount of hours within the global variable slider.
 
-For the basic Metric values, you use the following configuration:
-![Example configuration of a simple metric panel to display the latest battery level.](Pasted image 20240223105348.png)
-To make the values more self-speaking, the style and format can be adjusted e.g. by different colours based on the current values.
-![An example of the conditional styles that can be used to clorize the metrics based on the current value. For instance, the battery level is shown red if the value dropped below 10](Pasted image 20240223105507.png)
 ## 3rd Party Alerting Integration
 
 You can integrate this system with external services to get a robust alerting system and a handy quick view of the current status directly on my mobile phone.
