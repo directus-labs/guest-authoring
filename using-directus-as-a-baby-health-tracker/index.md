@@ -16,8 +16,10 @@ We will cover data model configuration, how to grab data from the wearable using
 
 ## Implementation
 ## Creating Collections
-#### The data storage collection
-As we want to track sensor data over time, we will frequently pull the data with some details from the external API. Create a collection called `sensor_data` with a auto-generated UUID as an ID. Allow Directus to create `sort`, `status`, and `date_created` fields as well.
+### Storing Sensor Data
+
+As we want to track sensor data over time, we will frequently pull the data from the device. Create a collection called `sensor_data` with a auto-generated UUID as an ID. Enable the `sort`, `status`, and `date_created` optional fields.
+
 For each element of the data provided by the sensor, we want to save these values. Depending on the used sensor, you may come up with a different set of fields. In our case we've created the following important additional fields:
 
 | Field name | Interface | Comment |
@@ -31,8 +33,10 @@ For each element of the data provided by the sensor, we want to save these value
 | heart_status | Dropdown | To evaluate the sensor data. |
 | oxygen_state | Dropdown | To evaluate the sensor data. |
 | thermal_state | Dropdown | To evaluate the sensor data. |
-This collection is for integration into the OpsGenie alerting system. As Direcuts provides the fields for sort, creation, and update date as well aw who perfomred the action, we enanled these fields during creation. Next to the id we need the following fields for alerts we want to create later on. Next to the default fields, the most important custom fields are the following ones:
 
+### Storing Alerts
+
+Create an `opsgenie_alert` collection for integration into the OpsGenie alerting system. As Directus provides the fields for sort, creation, and update date as well as who performed an action, enable these fields during creation. Create the following fields:
 
 | Field name | Interface | Comment |
 | ---- | ---- | ---- |
@@ -42,7 +46,7 @@ This collection is for integration into the OpsGenie alerting system. As Direcut
 | message | String | The message that should be displayed in OpsGenie |
 | data | Many to Many | foreign key to the data item |
 
-There are also a couple of other fields that we can use and populate such as severity, type, description, tags, links, or alias. To find our more about each field, check out the OpsGenie docs
+There are also a couple of other fields that we can use and populate such as severity, type, description, tags, links, or alias. To find our more about each field, check out the OpsGenie docs.
 
 ## Authenticating with the Sensor
 
