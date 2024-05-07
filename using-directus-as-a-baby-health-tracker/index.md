@@ -54,28 +54,43 @@ The Owlet lacks a publicly-documented API, so some reverse-engineering was requi
 4. Get the data of our target device.
 5. Transform the data to our needs.
 6. Save the data.
-##### The Trigger
-The easiest way to get regular data fetched automatically with a Flow is a scheduled trigger.
-During the setup, we've set the trigger to the following settings:
+Create a flow with a scheduled trigger that runs every minute (an interval of `* * * * *`). Turn off logging to prevent saving a lot of unnecessary data to your database.
 
-Status: Active
-Activity & Log tracking: Track Log & Activity 
-Interval: * * * * * (which means, it runs every minute)
+Authenticating with the Owlet API and requires three steps:
 
-We highly recommend turning off the logging or at least reducing it to prevent the flow from writing too much data into the history. 
-##### Authenticate and request a Token
-For this specific API, the authentication is a bit more complex compared to basic auth or a simple "request a token" as we might know it from the easy-to-use-api from Directus.
-The general process to get a token which can be used to access actual device data contains three steps:
+1. Use the login credentials used by the mobile app and pass them to an auth service provided by Google. If successfully logged in, we receive a token.
+2. With this token, authenticate against the actual Owlet server for a second token.
+3. Using the second token, retrieve a final token that can be used to fetch sensor data.
 
-1. First, we use the regular login credentials (the one I can log in within the mobile App) and pass them to an auth service provided by Google. If successfully logged in, we receive a first token.
-2. With this token we can now secondly authenticate against the actual vendor server. But again we just get a second token.
-3. Within the third request we pass the 2nd token to the vendor API once again. For this request, we will receive a last token that can be used to fetch actual data from the API.
+:::details Show Operations
 
-!(Pasted image 20240214224605.png)
+Request 1:
+- Key: 
+- POST `https://...`
+- Headers: ...
 
-The screenshot shows the last request. As a key, we've set `token_sign_in` which can be used in the next operation. Within the payload/request body, we've specified the token to use with the dynamic code `"{{$last.data.mini_token}}"`. The object `$last` refers to the previous operation, an easy way to access the results from the last request. 
+Request 2:
+- Key: 
+- POST `https://...`
+- Headers: ...
 
-!(Pasted image 20240216105507.png)
+Request 3:
+- Key: 
+- POST `https://...`
+- Headers: 
+  - `Content-Type`: `...`
+  - `Accept`: `...`
+- Body: 
+  ```json
+  {
+    "app_id": "EXPLAIN",
+    "app_secret": "EXPLAIN"
+    "provider": "owl_id",
+    "token": "{{$last.data.mini_token}}"
+  }
+  ``` 
+
+:::
  
 ## Reading Data From the Sensor
 
