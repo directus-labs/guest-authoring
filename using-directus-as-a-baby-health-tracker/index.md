@@ -76,26 +76,31 @@ The general process to get a token which can be used to access actual device dat
 :::details Show Operations
 
 Request 1:
-- Key: 
-- POST `https://...`
-- Headers: ...
+- Key: `verifyPw`
+- POST `https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=##########`
+- Headers: 
+  - `X-Android-Package`: `com.owletcare.owletcare`
+  - `X-Android-Cert`: `##some secret value##`
+  - `Content-Type`: `application/json`
+  - `Accept`: `application/json`
 
 Request 2:
-- Key: 
-- POST `https://...`
-- Headers: ...
+- Key: `get_mini_token`
+- POST `https://ayla-sso.eu.owletdata.com/mini/`
+- Headers: 
+  - `Authorization`: `{{$last.data.idToken}}`
 
 Request 3:
-- Key: 
-- POST `https://...`
+- Key: `token_sign_in`
+- POST `https://user-field-eu-1a2039d9.aylanetworks.com/api/v1/token_sign_in`
 - Headers: 
-  - `Content-Type`: `...`
-  - `Accept`: `...`
+  - `Content-Type`: `application/json`
+  - `Accept`: `application/json`
 - Body: 
   ```json
   {
-    "app_id": "EXPLAIN",
-    "app_secret": "EXPLAIN"
+    "app_id": "OwletCare-Android-EU-fw-id",
+    "app_secret": "OwletCare-Android-EU-########",
     "provider": "owl_id",
     "token": "{{$last.data.mini_token}}"
   }
