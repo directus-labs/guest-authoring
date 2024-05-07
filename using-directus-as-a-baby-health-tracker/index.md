@@ -31,6 +31,7 @@ For each element of the data provided by the sensor, we want to save these value
 
 This collection is for integration into the OpsGenie alerting system. As Direcuts provides the fields for sort, creation, and update date as well aw who perfomred the action, we enanled these fields during creation. Next to the id we need the following fields for alerts we want to create later on. Next to the default fields, the most important custom fields are the following ones:
 
+Create an `opsgenie_alert` collection for integration into the OpsGenie alerting system. As Directus provides the fields for sort, creation, and update date as well as who performed an action, enable these fields during creation. Create the following fields:
 
 | Field name | Interface | Comment |
 | ---- | ---- | ---- |
@@ -40,7 +41,7 @@ This collection is for integration into the OpsGenie alerting system. As Direcut
 | message | String | The message that should be displayed in OpsGenie |
 | data | Many to Many | foreign key to the data item |
 
-There are also a couple of other fields that we can use and populate such as severity, type, description, tags, links, or alias. To find our more about each field, check out the OpsGenie docs
+There are also a couple of other fields that we can use and populate such as severity, type, description, tags, links, or alias. To find our more about each field, check out the OpsGenie docs.
 
 ## Authenticating with the Sensor
 
@@ -52,6 +53,9 @@ The Owlet lacks a publicly-documented API, so some reverse-engineering was requi
 4. Get the data of our target device.
 5. Transform the data to our needs.
 6. Save the data.
+Create a flow with a scheduled trigger that runs every minute (an interval of `* * * * *`). Turn off logging to prevent saving a lot of unnecessary data to your database.
+
+Authenticating with the Owlet API and requires three steps:
 ### The Trigger
 The easiest way to get regular data fetched automatically with a Flow is a scheduled trigger.
 During the setup, we've set the trigger to the following settings:
@@ -65,15 +69,39 @@ We highly recommend turning off the logging or at least reducing it to prevent t
 For this specific API, the authentication is a bit more complex compared to basic auth or a simple "request a token" as we might know it from the easy-to-use-api from Directus.
 The general process to get a token which can be used to access actual device data contains three steps:
 
-1. First, we use the regular login credentials (the one I can log in within the mobile App) and pass them to an auth service provided by Google. If successfully logged in, we receive a first token.
-2. With this token we can now secondly authenticate against the actual vendor server. But again we just get a second token.
-3. Within the third request we pass the 2nd token to the vendor API once again. For this request, we will receive a last token that can be used to fetch actual data from the API.
+1. Use the login credentials used by the mobile app and pass them to an auth service provided by Google. If successfully logged in, we receive a token.
+2. With this token, authenticate against the actual Owlet server for a second token.
+3. Using the second token, retrieve a final token that can be used to fetch sensor data.
 
-![Screenshot of a Directus Flow that visualize the chained operations for authentication](Pasted image 20240214224605.png)
+:::details Show Operations
 
-The screenshot shows the last request. As a key, we've set `token_sign_in` which can be used in the next operation. Within the payload/request body, we've specified the token to use with the dynamic code `"{{$last.data.mini_token}}"`. The object `$last` refers to the previous operation, an easy way to access the results from the last request. 
+Request 1:
+- Key: 
+- POST `https://...`
+- Headers: ...
 
-![The edit view of a webrequest operation that passes some ids, secrets and tokens to the endpoint to receive the data](Pasted image 20240216105507.png)
+Request 2:
+- Key: 
+- POST `https://...`
+- Headers: ...
+
+Request 3:
+- Key: 
+- POST `https://...`
+- Headers: 
+  - `Content-Type`: `...`
+  - `Accept`: `...`
+- Body: 
+  ```json
+  {
+    "app_id": "EXPLAIN",
+    "app_secret": "EXPLAIN"
+    "provider": "owl_id",
+    "token": "{{$last.data.mini_token}}"
+  }
+  ``` 
+
+:::
  
 ### Reading Data From the Sensor
 
@@ -302,12 +330,13 @@ This request will return the current status and therefore all the data (includin
 In the moment an actual alert is created within OpsGenie, any connected system is yelling for attention, just as configured in the tool.
 
 If Directus tries to create a new alert with the same data (in case the battery or oxygen level is still on the same level) no new alert is created by the design of OpsGenie. But it's hard to miss any alert as it sends SMS, critical push notifications, or even calling a phone number if needed and no reaction is noticed. 
-#### As a Widget for iOS
-As a last method of reporting and integration Directus, we can create a simple iOS widget, that sits right on my lock and home screen. As this is not about iOS development we chose the easy way and used Scriptable for this. This free app can be used to run JavaScript and display the data as a widget. The only downside of these Scriptable widgets is, that iOS decides WHEN to update the content of the widget. So you can not force the widget to reload actively. This is a limitation to prevent battery drainage and high load due to the demanding JavaScript. Usually, the script runs every 1 to 15 minutes. To know how "outdated" the displayed data is, we've added the create-timestamp as part of the widgets. 
+## Build an iOS Widget
+As a last method of reporting and integration Directus, we can create an iOS widget, that sits right on my lock and home screen. As this is not about iOS development we chose the easy way and used Scriptable for this. This free app can be used to run JavaScript and display the data as a widget. The only downside of these Scriptable widgets is, that iOS decides WHEN to update the content of the widget. So you can not force the widget to reload actively. This is a limitation to prevent battery drainage and high load due to the demanding JavaScript. Usually, the script runs every 1 to 15 minutes. To know how "outdated" the displayed data is, we've added the create-timestamp as part of the widgets. 
+
 For the Directus integration this time I have created a new role that can have view access to the data collection only. A user in this role has set a static token that I can use within the widget. Using the query parameter `limit` and `sort` I can define to get only the very last entry sorted by the create date column.
 
 ```javascript
-const url = "https://my-directus.app/items/neebo_data?limit=1&sort=sort,-date_created"
+const url = "https://my-directus.app/items/sensor_data?limit=1&sort=sort,-date_created"
 const token = "xy-my-static-token"
 async function getData(url) {
   let request = new Request(url);
