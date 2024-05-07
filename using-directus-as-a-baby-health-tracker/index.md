@@ -71,11 +71,11 @@ The general process to get a token which can be used to access actual device dat
 2. With this token we can now secondly authenticate against the actual vendor server. But again we just get a second token.
 3. Within the third request we pass the 2nd token to the vendor API once again. For this request, we will receive a last token that can be used to fetch actual data from the API.
 
-!(Pasted image 20240214224605.png)
+![#TODO Alt text](Pasted image 20240214224605.png)
 
 The screenshot shows the last request. As a key, we've set `token_sign_in` which can be used in the next operation. Within the payload/request body, we've specified the token to use with the dynamic code `"{{$last.data.mini_token}}"`. The object `$last` refers to the previous operation, an easy way to access the results from the last request. 
 
-!(Pasted image 20240216105507.png)
+![#TODO Alt text](Pasted image 20240216105507.png)
  
 ## Reading Data From the Sensor
 
@@ -203,7 +203,7 @@ The last step within the Flow is to save the gathered data within the collection
 ## Reporting
 ### Insights
 As the Insights module is built in Directus, you can create any report with the data just as you need it. In our case, we've created the following dashboard:
-!(Pasted image 20240305062855.png)
+![#TODO Alt text](Pasted image 20240305062855.png)
 
 The dashboard is split into three sections, on the left, the last 30 minutes of data are displayed. On the right, you can select the amount of hours you'd like to review. This is done by a slide that is used as a global variable for the 3 charts underneath. 
 In between, some stats are displayed, in detail, in the very last dataset for the oxygen level, heart rate, temperature and battery stats. 
@@ -211,16 +211,16 @@ In between, some stats are displayed, in detail, in the very last dataset for th
 All the charts are using the "Time Series" chart. The left side uses the default values for the data range of 30 minutes. For each measurement, the min and max values are set to render the most common values including some border values. The dynamic charts on the right are set up similarly. 
 
 To achieve the dynamic time window, we have to create the "Global Variable" with the name 'last_x_hours' first:
-!(Pasted image 20240223104116.png)
+![#TODO Alt text](Pasted image 20240223104116.png)
 
 Within the dynamic "Time Series" charts we can reuse the global variable by adding its name to the date range:
-!(Pasted image 20240223104315.png)
+![#TODO Alt text](Pasted image 20240223104315.png)
 You can use the <span v-pre>`{{…}}`</span> syntax, followed by a lower `h` to identify the value that should work as hours. If you use the same variable for all three slides, they will change altogether once you've selected a new amount of hours within the global variable slider.
 
 For the basic Metric values, you use the following configuration:
-!(Pasted image 20240223105348.png)
+![#TODO Alt text](Pasted image 20240223105348.png)
 To make the values more self-speaking, the style and format can be adjusted e.g. by different colours based on the current values.
-!(Pasted image 20240223105507.png)
+![#TODO Alt text](Pasted image 20240223105507.png)
 ## 3rd Party Alerting Integration
 
 You can integrate this system with external services to get a robust alerting system and a handy quick view of the current status directly on my mobile phone.
@@ -231,11 +231,11 @@ For the alerting system, we're using OpsGenie, usually used for system, infrastr
 
 To build this, a new Flow listens to every created event within the `sensor_data` collection. Every new record in this collection is evaluated and under certain conditions, a new item is created within an additional collection called `opsgenie_alert`. The collection looks something like this to store all relevant data that OpsGenie can use:
 
-!(Pasted image 20240304172941.png)
+![#TODO Alt text](Pasted image 20240304172941.png)
 
 The related Flow looks like this:
 
-!(Pasted image 20240304173609.png)
+![#TODO Alt text](Pasted image 20240304173609.png)
 
 Within the Run Script operation the data is evaluated and based on the met conditions, the returning JSON is passed over to the next operation.
 
@@ -294,11 +294,11 @@ Within the create operation, the following payload is used to create the OpenGen
 
 Once the alert is created within Directus, of course, it has to be created within OpsGenie as well. For this – again a new Flow is needed. This time we have to use the Timeout operation as OpsGenie queues all incoming requests and does not provide the result immediately.
 
-!(Pasted image 20240304175218.png)
+![#TODO Alt text](Pasted image 20240304175218.png)
 
 Once triggered, we read out all the data first and pass the needed data to the OpsGenie API with a user key and the JSON data from the alert collection. As the API does not return the actual result but only an ID of the incoming task, we now wait 2 seconds before requesting the current status of our queued task with the 2nd web request. The request URL gets the returning ID from the 1st web request: 
 
-!(Pasted image 20240304175856.png)
+![#TODO Alt text](Pasted image 20240304175856.png)
 
 This request will return the current status and therefore all the data (including an ID) of this alert. With the update operation, we saved the alert ID to be able to refer to the OpsGenie alert if needed.
 
@@ -372,6 +372,9 @@ let widget = await createWidget(processedData);
 Script.setWidget(widget);
 Script.complete()
 ```
+
+In the end, the widget would look like this. In case the waerable is charging, the current battery level is displayed.
+![Screenshot of an smartphone lockscreen that shows the latest health data provided by the Directus backend. Small icons are used to identify which value stands for which senor data. A timestamp is underneath.](iOS_WidgetLockScreen.jpg)
 
 ## Wrap up
 And Voila, you've successfully built your monitoring system by using Direcuts. In this post, we covered how to set up the needed Collections to store data from an external API using Flows, worked with the data to further integrate the collected data into third-party tools and built our reporting Dashboard directly within Direcuts using Insights as well as display the latest data on our mobile phone.
