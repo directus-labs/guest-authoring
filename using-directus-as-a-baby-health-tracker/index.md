@@ -234,6 +234,8 @@ The related Flow looks like this:
 
 Within the Run Script operation the data is evaluated and based on the met conditions, the returning JSON is passed over to the next operation.
 
+To get more details about the API, please check the [official documentation for OpsGenie](https://docs.opsgenie.com/docs/alert-api).
+
 For checking the battery level the code looks like this:
 
 ```javascript
