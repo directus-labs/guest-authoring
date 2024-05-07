@@ -10,13 +10,8 @@ In this article, we will explore Directus as a backend for a smart wearable devi
 
 We will cover data model configuration, how to grab data from the wearable using Directus Flows, and how to integrate Directus into 3rd party tools for reporting, such as OpsGenie and screen widgets on an iPhone.
 
-## Before You Start
-- A Directus project - follow our [quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one.
-- A wearable with an API to consume the data. For this project, we will use the [Owlet](https://owletcare.com/).
-
-## Implementation
 ## Creating Collections
-#### The data storage collection
+### The data storage collection
 As we want to track sensor data over time, we will frequently pull the data with some details from the external API. Create a collection called `sensor_data` with a auto-generated UUID as an ID. Allow Directus to create `sort`, `status`, and `date_created` fields as well.
 For each element of the data provided by the sensor, we want to save these values. Depending on the used sensor, you may come up with a different set of fields. In our case we've created the following important additional fields:
 
@@ -31,6 +26,9 @@ For each element of the data provided by the sensor, we want to save these value
 | heart_status | Dropdown | To evaluate the sensor data. |
 | oxygen_state | Dropdown | To evaluate the sensor data. |
 | thermal_state | Dropdown | To evaluate the sensor data. |
+
+### The Alert collection
+
 This collection is for integration into the OpsGenie alerting system. As Direcuts provides the fields for sort, creation, and update date as well aw who perfomred the action, we enanled these fields during creation. Next to the id we need the following fields for alerts we want to create later on. Next to the default fields, the most important custom fields are the following ones:
 
 
@@ -54,7 +52,7 @@ The Owlet lacks a publicly-documented API, so some reverse-engineering was requi
 4. Get the data of our target device.
 5. Transform the data to our needs.
 6. Save the data.
-##### The Trigger
+### The Trigger
 The easiest way to get regular data fetched automatically with a Flow is a scheduled trigger.
 During the setup, we've set the trigger to the following settings:
 
@@ -63,7 +61,7 @@ Activity & Log tracking: Track Log & Activity
 Interval: * * * * * (which means, it runs every minute)
 
 We highly recommend turning off the logging or at least reducing it to prevent the flow from writing too much data into the history. 
-##### Authenticate and request a Token
+### Authenticate and request a Token
 For this specific API, the authentication is a bit more complex compared to basic auth or a simple "request a token" as we might know it from the easy-to-use-api from Directus.
 The general process to get a token which can be used to access actual device data contains three steps:
 
@@ -77,7 +75,7 @@ The screenshot shows the last request. As a key, we've set `token_sign_in` which
 
 ![The edit view of a webrequest operation that passes some ids, secrets and tokens to the endpoint to receive the data](Pasted image 20240216105507.png)
  
-## Reading Data From the Sensor
+### Reading Data From the Sensor
 
 Compared to the auth process, fetching actual data from the API is done with fewer requests – just two are needed. As the vendor supports multiple devices, we have to get a list of devices first. In theory, we can also do this in preparation and hard-code the device ID within the next operation. But again, as there is no official documentation of the API this might change or the ID might not that unique and may change within any future updates. 
 
@@ -187,7 +185,7 @@ Some of the keys are self-speaking while others are not clear. Due to the lack o
 
 In our case, we are using `ox` as the oxgenlevel, `hr` as heartrate, `bat` as battery level, and `st` as the skin temperature.
 
-## Saving the Sensor Data
+### Saving the Sensor Data
 
 The last step within the Flow is to save the gathered data within the collection we've set up already. The payload of the create operation looks like this:
 
@@ -200,6 +198,7 @@ The last step within the Flow is to save the gathered data within the collection
     "battery_level": "{{$last.bat}}"
 }
 ```
+
 ## Reporting
 ### Insights
 As the Insights module is built in Directus, you can create any report with the data just as you need it. In our case, we've created the following dashboard:
@@ -217,7 +216,7 @@ Within the dynamic "Time Series" charts we can reuse the global variable by addi
 ![Usage of the syntax for variables within the dashboard panels.](Pasted image 20240223104315.png)
 You can use the <span v-pre>`{{…}}`</span> syntax, followed by a lower `h` to identify the value that should work as hours. If you use the same variable for all three slides, they will change altogether once you've selected a new amount of hours within the global variable slider.
 
-## 3rd Party Alerting Integration
+### 3rd Party Alerting Integration
 
 You can integrate this system with external services to get a robust alerting system and a handy quick view of the current status directly on my mobile phone.
 
