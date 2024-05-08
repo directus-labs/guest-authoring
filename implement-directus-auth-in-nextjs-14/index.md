@@ -1,68 +1,123 @@
 ---
 title: 'Implement Directus Auth in Next.js 14'
-description: 'A tutorial on implementing Authentication on a Next.js blog website using Directus as a Headless CMS.'
+description: 'Learn how to implement user registration, login, and permissions in your Next.js application.'
 author:
   name: 'Emmanuel John'
   avatar_file_name: 'profile-photo.jpeg'
 ---
 
 ## Introduction
-In this tutorial, you will learn how to implement Authentication on a Next.js blog website using Directus as a Headless CMS. You’ll register new users, login, handle refresh tokens, create posts, list all posts, and edit/delete posts where the auth user is the post creator.
+In this tutorial, you will learn how to implement authentication in a Next.js project using Directus Auth. You’ll register new users, login, handle refresh tokens, and perform create, read, update, and delete operations (CRUD), with the ability. to only update or delete a user's own items.
 
 ## Before You Start
-To follow along with this tutorial, you will need the following knowledge and tools:
-
+You will need:
 - [Node.js](https://nodejs.org/en/download/) v18 and above installed on your computer.
-- A Directus project - follow our [quickstart guide](https://docs.directus.io/blog/docs.directus.io/getting-started/quickstart.html) if you don't already have one.
-- Prior experience with Next.js.
+- A Directus project - follow our [quickstart guide](https://docs.directus.io/blog/docs.directus.io/getting-started/quickstart) if you don't already have one.
+- Some experience with Next.js and a newly-created project.
 
 <!-- ## Your Sections Here -->
-## Allowing Public Role To Create Users
+## Allowing Public Registration
 
-1. Navigate to `Settings`.
-2. Select `Access Control`.
-3. Click on the `Public Role`.
-4. Access the `System Collection`.
-5. Locate `directus_users`.
-6. Under the `Create` option, choose `Use Custom`.
-7. Enable field permissions for `first_name`, `last_name`, `role`, `Email` and `Password` options.
-![Directus public role field permission settings](public-role-field-permission-settings.png)
-8. Enable field validation where `role` equals the Author role `Primary Key`
-![Directus public role field validation settings](public-role-field-validation-settings.png)
+When a user first registers, they will be unauthenticated. In Directus, the permissions of unauthenticated users are controlled by the public role.
+In your access control settings open the public role. Find `directus_users` under system collections, and then set custom permissions.
+1. In field permissions, enable only `first_name`, `last_name`, `email` and `password` options. If you want users to provide other data at the time of registration, enable the respective field.
+2. In field validation, require `first_name`, `last_name`, `email`, and `password` to not be empty.
+3. In field presets, set the `role` to the `id` of the author role.
+This combination of settings in a custom permission will ensure users provide the required fields, and automatically set the role.
 
-## Creating posts collection
+## Creating a Posts Collection
 
-1. Navigate to `Settings`.
-2. Select `Data Model`.
-3. Create a new collection named `posts`.
-4. Check the fields that you want returned on the `posts` data
-![Directus posts optional fields settings](Directus-posts-optional-fields-settings.png)
-5. Create additional fields for the post:
-
+Create a new `posts` collection. Ensure `user_created` is created as an optional field as it will be used to lock down permissions so a user can only edit or delete their own posts. Create the following additional fields:
+- `title`: a text input field
+- `content`: a WYSIWYG field
+- `image`: an image field
 - title => Input field
 - content => WYSIWYG
 - image => Image
-The `title` and `content` fields should be required.
-![Directus post additional fields settings](Directus-post-additional-fields-settings-1.png)
 
 ## Creating a New User Role
-
-1. On the Access Control page, click the plus button.
-2. Name your new role, as `Author`.
-3. Under the "Posts" collection, enable `Create` and `Read`.
-4. For `Edit` and `Delete`, select `Use Custom`.
-5. Add Filter `user_created -> id Equals $CURRENT_USER.id` for both update and delete options.
-6. This configuration ensures that users can read all posts but are restricted to updating and deleting only their own posts.
-7. Retrieve the `Primary Key` associated with the `Author` role by selecting the `Author Role` option and then tapping the information icon where you'll be able to copy the `Primary Key`
-8. On the Access Control page, click `Public`. Click `create` for `directus_users` from the options, then click on `Use custom`. Proceed to `field presets` and paste the Primary Key.
-
-By following these steps users created by the public role will be given the `Author` role.
-
-Add the following to your `.env` file:
-
-```text
-USER_ROLE=USER_ROLE_ID_FROM_YOUR_DIRECTUS_PROJECT
+Create a new role called `author`. Enable create and read permissions for the `posts` collection. For update and delete permissions, use custom rules and apply the following filter:
 ```
+user_created -> id Equals $CURRENT_USER.id
+```
+This configuration ensures that users can read all posts but are restricted to updating and deleting only their own posts.
+
+## Setup Directus in the Next.js App
+
+Create a `lib` directory. Inside  `lib` create `directus.js` and add the following:
+
+```javaScript
+//src/lib/directus.js
+import { 
+  createDirectus, 
+  rest, 
+  authentication 
+} from '@directus/sdk';
+
+const directus = createDirectus(process.env.BACKEND_URL)
+  .with(authentication("cookie", {credentials: "include", autoRefresh: true}))
+  .with(rest({credentials: "include"}));
+
+export default directus;
+```
+
+Create a `constant` directory. Inside  `constant` create `index.js` and add the following:
+
+```javaScript
+//src/constants/index.js
+export const COOKIE_NAME = "OurSiteJWT";
+export const AUTH_USER = "auth_user";
+```
+
+## Handling User Session and Logout
+
+Server Actions are **asynchronous functions** that are executed on the server. They can be used in Server and Client Components to handle form submissions and data mutations in Next.js applications.
+
+To handle user session and logout, navigate to the `lib` directory, create `action.js` file and add the following:
+
+```javaScript
+"use server";
+import { revalidatePath } from "next/cache";
+import { directusLogin } from "./auth";
+import {
+  createItem,
+  createUser,
+  deleteItem,
+  readItem,
+  readItems,
+  readMe,
+  updateItem,
+  uploadFiles,
+  withToken,
+} from "@directus/sdk";
+import directus from "@/lib/directus";
+import { redirect } from "next/navigation";
+import { AUTH_USER, COOKIE_NAME } from "@/constants";
+import { cookies } from "next/headers";
+
+export const handleLogout = async () => {
+  cookies().delete(AUTH_USER);
+  cookies().delete(COOKIE_NAME);
+};
+
+export const userSession = async () => {
+  const cookieStore = cookies();
+  let token = undefined;
+  const cookie = cookieStore.get(COOKIE_NAME);
+  if (cookie?.value) {
+    token = JSON.parse(cookie?.value);
+  }
+
+  const user = {};
+  if (token != undefined) {
+    user.accessToken = token.data.access_token;
+    user.refreshToken = token.data.refresh_token;
+  }
+  return user;
+};
+```
+
+The `userSession` function retrieves user session information from cookies, including access and refresh tokens, and returns an object containing this information.
 
 ## Setting up Layout Configuration
 
@@ -195,25 +250,6 @@ const Loading = () => {
 export default Loading
 ```
 
-### Not Found Component
-
-In the `app` directory, create `not-found.jsx` with the content:
-
-```javascript
-//src/app/not-found.jsx
-import Link from "next/link"
-const NotFound = () => {
-  return (
-    <div>
-      <h2>Not Found</h2>
-      <p>Sorry, the page you are looking for does not exist.</p>
-      <Link href="/">Return Home</Link>
-    </div>
-  )
-}
-export default NotFound
-```
-
 ## Route Protections
 
 To handle route protection, Create the `post/layout.jsx` file and add the following:
@@ -250,31 +286,12 @@ export default function PostLayout({ children }) {
 
 This will ensure that only authenticated users can access the create post and update post pages.
 
-## Implementing Server Actions for Auth Components
+## Implementing Registration
 
-Server Actions are **asynchronous functions** that are executed on the server. They can be used in Server and Client Components to handle form submissions and data mutations in Next.js applications.
-
-To send user credentials to the `Directus` backend on the user register form submission, navigate to the `lib` directory, create `action.js` file and add the following:
+To send user credentials to the `Directus` backend on the user register form submission, navigate to the `action.js` file and add the following:
 
 ```javascript
-"use server";
-import { revalidatePath } from "next/cache";
-import { directusLogin } from "./auth";
-import {
-  createItem,
-  createUser,
-  deleteItem,
-  readItem,
-  readItems,
-  readMe,
-  updateItem,
-  uploadFiles,
-  withToken,
-} from "@directus/sdk";
-import directus from "@/lib/directus";
-import { redirect } from "next/navigation";
-import { AUTH_USER, COOKIE_NAME } from "@/constants";
-import { cookies } from "next/headers";
+...
 
 export const register = async (previousState, formData) => {
   try {
@@ -302,95 +319,7 @@ export const register = async (previousState, formData) => {
     };
   }
 };
-
-export const login = async (prevState, formData) => {
-  const { email, password } = Object.fromEntries(formData);
-
-  try {
-    const user = await directusLogin({ email, password });
-    if (user) {
-      redirect("/");
-    }
-  } catch (err) {
-    console.log(err);
-    if (err.message.includes("Wrong credentials!")) {
-      return { error: "Invalid username or password" };
-    }
-    throw err;
-  }
-};
-
-export const handleLogout = async () => {
-  cookies().delete(AUTH_USER);
-  cookies().delete(COOKIE_NAME);
-};
-
-export const userSession = async () => {
-  const cookieStore = cookies();
-  let token = undefined;
-  const cookie = cookieStore.get(COOKIE_NAME);
-  if (cookie?.value) {
-    token = JSON.parse(cookie?.value);
-  }
-
-  const user = {};
-  if (token != undefined) {
-    user.accessToken = token.data.access_token;
-    user.refreshToken = token.data.refresh_token;
-    getAuthUser(token)
-  }
-  return user;
-};
-
-export const getAuthUser = async (token) => {
-  const userData = await directus.request(
-    withToken(
-      token.data.access_token,
-      readMe({
-        fields: ["*"],
-      })
-    )
-  );
-  return userData;
-};
 ```
-
-These functions handle user logout, registration, login and users session using the Directus SDK.
-
-## Creating the Auth Pages
-
-The auth pages consist of the login and the register pages. To group these pages, create `(auth)` directory in the `app` directory. The `auth`  directory will hold both login and register pages.
-
-### Login Form
-
-Create a `components` directory and a `loginForm` subdirectory. Inside `loginForm` create `loginForm.jsx` and add the following:
-
-```javascript
-//src/app/components/loginForm/loginForm.jsx
-"use client";
-import { login } from "@/lib/action";
-import { useFormState } from "react-dom";
-import Link from "next/link";
-
-const LoginForm = () => {
-  const [state, formAction] = useFormState(login, undefined);
-
-  return (
-    <form action={formAction}>
-      <input type="email" placeholder="email" name="email" />
-      <input type="password" placeholder="password" name="password" />
-      <button>Login</button>
-      {state?.error}
-      <Link href="/register">
-        {"Don't have an account?"} <b>Register</b>
-      </Link>
-    </form>
-  );
-};
-export default LoginForm;
-```
-
-### Register Form
 
 In the `components` directory, create a `registerForm` subdirectory. Inside `registerForm` create `registerForm.jsx` and add the following:
 
@@ -433,9 +362,7 @@ const RegisterForm = () => {
 export default RegisterForm;
 ```
 
-### Register Page
-
-In the `(auth)` directory, create a `register` subdirectory. Inside `register` create `page.jsx` and add the following:
+Create `(auth)` directory inside the `app` director. In the `(auth)`, create a `register` subdirectory. Inside `register` create `page.jsx` and add the following:
 
 ```javascript
 //src/app/(auth)/register/page.jsx
@@ -464,7 +391,80 @@ Navigate to `http://localhost:3000/register` in your browser and you should see 
 
 ![Register page](register-page.png)
 
-### Login Page
+## Implementing Login
+
+To send user credentials to the `Directus` backend on the user login form submission, navigate to the `lib` directory. Inside `lib` create `auth.js` and add the following:
+
+```javascript
+//src/lib/auth.js
+import { COOKIE_NAME } from "@/constants";
+import { cookies } from "next/headers";
+
+export const directusLogin = async (credentials) => {
+    const res = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
+      method: "POST",
+      body: JSON.stringify(credentials),
+      headers: { "Content-Type": "application/json" },
+    });
+    const user = await res.json();
+    // If no error and we have user data, return it
+    if (!res.ok && user) {
+      throw new Error("Wrong credentials!");
+    }
+    const formatedData = JSON.stringify(user)
+    cookies().set(COOKIE_NAME, formatedData)
+    return user;
+};
+```
+
+Navigate to the `action.js` file and add the following:
+
+```javascript
+...
+export const login = async (prevState, formData) => {
+  const { email, password } = Object.fromEntries(formData);
+
+  try {
+    const user = await directusLogin({ email, password });
+    if (user) {
+      redirect("/");
+    }
+  } catch (err) {
+    console.log(err);
+    if (err.message.includes("Wrong credentials!")) {
+      return { error: "Invalid username or password" };
+    }
+    throw err;
+  }
+};
+```
+
+Create a `loginForm` subdirectory in the `components` directory. Inside `loginForm` create `loginForm.jsx` and add the following:
+
+```javascript
+//src/app/components/loginForm/loginForm.jsx
+"use client";
+import { login } from "@/lib/action";
+import { useFormState } from "react-dom";
+import Link from "next/link";
+
+const LoginForm = () => {
+  const [state, formAction] = useFormState(login, undefined);
+
+  return (
+    <form action={formAction}>
+      <input type="email" placeholder="email" name="email" />
+      <input type="password" placeholder="password" name="password" />
+      <button>Login</button>
+      {state?.error}
+      <Link href="/register">
+        {"Don't have an account?"} <b>Register</b>
+      </Link>
+    </form>
+  );
+};
+export default LoginForm;
+```
 
 In the `(auth)` directory, create a `login` subdirectory. Inside `login` create `page.jsx` and add the following:
 
@@ -485,7 +485,7 @@ const LoginPage = () => {
 export default LoginPage;
 ```
 
-With the above implementation, registered users should be able to sign in and sign out.
+With the above implementation, registered users should be able to sign in.
 Navigate to `http://localhost:3000/login` in your browser and you should see the following:
 
 ![Login page](login-page.png)
@@ -497,29 +497,14 @@ Navigate to `http://localhost:3000/login` in your browser and you should see the
 To create post from `Directus` backend, navigate to the `lib/action.js` file and add the following:
 
 ```javascript
-export const uploadPostImage = async (image, title) => {
-  try {
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("file", image);
-    const result = await directus.request(uploadFiles(formData));
-    return result;
-  } catch (error) {
-    console.log(error);
-    return { error: "Something went wrong!" };
-  }
-};
 export const addPost = async (prevState, formData) => {
-  const { title, content, image, userId } = Object.fromEntries(formData);
+  const { title, content, userId } = Object.fromEntries(formData);
   
   try {
-    const postImage = await uploadPostImage(image, title);
-    if(postImage) {
       const result = await directus.request(
         createItem("posts", {
           title,
           content,
-          image: postImage.id,
           user_created: userId,
           user_role: process.env.USER_ROLE
         })
@@ -528,15 +513,24 @@ export const addPost = async (prevState, formData) => {
         revalidatePath("/blog");
         redirect("/blog")
       }
-    }
   } catch (err) {
     console.log(err);
     return { error: "Something went wrong!" };
   }
 };
-```
 
-The `uploadPostImage` function uploads an image associated with a new post and `addPost` adds the post to the Directus backend.
+export const getAuthUser = async (token) => {
+  const userData = await directus.request(
+    withToken(
+      token.data.access_token,
+      readMe({
+        fields: ["*"],
+      })
+    )
+  );
+  return userData;
+};
+```
 
 ### Create Post Page
 
@@ -588,7 +582,6 @@ const CreatePostForm = ({userId}) => {
         <h1>Add New Post</h1>
         <input type="hidden" name="userId" value={userId} />
         <input type="text" name="title" placeholder="Title" />
-        <input type="file" name="image" placeholder="upload image" accept="image/*"/>
         <textarea type="text" name="content" placeholder="content" rows={10} />
         <button>Add</button>
         {state?.error}
@@ -621,7 +614,6 @@ export const getPosts = async () => {
         fields: [
           "title",
           "id",
-          "image.*",
           "content",
           "date_created",
           "user_created.*",
@@ -634,8 +626,6 @@ export const getPosts = async () => {
   }
 };
 ```
-
-The `getPosts` function makes a request to Directus using the `directus.request()` method, specifying to read items from the "posts" collection. Within the request, it specifies the fields to retrieve for each post. The asterisk signifies all fields under its associated field.
 
 In the `app` directory, create a `blog` subdirectory. Inside `blog` create `page.jsx` and add the following to render the retrieved data:
 
@@ -667,18 +657,12 @@ In the `components` directory, create a `postCard` subdirectory. Inside `postCar
 ```javascript
 //src/components/postCard/postCard.jsx
 import Link from "next/link"
-import directus from "@/lib/directus"
 import PostUser from "../postUser/postUser"
 
 const PostCard = async ({post}) => {
 
   return (
     <div >
-      <div>
-        {post.image && <div >
-          <img src={`${directus.url}assets/${post.image.filename_disk}?width=300`} alt="" fill/>
-        </div>}
-      </div>
       <div >
         <h1>{post.title}</h1>
        
@@ -746,7 +730,6 @@ export const getPost = async (slug) => {
         fields: [
           "title",
           "id",
-          "image.*",
           "content",
           "date_created",
           "user_created.*",
@@ -772,7 +755,6 @@ Each blog post links to a single post detail page. In the `blog` directory, crea
 import { redirect } from 'next/navigation'
 import PostUser from "@/components/postUser/postUser";
 import { Suspense } from "react";
-import directus from "@/lib/directus";
 import { deletePost, getAuthUser, getPost } from "@/lib/action";
 import Link from "next/link";
 import { cookies } from "next/headers";
@@ -806,11 +788,6 @@ const SinglePostPage = async ({ params }) => {
 
   return (
     <div>
-      {post.image && (
-        <div>
-          <img src={post.image ? `${directus.url}assets/${post.image.filename_disk}?width=400` : "/noavatar.png" } alt="" fill/>
-        </div>
-      )}
       <div>
         <h1>{post.title}</h1>
         <div>
@@ -844,6 +821,7 @@ export default SinglePostPage;
 ```  
 
 The  `SinglePostPage`  renders the  single post detail with options for editing and deleting the post if the logged in user is the post creator.
+The post content is rendered using `dangerouslySetInnerHTML` to handle HTML content safely. It can only be used for trusted content.
 
 Click on the `READ MORE`  link in a post to get to the corresponding detail blog post page as follows:
 
@@ -857,23 +835,11 @@ To update post data from `Directus` backend, navigate to the `lib/action.js` fil
 
 ```javascript
 export const updatePost = async (formData) => {
-  const { id, title, content, image, userId } = formData;
-  let postImage = ""
-  if(!image.id) {
-    //upload image to directus
-    const response = await uploadPostImage(image, title)
-    if(response.id) {
-      postImage = response.id
-    }
-  } else {
-    //use image id
-    postImage = image.id
-  }
+  const { id, title, content, userId } = formData;
   try {
     const result = await directus.request(
       updateItem('posts', id, {
         title: title,
-        image: postImage,
         user_updated: userId,
         content,
       })
@@ -938,7 +904,6 @@ const UpdatePostForm = ({userId, post}) => {
   const [formState, setFormState] = useState({
     id: post.id,
     title: post.title,
-    image: post.image,
     content: post.content,
     userId
   });
@@ -952,7 +917,6 @@ const UpdatePostForm = ({userId, post}) => {
       <form onSubmit={handleSubmit}>
         <h1>Update {post.title}</h1>
         <input type="text" name="title" value={formState.title} onChange={(e)=> setFormState({...formState, title: e.target.value}) } placeholder="Title" />
-        <input type="file" name="image" onChange={(e)=> setFormState({...formState, image: e.target.files[0]}) } placeholder="upload image" accept="image/*"/>
         <textarea type="text" name="content" value={formState.content} onChange={(e)=> setFormState({...formState, content: e.target.value}) } placeholder="content" rows={10} />
         <button>Update</button>
       </form>
@@ -970,8 +934,6 @@ Click on the `Edit`  link in a detail post page to get to the corresponding upda
 
 ## Delete Post Implementation
 
-### Server Action to Delete Post
-
 To delete post data from the `Directus` backend, navigate to the `lib/action.js` file and add the following:
 
 ```javascript
@@ -986,7 +948,7 @@ export const deletePost = async (postId) => {
 };
 ```
 
-Click on the `Delete` button on a detail post page to delete the post.
+Click the `Delete` button on a detail post page to delete the post.
 
 ## Conclusion
 
