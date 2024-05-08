@@ -1,6 +1,6 @@
 ---
 title: 'Passwordless Authentication in Directus Flows with Plivo'
-description: '120-160 characters'
+description: 'Set up passwordless authentication using phone SMS codes in Directus with Plivo API.'
 author:
   name: 'Jacob Cattrall'
   avatar_file_name: 'avatar.png'
@@ -32,6 +32,8 @@ Plivo uses BasicAuth to authenticate requests, but Directus Automate does not su
 The encoded value must be in the format `auth_id:auth_token`. You can use [this web tool to encode the string](https://www.base64encode.org/). Take note of the string.
 
 ## The Login Flow
+
+Using Directus Flows, we will accept a phone number and country code from the user, clean up the number, create a Plivo session saving session ID against the Directus user account. We will then return the session ID to the user ready for the verification flow.
 
 Create a new Flow from your project settings with a Webhook trigger and caching disabled. Your application will make a request to this URL when starting a login.
 
@@ -136,7 +138,7 @@ Open your browser to your trigger URL appended with `?phone_number={YOUR_NUMBER}
 
 Directus will respond with a `otp_session_uuid`. This UUID is the OTP session ID that we will use to verify the OTP code. You should also receive an OTP code via SMS to the phone number you provided. Make a note of the OTP code. The `otp_session_uuid` has also been stored against the user account.
 
-![](login_flow.png)
+![Passwordless Login Flow Screenshot](login_flow.png)
 
 ## The Verification Flow
 
@@ -212,7 +214,7 @@ module.exports = async function(data) {
 
 Open your browser to your trigger URL appended with `?otp={YOUR_OTP_CODE}&session_uuid={YOUR_OTP_SESSION}`, replacing the values from the first flow run. If it works, Directus will respond with a `token`.
 
-![](verify_flow.png)
+![Verify Flow Screenshot](verify_flow.png)
 
 ## Summary
 
