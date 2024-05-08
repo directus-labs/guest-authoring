@@ -6,12 +6,14 @@ author:
   avatar_file_name: 'Andreas_Morgner.jpg'
 ---
 
-In this article, we will explore Directus as a backend for a smart wearable device, and how to extend the functionality of the the apps shipped with the device.
+I have a baby and like many parents rely on monitors and sensors to make sure they're ok. In this article, we will explore Directus as a backend for a smart wearable device, and how to extend the functionality of the the apps shipped with the device. I personally use the [Owlet Smart Sock](https://owletcare.com/products/owlet-smart-sock), but the approaches covered in this article can be adapted for many other sensors.
 
-We will cover data model configuration, how to grab data from the wearable using Directus Flows, and how to integrate Directus into 3rd party tools for reporting, such as OpsGenie and screen widgets on an iPhone.
+We will cover data model configuration, how to grab data from the wearable using Directus Automate, and how to integrate Directus into 3rd party tools for reporting, such as OpsGenie and screen widgets on an iPhone.
 
 ## Creating Collections
-### The data storage collection
+
+### Sensor Data Collection
+
 As we want to track sensor data over time, we will frequently pull the data with some details from the external API. Create a collection called `sensor_data` with a auto-generated UUID as an ID. Allow Directus to create `sort`, `status`, and `date_created` fields as well.
 For each element of the data provided by the sensor, we want to save these values. Depending on the used sensor, you may come up with a different set of fields. In our case we've created the following important additional fields:
 
@@ -27,7 +29,7 @@ For each element of the data provided by the sensor, we want to save these value
 | oxygen_state | Dropdown | To evaluate the sensor data. |
 | thermal_state | Dropdown | To evaluate the sensor data. |
 
-### The Alert collection
+### OpsGenie Alerts Collection
 
 This collection is for integration into the OpsGenie alerting system. As Direcuts provides the fields for sort, creation, and update date as well aw who perfomred the action, we enanled these fields during creation. Next to the id we need the following fields for alerts we want to create later on. Next to the default fields, the most important custom fields are the following ones:
 
@@ -41,7 +43,7 @@ Create an `opsgenie_alert` collection for integration into the OpsGenie alerting
 | message | String | The message that should be displayed in OpsGenie |
 | data | Many to Many | foreign key to the data item |
 
-There are also a couple of other fields that we can use and populate such as severity, type, description, tags, links, or alias. To find our more about each field, check out the OpsGenie docs.
+There are also a couple of other fields that we can use and populate such as severity, type, description, tags, links, or alias. To find our more about each field, check out [the OpsGenie docs](https://docs.opsgenie.com/docs/alert-api).
 
 ## Authenticating with the Sensor
 
@@ -53,21 +55,12 @@ The Owlet lacks a publicly-documented API, so some reverse-engineering was requi
 4. Get the data of our target device.
 5. Transform the data to our needs.
 6. Save the data.
+
 Create a flow with a scheduled trigger that runs every minute (an interval of `* * * * *`). Turn off logging to prevent saving a lot of unnecessary data to your database.
 
-Authenticating with the Owlet API and requires three steps:
-### The Trigger
-The easiest way to get regular data fetched automatically with a Flow is a scheduled trigger.
-During the setup, we've set the trigger to the following settings:
+### Authenticate and Request Tokens
 
-Status: Active
-Activity & Log tracking: Track Log & Activity 
-Interval: * * * * * (which means, it runs every minute)
-
-We highly recommend turning off the logging or at least reducing it to prevent the flow from writing too much data into the history. 
-### Authenticate and request a Token
-For this specific API, the authentication is a bit more complex compared to basic auth or a simple "request a token" as we might know it from the easy-to-use-api from Directus.
-The general process to get a token which can be used to access actual device data contains three steps:
+For this specific API, the authentication is a bit more complex compared to basic auth or a simple "request a token" as we might know it from other platforms. The general process to get a token which can be used to access actual device data contains three steps:
 
 1. Use the login credentials used by the mobile app and pass them to an auth service provided by Google. If successfully logged in, we receive a token.
 2. With this token, authenticate against the actual Owlet server for a second token.
@@ -108,7 +101,7 @@ Request 3:
 
 :::
  
-### Reading Data From the Sensor
+### Reading Data from the Sensor
 
 Compared to the auth process, fetching actual data from the API is done with fewer requests – just two are needed. As the vendor supports multiple devices, we have to get a list of devices first. In theory, we can also do this in preparation and hard-code the device ID within the next operation. But again, as there is no official documentation of the API this might change or the ID might not that unique and may change within any future updates. 
 
@@ -233,20 +226,25 @@ The last step within the Flow is to save the gathered data within the collection
 ```
 
 ## Reporting
+
 ### Insights
+
 As the Insights module is built in Directus, you can create any report with the data just as you need it. In our case, we've created the following dashboard:
+
 ![An insights dashboard with three sections. Two of them render a time based graph for the heart rate, oxygen level, and temperature. Another section displays the latest senor data as well as the battery level.](Pasted image 20240305062855.png)
 
-The dashboard is split into three sections, on the left, the last 30 minutes of data are displayed. On the right, you can select the amount of hours you'd like to review. This is done by a slide that is used as a global variable for the 3 charts underneath. 
-In between, some stats are displayed, in detail, in the very last dataset for the oxygen level, heart rate, temperature and battery stats. 
+The dashboard is split into three sections, on the left, the last 30 minutes of data are displayed. On the right, you can select the amount of hours you'd like to review. This is done by a slide that is used as a global variable for the 3 charts underneath. In between, some stats are displayed, in detail, in the very last dataset for the oxygen level, heart rate, temperature and battery stats. 
 
 All the charts are using the "Time Series" chart. The left side uses the default values for the data range of 30 minutes. For each measurement, the min and max values are set to render the most common values including some border values. The dynamic charts on the right are set up similarly. 
 
 To achieve the dynamic time window, we have to create the "Global Variable" with the name 'last_x_hours' first:
+
 ![Configuration screen of a global variable within the inisghts dashboard. Different settings for name, min, max values, or default can be set.](Pasted image 20240223104116.png)
 
 Within the dynamic "Time Series" charts we can reuse the global variable by adding its name to the date range:
+
 ![Usage of the syntax for variables within the dashboard panels.](Pasted image 20240223104315.png)
+
 You can use the <span v-pre>`{{…}}`</span> syntax, followed by a lower `h` to identify the value that should work as hours. If you use the same variable for all three slides, they will change altogether once you've selected a new amount of hours within the global variable slider.
 
 ### 3rd Party Alerting Integration
@@ -320,13 +318,14 @@ Within the create operation, the following payload is used to create the OpenGen
     "description": "{{exec_alert_logic.alert_data.description}}"
 }
 ```
+
 #### Escalating to OpsGenie    
 
 Once the alert is created within Directus, of course, it has to be created within OpsGenie as well. For this – again a new Flow is needed. This time we have to use the Timeout operation as OpsGenie queues all incoming requests and does not provide the result immediately.
 
 ![A Flow that posts data to the OpsGenie API, sleeps for some time and read out the newly created alert, once OpsGenie fulfilled the initial request. The external alert ID is entered into the related item wihtin Directus.](Pasted image 20240304175218.png)
 
-Once triggered, we read out all the data first and pass the needed data to the OpsGenie API with a user key and the JSON data from the alert collection. As the API does not return the actual result but only an ID of the incoming task, we now wait 2 seconds before requesting the current status of our queued task with the 2nd web request. The request URL gets the returning ID from the 1st web request: 
+Once triggered, we read out all the data first and pass the needed data to the OpsGenie API with a user key and the JSON data from the alert collection. As the API does not return the actual result but only an ID of the incoming task, we now wait 2 seconds before requesting the current status of our queued task with the 2nd web request. The request URL gets the returning ID from the first web request: 
 
 ![A simple GET webrequest with a dynamic value as part of the request URL. The values is using data from another Flow operation and accessed by using the mustache syntax.](Pasted image 20240304175856.png)
 
@@ -335,7 +334,9 @@ This request will return the current status and therefore all the data (includin
 In the moment an actual alert is created within OpsGenie, any connected system is yelling for attention, just as configured in the tool.
 
 If Directus tries to create a new alert with the same data (in case the battery or oxygen level is still on the same level) no new alert is created by the design of OpsGenie. But it's hard to miss any alert as it sends SMS, critical push notifications, or even calling a phone number if needed and no reaction is noticed. 
+
 ## Build an iOS Widget
+
 As a last method of reporting and integration Directus, we can create an iOS widget, that sits right on my lock and home screen. As this is not about iOS development we chose the easy way and used Scriptable for this. This free app can be used to run JavaScript and display the data as a widget. The only downside of these Scriptable widgets is, that iOS decides WHEN to update the content of the widget. So you can not force the widget to reload actively. This is a limitation to prevent battery drainage and high load due to the demanding JavaScript. Usually, the script runs every 1 to 15 minutes. To know how "outdated" the displayed data is, we've added the create-timestamp as part of the widgets. 
 
 For the Directus integration this time I have created a new role that can have view access to the data collection only. A user in this role has set a static token that I can use within the widget. Using the query parameter `limit` and `sort` I can define to get only the very last entry sorted by the create date column.
@@ -405,7 +406,9 @@ Script.complete()
 ```
 
 In the end, the widget would look like this. In case the waerable is charging, the current battery level is displayed.
+
 ![Screenshot of an smartphone lockscreen that shows the latest health data provided by the Directus backend. Small icons are used to identify which value stands for which senor data. A timestamp is underneath.](iOS_WidgetLockScreen.jpg)
 
-## Wrap up
+## Summary
+
 And Voila, you've successfully built your monitoring system by using Direcuts. In this post, we covered how to set up the needed Collections to store data from an external API using Flows, worked with the data to further integrate the collected data into third-party tools and built our reporting Dashboard directly within Direcuts using Insights as well as display the latest data on our mobile phone.
