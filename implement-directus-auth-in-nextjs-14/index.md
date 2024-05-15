@@ -77,7 +77,6 @@ import {
   readItems,
   readMe,
   updateItem,
-  uploadFiles,
   withToken,
 } from "@directus/sdk";
 import directus from "@/lib/directus";
