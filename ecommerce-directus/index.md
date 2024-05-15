@@ -8,6 +8,8 @@ author:
 
 ## Introduction
 
+E-commerce websites are among the most popular for businesses as they enable customers to purchase items from your store from the comfort of their homes. In this article, you'll build an e-commerce store with Next.js as its front end, Directus as its backend services, and Stripe for payment processing.
+
 ## Before You Start
 
 You will need:
@@ -27,8 +29,8 @@ Before setting up Directus, let's understand how the different data models you w
 
 ![Diagram of a Data Model Relationship for products, orders and categories](er-diagram.png)
 
-- `categories` are the different categories of products available on the store and can have  multiple `products`.
-- `products` are the different products on the store. A product can only be of one `category` and can be ordered from `orders`.
+- `categories` are the different categories of products available in the store and can have multiple `products`.
+- `products` are the different products in the store. A product can only be of one `category` and can be ordered from the `orders` collection.
 - `orders` are all the orders made by customers from the application's frontend after successfully making a payment.
 
 In your Directus project, head to Settings -> Data Model to create these data models with the following fields:
@@ -51,16 +53,16 @@ In your Directus project, head to Settings -> Data Model to create these data mo
 
 3. `orders`:
    - `id`: the primary field of this collection
-   - `order_no`: A string input field, uniquely generated to identify an order.
+   - `order_no`: A string input field uniquely generated to identify an order.
    - `first_name`: A string input for first name.
    - `last_name`: A string input for last name.
    - `shipping_address`: A string input for address to ship the order to.
    - `email`: A string input for email address
    - `payment_id`:  A string input for the order payment that happened on Stripe.
    - `total_amount`: A string input for the total cost of the order
-   - `products`: A One to Many relational field that is related to the `products` collection, signifying that an order can have multiple products.
+   - `products`: A One to Many relational field related to the `products` collection, signifying that an order can have multiple products.
 
-   Create some items in the Categories and Products collections - [here's some sample data.]()
+   Create some items in the Categories and Products collections - [here's some sample data.](https://github.com/codejagaban/directus-ecommerce/tree/main/sample-data)
 
 ## Set Up a Next.js Application
 
@@ -625,6 +627,7 @@ This page displays all the items in the cart, a link to the next step of the che
 ![Cart page listing all items in cart](cart.png)
 
 ## Set up Stripe for Receiving Payments
+
 In the root of your project, create a `utils` directory with a `generateOrderNum.ts` file with the content:
 
 ```ts
@@ -1040,9 +1043,9 @@ The complete code for this tutorial can be found [here](https://github.com/codej
 
 Some possible steps to carry out next might include:
 
-- **Styling the Application:** The project is made with HTML. To make it, consider styling the application with CSS or a CSS framework of your choice.
+- **Styling the Application:**: The project is made with HTML. To make it, consider styling the application with CSS or a CSS framework of your choice.
+-  **Comprehensive Inventory:**: Consider implementing a comprehensive inventory in Directus to add features such as, multiple variants of a single product, inventory quantity e.t.c to better keep track of products in-stock.
 
-- **User Authentication**: Consider adding user authentication so users can sign up, log in, and manage their orders. This adds a layer of security and personalization to the application.
-- **Admin Dashboard**: Create an admin dashboard where staffs can manage product inventory and availability , view orders, and shipping routes. This can be achieved by implementing user roles and permissions in Directus.
+- **User Authentication**: Consider adding user authentication so users can sign up, log in, and manage their orders. This adds a layer of security.
+- **Full Cart Functionality**: The current cart only allows customers to add a single item to once, consider expanding on it's functionalities to have a `quantity` field to add more quantity of a single item.
 - **Email Notifications**: Set up email notifications to confirm orders, send reminders, and provide updates on shipping status. This can also be implemented in Directus using [Directus Flows](https://docs.directus.io/app/flows.html).
--
