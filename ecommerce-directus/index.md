@@ -223,7 +223,7 @@ This function performs two actions:
 
 A typical e-commerce store usually has a cart for customers to add items they want to purchase into before checking out, let's implement a simple cart functionality using `React-Context`
 
-In the `app` directory, create a directory called `context`, inside of it, create a file named `card-context` with the content:
+In the `app` directory, create a directory called `context`, inside of it, create a file named `cart-context.tsx` with the content:
 
 ```tsx
 "use client";
@@ -247,6 +247,7 @@ type CartProviderProps = {
 type CartItem = {
   id: number;
   name: string;
+  image: string;
   price: number;
 };
 
@@ -324,7 +325,6 @@ To use the `CartProvider`, update the `layout.tsx` in the `app` directory with t
 
 ```tsx
 import type { Metadata } from "next";
-import SearchBar from "@/components/nav-bar";
 import { CartProvider } from "./context/cart-context";
 
 
@@ -404,7 +404,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import Link from 'next/link'
 
-export default function SearchBar() {
+export default function NavBar() {
   const router = useRouter();
   const searchParams = useSearchParams()
   const [isClient, setIsClient] = useState(false)
@@ -459,7 +459,7 @@ In the `app/layout.tsx` file, update the rendered component with the `NavBar`
 
 ### Create The Product Components
 
-In the `components` directory, create a file called `ProductItem` with the content:
+In the `components` directory, create a file called `product-item.tsx` with the content:
 
 ```tsx
 "use client";
@@ -496,7 +496,7 @@ export default function ProductItem({
 
 The above code displays the `image`, `name` and `price` of a product and also adds a `addToCart` button that uses the `CartContext` to add items to the cart.
 
-Next, in the `components` directory, create a list component `ProductList` that lists all the products using the `ProductItem` components:
+Next, in the `components` directory, create a list component `product-list.tsx` that lists all the products using the `ProductItem` components:
 
 ```tsx
 import ProductItem from "./product-item";
@@ -625,8 +625,24 @@ This page displays all the items in the cart, a link to the next step of the che
 ![Cart page listing all items in cart](cart.png)
 
 ## Set up Stripe for Receiving Payments
+In the root of your project, create a `utils` directory with a `generateOrderNum.ts` file with the content:
 
-Update your `.env.local` file with the publishable and secret keys you can find in your Stripe account:
+```ts
+export default function generateOrderNum() {
+  const length = 10
+  let result = '';
+  const characters = '0123456789';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  console.log(result)
+  return result;
+}
+generateOrderNum();
+```
+
+Next, update your `.env.local` file with the publishable and secret keys you can find in your Stripe account:
 
 ```bash
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=YOUR_STRIPE_PUBLISHABLE_KEY
@@ -849,6 +865,7 @@ export default function SuccessMessage({ orderNo }: { orderNo: string }) {
   );
 }
 ```
+
 The `message.tsx` component displays a success message and clears the cart.
 
 Next, create a `page.tsx` that has the content:
@@ -970,6 +987,7 @@ export async function POST(req: Request, res: Response) {
     return NextResponse.json({ message: "Event Received" }, { status: 200 });
   }
 ```
+
 Let's break down the webhook route handler for better understanding:
 
 - Initialize a new Stripe instance using a `STRIPE_SECRET_KEY`.
@@ -991,13 +1009,18 @@ Forward the API route handle in the Next.js application to Stripe to listen for 
 ```bash
 stripe listen --forward-to localhost:3000/api/webhook/stripe
 ```
+
 This will provide you with a response similar to this:
 
 ```bash
 Ready! You are using Stripe API Version [2022-08-01]. Your webhook signing secret is whsec_f9e4axxxxxxx (^C to quit)
 ```
 
-Copy your webhook signing secret, as this is needed to verify and trigger an event from the webhook.
+Copy your webhook signing secret, and update the `.env.local` with:
+
+```bash
+STRIPE_WEBHOOK_SECRET=whsec_f9e4axxxxxxx
+```
 
 After that, open a new terminal tab and test the webhook by triggering a Stripe event from the CLI with:
 
@@ -1013,7 +1036,7 @@ You will receive a response that looks like this:
 
 In this tutorial, you've successfully created a e-commerce website that fetches products and implementing search functionality with Directus, implement relational datasets, trigger a payment on Stripe, create a webhook that listens to the Stripe payment, and then make an order in Directus.
 
-The complete code for this tutorial can be found [here]().
+The complete code for this tutorial can be found [here](https://github.com/codejagaban/directus-ecommerce).
 
 Some possible steps to carry out next might include:
 
@@ -1022,4 +1045,4 @@ Some possible steps to carry out next might include:
 - **User Authentication**: Consider adding user authentication so users can sign up, log in, and manage their orders. This adds a layer of security and personalization to the application.
 - **Admin Dashboard**: Create an admin dashboard where staffs can manage product inventory and availability , view orders, and shipping routes. This can be achieved by implementing user roles and permissions in Directus.
 - **Email Notifications**: Set up email notifications to confirm orders, send reminders, and provide updates on shipping status. This can also be implemented in Directus using [Directus Flows](https://docs.directus.io/app/flows.html).
-- 
+-
