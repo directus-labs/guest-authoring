@@ -45,48 +45,18 @@ npm run dev
 
 1. Create `utils/directus.ts` file
 
-```ts
+```js
 import { createDirectus, rest } from "@directus/sdk";
 
-type Global = {
-    title: string;
-    description: string;
-};
-
-type Author = {
-    name: string;
-};
-
-type Page = {
-    title: string;
-    content: string;
-    slug: string;
-};
-
-type Post = {
-    image: string;
-    title: string;
-    author: Author;
-    content: string;
-    published_date: string;
-    slug: string;
-};
-
-type Schema = {
-    posts: Post[];
-    global: Global;
-    pages: Page[];
-};
-
-const directus = createDirectus<Schema>(
-    "https://directus-supabase.onrender.com"
-).with(rest());
+const directus = createDirectus("https://directus-supabase.onrender.com").with(
+    rest()
+);
 export default directus;
 ```
 
 ## Using Global Metadata
 
-In your Directus project, navigate to Settings -> Data Model and create a new collection called global. Under the Singleton option, select 'Treat as a single object', as this collection will have just a single entry containing global website metadata.
+In your Directus project, navigate to Settings -> Data Model and create a new collection called `global`. Under the Singleton option, select 'Treat as a single object', as this collection will have just a single entry containing global website metadata.
 
 Create two text input fields - one with the key of `title` and one `description`.
 
@@ -116,6 +86,8 @@ export function Home() {
     );
 }
 ```
+
+Open your browser to `http://localhost:3000`. You should see the data from your Directus Global collection displayed in the index page.
 
 ### Make Collection Public
 
@@ -163,7 +135,7 @@ render(<App />, document.getElementById("app"));
 
 Create a new collection called pages - make the Primary ID Field a "Manually Entered String" called slug, which will correlate with the URL for the page. For example `about` will later correlate to the page `localhost:3000/about`.
 
-Create a text input field called `title` and a WYSIWYG input field called `content`. In Access Control, give the Public role read access to the new collection. Create 3 items in the new collection
+Create a text input field called `title` and a WYSIWYG input field called `content`. In Access Control, give the Public role read access to the new collection.
 
 Inside of `pages` , create a new file called `slug.jsx`. This is a dynamic route, so a single file can be used for all of the top-level pages.
 
@@ -186,7 +158,7 @@ export function Page() {
                 const page = await directus.request(
                     readItem("pages", params.slug)
                 );
-                setPage(page); // Assuming posts.data contains an array of blog posts
+                setPage(page);
             } catch (error) {
                 location.route("/404");
                 console.error("Error fetching page:", error);
@@ -213,8 +185,6 @@ export function Page() {
 }
 ```
 
-Go to `http://localhost:3000/about`, replacing about with any of your item slugs. Using the Directus JavaScript SDK, the single item with the matching `slug` is retrieved, and the page should show your data. `readItem()` only checks against your slug Primary ID Field.
-
 ![About Page](./images/about-page.png)
 Note that we check if a returned value exists, and return a 404 if not. Please also note thatv-html should only be used for trusted content.
 
@@ -226,23 +196,18 @@ Then, create a new collection called `posts` - make the Primary ID Field a "Manu
 
 Create the following fields in your posts data model:
 
--   a text input field called title
+-   a text input field called `title`
+-   a WYSIWYG input field called `content`
+-   an image relational field called `image`
+-   a datetime selection field called `publish_date` - set the type to 'date'
+-   a many-to-one relational field called `author` with the related collection set to `authors`
+    In Access Control, give the Public role read access to the `authors`, `posts`, and `directus_files` collections.
 
--   a WYSIWYG input field called content
-
--   an image relational field called image
-
--   a datetime selection field called publish_date - set the type to 'date'
-
--   a many-to-one relational field called author with the related collection set to authors
-
-In Access Control, give the Public role read access to the authors, posts, and directus_files collections.
-
-Create 3 items in the posts collection
+Create 3 items in the posts collection - [here is some sample data](https://github.com/directus-community/getting-started-demo-data).
 
 ## Create Blog Post Listing​
 
-Inside of the pages directory, create a new subdirectory called blog and a new file called list.jsx inside of it.
+Inside of the `pages` directory, create a new subdirectory called `blog` and a new file called `list.jsx` inside of it.
 
 ```js
 import { useEffect, useState } from "preact/compat";
@@ -268,12 +233,11 @@ export function BlogList() {
                         ],
                     })
                 );
-                console.log("🚀 ~ fetchData ~ posts:", posts);
-                setPosts(posts); // Assuming posts.data contains an array of blog posts
+                setPosts(posts);
             } catch (error) {
                 console.error("Error fetching posts:", error);
             } finally {
-                setLoading(false); // Set loading state to false when data is fetched (whether success or error)
+                setLoading(false);
             }
         };
 
@@ -314,11 +278,9 @@ export function BlogList() {
 ```
 
 This query will retrieve the first 100 items (default), sorted by publish date (descending order, which is latest first). It will only return the specific fields we request - `slug`, `title`, `publish_date`, and the `name` from the related author item.
-
 Visit `http://localhost:3000/blog` and you should now see a blog post listing, with latest items first.
 
 ![Blog Posts](./images/blog-posts.png)
-
 Click on any of the blog post links, and it will take you to a blog post page complete with a header image.
 
 ## Create Blog Post Detail Page
@@ -337,14 +299,14 @@ export function Blog() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setLoading(true); // Set loading state to true when fetching data
+        setLoading(true);
 
         const fetchData = async () => {
             try {
                 const post = await directus.request(
                     readItem("posts", params.slug)
                 );
-                setPost(post); // Assuming posts.data contains an array of blog posts
+                setPost(post);
             } catch (error) {
                 location.route("/404");
                 console.error("Error fetching page:", error);
@@ -403,7 +365,3 @@ export function Header() {
 
 Next Steps
 Through this guide, you have set up an Preact project, created a Directus instance, and used it to query data. You have used a singleton collection for `global` metadata, dynamically created `pages`, as well as blog listing and blog pages.
-
-## Project Link
-
-https://github.com/jaybharadia/preact-directus-blog
