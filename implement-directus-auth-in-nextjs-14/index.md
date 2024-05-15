@@ -6,53 +6,44 @@ author:
   avatar_file_name: 'profile-photo.jpeg'
 ---
 
-## Introduction
-In this tutorial, you will learn how to implement authentication in a Next.js project using Directus Auth. You’ll register new users, login, handle refresh tokens, and perform create, read, update, and delete operations (CRUD), with the ability. to only update or delete a user's own items.
+In this tutorial, you will learn how to implement authentication in a Next.js project using Directus Auth. You’ll register new users, login, handle refresh tokens, and perform create, read, update, and delete operations (CRUD), with the ability to only update or delete a user's own items.
 
 ## Before You Start
+
 You will need:
 - [Node.js](https://nodejs.org/en/download/) v18 and above installed on your computer.
 - A Directus project - follow our [quickstart guide](https://docs.directus.io/blog/docs.directus.io/getting-started/quickstart) if you don't already have one.
 - Some experience with Next.js and a newly-created project.
 
-<!-- ## Your Sections Here -->
+You will also need a a `posts` collection. Ensure `user_created` is enabled as an optional as it will be used to create permissions so a user can only edit or delete their own posts. Also create a `title` input field and a `content` QYSIWYG field.
+
+## Creating a New User Role
+
+Create a new role called `author`. Enable create and read permissions for the `posts` collection. For update and delete permissions, use custom rules and apply the following filter:
+
+```
+user_created -> id Equals $CURRENT_USER.id
+```
+
+This configuration ensures that users can read all posts but are restricted to updating and deleting only their own posts. Take note of this Role's ID in the sidebar as it will be needed in the next step.
+
 ## Allowing Public Registration
 
 When a user first registers, they will be unauthenticated. In Directus, the permissions of unauthenticated users are controlled by the public role.
-In your access control settings open the public role. Find `directus_users` under system collections, and then set custom permissions.
+
+In your access control settings open the public role. Find `directus_users` under system collections, and then open custom permissions for the `create` operation.
+
 1. In field permissions, enable only `first_name`, `last_name`, `email` and `password` options. If you want users to provide other data at the time of registration, enable the respective field.
 2. In field validation, require `first_name`, `last_name`, `email`, and `password` to not be empty.
 3. In field presets, set the `role` to the `id` of the author role.
 This combination of settings in a custom permission will ensure users provide the required fields, and automatically set the role.
 
-## Creating a Posts Collection
+## Setup Directus Your Next.js Project
 
-Create a new `posts` collection. Ensure `user_created` is created as an optional field as it will be used to lock down permissions so a user can only edit or delete their own posts. Create the following additional fields:
-- `title`: a text input field
-- `content`: a WYSIWYG field
-- `image`: an image field
-- title => Input field
-- content => WYSIWYG
-- image => Image
+In your Next.js project's `src` directory, create a `lib` directory. Inside it, create a `directus.js` file:
 
-## Creating a New User Role
-Create a new role called `author`. Enable create and read permissions for the `posts` collection. For update and delete permissions, use custom rules and apply the following filter:
-```
-user_created -> id Equals $CURRENT_USER.id
-```
-This configuration ensures that users can read all posts but are restricted to updating and deleting only their own posts.
-
-## Setup Directus in the Next.js App
-
-Create a `lib` directory. Inside  `lib` create `directus.js` and add the following:
-
-```javaScript
-//src/lib/directus.js
-import { 
-  createDirectus, 
-  rest, 
-  authentication 
-} from '@directus/sdk';
+```js
+import { createDirectus, rest, authentication } from '@directus/sdk';
 
 const directus = createDirectus(process.env.BACKEND_URL)
   .with(authentication("cookie", {credentials: "include", autoRefresh: true}))
@@ -61,21 +52,20 @@ const directus = createDirectus(process.env.BACKEND_URL)
 export default directus;
 ```
 
-Create a `constant` directory. Inside  `constant` create `index.js` and add the following:
+In yout `src` directory, create a `constant` directory. Inside it, create a `index.js` file:
 
-```javaScript
-//src/constants/index.js
+```js
 export const COOKIE_NAME = "OurSiteJWT";
 export const AUTH_USER = "auth_user";
 ```
 
 ## Handling User Session and Logout
 
-Server Actions are **asynchronous functions** that are executed on the server. They can be used in Server and Client Components to handle form submissions and data mutations in Next.js applications.
+Server actions are **asynchronous functions** that are executed on the server. They can be used in server and client components to handle form submissions and data mutations in Next.js applications.
 
-To handle user session and logout, navigate to the `lib` directory, create `action.js` file and add the following:
+To handle user session and logout, create an `action.js` file in the `lib` directory:
 
-```javaScript
+```js
 "use server";
 import { revalidatePath } from "next/cache";
 import { directusLogin } from "./auth";
