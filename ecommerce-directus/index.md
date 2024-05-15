@@ -25,7 +25,7 @@ You will need:
 
 Before setting up Directus, let's understand how the different data models you will set up in Directus are related. You need 3 data collections - `categories`, `products`, `orders`.
 
-![Diagram of a Data Model Relationship for](er-diagram.png)
+![Diagram of a Data Model Relationship for products, orders and categories](er-diagram.png)
 
 - `categories` are the different categories of products available on the store and can have  multiple `products`.
 - `products` are the different products on the store. A product can only be of one `category` and can be ordered from `orders`.
@@ -455,7 +455,7 @@ In the `app/layout.tsx` file, update the rendered component with the `NavBar`
 ...
 ```
 
-![Diagram of a Data Model Relationship for](er-diagram.png)
+![Navbar with Cart](navbar.png)
 
 ### Create The Product Components
 
@@ -546,7 +546,7 @@ export default async function Search({
 
 The component above uses the `searchProducts` function to search for products from Directus and passes them as props to `ProductList` to display.
 
-![Diagram of a Data Model Relationship for](er-diagram.png)
+![Search Result Page](search-page.png)
 
 ## Display all Products from The Store
 
@@ -570,7 +570,7 @@ export default async function Home() {
 
 Using the `getAllProducts` function this component will get all available products and display them on the homepage.
 
-![Diagram of a Data Model Relationship for](er-diagram.png)
+![All Products Page](all-products.png)
 
 ## Show Items in the Cart
 
@@ -622,7 +622,7 @@ export default function CheckoutCartPage() {
 
 This page displays all the items in the cart, a link to the next step of the checkout and also displays a `clearCart` button to remove all items from the cart.
 
-![Diagram of a Data Model Relationship for](er-diagram.png)
+![Cart page listing all items in cart](cart.png)
 
 ## Set up Stripe for Receiving Payments
 
@@ -815,10 +815,11 @@ export default function ShippingPage() {
 }
 ```
 
-![Diagram of a Data Model Relationship for](er-diagram.png)
+![Shipping form page](shipping.png)
 
 Clicking on the `Procced to Payment` button to submit the form will trigger a Stripe payment and take you to a Stripe checkout:
-![Diagram of a Data Model Relationship for](er-diagram.png)
+
+![Stripe checkout page](stripe-checkout.png)
 
 This form will trigger a stripe payment to pay for the selected products.
 
@@ -878,7 +879,8 @@ export default function SuccessPage({ searchParams }: SuccessPageProps) {
   return isClient &&  (<SuccessMessage orderNo={orderNo as string} /> )
 }
 ```
-![Diagram of a Data Model Relationship for](er-diagram.png)
+
+![Checkout success page](success.png)
 
 ## Configure A Webhook for Stripe Payment Events
 
@@ -977,6 +979,7 @@ Let's break down the webhook route handler for better understanding:
 Using the data extracted from the `metadata`, the webhook requests Directus to create a new order.
 
 ### Testing the Webhook
+
 With Stripe CLI installed on your computer, run the command:
 
 ```bash
@@ -1004,6 +1007,8 @@ stripe trigger payment_intent.succeeded
 
 You will receive a response that looks like this:
 
+![Stripe webhook terminal](terminal.png)
+
 ## Summary
 
 In this tutorial, you've successfully created a e-commerce website that fetches products and implementing search functionality with Directus, implement relational datasets, trigger a payment on Stripe, create a webhook that listens to the Stripe payment, and then make an order in Directus.
@@ -1017,3 +1022,4 @@ Some possible steps to carry out next might include:
 - **User Authentication**: Consider adding user authentication so users can sign up, log in, and manage their orders. This adds a layer of security and personalization to the application.
 - **Admin Dashboard**: Create an admin dashboard where staffs can manage product inventory and availability , view orders, and shipping routes. This can be achieved by implementing user roles and permissions in Directus.
 - **Email Notifications**: Set up email notifications to confirm orders, send reminders, and provide updates on shipping status. This can also be implemented in Directus using [Directus Flows](https://docs.directus.io/app/flows.html).
+- 
