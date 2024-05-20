@@ -38,7 +38,7 @@ In your access control settings open the public role. Find `directus_users` unde
 3. In field presets, set the `role` to the `id` of the author role.
 This combination of settings in a custom permission will ensure users provide the required fields, and automatically set the role.
 
-## Setup Directus Your Next.js Project
+## Setting Up Directus In Your Next.js Project
 
 In your Next.js project's `src` directory, create a `lib` directory. Inside it, create a `directus.js` file:
 
@@ -108,7 +108,7 @@ export const userSession = async () => {
 
 The `userSession` function retrieves user session information from cookies, including access and refresh tokens, and returns an object containing this information.
 
-## Setting up Layout Configuration
+## Setting up a Next.js Layout
 
 Create a `components` directory with `navbar` subdirectory. Inside  `navbar` create `Navbar.jsx` and add the following:
 
@@ -226,8 +226,6 @@ export default function RootLayout({ children }) {
 }
 ```
 
-### Loader Component
-
 In the `app` directory, create `Loading.jsx` with the content:
 
 ```javascript
@@ -239,7 +237,7 @@ const Loading = () => {
 export default Loading
 ```
 
-## Route Protections
+## Protecting Routes
 
 To handle route protection, Create the `post/layout.jsx` file and add the following:
 
@@ -479,9 +477,9 @@ Navigate to `http://localhost:3000/login` in your browser and you should see the
 
 ![Login page](login-page.png)
 
-## Create New Post Implementation
+## Creating New Posts
 
-### Server Action to Create a Post
+### Creating Server Action
 
 To create post from `Directus` backend, navigate to the `lib/action.js` file and add the following:
 
@@ -521,7 +519,7 @@ export const getAuthUser = async (token) => {
 };
 ```
 
-### Create Post Page
+### Creating the Page
 
 In the `post` directory, create a subdirectory `create-post`. Inside `create-post`  create `page.jsx` with the content:
 
@@ -588,7 +586,7 @@ Navigate to `http://localhost:3000/create-post` in your browser and you should s
 
 ![Create post](create-post.png)
 
-## Create Blog Post Listing
+## Creating a Listing
 
 To render a list of all blog posts, you need to send a request to the Directus backend to fetch all post data from the posts collection created earlier in the Directus project.
 
@@ -704,9 +702,9 @@ Navigate to `http://localhost:3000/blog` in your browser and you should see all 
 
 ![Post list](post-list.png)
 
-## Single Post Detail Implementation
+## Viewing Single Posts
 
-### Server Action to Fetch a Single Post Data
+### Creating Server Action
 
 To fetch a single post data from `Directus` backend, navigate to the `lib/action.js` file and add the following:
 
@@ -735,7 +733,7 @@ export const getPost = async (slug) => {
 
 The `getPost` function makes a request to Directus using the `directus.request()` method, specifying to read a single item from the "posts" collection based on the provided `slug`. Within the request, it specifies the fields to retrieve for the post.
 
-### Single Post Detail Page
+### Creating the Page
 
 Each blog post links to a single post detail page. In the `blog` directory, create a subdirectory `[slug]`. Inside `[slug]`  create `page.jsx` with the content:
 
@@ -816,9 +814,9 @@ Click on the `READ MORE`  link in a post to get to the corresponding detail blog
 
 ![Single post detail](post-details.png)
 
-## Update Post Implementation
+## Updating a Post
 
-## Server Action to Update Post
+## Creating Server Action
 
 To update post data from `Directus` backend, navigate to the `lib/action.js` file and add the following:
 
@@ -846,7 +844,7 @@ export const updatePost = async (formData) => {
 
 The `updatePost` function handles both the case of updating the post content and the case of updating the associated image. If a new image is uploaded, it first uploads the image and then updates the post with the new image ID. If an existing image is used, it directly updates the post with the existing image ID.
 
-### Update Post Page
+### Creating the Page
 
 In the `post` directory, create a subdirectory `update-post`. Inside `update-post`  create a subdirectory `[slug]`. Inside `[slug]` create `pages.jsx` with the content:
 
@@ -921,7 +919,7 @@ Click on the `Edit`  link in a detail post page to get to the corresponding upda
 
 ![Edit page](edit-post.png)
 
-## Delete Post Implementation
+## Deleting Posts
 
 To delete post data from the `Directus` backend, navigate to the `lib/action.js` file and add the following:
 
@@ -939,7 +937,7 @@ export const deletePost = async (postId) => {
 
 Click the `Delete` button on a detail post page to delete the post.
 
-## Conclusion
+## Summary
 
 With this tutorial, you’ve learnt how to implement Directus authentication in a Next.js 14 Project, dynamically create, read, update, delete posts, and successfully built a full-stack CRUD application with Directus for the backend and Next.js for the frontend.
 
