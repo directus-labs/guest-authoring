@@ -38,7 +38,7 @@ body:
           required: true
         - label: You understand that to be paid you will need to generate an invoice with a 30 day payment term and send it to us once the final draft of your work is accepted (we will share how to do this once finished). 
           required: true
-        - label: You understand that you will require either a bank account in one of the countries listed here (https://help.bill.com/direct/s/article/360007172671).
+        - label: You understand that you will require a bank account in one of the countries listed here (https://help.bill.com/direct/s/article/360007172671).
           required: true
         - label: You understand that you need to set up a Directus project by either running locally, self-hosting, or using Directus Cloud, but being a guest author does not entitle you to extended trials or free credit.
           required: true
