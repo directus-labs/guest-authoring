@@ -8,42 +8,48 @@ author:
 
 ## Introduction
 
-Preact is a Fast 3kB alternative to React with the same modern API.
-In this tutorial, you will learn
-
-1. How to build a website using Directus as a headless CMS using preact.
-2. You will store, retrieve, and use `global` metadata such as the site `title`, create new `pages` dynamically based on Directus items, and build a blog.
+[Preact](https://preactjs.com/) is a lightweight alternative to React. In this tutorial, you will store, retrieve, and use global metadata, pages, and posts based on a Directus project.
 
 Before You Start
 
 You will need:
 
--   Install Node.js and a code editor on your computer.
+-   Install Node.js and a code editor on your computer.
+-   A Directus project - [follow our quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one.
+-   Some knowledge of Preact framework.
 
--   A Directus project - you can use Directus Cloud or run it yourself.
+## Creating a Preact Project
 
--   Some knowledge of Preact framework
-
-## Initializing Preact
-
-The modern way to get started is using Vite bundler instead of old preact-cli
+Open your terminal and run the following commands:
 
 `npm init preact`
 
 ![Setup Preact in CLI](./images/setup-cli.png)
 
 ```
-cd directus-preact
+npm init preact
+↳ Project directory: directus-project
+↳ Project language: JavaScript
+↳ Use router?: Yes
+↳ Prerender app?: No
+↳ Use ESLint?: No
+cd directus-project
+```
+
+```
 npm run dev
 ```
 
-## Install Directus SDK
+## Install the Directus SDK and start the Preact dev server:
 
-`npm install @directus/sdk`
+```
+npm install @directus/sdk`
+npm run dev
+```
 
-## Setup Directus
+## Setup Directus Utility
 
-1. Create `utils/directus.ts` file
+1. Create `utils/directus.js` file
 
 ```js
 import { createDirectus, rest } from "@directus/sdk";
@@ -54,6 +60,8 @@ const directus = createDirectus("https://directus-supabase.onrender.com").with(
 export default directus;
 ```
 
+Be sure to provide your actual Directus project URL.
+
 ## Using Global Metadata
 
 In your Directus project, navigate to Settings -> Data Model and create a new collection called `global`. Under the Singleton option, select 'Treat as a single object', as this collection will have just a single entry containing global website metadata.
@@ -61,6 +69,10 @@ In your Directus project, navigate to Settings -> Data Model and create a new co
 Create two text input fields - one with the key of `title` and one `description`.
 
 Navigate to the `content` module and enter the `global` collection. Enter information in the title and description field and hit save.
+
+![Global Metadata](./images/global-metadata.png)
+
+By default, new collections are not accessible to the public. Navigate to Settings -> Access Control -> Public and give Read access to the Global collection.
 
 In `pages/index.jsx` file, add the following code to fetch the data from Directus and display it.
 
@@ -88,12 +100,6 @@ export function Home() {
 ```
 
 Open your browser to `http://localhost:3000`. You should see the data from your Directus Global collection displayed in the index page.
-
-### Make Collection Public
-
-Navigate to Settings -> Access Control -> Public and give Read access to the `global` collection.
-
-![Global Metadata](./images/global-metadata.png)
 
 ## Setup Routing
 
@@ -135,7 +141,7 @@ render(<App />, document.getElementById("app"));
 
 Create a new collection called pages - make the Primary ID Field a "Manually Entered String" called slug, which will correlate with the URL for the page. For example `about` will later correlate to the page `localhost:3000/about`.
 
-Create a text input field called `title` and a WYSIWYG input field called `content`. In Access Control, give the Public role read access to the new collection.
+Create a text input field called `title` and a WYSIWYG input field called `content`. In Access Control, give the Public role read access to the new collection. [here is some sample data](https://github.com/directus-community/getting-started-demo-data)
 
 Inside of `pages` , create a new file called `slug.jsx`. This is a dynamic route, so a single file can be used for all of the top-level pages.
 
