@@ -6,8 +6,6 @@ author:
   avatar_file_name: 'jamin.png'
 ---
 
-## Introduction
-
 E-commerce websites are among the most popular for businesses as they enable customers to purchase items from your store from the comfort of their homes. In this article, you'll build an e-commerce store with Next.js as its front end, Directus as its backend services, and Stripe for payment processing.
 
 ## Before You Start
@@ -25,23 +23,17 @@ You will need:
 
 ### Data Model Relationships
 
-Before setting up Directus, let's understand how the different data models you will set up in Directus are related. You need 3 data collections - `categories`, `products`, `orders`.
+Before setting up Directus, let's understand how the different data models you will set up in Directus are related. You need 3 data collections - `categories`, `products`, `orders`. A product can only be in one category in this data model.
 
 ![Diagram of a Data Model Relationship for products, orders and categories](er-diagram.png)
 
-- `categories` are the different categories of products available in the store and can have multiple `products`.
-- `products` are the different products in the store. A product can only be of one `category` and can be ordered from the `orders` collection.
-- `orders` are all the orders made by customers from the application's frontend after successfully making a payment.
-
 In your Directus project, head to Settings -> Data Model to create these data models with the following fields:
 
-1. `categories`:
-
+- `categories`:
    - `id`: the primary field of this collection
    - `name`: A string field for naming categories
    - `description`: A string field for describing the category type
-
-2. `products`:
+- `products`:
    - `id`: the primary field of this collection
    - `is_available`: A toggle field for a product that indicates if the product is available for purchasing.
    - `name`: A string input field for the product name.
@@ -50,8 +42,7 @@ In your Directus project, head to Settings -> Data Model to create these data mo
    - `description`: A string field for description of the product.
    - `category`: A Many to One relational field related to the `categories` collection, signifying that multiple products can only have a single category type.
    - `order_id`: A Many to One relational field related to the `orders` collection, signifying that multiple products can belong to a single order.
-
-3. `orders`:
+-  `orders`:
    - `id`: the primary field of this collection
    - `order_no`: A string input field uniquely generated to identify an order.
    - `first_name`: A string input for first name.
@@ -62,7 +53,7 @@ In your Directus project, head to Settings -> Data Model to create these data mo
    - `total_amount`: A string input for the total cost of the order
    - `products`: A One to Many relational field related to the `products` collection, signifying that an order can have multiple products.
 
-   Create some items in the Categories and Products collections - [here's some sample data.](https://github.com/codejagaban/directus-ecommerce/tree/main/sample-data)
+Create some items in the Categories and Products collections - [here's some sample data.](https://github.com/codejagaban/directus-ecommerce/tree/main/sample-data)
 
 ## Set Up a Next.js Application
 
@@ -72,10 +63,10 @@ Run the following command to initialize a Next.js project:
 npx create-next-app@14 e-com-directus
 ```
 
-Install the Directus SDK and Stripe :
+Install the Directus SDK and Stripe:
 
 ```bash
-npm i @directus/sdk @stripe/stripe-js stripe
+npm install @directus/sdk @stripe/stripe-js stripe
 ```
 
 ### Set Up Directus SDK and Types
@@ -122,7 +113,6 @@ Next, create a new directory called `lib`. Inside it, create `directus.ts` to in
 ```ts
 import { createDirectus, rest } from "@directus/sdk";
 import { CategoryTypes, OrderTypes, ProductTypes } from "@/types"
-
 
 type Schema = {
   products: ProductTypes[];
@@ -223,7 +213,7 @@ This function performs two actions:
 
 ### Create a Cart Context
 
-A typical e-commerce store usually has a cart for customers to add items they want to purchase into before checking out, let's implement a simple cart functionality using `React-Context`
+A typical e-commerce store usually has a cart for customers to add items they want to purchase into before checking out, let's implement a cart functionality using `React-Context`
 
 In the `app` directory, create a directory called `context`, inside of it, create a file named `cart-context.tsx` with the content:
 
@@ -252,7 +242,6 @@ type CartItem = {
   image: string;
   price: number;
 };
-
 
 export function CartProvider({ children }: CartProviderProps) {
   
@@ -295,7 +284,6 @@ export function CartProvider({ children }: CartProviderProps) {
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
     }
   }, [cartItems]);
-
 
   return (
     <CartContext.Provider
@@ -370,8 +358,6 @@ import Link from 'next/link'
 
 export default function NavBar() {
   const [isClient, setIsClient] = useState(false)
-
-
   const cart = useContext(CartContext);
   useEffect(() => {
     setIsClient(true)
@@ -379,9 +365,8 @@ export default function NavBar() {
    return isClient &&  (
     <nav>
       <div>
-
         <span><Link href="/">Home</Link></span>
-        <span>  Cart: <Link href="/checkout/cart"> {cart.cartItems.length} items in cart</Link></span>
+        <span>Cart: <Link href="/checkout/cart"> {cart.cartItems.length} items in cart</Link></span>
       </div>
     </nav>
   );
@@ -396,7 +381,7 @@ An important feature of every e-commerce store is to be able to search for items
 
 ### Create a Search Form
 
-In the  `components/nav-bar.tsx` file, update the `NavBar` component to be:
+In the `components/nav-bar.tsx` file, update the `NavBar` component to be:
 
 ```tsx
 "use client";
@@ -416,7 +401,6 @@ export default function NavBar() {
     const formData = new FormData(event.currentTarget);
     const searchQuery = formData.get("search") as string;
     router.push(`/search?query=${searchQuery}`)
-
   };
 
   const cart = useContext(CartContext);
@@ -426,9 +410,8 @@ export default function NavBar() {
    return isClient &&  (
     <div>
       <div>
-
         <span><Link href="/">Home</Link></span>
-        <span>  Cart: <Link href="/checkout/cart"> {cart.cartItems.length} items in cart</Link></span>
+        <span>Cart: <Link href="/checkout/cart"> {cart.cartItems.length} items in cart</Link></span>
       </div>
       <form onSubmit={handleSubmit}>
       <input
@@ -534,7 +517,6 @@ export default async function Search({
 }) {
   const { query } = searchParams as { [key: string]: string };
   const products =  await searchProducts(query) || [];
-
 
   return (
     <section>
@@ -749,7 +731,6 @@ With items in the cart, you need to create a checkout page, get shipping details
 import { CartContext } from "@/app/context/cart-context";
 import { useContext } from "react";
 
-
 export default function ShippingForm() {
   const cart = useContext(CartContext);
 
@@ -819,8 +800,6 @@ To render this form in the same directory, create a new file called `page.tsx` w
 
 ```tsx
 import ShippingForm from "./form";
-
-
 
 export default function ShippingPage() {
   return (
