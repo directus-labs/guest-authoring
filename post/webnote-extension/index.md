@@ -154,6 +154,8 @@ const directus = createDirectus("https://directus-supabase.onrender.com")
 export default directus;
 ```
 
+Replace `https://directus-supabase.onrender.com` with your directus url.
+
 Import in `main.js`
 
 ```js
@@ -240,3 +242,415 @@ npm run build-extension
 ![Load unpacked extension](./images/load-unpacked.png)
 
 ![Extension Preview](./images/extension-preview.png)
+
+## Setup Routes
+
+-   Home page
+    contains list of notes added with url
+
+-   login page
+-   signup page
+-   Create and edit note page
+
+### Setup Signup
+
+Create new file `src/views/signup.vue`
+
+```html
+<template>
+    <div>
+        <form @submit.prevent="signup">
+            <label>Name</label>
+            <input type="text" v-model="name" required />
+
+            <label>Email</label>
+            <input type="email" v-model="email" required />
+
+            <label>Password</label>
+            <input type="password" v-model="password" required />
+            <button type="submit" style="margin-top: 16px">Signup</button>
+            <p>
+                Already have account?
+                <span
+                    @click="$router.push({ name: 'login' })"
+                    style="text-decoration: underline; cursor: pointer"
+                    >Login</span
+                >
+            </p>
+        </form>
+    </div>
+</template>
+
+<script>
+    import { createUser } from "@directus/sdk";
+    export default {
+        inject: ["directus"],
+        data() {
+            return {
+                name: "",
+                email: "",
+                password: "",
+            };
+        },
+        methods: {
+            async signup() {
+                const result = await this.directus.request(
+                    createUser({
+                        first_name: this.name,
+                        last_name: "",
+                        email: this.email,
+                        password: this.password,
+                        role: "1c005600-202d-429c-81bb-452a70aec7e1", // Customer
+                    })
+                );
+                this.$router.push({ name: "login" });
+            },
+        },
+    };
+</script>
+```
+
+Add css for button
+
+```css
+button {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #1a1a1a;
+    cursor: pointer;
+    transition: border-color 0.25s;
+}
+button:hover {
+    border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+}
+```
+
+Role: Its the `customer` role we created. To check, check the url in `https://directus-supabase.onrender.com/admin/settings/roles/1c005600-202d-429c-81bb-452a70aec7e1`
+
+### Load Signup route
+
+-   Open `src/router.js`
+-   Import `signup.vue`
+
+```js
+import SignupView from "../views/signup.vue";
+```
+
+Add the route in `routes`
+
+```js
+   {
+        path: "/signup",
+        name: "signup",
+        meta: { public: true },
+        component: SignupView,
+    },
+```
+
+![Signup](./images/signup.png)
+
+## Setup Login
+
+Create new file `src/views/login.vue`
+
+```html
+<template>
+    <div>
+        <div style="text-align: right">
+            <span
+                @click="$router.push({ name: 'signup' })"
+                style="text-decoration: underline; cursor: pointer"
+            >
+                Signup
+            </span>
+        </div>
+        <form @submit.prevent="login">
+            <label for="email" style="display: block">Email</label>
+            <input type="email" id="email" required v-model="email" />
+
+            <label for="password" style="margin-top: 8px">Password</label>
+            <input type="password" id="password" v-model="password" required />
+
+            <button type="submit" style="display: block; margin-top: 16px">
+                Login
+            </button>
+        </form>
+    </div>
+</template>
+
+<script>
+    export default {
+        inject: ["directus"],
+        data() {
+            return {
+                email: "",
+                password: "",
+            };
+        },
+        methods: {
+            async login() {
+                try {
+                    await this.directus.login(this.email, this.password);
+                    this.$router.push({ name: "home" });
+                } catch ({ errors }) {
+                    console.log("🚀 ~ login ~ errors:", errors);
+                    if (errors[0].extensions.code === "INVALID_CREDENTIALS")
+                        alert("Invalid Email or password");
+                    else
+                        alert(
+                            "Something went wrong. Try again after some time..."
+                        );
+                }
+            },
+        },
+    };
+</script>
+
+<style>
+    input,
+    label {
+        display: block;
+        width: 100%;
+    }
+</style>
+```
+
+### Add login route
+
+```js
+import LoginView from "../views/login.vue";
+```
+
+```js
+  {
+        path: "/login",
+        name: "login",
+        meta: { public: true },
+        component: LoginView,
+    },
+```
+
+![Login](./images/login.png)
+
+## Setup Home Page
+
+```html
+<template>
+    <div>
+        <div
+            style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            "
+        >
+            <p
+                @click="logout"
+                style="
+                    text-decoration: underline;
+                    cursor: pointer;
+                    text-align: right;
+                "
+            >
+                Logout
+            </p>
+
+            <button
+                @click="$router.push({ name: 'upsert', params: { id: '+' } })"
+            >
+                ⊕
+            </button>
+        </div>
+        <p v-if="loading">Loading...</p>
+        <div
+            v-else
+            style="background: #222; padding: 16px; border-radius: 24px"
+        >
+            <li
+                v-for="note in notes"
+                :key="`note-${note.id}`"
+                style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                "
+            >
+                <div>
+                    <a :href="note.website"> {{ note.website }}</a>
+                    <div>{{ note.note }}</div>
+                </div>
+                <button
+                    @click="
+                        $router.push({
+                            name: 'upsert',
+                            params: { id: note.id },
+                        })
+                    "
+                >
+                    📝
+                </button>
+                <button @click="remove(note.id)">🗑️</button>
+            </li>
+        </div>
+    </div>
+</template>
+
+<script>
+    import { readItems, deleteItem } from "@directus/sdk";
+    import Cookies from "js-cookie";
+
+    export default {
+        inject: ["directus"],
+        data() {
+            return {
+                notes: null,
+                loading: false,
+            };
+        },
+        created() {
+            this.getNotes();
+        },
+        methods: {
+            async remove(id) {
+                await this.directus.request(deleteItem("notes", id));
+                this.getNotes();
+            },
+            logout() {
+                Cookies.remove("directus_auth");
+                this.$router.push({ name: "login" });
+            },
+            async getNotes() {
+                this.loading = true;
+                this.notes = await this.directus.request(readItems("notes"));
+                this.loading = false;
+            },
+        },
+    };
+</script>
+```
+
+### Load `home.vue` in `router.js`
+
+```js
+import HomeView from "../views/home.vue";
+```
+
+```js
+
+    {
+    path: "/",
+    name: "home",
+    meta: { public: false },
+     component: HomeView
+    },
+
+```
+
+![Home Page](./images/homepage.png)
+
+## Setup Create Note And Edit Note
+
+```html
+<template>
+    <div style="display: flex'; flex-direction: column">
+        <textarea
+            style="display: block; width: 100%; margin-top: 16px"
+            rows="10"
+            v-model="note"
+            placeholder="Notes are great way to store helpful information to access later. Get Started..."
+        ></textarea>
+        <button style="display: block; margin-top: 16px" @click="save">
+            👍 Done
+        </button>
+    </div>
+</template>
+
+<script>
+    import { createItem, readItem, updateItem } from "@directus/sdk";
+    export default {
+        inject: ["directus"],
+        data() {
+            return {
+                note: "",
+            };
+        },
+        computed: {
+            id() {
+                return this.$route.params.id;
+            },
+            isCreate() {
+                return this.$route.params.id === "+";
+            },
+            isEdit() {
+                return !this.isCreate;
+            },
+        },
+        created() {
+            if (this.isEdit) {
+                this.get();
+            }
+        },
+        methods: {
+            async get() {
+                // Edit mode
+                const { note } = await this.directus.request(
+                    readItem("notes", this.id)
+                );
+                this.note = note;
+            },
+            async save() {
+                if (this.isEdit) {
+                    await this.directus.request(
+                        updateItem("notes", this.id, {
+                            note: this.note,
+                        })
+                    );
+                } else {
+                    const [tab] = await chrome.tabs.query({
+                        active: true,
+                        lastFocusedWindow: true,
+                    });
+
+                    const { origin } = new URL(tab.url);
+                    await this.directus.request(
+                        createItem("notes", {
+                            note: this.note,
+                            website: origin,
+                        })
+                    );
+                }
+
+                this.$router.push({ name: "home" });
+            },
+        },
+    };
+</script>
+```
+
+### Load `upsert.vue` in `router.js`
+
+```js
+import Upsert from "../views/upsert.vue";
+```
+
+```js
+    {
+        path: "/note/:id",
+        name: "upsert",
+        meta: { public: false },
+        component: Upsert,
+    },
+```
+
+![Create Note](./images/create.png)
+![Edit Note](./images/edit.png)
+
+## Summary
