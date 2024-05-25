@@ -654,3 +654,5 @@ import Upsert from "../views/upsert.vue";
 ![Edit Note](./images/edit.png)
 
 ## Summary
+
+Directus WebNote Keeper is a proposed Chrome extension designed to help users save and manage notes related to the webpages they visit. It leverages Directus as the backend CMS for storing and managing these notes. When users click the extension while browsing, it automatically captures the current webpage's URL and prompts the user to add a note. Users can then view, edit, and delete their notes directly from the extension's interface. The extension will use the Directus API to perform CRUD (Create, Read, Update, Delete) operations on the notes. This project integrates the functionalities of a headless CMS with Chrome extension development to provide a practical tool for organizing web research and personal thoughts.
