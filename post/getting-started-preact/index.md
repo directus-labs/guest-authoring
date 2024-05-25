@@ -6,8 +6,6 @@ author:
     avatar_file_name: "my-avatar.jpg"
 ---
 
-## Introduction
-
 [Preact](https://preactjs.com/) is a lightweight alternative to React. In this tutorial, you will store, retrieve, and use global metadata, pages, and posts based on a Directus project.
 
 Before You Start
@@ -18,13 +16,9 @@ You will need:
 -   A Directus project - [follow our quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one.
 -   Some knowledge of Preact framework.
 
-## Creating a Preact Project
+## Create a Preact Project
 
-Open your terminal and run the following commands:
-
-`npm init preact`
-
-![Setup Preact in CLI](./images/setup-cli.png)
+Open your terminal and run the following commands to create a project, install the Directus SDK, and start the Preacy dev server:
 
 ```
 npm init preact
@@ -33,77 +27,27 @@ npm init preact
 ↳ Use router?: Yes
 ↳ Prerender app?: No
 ↳ Use ESLint?: No
+
 cd directus-project
-```
-
-```
-npm run dev
-```
-
-## Install the Directus SDK and start the Preact dev server:
-
-```
-npm install @directus/sdk`
+npm install @directus/sdk
 npm run dev
 ```
 
 ## Setup Directus Utility
 
-1. Create `utils/directus.js` file
+Create `utils/directus.js` file, being sure to provide your actual Directus project URL.
 
 ```js
 import { createDirectus, rest } from "@directus/sdk";
-
-const directus = createDirectus("https://directus-supabase.onrender.com").with(
-    rest()
-);
+const directus = createDirectus("https://directus.example.com").with(rest());
 export default directus;
 ```
 
-Be sure to provide your actual Directus project URL.
+## Set Up Routing
 
-## Using Global Metadata
+All routes must be included inside of your project's `<Router>`, which can be found inside of `src/index.jsx`. 
 
-In your Directus project, navigate to Settings -> Data Model and create a new collection called `global`. Under the Singleton option, select 'Treat as a single object', as this collection will have just a single entry containing global website metadata.
-
-Create two text input fields - one with the key of `title` and one `description`.
-
-Navigate to the `content` module and enter the `global` collection. Enter information in the title and description field and hit save.
-
-![Global Metadata](./images/global-metadata.png)
-
-By default, new collections are not accessible to the public. Navigate to Settings -> Access Control -> Public and give Read access to the Global collection.
-
-In `pages/index.jsx` file, add the following code to fetch the data from Directus and display it.
-
-```js
-import directus from "../utils/directus";
-import { readSingleton } from "@directus/sdk";
-import { useState } from "preact/compat";
-
-export function Home() {
-    const [global, setGlobal] = useState({});
-    const fetchData = async () => {
-        const global = await directus.request(readSingleton("global"));
-
-        setGlobal(global);
-    };
-    fetchData();
-
-    return (
-        <div>
-            Home Page
-            <h1>{global.title}</h1>
-        </div>
-    );
-}
-```
-
-Open your browser to `http://localhost:3000`. You should see the data from your Directus Global collection displayed in the index page.
-
-## Setup Routing
-
-We will load Blog Post List, detail page, dynamic pages and a 404 page.
+Each page will have a corresponding file in the `src/pages` directory. Define all of the routes now, and you will create the files later in thie guide:
 
 ```js
 import { render } from "preact";
@@ -124,7 +68,6 @@ export function App() {
             <main>
                 <Router>
                     <Route path="/" component={Home} />
-
                     <Route path="/blog" component={BlogList} />
                     <Route path="/404" component={NotFound} />
                     <Route path="/blog/:slug" component={Blog} />
@@ -137,13 +80,51 @@ export function App() {
 render(<App />, document.getElementById("app"));
 ```
 
+## Using Global Metadata
+
+In your Directus project, navigate to Settings -> Data Model and create a new collection called `global`. Under the Singleton option, select 'Treat as a single object', as this collection will have just a single entry containing global website metadata.
+
+Create two text input fields - one with the key of `title` and one `description`.
+
+Navigate to the `content` module and enter the `global` collection. Enter information in the title and description field and hit save.
+
+![Global Metadata](./images/global-metadata.png)
+
+By default, new collections are not accessible to the public. Navigate to Settings -> Access Control -> Public and give Read access to the Global collection.
+
+In the `pages/index.jsx` file, add the following code to fetch the data from Directus and display it:
+
+```js
+import directus from "../utils/directus";
+import { readSingleton } from "@directus/sdk";
+import { useState } from "preact/compat";
+
+export function Home() {
+    const [global, setGlobal] = useState({});
+    const fetchData = async () => {
+        const global = await directus.request(readSingleton("global"));
+        setGlobal(global);
+    };
+    fetchData();
+
+    return (
+        <div>
+            Home Page
+            <h1>{global.title}</h1>
+        </div>
+    );
+}
+```
+
+Open your browser to `http://localhost:3000`. You should see the data from your Directus Global collection displayed in the index page.
+
 ## Creating Pages With Directus
 
-Create a new collection called pages - make the Primary ID Field a "Manually Entered String" called slug, which will correlate with the URL for the page. For example `about` will later correlate to the page `localhost:3000/about`.
+Create a new collection called `pages` - make the Primary ID Field a "Manually Entered String" called slug, which will correlate with the URL for the page. For example `about` will later correlate to the page `localhost:3000/about`.
 
-Create a text input field called `title` and a WYSIWYG input field called `content`. In Access Control, give the Public role read access to the new collection. [here is some sample data](https://github.com/directus-community/getting-started-demo-data)
+Create a text input field called `title` and a WYSIWYG input field called `content`. In Access Control, give the Public role read access to the new collection. [here is some sample data](https://github.com/directus-labs/getting-started-demo-data)
 
-Inside of `pages` , create a new file called `slug.jsx`. This is a dynamic route, so a single file can be used for all of the top-level pages.
+Inside of `pages` , create a new file called `slug.jsx`. This is a dynamic route, so a single file can be used for all of the dynamic, top-level pages.
 
 ```js
 import { useEffect, useState } from "preact/compat";
@@ -157,13 +138,10 @@ export function Page() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setLoading(true); // Set loading state to true when fetching data
-
+        setLoading(true); 
         const fetchData = async () => {
             try {
-                const page = await directus.request(
-                    readItem("pages", params.slug)
-                );
+                const page = await directus.request(readItem("pages", params.slug));
                 setPage(page);
             } catch (error) {
                 location.route("/404");
@@ -192,11 +170,12 @@ export function Page() {
 ```
 
 ![About Page](./images/about-page.png)
-Note that we check if a returned value exists, and return a 404 if not. Please also note thatv-html should only be used for trusted content.
+
+Note that we check if a returned value exists, and return a 404 if not. Also note that `v-html` should only be used for trusted content.
 
 ## Creating Blog Posts With Directus​
 
-Create a new collection called authors with a single text input field called name. Create one or more authors.
+Create a new collection called `authors` with a single text input field called `name`. Create one or more authors.
 
 Then, create a new collection called `posts` - make the Primary ID Field a "Manually Entered String" called `slug`, which will correlate with the URL for the page. For example hello-world will later correlate to the page `localhost:3000/blog/hello-world`.
 
@@ -207,9 +186,10 @@ Create the following fields in your posts data model:
 -   an image relational field called `image`
 -   a datetime selection field called `publish_date` - set the type to 'date'
 -   a many-to-one relational field called `author` with the related collection set to `authors`
-    In Access Control, give the Public role read access to the `authors`, `posts`, and `directus_files` collections.
 
-Create 3 items in the posts collection - [here is some sample data](https://github.com/directus-community/getting-started-demo-data).
+In Access Control, give the Public role read access to the `authors`, `posts`, and `directus_files` collections.
+
+Create 3 items in the posts collection - [here is some sample data](https://github.com/directus-labs/getting-started-demo-data).
 
 ## Create Blog Post Listing​
 
@@ -225,7 +205,7 @@ export function BlogList() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setLoading(true); // Set loading state to true when fetching data
+        setLoading(true);
 
         const fetchData = async () => {
             try {
@@ -260,17 +240,9 @@ export function BlogList() {
                     {posts.map((post) => (
                         <li key={post.slug}>
                             <Link href={`/blog/${post.slug}`}>
-                                <h2
-                                    style={{
-                                        textAlign: "left",
-                                        textDecoration: "underline",
-                                        cursor: "pointer",
-                                    }}
-                                >
-                                    {post.title}
-                                </h2>
+                                <h2>{post.title}</h2>
                             </Link>
-                            <div style={{ textAlign: "left" }}>
+                            <div>
                                 <span>{post.published_date}</span>
                                 <span> &bull; {post.author.name}</span>
                             </div>
@@ -284,10 +256,10 @@ export function BlogList() {
 ```
 
 This query will retrieve the first 100 items (default), sorted by publish date (descending order, which is latest first). It will only return the specific fields we request - `slug`, `title`, `publish_date`, and the `name` from the related author item.
+
 Visit `http://localhost:3000/blog` and you should now see a blog post listing, with latest items first.
 
 ![Blog Posts](./images/blog-posts.png)
-Click on any of the blog post links, and it will take you to a blog post page complete with a header image.
 
 ## Create Blog Post Detail Page
 
@@ -369,5 +341,6 @@ export function Header() {
 }
 ```
 
-Next Steps
-Through this guide, you have set up an Preact project, created a Directus instance, and used it to query data. You have used a singleton collection for `global` metadata, dynamically created `pages`, as well as blog listing and blog pages.
+## Next Steps
+
+Through this guide, you have set up an Preact project, created a Directus instance, and used it to query data. You have used a singleton collection for global metadata, dynamically created pages, as well as blog listing and blog pages.
