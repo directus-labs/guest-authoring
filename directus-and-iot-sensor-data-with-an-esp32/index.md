@@ -8,106 +8,37 @@ author:
 
 # Directus and IoT: Sensor Data with an ESP32
 
-IoT systems will not be complete without logging their collected data to remote cloud storage. You can choose to build a complete backend system with HTTP, authentication, and persistent storage or use a ready-made system known as Directus. Directus offers a complete Backend as a Service (BaaS) platform that you can use for your IoT projects. It gives you an easy way to connect to databases, create tables, and have these tables exposed as HTTP APIs. To demonstrate the power of Directus in IoT, you will build a simple temperature logging system using a DHT22 as a temperature and humidity module, and an ESP32 as the microcontroller board with onboard WiFi for connecting to a local or remote Directus instance.
+IoT systems will not be complete without logging their collected data to remote cloud storage. In this tutorial, you will build a simple temperature logging system using a DHT22 as a temperature and humidity module, and an ESP32 as the microcontroller board with onboard WiFi for connecting to a Directus project.
 
-As a bonus, you will see how your temperature and humidity data changes in real time using Directus Dashboards. Directus Dashboards is an insights service packaged with Directus to help teams gain insight into their data. So on the insights page, you will create different charts that update at an interval and shows how your logged data changes with time.
+## Before You Start
 
-This article presents several approaches to achieving the end results (IoT system to Directus). The default approach is using local physical components that can be purchased from a hardware store to collect and log the data. The data is then logged to a local instance of Directus, created via Docker. The alternative is using a simulation environment known as [Wokwi](https://wokwi.com/) to simulate the temperature and humidity data logging. In this alternative case, you can use a local or cloud instance of Directus.
+You will need:
 
-## Prerequisites
+- A Directus project - [follow our quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one.
+- Either the list of physical components below, or a [A Wowki Club account](https://wokwi.com/club) that will allow you to simulate the hardware.
 
-This section lists the prerequisites depending on the approach you take. There are two major requirements, the IoT requirements and the Directus requirements. Pick and choose the approach that best suits you.
+### Components List
 
-### IoT Component Requirements
+- An [ESP32](https://www.espressif.com/en/products/socs/esp32) development board.
+- A [DHT22 sensor](https://www.adafruit.com/product/385). 
+- A Type B Micro USB cable.
+- Three male to female jumper cables (may be optional, depending on the configuration of your DHT22).
 
-For the IoT components you either use physical components or the simulator environment.
-
-#### Using Physical Components
-
-1. An [ESP32](https://www.espressif.com/en/products/socs/esp32) development board. You can use an existing board or purchase the Wroom 32D model from your local vendor. Here are links for [Amazon](https://www.amazon.com/HiLetgo-ESP-WROOM-32-Development-Microcontroller-Integrated/dp/B0718T232Z/), [AliExpress](https://www.aliexpress.com/item/1005006018016908.html), and [Hub360](https://hub360.com.ng/product/esp32-devkitc-core-board-esp32-development-board-esp32wroom-32d/)
-2. A [DHT22 sensor](https://www.adafruit.com/product/385). You can reuse the one you own, purchase from a local vendor, or buy online from [Amazon](https://www.amazon.com/Teyleten-Robot-Digital-Temperature-Humidity/dp/B0CPHQC9SF/), [AliExpress](https://www.aliexpress.com/item/1005005545184001.html), and [Hub360](https://hub360.com.ng/product/dht22-temperature-and-humidity-sensor/)
-3. Type-B micro USB cable
-4. Three (3) male to female jumper cables (may be optional, depending on the configuration of your DHT22)
-5. The latest Arduino IDE which can be installed for [Windows](https://downloads.arduino.cc/arduino-ide/arduino-ide_latest_Windows_64bit.exe), [MacOS](https://downloads.arduino.cc/arduino-ide/arduino-ide_latest_macOS_64bit.dmg), and [Linux](https://downloads.arduino.cc/arduino-ide/arduino-ide_latest_Linux_64bit.AppImage)
-6. The ESP32 board support for Arduino IDE. Follow the official [Espressif documentation](https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html) to install it for your IDE
-
-### Using the Online Simulator Environment (Wokwi)
-
-1. [A Wowki Club account](https://wokwi.com/club)
-
-### Directus set up requirements
-
-For setting up Directus, you either use a local instance of Directus using Docker or you use a cloud instance. You should prefer the local instance because it doesn't require you to pay and you can experiment all you want. The cloud instance should be used when you are moving to production and are not ready to self-host.
-
-#### Using the local setup
-
-1. [Docker installed locally](https://docs.docker.com/get-docker/)
-2. [Node.js](https://nodejs.org/en/download), if you cannot install Docker
-
-#### Using the cloud setup
-
-1. A [Directus Cloud](https://directus.cloud) account
-
-## Setting up Directus: Locally or in the Cloud
-
-Before proceeding with the component connections, you need to set up Directus to be ready to receive your sensor data. You can set it up locally or through the Directus cloud. The local approach frees you from a free trial or associated costs, but it means you have to purchase and manage your infrastructure when taking it to production. The cloud approach gives you a production-ready environment right from the start. It also eases the setup stress. Choose whichever approach best suits your requirements.
-
-### Setting up Directus Locally
-
-You can set up Directus locally using Docker or npm (Node.js). The Docker approach is simpler because you only run a single command to get Directus running. The command below pulls the Directus Docker image and starts a Directus Docker container on port 8055. The admin details (email and password) alongside the key and secret that Directus uses internally are provided as environment variables. A Docker volume is also mapped from the directory where this command is run to the `/directus/database` directory that contains the SQLite database file that will power Directus locally. So the Directory you run this from will have a `database.sqlite` file after you run the command. Go ahead and run the command below:
-
-```
-docker run \
--p 8055:8055 \
--e KEY=replace-with-random-value \
--e SECRET=replace-with-random-value \
--e ADMIN_EMAIL="admin@example.com" \
--e ADMIN_PASSWORD="password" \
--v "$(pwd)":/directus/database \
-directus/directus
-```
-
-With the Directus server up and running, you should visit http://localhost:8085 to see the Directus dashboard.
-
-![Directus Dashboard](./Directus_Dashboard.png)
-
-If you do not want to set up locally, you can easily set up on [Directus cloud](https://directus.cloud/). You can sign in using your Github account or via email. Follow this [guide to set up Directus cloud](https://docs.directus.io/getting-started/quickstart.html).
+You will also need to install the [Arduino IDE](https://www.arduino.cc/en/software) and have ESP32 board support. Follow the official [Espressif documentation](https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html) to install it in the IDE.
 
 ## Creating the `temperature_and_humidity` Collection
 
-After setting up Directus, you must create the database table where your IoT data will be stored. In Directus, you can create new "tables" for your database by creating a collection. A collection serves a dual purpose. A table for interacting with Directus via API (or SDK) and a way to configure CMS operations.
+After setting up Directus, you must create the database table where your IoT data will be stored. Create a new `temperature_and_humidity` collection and enable the **Created On (date_created)** optional field.
 
-On the `/admin/content` page, click on the **Create Collection** button that is at the center of the page. This operation opens up a sidebar with a menu for inputting details about the collection.
-
-Set the new collection’s name as `temperature_and_humidity`, then click the `right arrow` button to proceed.
-
-On the next page, you will have the option to select pre-defined fields you would like to include in your collection. Only select the **Created On (date_created)** field, then click the `right arrow` button to finish the setup.
-
-With all this done, you will now have a database table that can be queried via the API. But to collect usable data, you first have to create the columns that will contain the temperature and humidity data. Directus refers to columns are fields because they are more than database columns. It allows you to define how the CMS displays input for them, hence, they are referred to as **field**. So on the temperature_and_humidity collection’s data model (/admin/settings/data-model/temperature_and_humidity), click on the **Create Field** button.
-
-Clicking the **Create Field** button opens up a sidebar with a form containing the details of the new field. Select **Input** as the field’s input type, then set its **Key** as **temperature** and the **type (datatype)** as **Float**.
-
-Scroll through the sidebar until you see a save button, then click on it.
-
-Repeat the process for humidity, selecting the field type as **Input**, the key as **Humidity**, and the type (datatype) as **Float**. After both fields are created, you will have your collection ready to receive data from your IoT setup!
+Create the following additional fields:
+- `temperature` - input interface - `float` type.
+- `humidity` - input interface - `float` type.
 
 ## Creating a Directus Role and User
 
-You need a role that has permission to create and read records on the temperature_and_humidity table. When you create this role, you'll need to create a user and assign this role to them. To create the role, navigate to settings > access control page. On this page, click on the **Create Role** button that resides at the top right corner.
+Create a new role called `esp32-writer` and give **All Access** to the `temperature_and_humidity` collection.
 
-Clicking on this button opens up a modal where you put in the details of the role. Set the role name as esp32-writer and ensure that **App Access** is enabled. Proceed by clicking the **Save** button.
-
-Clicking **Save** takes you to the next page where you can configure the details of this role. On the role configuration page, Give the **ESP32-Writer** permission to create new items in the temperature_and_humidity table. So under the plus icon, click on the red **No Access** button, and change the permission to **All Access**. The changes are saved automatically so you don’t need to save anything.
-
-Now that this role has been created, create a user that will be assigned the role by scrolling to the end of the **ESP32-Writer** role page and clicking on the **Create New** button under the **Users in Role** section.
-
-Clicking the **Create New** button opens a sidebar with a form containing the new user’s details. Set the First Name as \*_ESP32-Board_
-
-Before saving the user’s details, scroll to the end of the sidebar to find the **Generate Token** button under admin options. Clicking on this button generates an authentication token you can use to create new data in your collection in an authorized manner.
-
-Proceed by clicking on the **Generate Token** button, copying the generated token, and saving everything using the save checkmark button at the top right corner. You should save the generated token in a safe place, like a temporary notepad. Finally, complete the role and user creation by clicking the Save button at the top right corner.
-
-With that done, you should have a new role, ESP32-Writer, with a single user.
+Create a new user in this role called "ESP32-Writer" and generate a static access token. Save this for later.
 
 ## Creating dummy temperature and humidity values
 
@@ -153,7 +84,11 @@ If you are using the ESP32 Wroom 32D, choose the ESP 32 DA Module and the COM po
 
 ### Logging temperature and humidity data to Serial
 
-You can log the values from the DHT22 to the serial monitor by defining variables for the temperature and humidity and then initializing the DHT object. Within the setup function, you must initialize the Serial logging and intialize the connection to the DHT22 module. Within the loop function, the sensor readings are obtained from the DHT22 and stored to the temperature and humidity variables. With all that done, these values can be logged to the serial monitor. There's a delay of 5 seconds to ensure that the DHT22 can handle accurate readings as it has a low sampling rate. When sending your data to Directus, you will increase the delay to 30 seconds or greater. Note that your Serial Monitor baud rate must be set as 115200 for you to see the values being logged.
+You can log the values from the DHT22 to the serial monitor by defining variables for the temperature and humidity and then initializing the DHT object. Within the setup function, you must initialize the Serial logging and intialize the connection to the DHT22 module. 
+
+Within the loop function, the sensor readings are obtained from the DHT22 and stored to the temperature and humidity variables. With all that done, these values can be logged to the serial monitor.
+
+There's a delay of 5 seconds to ensure that the DHT22 can handle accurate readings as it has a low sampling rate. When sending your data to Directus, you will increase the delay to 30 seconds or greater. Your Serial Monitor baud rate must be set to 115200 for you to see the values being logged.
 
 ```cpp
 #include <DHT.h>
@@ -269,21 +204,11 @@ When you open your Directus content section, you will see the values logged so f
 
 ![Dashboard with logs](./Dashboard_with_logs.png)
 
-## Visualizing the logged data using Directus Dashboard
+## Visualizing Data in Directus Insights
 
-You can visualize how data in your collection change over time using Directus insights. You will find the insights dashboard under `/admin/insights`. On the insights page, create a new dashboard by clicking the central **Create Dashboard** button. This dashboard will display your temperature and humidity over time. Clicking the button opens up a modal with a form with the new dashboard's details.
+Directus Insights allows you to create multiple panels in a dashboard, powered by data in your project.
 
-![Directus insights dashboard](./Directus_insights_dashboard.png)
-
-On this form, give your dashboard a name, temperature-and-humidity, and click the **Save** button
-
-![Dashboard name](./Dashboard_name.png)
-
-Directus dashboard allows you to create multiple charts in a dashboard. These charts are called panels. To create your first panel, click on the **Edit Panels** button at the top right. Clicking this button puts the dashboard's page in edit mode. In this mode, you can move already created panels around and create new panels. Click on the **Plus** button that appears to proceed with creating your first panel.
-
-![create-panel](./create-panel.png)
-
-The panel creation flow starts with you choosing your chart type, and then inputting the details of that chart. The first panel you will create will display the temperature trends over time. Choose the bar chart and set the following following details:
+To show the change over time for temperature, create a bar chart with the following settings:
 
 1. Collection - Temperature and Humidity
 2. X-Axis - Date Created
@@ -292,31 +217,10 @@ The panel creation flow starts with you choosing your chart type, and then input
 5. Value Decimals - 2
 6. Color - #E35168
 
-After setting these details, click the checkmark icon button at the top right corner.
-
-![Bar chart details](./Bar_chart_details.png)
-
-A scaled-down bar chart will be created. You can rescale it to increase the size. You can make it look even better by adding a title (Temperature over time) and an icon (Thermostat). Click on the edit button on the chart's card to set these details.
-
-![temperature chart details](./temperature_chart_details.png)
-
-With that done, repeat the process for the humidity chart. Use the following details for the panel for humidity:
-
-1. Collection - Temperature and Humidity
-2. X-Axis - Date Created
-3. Y-Axis - Humidity
-4. Y-Axis Function - Max
-5. Value Decimals - 2
-6. Color - #E35168
-7. Panel header title - Humidity over time
-8. Panel header icon - Water DO
-
-You should have the temperature and humidity charts displaying how your values changed over time. You can conclude this section by saving this dashboard.
+You can repeat this for humidity, and any other data inside of your project. 
 
 ![temperature and humidity trends over time](./temperature_and_humidity_trends_over_time.png)
 
-## Conclusion
+## Summary
 
-In this tutorial, you learned how to collect temperature and humidity data from a DHT22 sensor and log it to a database with the aid of Directus. You learned how to visualize how this data changes over time using Directus dashboards.
-
-Directus presents a complete BaaS solution allowing you to build content-focused and traditional web applications. It offers a plethora of services including database mirroring, user authentication, OAuth2, and HTTP APIs over data (REST and GraphQL). You can self-host Directus or use their cloud API with reasonable pricing. [Try Directus today](https://directus.cloud/)!
+In this tutorial, you learned how to collect temperature and humidity data from a DHT22 sensor and log it to a Directus project. You also learned how to visualize how this data changes over time using Directus Insights.
