@@ -20,19 +20,6 @@ body:
       description: Provide they key things the reader will learn. Even if you're proposing an end-to-end project, think about what skills you're teaching that will be more-widely applicable. 
     validations:
       required: true
-  - type: dropdown
-    id: type
-    attributes:
-      label: What type of post is this?
-      description: This helps us understand the rough structure and effort needed.
-      options:
-        - Extension-Building Guide
-        - Full Project Build with Directus
-        - Framework-Specific Guide (Realtime, Auth, Live Preview, i18n, etc)
-        - Tips, Tricks, or Best Practice
-        - Self-Hosting Guide
-        - Migration Guide
-        - Other
     validations:
       required: true
   - type: input
@@ -51,7 +38,9 @@ body:
           required: true
         - label: You understand that to be paid you will need to generate an invoice with a 30 day payment term and send it to us once the final draft of your work is accepted (we will share how to do this once finished). 
           required: true
-        - label: You understand that you will require either a bank account in one of the countries listed here (https://help.bill.com/direct/s/article/360007172671) or a PayPal account.
+        - label: You understand that you will require a bank account in one of the countries listed here (https://help.bill.com/direct/s/article/360007172671).
+          required: true
+        - label: You understand that you need to set up a Directus project by either running locally, self-hosting, or using Directus Cloud, but being a guest author does not entitle you to extended trials or free credit.
           required: true
         - label: You understand that you will grant us an unlimited license to post and promote your work as part of this program. You may repost, but using our copy as the canonical source.
           required: true
