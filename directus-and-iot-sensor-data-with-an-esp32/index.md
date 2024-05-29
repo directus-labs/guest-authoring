@@ -20,17 +20,24 @@ You will need:
 ### Components List
 
 - An [ESP32](https://www.espressif.com/en/products/socs/esp32) development board.
-- A [DHT22 sensor](https://www.adafruit.com/product/385). 
+- A [DHT22 sensor](https://www.adafruit.com/product/385).
 - A Type B Micro USB cable.
 - Three male to female jumper cables (may be optional, depending on the configuration of your DHT22).
 
 You will also need to install the [Arduino IDE](https://www.arduino.cc/en/software) and have ESP32 board support. Follow the official [Espressif documentation](https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html) to install it in the IDE.
+
+### Installing DHT22 Sensor Library
+
+Since you will program your ESP32 using the Arduino IDE, you must install the [DHT sensor library by Adafruit](https://www.arduino.cc/reference/en/libraries/dht-sensor-library/). Search for the "DHT Sensor Library" in your library manager and install the corresponding library authored by Adafruit. Use the image below as a reference.
+
+![Installing the DHT22 sensor library](./Installing_the_DHT22_sensor_library.png)
 
 ## Creating the `temperature_and_humidity` Collection
 
 After setting up Directus, you must create the database table where your IoT data will be stored. Create a new `temperature_and_humidity` collection and enable the **Created On (date_created)** optional field.
 
 Create the following additional fields:
+
 - `temperature` - input interface - `float` type.
 - `humidity` - input interface - `float` type.
 
@@ -40,37 +47,11 @@ Create a new role called `esp32-writer` and give **All Access** to the `temperat
 
 Create a new user in this role called "ESP32-Writer" and generate a static access token. Save this for later.
 
-## Creating dummy temperature and humidity values
-
-You can immediately populate your temperature_and_humidity table by making a POST request. This POST request will have an Authorization header with the token inputed as a Bearer token. The snippet below shows an example post request using cURL. To run this request, replace the `<YOUR_TOKEN>` with the token generated in the previous section and then run it in a UNIX shell or Powershell.
-
-```
-curl --location 'http://localhost:8055/items/temperature_and_humidity' \
---header 'Authorization: Bearer Vi8m1wdXTEv0rhQtteUWaZKfHTqCOwDx' \
---header 'Content-Type: application/json' \
---data '{"temperature": 33.34,"humidity": 80.42}'
-```
-
-After running the curl command above, you will see a new value in the collection on your Directus dashboard (/admin/content/temperature_and_humidity).
-
-You can run the cURL command with different values of temperature and humidity to see more data in your collection, but first, take a moment to look at the URL used in the cURL command above. It is your Directus root URL at localhost:8055 with a path /items/temperature_and_humidity. Directus gives a straightforward way to interact with collections via a REST API by appending /items to the root URL and then the collection name. You can perform API operations using the standard REST principles such as:
-
-- GET /items/temperature_and_humidity
-- POST /items/temperature_and_humidity
-- PATCH /items/temperature_and_humidity
-- DELETE /items/temperature_and_humidity
-
 ## Connecting the ESP32 and the DHT22 with Physical Components
 
 A DHT22 sensor can connect directly to an ESP32 using three pins. DHT22 comes in two types, 3-pin type and 4-pin type. The 3-pin type doesn't require extra configuration. You connect ground to ground, VCC to 5V output, and data to a GPIO pin, say pin 13. For the 4-pin type, ignore the 3rd pin from the left and connect as shown in the image below:
 
 ![DHT22 to ESP32](./DHT22_to_ESP32.png)
-
-### Installing DHT22 Sensor Library
-
-Since you will program your ESP32 using the Arduino IDE, you must install the [DHT sensor library by Adafruit](https://www.arduino.cc/reference/en/libraries/dht-sensor-library/). Search for the "DHT Sensor Library" in your library manager and install the corresponding library authored by Adafruit. Use the image below as a reference.
-
-![Installing the DHT22 sensor library](./Installing_the_DHT22_sensor_library.png)
 
 ### Connecting the ESP32 Board to your Computer
 
@@ -84,7 +65,7 @@ If you are using the ESP32 Wroom 32D, choose the ESP 32 DA Module and the COM po
 
 ### Logging temperature and humidity data to Serial
 
-You can log the values from the DHT22 to the serial monitor by defining variables for the temperature and humidity and then initializing the DHT object. Within the setup function, you must initialize the Serial logging and intialize the connection to the DHT22 module. 
+You can log the values from the DHT22 to the serial monitor by defining variables for the temperature and humidity and then initializing the DHT object. Within the setup function, you must initialize the Serial logging and intialize the connection to the DHT22 module.
 
 Within the loop function, the sensor readings are obtained from the DHT22 and stored to the temperature and humidity variables. With all that done, these values can be logged to the serial monitor.
 
@@ -117,14 +98,9 @@ void loop() {
 
 ## Sending the temperature and humidity data to Directus
 
-At this point, you have your ESP32 logging data to the Serial monitor. But you actually want to send this data to Directus. You have to introduce the HTTP and WiFi libraries to achieve this. The WiFi library connects your ESP32 to the internet while the HTTP library turns your ESP32 into an HTTP agent that can make GET and POST requests among others. The script below is the complete code for logging data to Directus. Here are the things you must change for the script to work:
+At this point, you have your ESP32 logging data to the Serial monitor. To send these to Directus, you have to introduce the HTTP and WiFi libraries to your project.
 
-1. Your WiFI SSID, i.e. the name of your WiFi network, as the value of the `ssid` variable on line 6.
-2. Your WiFi password on line 7.
-3. Your Directus esp32-board user token that you used with cURL at the `Creating dummy temperature and humidity values` section of this article. You can still [regenerate the token if you lost it](./regenerate_lost_token.png). If you have the token, set it as the <TOKEN> placeholder value on line 8.
-4. Your WiFi gateway address is defined on line 9 as `directusEndpoint`. It won't start with localhost because the ESP32 is running as a separate system. So you must check the gateway address of your local network. This address will either start with 10, 172, or 192. Follow [this blog post](https://nordvpn.com/blog/find-router-ip-address/) for instructions for checking your gateway address on different operating systems. Note that your ESP32 and your computer running Directus must be connected to the same WiFi network for this to work.
-
-With all the changes made, you can upload your script to your ESP32 and observe it log temperature and humidity data on your Directus `temperature_and_humidity` collection.
+The WiFi library connects your ESP32 to the internet while the HTTP library turns your ESP32 into an HTTP agent that can make HTTP requests. The script below is the complete code for logging data to Directus - add it to the defaul file on your opened Arduino IDE:
 
 ```cpp
 #include <WiFi.h>
@@ -140,6 +116,114 @@ const char* directusEndpoint = "http://192.168.43.143:8055/items/temperature_and
 float temperature, humidity;
 DHT dht22_sensor(13, DHT22);
 
+HTTPClient http;
+http.begin(directusEndpoint);
+http.addHeader("Content-Type", "application/json");
+http.addHeader("Authorization", directusToken);
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  Serial.println("\nConnecting to WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("Connected to WiFi");
+
+  dht22_sensor.begin();
+}
+
+void loop() {
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("Error in WiFi connection");
+  }
+
+  temperature = dht22_sensor.readTemperature();
+  humidity = dht22_sensor.readHumidity();
+
+  if (isnan(temperature) || isnan(humidity)) {
+    Serial.println("Error reading sensor data");
+  }
+
+  String jsonPayload = "{\"temperature\":" + String(temperature) + ",\"humidity\":" + String(humidity) + "}";
+
+  Serial.println(jsonPayload);
+
+  int httpResponseCode = http.POST(jsonPayload);
+
+  if (httpResponseCode > 0) {
+    Serial.print("HTTP Response code: ");
+    Serial.println(httpResponseCode);
+
+    String response = http.getString();
+    Serial.println(response);
+  } else {
+    Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpResponseCode).c_str());
+  }
+
+  http.end();
+
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.print("°C <-> Humidity: ");
+  Serial.print(humidity);
+  Serial.println("%");
+
+ delay(30000);
+}
+```
+
+### Breakdown of the script
+
+The script consists of two sections: the setup and the logging loop. The setup section is where all variables are initialized while the logging loop contains code that reads the sensor values and sends them to the Directus cloud.
+
+#### The setup section
+
+For the script to work, you must set your WiFi SSID, WiFi password, and the Directus token from earlier. Your `directusEndpoint` variable might be different from this depending on where you run it. If you run Directus locally and you connect both the ESP32 and your local machine to your WiFi access point, then the IP address defined should be that of your machine on the network (possibly 192.168.43.143). If however you run Directus in the cloud, then change the IP address to the address of your Directus cloud instance.
+
+```cpp
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <Arduino.h>
+#include <DHT.h>
+
+const char* ssid = "<YOUR_WIFI_SSID>";
+const char* password = "<YOUR_WIFI_PASSWORD>";
+const char* directusToken = "Bearer <TOKEN>";
+const char* directusEndpoint = "http://192.168.43.143:8055/items/temperature_and_humidity";
+
+float temperature, humidity;
+DHT dht22_sensor(13, DHT22);
+
+HTTPClient http;
+http.begin(directusEndpoint);
+http.addHeader("Content-Type", "application/json");
+http.addHeader("Authorization", directusToken);
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  Serial.println("\nConnecting to WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("Connected to WiFi");
+
+  dht22_sensor.begin();
+}
+```
+
+The part of this section that has the `setup()` function defined contains code for connecting to the WiFi access point and initialize the reading of the sensor data.
+
+```cpp
 void setup() {
  Serial.begin(115200);
  delay(1000);
@@ -155,47 +239,46 @@ void setup() {
 
  dht22_sensor.begin();
 }
+```
 
+#### The logging loop
+
+The logging loop consists of code that reads the sensor data, makes the HTTP POST request, and validates that the request was a success or error. There are three error handling logic to check that the WiFi is still connected, that the sensor readings are not malformed, and the HTTP request succeeded. The script has a 30-second delay to help the DHT22 sensor measure more accurately and prevent an overloading of the server.
+
+```cpp
 void loop() {
- if (WiFi.status() == WL_CONNECTED) {
-   temperature = dht22_sensor.readTemperature();
-   humidity = dht22_sensor.readHumidity();
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("Error in WiFi connection");
+  }
 
-   if (!isnan(temperature) && !isnan(humidity)) {
-     HTTPClient http;
-     http.begin(directusEndpoint);
-     http.addHeader("Content-Type", "application/json");
-     http.addHeader("Authorization", directusToken);
+  temperature = dht22_sensor.readTemperature();
+  humidity = dht22_sensor.readHumidity();
 
-     String jsonPayload = "{\"temperature\":" + String(temperature) + ",\"humidity\":" + String(humidity) + "}";
+  if (isnan(temperature) || isnan(humidity)) {
+    Serial.println("Error reading sensor data");
+  }
 
-     Serial.println(jsonPayload);
+  String jsonPayload = "{\"temperature\":" + String(temperature) + ",\"humidity\":" + String(humidity) + "}";
+  int httpResponseCode = http.POST(jsonPayload);
 
-     int httpResponseCode = http.POST(jsonPayload);
+  if (httpResponseCode > 0) {
+    Serial.print("HTTP Response code: ");
+    Serial.println(httpResponseCode);
 
-     if (httpResponseCode > 0) {
-       Serial.print("HTTP Response code: ");
-       Serial.println(httpResponseCode);
+    String response = http.getString();
+    Serial.println(response);
+  } else {
+    Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpResponseCode).c_str());
+  }
 
-       String response = http.getString();
-       Serial.println(response);
-     } else {
-       Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpResponseCode).c_str());
-     }
+  http.end();
 
-     http.end();
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.print("°C <-> Humidity: ");
+  Serial.print(humidity);
+  Serial.println("%");
 
-     Serial.print("Temperature: ");
-     Serial.print(temperature);
-     Serial.print("°C <-> Humidity: ");
-     Serial.print(humidity);
-     Serial.println("%");
-   } else {
-     Serial.println("Error reading sensor data");
-   }
- } else {
-   Serial.println("Error in WiFi connection");
- }
  delay(30000);
 }
 ```
@@ -217,7 +300,7 @@ To show the change over time for temperature, create a bar chart with the follow
 5. Value Decimals - 2
 6. Color - #E35168
 
-You can repeat this for humidity, and any other data inside of your project. 
+You can repeat this for humidity, and any other data inside of your project.
 
 ![temperature and humidity trends over time](./temperature_and_humidity_trends_over_time.png)
 
