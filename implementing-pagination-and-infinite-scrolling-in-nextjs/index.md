@@ -1,0 +1,509 @@
+---
+title: "Implementing Pagination and Infinite Scrolling in Next.js"
+description: "Learn how to implement pagination and Infinite scrolling with Directus in Nextjs, and about important factors that will help you make the right choice them"
+author:
+  name: "Taminoturoko Briggs"
+  avatar_file_name: "profile-pic.jpeg"
+---
+
+## Introduction
+
+When working with a large set of data fetching and rendering them at once could cause performance issues, especially for devices with poor internet connections. To prevent this, several techniques are used which deal with fetching and rendering data in chunks. Two of the most common ones are pagination and infinite scrolling which will be covered in this tutorial.
+
+In this tutorial, you will learn how to implement pagination and infinite scrolling with the Directus SDK and which of them to adopt in our app based on their pros and cons.
+
+## Before You Start
+
+You will need:
+
+- Knowledge of Next.js
+- A Directus project - follow the [quickstart](https://docs.directus.io/getting-started/quickstart.html) guide to create a project if you don’t have one already.
+- A code editor e.g. VS Code and Sublime Text.
+
+## Adding Data to Directus
+
+You will need some data to work with to implement the pagination and infinite scrolling. In your Directus project, navigate to **Settings** -> **Data Model** and create a new collection called **posts** with a text input called **title** and a textarea field called **body**.
+
+Navigate to the **Content** module and add at least 10 items to the **Posts** collection. You can get sample data from the [JSONPlaceholder posts resource](https://jsonplaceholder.typicode.com/posts).
+
+To make the collection publicly accessible, navigate to **Settings** -> **Access Control** -> **Public,** and give Read access to the **Posts** collection.
+
+## Setting up Nextjs
+
+Open your terminal, and enter the following command to create a new Nextjs project:
+
+```shell
+npx create-next-app@latest
+```
+
+During installation, choose the following when prompted:
+
+```shell
+✔ What is your project named? next-directus-app
+✔ Would you like to use TypeScript? No
+✔ Would you like to use ESLint? Yes
+✔ Would you like to use Tailwind CSS? Yes
+✔ Would you like to use `src/` directory? No
+✔ Would you like to use App Router? (recommended) Yes
+✔ Would you like to customize the default import alias (@/*)? No
+```
+
+Navigate into the new project and install the Directus JavaScript SDK:
+
+```shell
+cd next-directus-app
+npm install @directus/sdk
+```
+
+Open the project in a code editor and start the development server using the following command:
+
+```shell
+npm run dev
+```
+
+## Configuring the Directus SDK
+
+In the root directory of the project, create a new directory called *lib*. Inside it create a *directus.js* file and include the following lines of code to initialize Directus and disable the default caching behavior of the Nextjs [fetch()](https://nextjs.org/docs/app/api-reference/functions/fetch#fetchurl-options) function:
+
+```js
+import { createDirectus, rest } from "@directus/sdk";
+
+const directus = createDirectus("<your-directus-project-url>").with(
+  rest({
+    onRequest: (options) => ({ ...options, cache: "no-store" }),
+  })
+);
+
+export default directus;
+```
+
+Make sure to modify `<your-directus-project-url>` with the correct URL.
+
+## Fetching Data in Chunks
+
+To fetch data in chunks using an API, usually, two parameters are required. The first is a `limit` that determines the maximum number of items returned, and the second is a parameter that determines the starting point of the items to be fetched, it is usually associated with a type of pagination (e.g. cursor-based pagination, offset-based, pagination, etc.).
+
+In Directus the second parameter can be either [offset](https://docs.directus.io/reference/query.html#offset) and [page](https://docs.directus.io/reference/query.html#page) which are associated with offset-based and page-based pagination respectively.
+
+- Offset-based pagination: This deals with specifying a value (or offset) that indicates the number of items to skip or where the items being fetched should start from. It works hand-in-hand with the `limit` parameter to return a fixed number of items.
+  For example, for a dataset of 200 items, if `offset=20` and `limit=10`, items 21-30 will be returned.
+
+- Page-base pagination: This is an abstraction of the offset-based pagination where a page number is specified (e.g. 1, 2, 3,…) which will be used under the hood to calculate the offset.
+
+For this tutorial, the `page` parameter will be used to implement both the pagination and infinite scrolling.
+
+## Implementing Pagination with Directus
+
+Modify the *app/page.js* file to the following:
+
+```js
+import directus from "@/lib/directus";
+import { readItems } from "@directus/sdk";
+
+const getPosts = async () => {
+  return directus.request(readItems("posts"));
+};
+
+export default async function Home() {
+  const posts = await getPosts();
+
+  return (
+    <div className="bg-white min-h-screen text-slate-800">
+      <ul className="max-w-[600px] mx-auto grid gap-5 pt-10">
+        {posts.map((post) => {
+          return (
+            <li key={post.id} className="p-5 rounded-md bg-gray-200">
+              <h2 className="uppercase text-lg font-medium">{post.title}</h2>
+              <p>{post.body}</p>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+```
+
+This is a Server Component that will fetch all your posts from Directus using the `getPost()` function and render HTML in the server which will then be sent to the client.
+If you navigate to `http://localhost:3000` in your browser you should see the following:
+
+![All items from the posts collection in your Directus project](all-posts.png)
+
+To add pagination, first, modify the *app/page.js* file to the following:
+
+```js
+import directus from "@/lib/directus";
+import { readItems } from "@directus/sdk";
+
+const getPosts = async (limit, page) => {
+  return directus.request(
+    readItems("posts", {
+      limit,
+      page,
+    })
+  );
+};
+
+export default async function Home({ searchParams }) {
+  const LIMIT = 4;
+  const currentPage = parseInt(searchParams.page) || 1;
+  const posts = await getPosts(LIMIT, currentPage);
+  return (
+    <div className="bg-white min-h-screen text-slate-800">
+      <ul className="max-w-[600px] mx-auto grid gap-5 pt-10">
+        {posts.map((post) => {
+          return (
+            <li key={post.id} className="p-5 rounded-md bg-gray-200">
+              <h2 className="uppercase text-lg font-medium">{post.title}</h2>
+              <p>{post.body}</p>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+```
+
+The `getPosts()` function will now return a maximum of 4 posts at a time. The set of posts returned is based on the page number passed to it which is gotten from the URL as a query parameter and is defaulted to 1. So currently the first 4 posts will be rendered and when the page number is increased the next set of posts will be rendered.
+
+To be able to add and modify the page query parameter from the UI for navigating between pages, in the root directory, create a *components* directory, inside it, create a *Pagination.js* file, and add the following lines of code:
+
+```js
+import directus from "@/lib/directus";
+import { aggregate } from "@directus/sdk";
+import Link from "next/link";
+
+const getTotalPostCount = async () => {
+  const totalCount = await directus.request(
+    aggregate("posts", {
+      aggregate: { count: "*" },
+    })
+  );
+  return totalCount[0].count;
+};
+
+async function Pagination({ limit, currentPage }) {
+  const totalPostCount = await getTotalPostCount();
+  const totalPages = Math.ceil(totalPostCount / limit);
+
+  const hasMorePage = () => {
+    const recievedPostsCount = limit * currentPage;
+    return recievedPostsCount < totalPostCount;
+  };
+
+  return (
+    <div className="flex justify-center items-center list-none mt-5 gap-1 absolute w-full bottom-[100px]">
+      <Link
+        href={currentPage <= 2 ? "/" : `?page=${currentPage - 1}`}
+        className="flex py-1 px-2 justify-center items-center border border-solid border-slate-300 cursor-pointer mr-2 rounded-md"
+      >
+        &laquo; Previous
+      </Link>
+      {Array.from(Array(totalPages), (_, i) => i + 1).map((page) => (
+        <Link
+          key={page}
+          href={page === 1 ? "/" : `?page=${page}`}
+          className={`flex py-1 px-3 justify-center items-center border border-solid border-slate-300 cursor-pointer hover:bg-blue-500 rounded-md hover:text-white ${
+            page === currentPage ? "bg-blue-500 text-white" : ""
+          }`}
+        >
+          {page}
+        </Link>
+      ))}
+      <Link
+        href={
+          hasMorePage() ? `?page=${currentPage + 1}` : `?page=${currentPage}`
+        }
+        className="flex py-1 px-2 justify-center items-center border border-solid border-slate-300 cursor-pointer ml-2 rounded-md"
+      >
+        Next &raquo;
+      </Link>
+    </div>
+  );
+}
+
+export default Pagination;
+```
+
+Here the Directus `aggregate()` function is used to calculate and return the total number of posts. The result is to calculate the total number of pages and create a `hasMorePage()` function which will check if there are more pages.
+In the return statement, we are rendering the pagination nav elements to be used to add and modify the page query parameter which includes a previous button, numeric links rendered using the total number of pages, and a next button that uses the `hasMorePage()` function to prevent further navigation.
+
+To render to `Pagination` component, In the *app/page.js* file, add the following import:
+
+```js
+import Pagination from "@/components/Pagination";
+```
+
+Then, add the following line of code after the close `</ul>` tag:
+
+```js
+<Pagination limit={LIMIT} currentPage={currentPage} />
+```
+
+Here is what the *app/page.js* file, should now look like:
+
+```js
+import Pagination from "@/components/Pagination";
+import directus from "@/lib/directus";
+import { readItems } from "@directus/sdk";
+
+const getPosts = async (limit, page) => {
+  return directus.request(
+    readItems("posts", {
+      limit,
+      page,
+    })
+  );
+};
+
+export default async function Home({ searchParams }) {
+  const LIMIT = 4;
+  const currentPage = parseInt(searchParams.page) || 1;
+  const posts = await getPosts(LIMIT, currentPage);
+  return (
+    <div className="bg-white min-h-screen text-slate-800">
+      <ul className="max-w-[600px] mx-auto grid gap-5 pt-10">
+        {posts.map((post) => {
+          return (
+            <li key={post.id} className="p-5 rounded-md bg-gray-200">
+              <h2 className="uppercase text-lg font-medium">{post.title}</h2>
+              <p>{post.body}</p>
+            </li>
+          );
+        })}
+      </ul>
+      <Pagination limit={LIMIT} currentPage={currentPage} />
+    </div>
+  );
+}
+```
+
+With this, you can now navigate between pages from the UI:
+
+![Demonstrates how the pagination functionality works by navigating between different pages using the pagination navs at the bottom of the page](directus-pagination.gif)
+
+## Implementing Infinite scrolling with Directus
+
+Infinite scrolling requires browser events or the Intersection observer JavaScript API to be implemented so it needs to be done on the client side but one way we can improve this is to load the initial HTML from the server. For that, we will be using [Serve Actions](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations).
+
+In the root directory, create a *components* directory, inside it, create a *PostList.js* file and add the following lines of code:
+
+```js
+"use client";
+
+import { useState } from "react";
+
+const PostList = ({ initialPosts, getPosts, limit, totalPostCount }) => {
+  const [posts, setPosts] = useState(initialPosts);
+
+  return (
+    <>
+      <ul className="max-w-[600px] mx-auto grid gap-5 pt-10">
+        {posts?.map((post) => (
+          <li key={post.id} className="p-5 rounded-md bg-gray-200">
+            <h2 className="uppercase text-lg font-medium">{post.title}</h2>
+            <p>{post.body}</p>
+          </li>
+        ))}
+      </ul>
+      <span className="text-center block p-10">No more posts</span>
+    </>
+  );
+};
+
+export default PostList;
+```
+
+This component will receive the initial posts and render them.
+
+Modify the *app/page.js* file to the following:
+
+```js
+import PostList from "@/components/PostList";
+import directus from "@/lib/directus";
+import { readItems } from "@directus/sdk";
+
+const getPosts = async () => {
+  "use server";
+  return await directus.request(readItems("posts"));
+};
+
+export default async function Home() {
+  const initialPosts = await getPosts();
+
+  return (
+    <>
+      <div className="bg-white min-h-screen text-slate-800">
+        <PostList initialPosts={initialPosts} />
+      </div>
+    </>
+  );
+}
+```
+
+Here a Server Action is created which is used to fetch all posts and pass the result as props to the `PostList` component. If you navigate to `http://localhost:3000` in your browser you should see the following:
+
+![All items from the posts collection in your Directus project](all-posts.png)
+
+To add infinite scrolling, first, modify the *app/page.js* file to the following:
+
+```js
+import PostList from "@/components/PostList";
+import directus from "@/lib/directus";
+import { aggregate, readItems } from "@directus/sdk";
+
+const getPosts = async (page, limit) => {
+  "use server";
+  return await directus.request(
+    readItems("posts", {
+      limit,
+      page,
+    })
+  );
+};
+
+const getTotalPostCount = async () => {
+  const totalCount = await directus.request(
+    aggregate("posts", {
+      aggregate: { count: "*" },
+    })
+  );
+  return totalCount[0].count;
+};
+
+export default async function Home() {
+  const LIMIT = 6;
+  const initialPosts = await getPosts(1, LIMIT);
+  const totalPostCount = await getTotalPostCount();
+
+  return (
+    <>
+      <div className="bg-white min-h-screen text-slate-800">
+        <PostList
+          getPosts={getPosts}
+          limit={LIMIT}
+          initialPosts={initialPosts}
+          totalPostCount={totalPostCount}
+        />
+      </div>
+    </>
+  );
+}
+```
+
+The `getPosts()` function will now return a maximum of 6 posts at a time. The set of posts returned is based on the page number passed to it. Increasing the page number will get the next set of posts.
+Using the Directus `aggregate()` function, a `getTotalPostCount()` function was created to calculate and get the total number of posts. The result of the function along with the limit and `getPosts()` is then passed to the `PostList` component where they will be used.
+
+Modify the *components/PostList.js* file to the following:
+
+```js
+"use client";
+
+import { useState } from "react";
+
+const PostList = ({ initialPosts, getPosts, limit, totalPostCount }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [posts, setPosts] = useState(initialPosts);
+
+  const hasMorePosts = () => {
+    const recievedCount = limit * currentPage;
+    return recievedCount < totalPostCount;
+  };
+
+  return (
+    <>
+      <ul className="max-w-[600px] mx-auto grid gap-5 pt-10">
+        {posts?.map((post) => (
+          <li key={post.id} className="p-5 rounded-md bg-gray-200">
+            <h2 className="uppercase text-lg font-medium">{post.title}</h2>
+            <p>{post.body}</p>
+          </li>
+        ))}
+      </ul>
+      {hasMorePosts() ? (
+        <span className="text-center block py-10">Loading...</span>
+      ) : (
+        <span className="text-center block p-10">No more posts</span>
+      )}
+    </>
+  );
+};
+
+export default PostList;
+```
+
+Here the total number of posts passed as props is now used to create a `hasMorePosts()` function to check if there are more posts. The `hasMorePosts()` is then used to conditionally render a loading indicator.
+
+To start fetching subsequent posts the Intersection Observer API will be used to observe the loading indicator, and when it enters the viewport more posts will be fetched.
+
+Add the following import to the *components/PostList.js* file:
+
+```js
+import { useRef, useEffect } from "react";
+```
+
+Call the `useRef()` hook by adding the following line of code after the `posts` state:
+
+```js
+const observerElem = useRef(null);
+```
+
+To access the loading indicator element using the ref object, modify the `<span>` tag that display’s the loading indicator to the following:
+
+```js
+<span ref={observerElem} className="text-center block py-10">
+```
+
+Finally, to start fetching new posts when the loading indicator enters the view post, add the following line code after the `observerElem` ref object:
+
+```js
+useEffect(() => {
+  if (typeof window === "undefined" || !window.IntersectionObserver) return;
+  const element = observerElem.current;
+  const option = { threshold: 0 };
+
+  const observer = new IntersectionObserver(handleObserver, option);
+  if (element) observer.observe(element);
+  return () => observer.unobserve(element);
+}, [currentPage]);
+
+const fetchMorePosts = async () => {
+  const nextPage = currentPage + 1;
+  const fetchedPosts = await getPosts(nextPage, limit);
+  setPosts((prevPosts) => [...prevPosts, ...fetchedPosts]);
+  setCurrentPage(nextPage);
+};
+
+const handleObserver = (entries) => {
+  const [target] = entries;
+  if (target.isIntersecting && hasMorePosts()) {
+    fetchMorePosts();
+  }
+};
+```
+
+Here in the `useEffect` hook the Intersection Observer API is used to observe the `<span>` element of the loading indicator. At initial mount and when the `<span>` enters and exists the viewport, the `handleObserver()` callback function is called which will then call `fetchMorePosts()` to fetch new posts and update the state whenever there are more posts and the `<span>` element enters the viewport.
+
+With this, the infinite scrolling should now be working:
+
+![Demonstrates the infinte scrolling functionality. When the page is scrolled down to the bottom, the loading indicator is displayed, and new posts are displayed afterwards. Finally, when the bottom of the page is reached again the text No more posts is displayed.](infinite-scrolling-directus.gif)
+
+## When to choose between Pagination and Infinite scrolling
+
+Before implementing infinite scrolling and pagination several important factors need to be considered. Below are the major ones.
+
+| Factors                          | Pagination                                                                                                                                                                                                                                                                 | Infinite scrolling                                                                                                                                                                                                                                                                                                                                        |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Search engine optimization (SEO) | Pagination is great for SEO, particularly server-side pagination where the content is fetched and rendered on the server before being sent to the client. This is because search engines are not great at JavaScript-rendered sites.                                       | Infinite scrolling is not good for SEO mainly because search engine crawlers can not yet perfectly emulate manual user behaviors like scrolling which is essential for infinite scrolling, so commonly, most of the site content won’t be accessed which affects the site ranking.                                                                        |
+| User engagement                  | Pagination is better for enabling users to quickly find specific content. But for freeform exploration, it is harder to keep the user's attention due to less content accessibility since the user needs to click and wait for the page to load before seeing new content. | Infinite scrolling is known to boost user engagement by enabling them to explore content without worrying about clicking on a button or link.                                                                                                                                                                                                             |
+| Navigation                       | Pagination enables users to quickly locate content, bookmark pages to be viewed later, and share page links with others, giving users more control of their browsing experience.                                                                                           | Locating content harder with infinite scrolling, Bookmarking a page or sharing it’s link is of little to no use because users will be taken back to the top of the page whenever the site is refreshed.                                                                                                                                                   |
+| Site footer                      | With pagination the footer can be placed right were it ought to be — at the bottom of the page.                                                                                                                                                                            | With infinite scrolling not appropriate to place a footer at the bottom of the page since it can be overwhelming for users to scroll to the very bottom of the page. <br>Some alternatives to this included placing the footer links in the sidebar or adding a load more button for users to click to fetch more content rather than fetching at scroll. |
+
+## Summary
+
+With this tutorial, you’ve learned how to implement pagination and infinite scrolling with Directus in Nextjs, and also about important factors that will help you make the choice between infinite scrolling and pagination for your app.
+The Directus JavasScript SDK was used for sending requests in this tutorial, but if you prefer using REST API or GraphQL, you can check out the following pages in the Directus API docs to duplicate the sent request:
+
+- [Accessing Items](https://docs.directus.io/reference/items.html)
+- [Global Query Parameters](https://docs.directus.io/reference/query.html)
