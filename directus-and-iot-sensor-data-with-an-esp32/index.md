@@ -6,9 +6,7 @@ author:
   avatar_file_name: "osiheadshot.png"
 ---
 
-# Directus and IoT: Sensor Data with an ESP32
-
-IoT systems will not be complete without logging their collected data to remote cloud storage. In this tutorial, you will build a simple temperature logging system using a DHT22 as a temperature and humidity module, and an ESP32 as the microcontroller board with onboard WiFi for connecting to a Directus project.
+Internet of Things (IoT) systems often need to log their collected data. In this tutorial, you will build a temperature logging system using a DHT22 as a temperature and humidity module, and an ESP32 microcontroller board with onboard WiFi for connecting to a Directus project.
 
 ## Before You Start
 
