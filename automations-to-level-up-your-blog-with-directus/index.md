@@ -1,14 +1,13 @@
-# 
 ---
 title: '5 Automations to Level-Up Your Blog with Directus'
 description: 'This article shows five automation strategies that will level up you blog running on Directus'
 author:
   name: 'Muhammed Ali'
-  avatar_file_name: 'avatar'
+  avatar_file_name: 'avatar.jpg'
 ---
 
 ## Introduction
-Maintaining a blog requires more than just compelling content; some aspect of efficiency and automation may be required. 
+Maintaining a blog requires more than just compelling content; some aspects of efficiency and automation may be required. 
 This article shows five automation strategies that will level up you blog running on Directus, allowing you to focus more on content creation and less on the intricacies of blog management.
 
 ## Before You Start
