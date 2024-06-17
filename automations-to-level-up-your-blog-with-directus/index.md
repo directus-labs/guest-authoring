@@ -33,7 +33,7 @@ For `comment`:
 - `content`: many to one, content
 - `comment`: Textarea, string
 
-## 1. Automated Translation of New Posts
+## Automate the Translation of Your Content
 ![translation of new post](ai-translation.png)
 
 Automated translations ensure that every new post is available in multiple languages simultaneously, helping you be more accessible to a global audience.
