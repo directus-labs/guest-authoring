@@ -270,8 +270,7 @@ Update your `AndroidManifest.xml` file in `app/src/main/` directory and grant yo
         </activity>
     </application>
     
-    <!-- Added this line to request internet access -->
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" /> // [!code ++]
 </manifest>
 ```
 
