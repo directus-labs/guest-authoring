@@ -110,8 +110,6 @@ You can test this out by creating new content. After a few seconds, the French v
 
 As a blog manager, you frequently juggle multiple tasks. By setting up an automated publishing workflow in Directus, once a post is reviewed and approved, it gets published immediately. This automation eliminates the back-and-forth of manual scheduling and reduces the risk of human error.
 
-Since we are not working with the frontend, we can simulate publishing by returning the title and details as output.
-
 Create a flow to trigger upon updating a post and select the content collection.
 
 Add a **Read Data** operation with the key of `read_translation` attached to the **Content Translations** collection with the ID <span v-pre>`{{$trigger.keys[0]}}`</span>. This will return the payload that includes the `title` and `detail` of the content that was just updated. If you examine the payload, you'll notice that the `approved` value is not included, as it is saved in the `content` collection. 
