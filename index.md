@@ -110,9 +110,10 @@ data class GlobalResponse(
 The above code defines data classes for different Directus collections and their respective response models.
 
 ## Using Global Metadata and Settings
-In your Directus Data Studio, click on Settings -> Data Model and create a new collection named `global`. Select 'Treat as a single object' under the Singleton option because this will only have a single entry containing the app's global metadata. Create two text input fields - one with the key `title` and one with `description`.
 
-Dirctus collections are not accessible to the public by default, click on Settings -> Access Control -> Public and give Read access to the Global collection.
+In your Directus Data Studio, click on **Settings -> Data Model** and create a new collection named `global`. Select 'Treat as a single object' under the Singleton option because this will only have a single entry containing the app's global metadata. Create two text input fields - one with the key `title` and one with `description`.
+
+Dirctus collections are not accessible to the public by default, click on **Settings -> Access Control -> Public** and give **Read** access to the `global` collection.
 
 Then click on the content module and select the global collection. A collection would normally display a list of items, but since this is a singleton, it will launch directly into the one-item form. Enter information in the title and description field and hit save.
 
