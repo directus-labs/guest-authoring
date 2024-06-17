@@ -175,14 +175,15 @@ Now add a **Read Data** operation attached to the Content Translations collectio
 
 ![email alert](email-alert.png)
 
-## 4. Automatic SEO Summary Writing
+## Automatically Write SEO-Optimized Summaries
 
 ![AI SEO summary](seo-summary.png)
-Writing SEO summaries can be time-consuming and repetitive. By leveraging the AI Writer marketplace extension, you can automatically generate keyword-rich summaries, improving your blog's SEO performance and freeing up time for more creative tasks.
 
-### How to Implement
-Install the AI Writer marketplace extension in Directus.
-Create a flow to trigger upon creating a post and select the content collection. The trigger will only return the `key` of the content, but the whole post is needed to send to OpenAI. Create a **Read Data** operation and give it full access permissions. On the “Content Translations” collection, access the following query:
+Writing SEO summaries can be time-consuming and repetitive. By using the AI Writer extension, available in the Directus Marketplace, you can automatically generate keyword-rich summaries, improving your blog's SEO performance and freeing up time for more creative tasks.
+
+Once you've installed the AI Writer extension, create a flow to trigger upon creating a post and select the content collection. 
+
+The trigger will only return the `key` of the content, but the whole post is needed to send to OpenAI. Create a **Read Data** operation and give it full access permissions. On the “Content Translations” collection, access the following query:
 
 ```json
 {
@@ -203,9 +204,9 @@ Create a flow to trigger upon creating a post and select the content collection.
 }
 ```
 
-Now you can pass the content to OpenAI by creating an AI writer operation, input your OpenAI key, select the **GPT model** you want to use and **Prompt** as Create SEO Description. The Text will be gotten at `{{$last[0].detail}}`.
-We can now update the content collection with the newly created SEO description using Update Data operation. The ID tag will be `{{$trigger.key}}`.
-Now the creation of content will result in the generation of the SEO description.
+Pass the content to OpenAI by creating an **AI writer** operation. Input your OpenAI key, select the **GPT model** you want to use and **Prompt** as Create SEO Description. The Text will be gotten at <span v-pre>`{{$last[0].detail}}`</span>.
+
+Update the content collection with the newly created SEO description using **Update Data** operation - the ID tag will be <span v-pre>`{{$trigger.key}}`</span>. You can now save the summary back to the item.
 
 
 ## Connect to the World of Zapier Integrations
