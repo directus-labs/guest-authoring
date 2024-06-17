@@ -579,7 +579,7 @@ Refresh your application to see the updates.
 ![Display the blog listing page](./second_screenshot.png)
 
 ## Create Blog Post Listing
-Each blog post links to a screen that does not yet exist. Right-click the ui package and create a new Kotlin file named `BlogDetailScreen`:
+Each blog post links to a screen that does not yet exist. Right-click the `ui` package and create a new Kotlin file named `BlogDetailScreen`:
 
 ```
 package com.example.directusapp.ui
