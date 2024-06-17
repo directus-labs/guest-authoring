@@ -15,8 +15,9 @@ You will need:
 - [Android Studio](https://developer.android.com/studio) installed on your computer
 
 
-## Initialize project
-Create a new Directus Cloud project - any tier and configuration will work for this tutorial. Open your Android Studio and create a new project by clicking `Start a new Android Studio project` from the welcome screen, or click on File -> New -> New Project if you created a project on Android Studio before. Select `Empty Activity`, name your project `DirectusApp` and, click the `Finish` button.
+## Initialize a Project
+
+Open your Android Studio and create a new project by clicking **Start a new Android Studio project** from the welcome screen, or click on **File -> New -> New Project** if you created a project on Android Studio before. Select `Empty Activity`, name your project `DirectusApp` and, click the **Finish** button.
 
 Open your `build.gradule` module file and add the following dependencies in the dependencies section:
 
@@ -30,7 +31,7 @@ dependencies {
 )
 ```
 
-Once the changes are made, a modal will appear suggesting you sync the project. Click on the Sync button to install the dependencies.
+Once the changes are made, a modal will appear suggesting you sync the project. Click on the **Sync** button to install the dependencies.
 
 ## Create a helper library for the SDK
 Right-click on the `com.example.directusapp` directory and select New -> Package to create a network package. In your network package, create a new Kotlin file named `DirectusHelper` and define the Directus API service:
