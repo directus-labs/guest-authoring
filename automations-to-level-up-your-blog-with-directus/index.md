@@ -104,27 +104,33 @@ You can test this out by creating new content. After a few seconds, the French v
 
 ![AI translated content](translated-content.png)
 
-## 2. Automate Content Publishing Workflow on Approval
+## Automate Content Publishing Once Approved
+
 ![Flow to publish article](publish-article.png)
 
-As a blog manager, you're often juggling multiple tasks. By setting up an automated publishing workflow in Directus, once a post is reviewed and approved by a superior, it gets published immediately. This automation eliminates the back-and-forth of manual scheduling and reduces the risk of human error.
-Since we are not working with frontend here, we can simulate publishing by returning the title and detail as output.
+As a blog manager, you frequently juggle multiple tasks. By setting up an automated publishing workflow in Directus, once a post is reviewed and approved, it gets published immediately. This automation eliminates the back-and-forth of manual scheduling and reduces the risk of human error.
 
-### How to Implement
+Since we are not working with the frontend, we can simulate publishing by returning the title and details as output.
+
 Create a flow to trigger upon updating a post and select the content collection. 
-Now add a **Read Data** operation attached to the Content Translations collection with the ID `{{$trigger.keys[0]}}`.  This will return the payload that includes the `title` and `detail` of the content that was just updated. If you look at the payload, this data does not come with the value for `approved`, this is because it is saved in the `content` collection. So we need to use the **Read Data** operation again, but this time we will attach to the `content` collection with the ID `{{$trigger.keys[0]}}`.
-Now use the Run Script operation to run the following JavaScript code:
+
+Add a **Read Data** operation with the key of `read_translation` attached to the **Content Translations** collection with the ID <span v-pre>`{{$trigger.keys[0]}}`</span>. This will return the payload that includes the `title` and `detail` of the content that was just updated. If you examine the payload, you'll notice that the `approved` value is not included, as it is saved in the `content` collection. 
+
+To retrieve this information, you'll need to use the **Read Data** operation again, this time attached to the `content` collection with the ID <span v-pre>`{{$trigger.keys[0]}}`</span>.
+
+Now use the **Run Script** operation to run the following JavaScript code:
+
 ```javascript
 module.exports = async function(data) {
     // Initialize an empty result object
     let result = {};
 
     // Check if "approved" is "yes"
-    if (data.item_read_rif6q.approved === "yes") {
+    if (data.read_translation.approved === "yes") {
         // Publish the article title and detail
         result = {
-            title: data.item_read_6grfu.title,
-            detail: data.item_read_6grfu.detail
+            title: data.read_translation.title,
+            detail: data.read_translation.detail
         };
     } else {
         result = {
@@ -136,8 +142,8 @@ module.exports = async function(data) {
 };
 ```
 
-In the code above, `item_read_rif6q` and `item_read_6grfu` are the keys for the Read Data operations, so yours might be different since they are automatically generated.
 This is what your output will look like this when a content is approved:
+
 ```json
 {
     "title": "Reasons why automating delivery could be a bad idea ",
