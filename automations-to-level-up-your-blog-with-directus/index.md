@@ -145,25 +145,34 @@ This is what your output will look like this when a content is approved:
 }
 ```
 ## 3. Configuring Alerts for New Comments
+
 ![comment alert](comment-alert.png)
 
 As your blog grows, monitoring comments manually becomes impractical. Automated alerts ensure that you and your team are notified of new comments instantly, enabling prompt responses and community engagement.
-In this section, you will learn how to set up a flow to send comments email to a specified email.  
 
-:::info Box title
+In this section, you will learn how to set up an automation to send comments email to a specified email.  
+
+This automation assumed that comments are either collected directly in your Directus project, or that they are synced/pushed via an integration.
+
+:::info Email Setup
 
 If you are self-hosting a Directus instance, you will need to set up the [email service configuration](https://docs.directus.io/self-hosted/config-options.html#email).
 
 :::
-### How to Implement
+
+
 Create a flow to trigger email upon creating a comment and select the `comment` collection. 
-Now add a **Read Data** operation attached to the Content Translations collection with the ID `{{$trigger.payload.content}}`.  This will return the comment that was just created. Now attach the **Send Email** operation. In the **To** section input the email addresses you want the notification to go to.
+
+Now add a **Read Data** operation attached to the Content Translations collection with the ID <span v-pre>{{$trigger.payload.content}}`</span>. This will return the comment that was just created. Now attach the **Send Email** operation. In the **To** section input the email addresses you want the notification to go to.
+
+```
 **Subject**:  Comment for on article "{{get_article_comment.title}}"
 **Type**: Markdown
 **Body**: 
-
     Hello, there is a comment for the article "{{get_article_comment.title}}"
     > {{$trigger.payload.comment}}
+```
+
 ![email alert](email-alert.png)
 
 ## 4. Automatic SEO Summary Writing
