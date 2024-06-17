@@ -42,11 +42,12 @@ Before continuing, add a `translation` field in your `content` collection with a
 
 We will automate translation from English to French, then update the article that was just created or updated. While we will translate only the `detail` section of the blog, but you can also use this method to create a translations for more fields.
 
-### How to Implement
-First, install the AI translator marketplace extension in Directus.
-Go to the **Flows** tab and create a new flow, give it any name you like. 
-Create a flow to trigger translation upon creating or updating a post and select the content collection. 
-The trigger will only return the `key` of the content, but the whole post is needed for DeepL. Create a **Read Data** operation and give it full access permissions. On the “Content Translations” collection, access the following query:
+
+This automation relies on the AI Translator extension, which you can download from the Directus Marketplace and is published by the Directus team.
+
+Create a new flow with an event trigger. The scope should be `items.create` and `items.update` on the `content` collection. 
+
+The trigger will only return the `key` of the content, but we require the `detail` field. Create a **Read Data** operation and give it full access permissions. On the "Content Translations" collection, access the following query:
 
 ```json
 {
@@ -85,10 +86,9 @@ The trigger will only return the `key` of the content, but the whole post is nee
 }
 ```
 
-If a content is updated, the key is found at `{{$trigger.keys[0]}}` and if a content is created, the key is found at `{{$trigger.key}}`
-So basically the query is saying that the operation should filter for when `content_id` in Content Translations is equal to (`_eq`) `{{$trigger.keys[0]}}` and then grab the en-US version. Or filter for when `content_id` in Content Translations is equal to (`_eq`) `{{$trigger.key}}` and then grab the en-US version.
-The output will be the article you just created or updated.
-Now add the **AI Translation** operation with full access permission and put in your DeepL API key and select the plan. Put `{{$last[0].detail}}` in the Text form and then select the language.
+The query filters for records in Content Translations where the `content_id` matches <span v-pre>`{{$trigger.keys[0]}}`</span> (when an updated item) or <span v-pre>`{{$trigger.key}}`</span> (when a newly-created item), and retrieves the `en-US` version. The **Read Data** returns the full article that was just created or updated.
+
+Now add the **AI Translation** operation with full access permission. Enter your DeepL API key and select the appropriate plan. In the **Text** input, insert <span v-pre>`{{$last[0].detail}}`</span> and then choose the desired language.
 
 Now we can save the French output by adding the **Create Data** operation on the **Content Translations** collection with full access permission. Use the payload:
 
@@ -99,12 +99,6 @@ Now we can save the French output by adding the **Create Data** operation on the
     "detail": "{{$last}}"
 }
 ```
-
-:::info Box title
-
-Before attaching new operations, it is best practice to check what the payload output looks like.
-
-:::
 
 You can test this out by creating new content. After a few seconds, the French version will be populated. You can do the same for the title.
 
