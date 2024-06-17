@@ -34,7 +34,7 @@ For `comment`:
 - `comment`: Textarea, string
 
 ## Automate the Translation of Your Content
-![translation of new post](ai-translation.png)
+![Flow for translation of content with AI](ai-translation.png)
 
 Automated translations ensure that every new post is available in multiple languages simultaneously, helping you be more accessible to a global audience.
 
@@ -112,44 +112,26 @@ As a blog manager, you frequently juggle multiple tasks. By setting up an automa
 
 Since we are not working with the frontend, we can simulate publishing by returning the title and details as output.
 
-Create a flow to trigger upon updating a post and select the content collection. 
+Create a flow to trigger upon updating a post and select the content collection.
 
 Add a **Read Data** operation with the key of `read_translation` attached to the **Content Translations** collection with the ID <span v-pre>`{{$trigger.keys[0]}}`</span>. This will return the payload that includes the `title` and `detail` of the content that was just updated. If you examine the payload, you'll notice that the `approved` value is not included, as it is saved in the `content` collection. 
 
 To retrieve this information, you'll need to use the **Read Data** operation again, this time attached to the `content` collection with the ID <span v-pre>`{{$trigger.keys[0]}}`</span>.
 
-Now use the **Run Script** operation to run the following JavaScript code:
-
-```javascript
-module.exports = async function(data) {
-    // Initialize an empty result object
-    let result = {};
-
-    // Check if "approved" is "yes"
-    if (data.read_translation.approved === "yes") {
-        // Publish the article title and detail
-        result = {
-            title: data.read_translation.title,
-            detail: data.read_translation.detail
-        };
-    } else {
-        result = {
-            status: "Not Approved for Publishing"
-        };
-    }
-    
-    return result;
-};
-```
-
-This is what your output will look like this when a content is approved:
-
+Now use the **Condiion** operation with the following Condition rule:
 ```json
 {
-    "title": "Reasons why automating delivery could be a bad idea ",
-    "detail": "Lack of Human Oversight:\nAutomated systems can lack the nuanced judgment that humans provide. Critical decisions might require human intervention to account for context, unexpected situations, or complex problem-solving...."
+    "$trigger": {
+        "payload": {
+            "approved": {
+                "_eq": "yes"
+            }
+        }
+    }
 }
 ```
+This is saying that the flow should go to the next operation if "approved" is equal to "yes". If the condition is met, you can follow this existing docs post on [using Netlify/Vercel build triggers](https://docs.directus.io/guides/headless-cms/trigger-static-builds/netlify.html#configure-netlify-build-hook).
+
 ## 3. Configuring Alerts for New Comments
 
 ![comment alert](comment-alert.png)
