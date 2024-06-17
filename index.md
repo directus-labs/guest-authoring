@@ -6,7 +6,7 @@ author:
   avatar_file_name: "./ekekenta-clinton.png"
 ---
 
-Kotlin is a concise, fun, and multiplatform programming language approved by Google for a programming language for building mobile applications. In this tutorial, you will learn how to set up an Android project with Kotlin to interact with Directus using best practices. We'll cover initializing the project, creating a helper library for the Directus SDK, setting up global configurations, and creating dynamic pages, including a blog listing and a blog single view.
+In this tutorial, you will learn how to set up an Android project with Kotlin and Directus. We'll cover initializing the project, creating a helper library for the Directus SDK, setting up global configurations, and creating dynamic pages, including a blog listing and a blog single view.
 
 ## Before You Start
 You will need:
