@@ -36,9 +36,11 @@ For `comment`:
 ## 1. Automated Translation of New Posts
 ![translation of new post](ai-translation.png)
 
-Expanding your blog's reach to non-English speaking audiences can be daunting. Automated translations ensure that every new post is available in multiple languages simultaneously, reaching a global audience requires content in multiple languages.
-In this section, you will learn how to automate translation from English to French, then updating the article that was just created or updated with the new data 
-Here we will translate the detail section of the blog, but you can also use this method to create a translation for the title in another flow.
+Automated translations ensure that every new post is available in multiple languages simultaneously, helping you be more accessible to a global audience.
+
+Before continuing, add a `translation` field in your `content` collection with a `title` and `detail` field, if you haven't already.
+
+We will automate translation from English to French, then update the article that was just created or updated. While we will translate only the `detail` section of the blog, but you can also use this method to create a translations for more fields.
 
 ### How to Implement
 First, install the AI translator marketplace extension in Directus.
