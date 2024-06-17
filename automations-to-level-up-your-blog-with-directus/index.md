@@ -6,25 +6,29 @@ author:
   avatar_file_name: 'avatar.jpg'
 ---
 
-## Introduction
-Maintaining a blog requires more than just compelling content; some aspects of efficiency and automation may be required. 
-This article shows five automation strategies that will level up you blog running on Directus, allowing you to focus more on content creation and less on the intricacies of blog management.
+
+Maintaining a blog requires more than just compelling content; there's a lot of other manual work or processes that may need to be set up. 
+
+This article shows five automation ideas that will level up your blog powered by Directus, allowing you to focus more on content creation and less on the intricacies of blog management.
 
 ## Before You Start
 
 You will need:
 
-- [DeepL](https://www.deepl.com/) API key for Language translation.
-- [OpenAI](https://openai.com/) key for SEO summary.
+- A Directus project - [follow our quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one.
+- A [DeepL](https://www.deepl.com/) API key for translation.
+- An [OpenAI](https://openai.com/) key for generating search engine optimized summaries of your content.
 
 In your Directus project, create a new collection called `content` and `comment` with the following fields:
+
 For `content`:
 
-- `SEO_summary`: Textarea, string
+- `seo_summary`: Textarea, string
 - `comment`: one to many, comment
 - `approved`: Radio Buttons, Choices: yes, no, Default Value: no
 
-Do not add the fields to be translated like `title` or `detail` yet, because those will be stored in a separate collection. Follow this [guide](https://docs.directus.io/guides/headless-cms/content-translations.html) on how to set up your collection for translation.
+Do not add the fields to be translated like `title` or `detail` yet, because those will be stored in a separate collection. Follow [this translation guide](https://docs.directus.io/guides/headless-cms/content-translations) to set up your multilingual project.
+
 For `comment`:
 - `content`: many to one, content
 - `comment`: Textarea, string
