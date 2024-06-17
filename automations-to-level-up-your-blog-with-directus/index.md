@@ -223,5 +223,5 @@ Create a **Webhook/Request URL** operation with the POST method and paste in you
 Examples of what you can do with Zapier for social media automation includes posting to Facebook, Instagram, or LinkedIn. 
 
 ## Conclusion
-By leveraging the capabilities of Directus, from automated translations to content promotions, you have the bility to operate your blog effectively. These five automation strategies not only streamline your workflow but also ensure that you cut down on the actions you need to take between the writing and promotion process.
+By leveraging the capabilities of Directus, from automated translations to content posting, you have the ability to operate your blog effectively. These five automation strategies not only streamline your workflow but also ensure that you cut down on the actions you need to take between the writing and promotion process.
 
