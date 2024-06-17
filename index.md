@@ -33,10 +33,11 @@ dependencies {
 
 Once the changes are made, a modal will appear suggesting you sync the project. Click on the **Sync** button to install the dependencies.
 
-## Create a helper library for the SDK
-Right-click on the `com.example.directusapp` directory and select New -> Package to create a network package. In your network package, create a new Kotlin file named `DirectusHelper` and define the Directus API service:
+## Create a Helper Library for the Directus SDK
 
-```
+Right-click on the `com.example.directusapp` directory and select **New -> Package** to create a network package. In your network package, create a new Kotlin file named `DirectusHelper` and define the Directus API service:
+
+```kotlin
 package com.example.directusapp.network
 
 import retrofit2.Retrofit
@@ -57,11 +58,11 @@ interface DirectusApiService {
 }
 ```
 
-The above code defines a `DirectusAPIService` that includes a `create()` function to set up a Retrofit instance. This function creates a `Retrofit.Builder` object, sets the base URL using `baseUrl(BASE_URL)`, adds the GsonConverterFactory for handling JSON data conversion, builds the Retrofit instance with `build()`, and creates an implementation of the DirectusApiService interface using `create(DirectusApiService::class.java)`.
+The above code defines a `DirectusAPIService` that includes a `create()` function to set up a Retrofit instance. This function creates a `Retrofit.Builder` object, sets the base URL using `baseUrl(BASE_URL)`, adds the `GsonConverterFactory` for handling JSON data conversion, builds the Retrofit instance with `build()`, and creates an implementation of the `DirectusApiService` interface using `create(DirectusApiService::class.java)`.
 
-Similarly to the network package, crate a model and create a new Kotlin file named `Models` in the model package and define the app models:
+Similarly to the network package, create a model and create a new Kotlin file named `Models` in the model package and define the app models:
 
-```
+```kotlin
 package com.example.directusapp.model
 
 data class Author(
