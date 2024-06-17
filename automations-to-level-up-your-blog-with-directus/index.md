@@ -1,6 +1,6 @@
 ---
 title: '5 Automations to Level-Up Your Blog with Directus'
-description: 'This article shows five automation strategies that will level up you blog running on Directus'
+description: 'Learn how to automate translation, content publishing, alerts, summary writing, and hooking up your blog to the world of integrations provided by Zapier.'
 author:
   name: 'Muhammed Ali'
   avatar_file_name: 'avatar.jpg'
