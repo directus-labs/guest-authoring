@@ -106,7 +106,7 @@ You can test this out by creating new content. After a few seconds, the French v
 
 ## Automate Content Publishing Once Approved
 
-![Flow to publish article](publish-article.png)
+![Flow to publish article](publish-flow.png)
 
 As a blog manager, you frequently juggle multiple tasks. By setting up an automated publishing workflow in Directus, once a post is reviewed and approved, it gets published immediately. This automation eliminates the back-and-forth of manual scheduling and reduces the risk of human error.
 
