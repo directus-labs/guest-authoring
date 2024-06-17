@@ -208,16 +208,19 @@ We can now update the content collection with the newly created SEO description 
 Now the creation of content will result in the generation of the SEO description.
 
 
-## 5. Automate Content Promotion on Socials
+## Connect to the World of Zapier Integrations
+
 ![social post](social-post.png)
 
-You will need to post your article on social media platforms for promotion. In this section, you will learn how to send the post from SEO summary to Zapier where you can automate publishing to the platform of your choice.
-We will use [Zap’s webhook URL](https://help.zapier.com/hc/en-us/articles/8496288690317-Trigger-Zaps-from-webhooks) so get one from Zapier.
+Zapier is a wonderful automation tool with thousands of pre-built integrations. While Directus Automate is powerful, it's useful to recognize when integrating with other tools ends up being more efficient. 
 
-### How to Implement
-Create a flow to manually trigger on the Item page in the content collection. Now, create a **Read Data** operation, on the “Content” collection, use the ID at `{{$trigger.body.keys[0]}}`.
-Finally, create a Webhook/Request URL operation with the POST method and paste in your Zapier hook URL. Request Body will be `{{item_read_cx40l.SEO_summary}}`
-Replace `item_read_cx40l` with the keys of the Read Data operations.
+Create a Zap with a [Webhook Trigger URL](https://help.zapier.com/hc/en-us/articles/8496288690317-Trigger-Zaps-from-webhooks). Once you have this, data can be sent to Zapier from Directus.
+
+Create a flow to manually trigger on the Item page in the content collection. Now, create a **Read Data** operation, on the “Content” collection, use the ID at <span v-pre>`{{$trigger.body.keys[0]}}`</span>.
+
+Create a **Webhook/Request URL** operation with the POST method and paste in your Zapier hook URL. You can add any data required by your Zap in the body. 
+
+Examples of what you can do with Zapier for social media automation includes posting to Facebook, Instagram, or LinkedIn. 
 
 ## Conclusion
 By leveraging the capabilities of Directus, from automated translations to content promotions, you have the bility to operate your blog effectively. These five automation strategies not only streamline your workflow but also ensure that you cut down on the actions you need to take between the writing and promotion process.
