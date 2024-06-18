@@ -68,7 +68,7 @@ interface DirectusApiService {
 }
 ```
 
-The above code defines a `DirectusAPIService` that includes a `create()` function to set up a Retrofit instance. This function creates a `Retrofit.Builder` object, sets the base URL using `baseUrl(BASE_URL)`, adds the `GsonConverterFactory` for handling JSON data conversion, builds the Retrofit instance with `build()`, and creates an implementation of the `DirectusApiService` interface using `create(DirectusApiService::class.java)`.
+The above code defines a `DirectusAPIService` that includes a `create()` function to set up a Retrofit instance. This function creates a `Retrofit.Builder` object, imports the `Constants` object and sets the base URL using `baseUrl(Constants.BASE_URL)`, adds the `GsonConverterFactory` for handling JSON data conversion, builds the Retrofit instance with `build()`, and creates an implementation of the `DirectusApiService` interface using `create(DirectusApiService::class.java)`.
 
 Similarly to the network package, create a model and create a new Kotlin file named `Models` in the model package and define the app models:
 
