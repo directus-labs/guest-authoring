@@ -1,6 +1,8 @@
 ---
-title: "Build a Directus Powered WebNote Keeper Chrome Extension"
-description: "The idea is to create a Chrome extension called "WebNote Keeper" that allows users to save notes related to webpages they visit. The extension will leverage Directus as the backend CMS to store and manage these notes. When a user clicks the extension while browsing a webpage, it will automatically capture the URL of the current webpage and prompt the user to add a note. Users will be able to view, edit, and delete their notes directly from the extension's interface. The extension will integrate with Directus API for CRUD operations on notes. This project combines the use of Directus as a headless CMS and Chrome extension development skills to create a practical tool for users to organize their web research and thoughts."
+title: "Building a Directus Powered WebNote Keeper Chrome Extension"
+description: "
+Learn how to build WebNote Keeper: A Chrome extension for saving webpage notes using Directus CMS. Capture URLs, add, edit, and delete notes easily.
+
 author:
     name: "jay bharadia"
     avatar_file_name: "my-avatar.jpg"
@@ -8,17 +10,19 @@ author:
 
 ## Introduction
 
-This article will guide you through how to make a chrome extension name WebNote Keeper using `vite` and `Directus`. The extension will leverage Directus as the backend CMS to store and manage these notes.
+This article will guide you through building a Chrome extension using Vite and Directus. The extension will leverage Directus as the backend to store and manage data.
 
-When a user clicks the extension while browsing a webpage, it will automatically capture the URL of the current webpage and prompt the user to add a `note`. Users will be able to `view`, `edit`, and `delete` their notes directly from the extension's interface. The extension will integrate with Directus API for CRUD operations on notes.
+When a user clicks the extension while browsing a webpage, it will automatically capture the URL of the current webpage and prompt the user to add a `note`. Users will be able to `view`, `edit`, and `delete` their notes directly from the extension.
 
-## Before You Start
+Before you start, you will need a Directus project. Follow the [Quickstart guide](https://docs.directus.io/getting-started/quickstart) to create one if needed.
 
--   A Directus project. Follow the [Quickstart guide](https://docs.directus.io/getting-started/quickstart) to create one.
+This tutorial will not cover styling the extension, but light styling has been applied to the screenshots shown.
 
-## Setup Directus Schema
+## Set Up Your Directus Project
 
 ### Create Notes Collection
+
+Create a new collection called `notes` with all optional fields enabled. Create the following additional fields:
 
 -   `website` - new field with type `string`
 -   `note` - new field with type `string`
@@ -41,45 +45,34 @@ We will create `customer` role for different users.
 
 ### Setup Permission
 
--   After creating this, we need to provide `notes` collection `read`, `edit`, `add` and `delete` permission
--   Go to `Access Control` -> Select `Customer` Role
--   Give access to `notes` collection
+Create a `customer` role for new users. In the access control settings for the role, provide
+
+-   Go to `Access Control` -> Select `Customer` Role.
+-   Set a custom permission for all operations in the `notes` collection: `user_created equals $CURRENT_USER`.
 
 ![Customer Role Permissions](./images/customer-role-permissions.png)
 
-Apply Filter to `notes` collection to provide data for loggedin users individually.
-
--   Click on `eye` column -> Select `Use Custom`
-
 ![Filter Notes](./images/filter-notes.png)
-
-### Directus setup is completed. Lets move to project.
 
 ---
 
-## Setup Project
+## Initialize Extension
 
-### Vite + Vue project
+Open your terminal and run the following commands to create a new project, install dependencies, and run the project:
 
 -   Open new terminal, execute below command to create new vite + vue project
 
-```
+```bash
 npm create vite@latest directus-webnote-keeper -- --template vue
-
 cd directus-webnote-keeper
-```
-
--   Install Dependencies and run project
-
-```
 npm install
-
+npm install @directus/sdk js-cookie vue-router
 npm run dev
 ```
 
 ## Setup Extension
 
-Add `manifest.json` in root directory of the project
+Add a `manifest.json` file in root directory of the project:
 
 ```json
 {
@@ -102,37 +95,20 @@ Add `manifest.json` in root directory of the project
 }
 ```
 
-### About permissions
+You must tell browser about the functionality and permissions required by this extension. You can read more about declaring permissions in the [Google Extensions Docs](https://developer.chrome.com/docs/extensions/develop/concepts/declare-permissions).
 
-We need to tell browser about the functionality like storage required for extension to work properly. [Learn more](https://developer.chrome.com/docs/extensions/develop/concepts/declare-permissions)
+-   `activeTab`: We need to read the website from current active tab.
+-   `storage`: Store the authentication token as a cookie.
 
-**activeTab** : We need to read the website from current active tab
-
-**storage** : for authentication token, we are using cookies for storage
-
-![Directory Structure](./images/directory-structure.png)
-
-## Setup Directus SDK, Cookies, Vue Router
-
-```
-npm install @directus/sdk js-cookie vue-router
-```
-
-**js-cookie** : `js-cookie` package will help us to deal with cookies like save cookie or get cookie and remove cookie. [Learn more](https://www.npmjs.com/package/js-cookie)
-
-**vue-router** : `vue-router` will load routes like home page, login, signup , edit pages. [Learn more](https://router.vuejs.org/)
-
-## Create Directus plugin
+### Create Directus SDK Plugin
 
 Create new file `plugins/directus.js`
 
 ```js
-// plugins/directus.js
-
 import { createDirectus, rest, authentication } from "@directus/sdk";
 
 import Cookies from "js-cookie";
-const directus = createDirectus("https://directus-supabase.onrender.com")
+const directus = createDirectus("your-project-url")
     .with(
         authentication("cookie", {
             autoRefresh: true,
@@ -154,19 +130,15 @@ const directus = createDirectus("https://directus-supabase.onrender.com")
 export default directus;
 ```
 
-Replace `https://directus-supabase.onrender.com` with your directus url.
+Replace `your-project-url` with your Directus Project's URL.
 
-Import in `main.js`
+Open `main.js` and import the plugin:
 
 ```js
 import directus from "./plugins/directus.js";
 
 app.provide("directus", directus);
 ```
-
-So chrome extensions can store data in `cookies` or `local storage`. But for security, we will use cookies.
-
-We have used [custom storage](https://docs.directus.io/guides/sdk/authentication.html#configure-custom-storage) feature provided by directus to deal with cookies with different domain.
 
 ## Setup Routing
 
@@ -190,73 +162,36 @@ const router = createRouter({
 export default router;
 ```
 
-Basic router instance is ready for project. Include in `main.js`
-
-Import in `main.js`
+Include the router instance in `main.js`:
 
 ```js
-// src/main.js
-import router from "./plugins/router.js";
-app.use(router);
+import directus from "./plugins/directus.js";
+import router from "./plugins/router.js"; // [!code ++]
+app.provide("directus", directus);
+app.use(router); // [!code ++]
 ```
 
-## Setup CSS
+## Load Extension
 
-Create new file `src/style.css`
-
-```css
-body {
-    margin: 0;
-    display: flex;
-    place-items: center;
-    min-width: 320px;
-    min-height: 100vh;
-}
-```
-
-Import `css` in `main.js`
-
-```js
-import "./style.css";
-```
-
-## Load extension in browser
-
-Before moving further, lets build the extension and run demo.
-
--   Add build command in `package.json`
+Before moving further, build the extension and make sure it runs in your browser. Add build command in `package.json`:
 
 ```json
 "build-extension": "vite build && cp manifest.json dist/"
 ```
 
+And then run the build command from your terminal:
+
 ```
 npm run build-extension
 ```
 
--   Open Google Chrome
--   Go to `chrome://extensions`
--   Click on `Load Unpacked button` present at top left
--   select project directory/dist folder
-
-![Load unpacked extension](./images/load-unpacked.png)
-
-![Extension Preview](./images/extension-preview.png)
-
-## Setup Routes
-
--   Home page
-    contains list of notes added with url
-
--   login page
--   signup page
--   Create and edit note page
+Open Google Chrome, go to `chrome://extensions`, click on 'Load Unpacked button' button, and select your project's `dist` folder.
 
 ### Setup Signup
 
 Create new file `src/views/signup.vue`
 
-```html
+````html
 <template>
     <div>
         <form @submit.prevent="signup">
@@ -268,14 +203,10 @@ Create new file `src/views/signup.vue`
 
             <label>Password</label>
             <input type="password" v-model="password" required />
-            <button type="submit" style="margin-top: 16px">Signup</button>
+            <button type="submit">Signup</button>
             <p>
                 Already have account?
-                <span
-                    @click="$router.push({ name: 'login' })"
-                    style="text-decoration: underline; cursor: pointer"
-                    >Login</span
-                >
+                <span @click="$router.push({ name: 'login' })">Login</span>
             </p>
         </form>
     </div>
@@ -308,41 +239,12 @@ Create new file `src/views/signup.vue`
         },
     };
 </script>
-```
 
-Add css for button
-
-```css
-button {
-    border-radius: 8px;
-    border: 1px solid transparent;
-    padding: 0.6em 1.2em;
-    font-size: 1em;
-    font-weight: 500;
-    font-family: inherit;
-    background-color: #1a1a1a;
-    cursor: pointer;
-    transition: border-color 0.25s;
-}
-button:hover {
-    border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-    outline: 4px auto -webkit-focus-ring-color;
-}
-```
-
-Role: Its the `customer` role we created. To check, check the url in `https://directus-supabase.onrender.com/admin/settings/roles/1c005600-202d-429c-81bb-452a70aec7e1`
-
-### Load Signup route
-
--   Open `src/router.js`
--   Import `signup.vue`
-
-```js
-import SignupView from "../views/signup.vue";
-```
+Role: Its the `customer` role we created. To check, check the url in
+`https://directus-supabase.onrender.com/admin/settings/roles/1c005600-202d-429c-81bb-452a70aec7e1`
+### Load Signup route - Open `src/router.js` - Import `signup.vue` ```js import
+SignupView from "../views/signup.vue";
+````
 
 Add the route in `routes`
 
@@ -364,24 +266,17 @@ Create new file `src/views/login.vue`
 ```html
 <template>
     <div>
-        <div style="text-align: right">
-            <span
-                @click="$router.push({ name: 'signup' })"
-                style="text-decoration: underline; cursor: pointer"
-            >
-                Signup
-            </span>
+        <div>
+            <span @click="$router.push({ name: 'signup' })"> Signup </span>
         </div>
         <form @submit.prevent="login">
-            <label for="email" style="display: block">Email</label>
+            <label for="email">Email</label>
             <input type="email" id="email" required v-model="email" />
 
-            <label for="password" style="margin-top: 8px">Password</label>
+            <label for="password">Password</label>
             <input type="password" id="password" v-model="password" required />
 
-            <button type="submit" style="display: block; margin-top: 16px">
-                Login
-            </button>
+            <button type="submit">Login</button>
         </form>
     </div>
 </template>
@@ -413,14 +308,6 @@ Create new file `src/views/login.vue`
         },
     };
 </script>
-
-<style>
-    input,
-    label {
-        display: block;
-        width: 100%;
-    }
-</style>
 ```
 
 ### Add login route
@@ -445,23 +332,8 @@ import LoginView from "../views/login.vue";
 ```html
 <template>
     <div>
-        <div
-            style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            "
-        >
-            <p
-                @click="logout"
-                style="
-                    text-decoration: underline;
-                    cursor: pointer;
-                    text-align: right;
-                "
-            >
-                Logout
-            </p>
+        <div>
+            <p @click="logout">Logout</p>
 
             <button
                 @click="$router.push({ name: 'upsert', params: { id: '+' } })"
@@ -470,19 +342,8 @@ import LoginView from "../views/login.vue";
             </button>
         </div>
         <p v-if="loading">Loading...</p>
-        <div
-            v-else
-            style="background: #222; padding: 16px; border-radius: 24px"
-        >
-            <li
-                v-for="note in notes"
-                :key="`note-${note.id}`"
-                style="
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                "
-            >
+        <div v-else>
+            <li v-for="note in notes" :key="`note-${note.id}`">
                 <div>
                     <a :href="note.website"> {{ note.website }}</a>
                     <div>{{ note.note }}</div>
@@ -556,20 +417,17 @@ import HomeView from "../views/home.vue";
 
 ![Home Page](./images/homepage.png)
 
-## Setup Create Note And Edit Note
+## Create and Edit Notes
 
 ```html
 <template>
-    <div style="display: flex'; flex-direction: column">
+    <div>
         <textarea
-            style="display: block; width: 100%; margin-top: 16px"
             rows="10"
             v-model="note"
             placeholder="Notes are great way to store helpful information to access later. Get Started..."
         ></textarea>
-        <button style="display: block; margin-top: 16px" @click="save">
-            👍 Done
-        </button>
+        <button @click="save">👍 Done</button>
     </div>
 </template>
 
@@ -655,4 +513,4 @@ import Upsert from "../views/upsert.vue";
 
 ## Summary
 
-Directus WebNote Keeper is a proposed Chrome extension designed to help users save and manage notes related to the webpages they visit. It leverages Directus as the backend CMS for storing and managing these notes. When users click the extension while browsing, it automatically captures the current webpage's URL and prompts the user to add a note. Users can then view, edit, and delete their notes directly from the extension's interface. The extension will use the Directus API to perform CRUD (Create, Read, Update, Delete) operations on the notes. This project integrates the functionalities of a headless CMS with Chrome extension development to provide a practical tool for organizing web research and personal thoughts.
+In this tutorial, you've learnt how to build a Chrome Extension that authenticates with Directus and allows the user to manage data. There's still some more polish and functionality you can build, but a lot of it will be based on the same concepts we've worked through here.
