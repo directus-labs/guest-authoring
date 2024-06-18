@@ -794,6 +794,6 @@ Now click on any of the blogs to navigate to the details page.
 ![Show the blog details pages](./third_screenshot.png)
 
 ## Next Steps
-Through this guide, you have set up a Nuxt project, created a Directus plugin, and set up an Android project with Kotlin to interact with Directus, covering project initialization, creating a helper library for the Directus SDK, global configurations, dynamic pages, and navigation setup.
+Throughout this guide, you have set up an Android project, created a Directus plugin, and set up an Android project with Kotlin to interact with Directus, covering project initialization, creating a helper library for the Directus SDK, global configurations, dynamic pages, and navigation setup.
 
 If you want to see the code for this project, you can find it on [GitHub](https://github.com/icode247/directus_kotlin_app).
