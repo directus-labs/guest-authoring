@@ -256,11 +256,6 @@ Browser Output:
 
 ## Conclusion
 
-You’ve just learned how to set up the data collection process and implement dynamic routing using React and Directus. The broad process was:
+You’ve just learned how to set up the data collection process and implement dynamic routing using React and Directus. The broad process involved setting up a Directus data model, customizing user roles and permissions, creating an API endpoint to query data from Directus, and configuring a dynamic route to navigate to slug URLs.
 
-- Set up Directus data model
-- Customize user roles and permissions
-- API endpoint to query data from Directus
-- Dynamic Route to navigate to slug URL
-
-I hope you find this tutorial useful - if you have any questions or hurdles feel free to join the Directus [official Discord server](https://discord.com/invite/directus).
+I hope you find this tutorial useful - if you have any questions or hurdles feel free to join the Directus [official Discord server](https://directus.chat).
