@@ -191,7 +191,7 @@ Open Google Chrome, go to `chrome://extensions`, click on 'Load Unpacked button'
 
 Create new file `src/views/signup.vue`
 
-````html
+```html
 <template>
     <div>
         <form @submit.prevent="signup">
@@ -213,7 +213,7 @@ Create new file `src/views/signup.vue`
 </template>
 
 <script>
-    import { createUser } from "@directus/sdk";
+    import { registerUser } from "@directus/sdk";
     export default {
         inject: ["directus"],
         data() {
@@ -225,13 +225,11 @@ Create new file `src/views/signup.vue`
         },
         methods: {
             async signup() {
-                const result = await this.directus.request(
-                    createUser({
+                await this.directus.request(
+                    registerUser({
                         first_name: this.name,
-                        last_name: "",
                         email: this.email,
                         password: this.password,
-                        role: "1c005600-202d-429c-81bb-452a70aec7e1", // Customer
                     })
                 );
                 this.$router.push({ name: "login" });
@@ -239,12 +237,7 @@ Create new file `src/views/signup.vue`
         },
     };
 </script>
-
-Role: Its the `customer` role we created. To check, check the url in
-`https://directus-supabase.onrender.com/admin/settings/roles/1c005600-202d-429c-81bb-452a70aec7e1`
-### Load Signup route - Open `src/router.js` - Import `signup.vue` ```js import
-SignupView from "../views/signup.vue";
-````
+```
 
 Add the route in `routes`
 
@@ -514,3 +507,7 @@ import Upsert from "../views/upsert.vue";
 ## Summary
 
 In this tutorial, you've learnt how to build a Chrome Extension that authenticates with Directus and allows the user to manage data. There's still some more polish and functionality you can build, but a lot of it will be based on the same concepts we've worked through here.
+
+```
+
+```
