@@ -17,38 +17,23 @@ You will need:
 
 The complete code for this project can be found on [GitHub](https://github.com/xKachi/Link-Shortener/tree/main)
 
-## Setting up a Directus Collection for Data Storage
+## Setting Up Your Directus Project
 
-First of all, log in to your Directus app and navigate to **Settings > Data Model**
+Create a new collection called `short_link`. Enable all optional fields, and add the following additional fields:
 
-![short_link collection](<Setup a Directus Collection_1.PNG>)
-
-Click the + icon to create a new collection called **"short_link"**.
-
-We will get the following fields by default from Directus
-
-![default_fields](<Setup a Directus Collection_2.PNG>)
-
-Now, add the following custom fields to the **"short_link"** collection.
-
-- **slug(Type: String, interface: input, required)**: To store the part of the URL we want to redirect to.
-- **url(Type: String, interface: input, required)**: To store the the URL we want to redirect from.
-- **clicks(Type: Integer, interface: input, default_value: 0)**: To store the amount of times the link was clicked.
+- `slug` (type: String, interface: input, required): The URL path that will be shared in the short URL.
+- `url` (type: String, interface: input, required): The URL we want to redirect to.
+- `clicks` (type: Integer, interface: input, default_value: 0): Number of times the link was clicked.
 
 To make sure the URL that will be stored in the **URL** field is valid, we will use a validation filter.
 
-Navigate to **url > validation**, click on **URL**, and select the option **"Matches RegExp"**. Now, enter the following regular expression.
+Create a validation rule for the URL. From the field settings, ensure the URL **Matches RegExp**:
 
 ```
 https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)
 ```
 
-![validation_regex](<Setup a Directus Collection_3.PNG>)
-
-After creating the fields our **short_link** collection will look like this:
-
-![short_link collection complete](<Setup a Directus Collection_4.PNG>)
-
+![Validation regex](<Setup a Directus Collection_3.PNG>)
 ### Customizing Roles and Permissions
 
 Let's determine _who_ can access _what_ inside our database via roles and permissions. By default, there is already an admin with all permissions.
