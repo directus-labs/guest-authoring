@@ -34,29 +34,15 @@ https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0
 ```
 
 ![Validation regex](<Setup a Directus Collection_3.PNG>)
-### Customizing Roles and Permissions
+Create a new `contributor` role will have the following privileges:
 
-Let's determine _who_ can access _what_ inside our database via roles and permissions. By default, there is already an admin with all permissions.
+- Create a short_link.
+- Read a short_link
+- Update the `clicks` field (to avoid spamming) of short_link.
 
-Navigate to **Settings > Access Control**, and create a new role called **"Contributor"**. The contributor will have access to the collection, but not admin privileges.
+![Contributor Permissions - create and read short link are enabled. Edit is custom.](<Customizing Roles and Permissions_2.PNG>)
 
-![Contributor Role](<Customizing Roles and Permissions_1.PNG>)
-
-A **Contributor** will have the following privileges.
-
-- Create a short link.
-- Read a short link
-- Update the **clicks** field(to avoid spamming) of a short link.
-
-![Contributor Previlleges](<Customizing Roles and Permissions_2.PNG>)
-
-To enable a Contributor to update only the **clicks** do the following:
-
-1. Click on the **Update** icon.
-2. Select the **Use Custom** option from the dropdown.
-3. Select Field Permissions, and tick all options except **clicks**.
-
-![Contributor Previlleges](<Customizing Roles and Permissions_3.PNG>)
+![Contributor Privileges](<Customizing Roles and Permissions_3.PNG>)
 
 ### Creating Sample Short Links
 
