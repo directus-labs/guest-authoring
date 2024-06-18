@@ -21,35 +21,45 @@ Open your Android Studio and create a new project by clicking **Start a new Andr
 
 Open your `build.gradule` module file and add the following dependencies in the dependencies section:
 
-```
+```groovy
 dependencies {
+    // [!code ++]
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("org.jetbrains:markdown:0.7.3")
-)
+}
 ```
 
 Once the changes are made, a modal will appear suggesting you sync the project. Click on the **Sync** button to install the dependencies.
 
 ## Create a Helper Library for the Directus SDK
 
-Right-click on the `com.example.directusapp` directory and select **New -> Package** to create a network package. In your network package, create a new Kotlin file named `DirectusHelper` and define the Directus API service:
+Right-click on the `com.example.directusapp` directory and select **New -> New Kotlin FIle/Class -> File** and name it `Constants`. This is where you will define all the constants for this app like your Directus URL. Add the code to the `Constants.kt` file:
+
+```kotlin
+package com.example.directusapp
+
+object Constants {
+    const val BASE_URL = "https://directus.example.com"
+}
+```
+
+Then right-click on the `com.example.directusapp` directory and select **New -> Package** to create a network package. In your network package, create a new Kotlin file named `DirectusHelper` and define the Directus API service:
 
 ```kotlin
 package com.example.directusapp.network
-
+import com.example.directusapp.Constants
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 interface DirectusApiService {
     companion object {
-        private const val BASE_URL = "https://directus.example.com"
 
         fun create(): DirectusApiService {
             val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Constants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             return retrofit.create(DirectusApiService::class.java)
@@ -121,9 +131,9 @@ Then click on the content module and select the global collection. A collection 
 
 Update the code in your `DirectusHelper.kt` file in your network package to define a Get endpoint to fetch the global metadata from Directus:
 
-```
+```kotlin
 package com.example.directusapp.network
-
+import com.example.directusapp.Constants
 import com.example.directusapp.model.GlobalResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -134,11 +144,10 @@ interface DirectusApiService {
     suspend fun getGlobal(): GlobalResponse
 
     companion object {
-        private const val BASE_URL = "https://directus.example.com"
 
         fun create(): DirectusApiService {
             val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Constants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             return retrofit.create(DirectusApiService::class.java)
@@ -149,7 +158,7 @@ interface DirectusApiService {
 
 Right-click on your ui package, and create a new Kotlin file named `HomePageScreen`:
 
-```
+```kotlin
 package com.example.directusapp.ui
 
 import androidx.compose.foundation.layout.Column
@@ -206,7 +215,7 @@ fun BlogHomeScreen() {
 
 Update your `MainActivity` class in the `MainActivity.kt` file to render the `BlogHomeScreen` screen.
 
-```
+```kotlin
 package com.example.directusapp
 
 import android.os.Bundle
@@ -242,7 +251,7 @@ class directusapp : ComponentActivity() {
 
 Update your `AndroidManifest.xml` file in `app/src/main/` directory and grant your application access to the internet.
 
-```
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
@@ -288,9 +297,9 @@ Create a text input field called `title` and a `WYSIWYG` input field called `con
 
 Then update your `DirectusHelper` file to add another endpoint to fetch the page data from Directus:
 
-```
+```kotlin
 package com.example.directusapp.network
-
+import com.example.directusapp.Constants
 import com.example.directusapp.model.GlobalResponse
 import com.example.directusapp.model.PageResponse
 import retrofit2.Retrofit
@@ -306,11 +315,10 @@ interface DirectusApiService {
     suspend fun getPages(): PageResponse
 
     companion object {
-        private const val BASE_URL = "https://directus.example.com"
-
+       
         fun create(): DirectusApiService {
             val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Constants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             return retrofit.create(DirectusApiService::class.java)
@@ -321,7 +329,7 @@ interface DirectusApiService {
     
 Update your `BlogHomeScreen` to display the pages data:
 
-```
+```kotlin
 package com.example.directusapp.ui
 
 import androidx.compose.foundation.clickable
@@ -384,7 +392,7 @@ fun BlogHomeScreen(navController: NavController) {
 
 Create another file named `MarkdownView` and create a `MarkdownView` composable function to render the `WYSIWYG` content from the collection of the pages:
 
-```
+```kotlin
 package com.example.directusapp.ui
 
 import android.webkit.WebView
@@ -438,9 +446,9 @@ Add 3 items in the posts collection - [here's some sample data](https://github.c
 
 Then update your `DirectusHelper` file to add another endpoint to fetch the blog data:
   
-```
+```kotlin
 package com.example.directusapp.network
-
+import com.example.directusapp.Constants
 import com.example.directusapp.model.BlogsResponse
 import com.example.directusapp.model.GlobalResponse
 import com.example.directusapp.model.PageResponse
@@ -460,11 +468,10 @@ interface DirectusApiService {
     suspend fun getBlogs(): BlogsResponse
 
     companion object {
-        private const val BASE_URL = "https://test.directus.app/"
 
         fun create(): DirectusApiService {
             val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Constants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             return retrofit.create(DirectusApiService::class.java)
@@ -475,7 +482,7 @@ interface DirectusApiService {
 
 Update your `BlogHomeScreen` to render the blogs:
 
-```
+```kotlin
 package com.example.directusapp.ui
 
 import androidx.compose.foundation.clickable
@@ -580,7 +587,7 @@ Refresh your application to see the updates.
 ## Create Blog Post Listing
 Each blog post links to a screen that does not yet exist. Right-click the `ui` package and create a new Kotlin file named `BlogDetailScreen`:
 
-```
+```kotlin
 package com.example.directusapp.ui
 
 import androidx.compose.foundation.layout.Column
@@ -674,9 +681,9 @@ The above code defines a composable function called `BlogDetailScreen` that disp
 
 Then update your `DirectusHelper` file to add an endpoint to fetch blogs by their id:
 
-```
+```kotlin
 package com.example.directusapp.network
-
+import com.example.directusapp.Constants
 import com.example.directusapp.model.BlogsResponse
 import com.example.directusapp.model.BlogResponse
 import com.example.directusapp.model.GlobalResponse
@@ -700,11 +707,10 @@ interface DirectusApiService {
     suspend fun getBlogById(@Path("id") id: Int): BlogResponse
 
     companion object {
-        private const val BASE_URL = "https://test.directus.app/"
 
         fun create(): DirectusApiService {
             val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Constants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             return retrofit.create(DirectusApiService::class.java)
@@ -716,7 +722,7 @@ interface DirectusApiService {
 ## Add Navigation
 To allow your users to navigate the `BlogDetailScreen` and back to the `BlogHomeScreen` you need to implement navigation in the app. In the ui package, create a new Kotlin file named `NavGraph`:
 
-```
+```kotlin
 package com.example.directusapp.ui
 
 import androidx.compose.runtime.Composable
@@ -750,7 +756,7 @@ fun NavGraph(navController: NavHostController) {
 
 For the navigation, update your `MainActivity` file to render the `NavGraph`.
 
-```
+```kotlin
 package com.example.directusapp
 
 import android.os.Bundle
