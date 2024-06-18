@@ -51,47 +51,31 @@ Finally, create some sample data in your `short_link` collection.
 | website    | https://directus.io/   |
 | x          | https://x.com/directus |
 
-## React(Vite) Project Setup with Typescript
+## Setting Up Your React Project
 
-We will be using _[vite](https://vitejs.dev/)_ to create our react app.
-
-Install React.js by running the following commands.
+Install React.js, set up dependencies, and run a development server:
 
 ```
- npm create vite@latest link-shortener
+npm create vite@latest link-shortener
+? Select a framework: React
+? Select a variant: TypeScript
 
-  # Select React as the framework and Typescript as a variant
+npm install
+npm install --save-dev @types/node
+npm install react-router-dom
+npm install @directus/sdk 
 
- npm install
+npm run dev
 ```
 
-Also, the `types/node` package.
+Now, open http://localhost:5173/ on your browser, and you should see the starter page.
 
-```
-npm i --save-dev @types/node
-```
-
-Run the scaffolded React.js application with this command
-
-```
- npm run dev
-```
-
-Now, open http://localhost:5173/ on your browser, and you should see the Vite(react) starter page.
-
-![Vite_React](<React(Vite) Project Setup with Typescript.PNG>)
-
-Next, we will set up Vite to allow environment variables, which will be used to store our Directus credentials.
-
-## Directus Tokens and Environment Variables
-
-In the _vite.config.ts_ file, add the following code:
+Next, we will set up Vite to allow environment variables, which will be used to store our Directus credentials. In the `vite.config.ts` file, add the following code:
 
 ```typescript
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   define: {
@@ -105,38 +89,14 @@ export default defineConfig({
 });
 ```
 
-Create a _.env_ file in the _src_ directory, and the following code:
+Create a `.env` file in the `src` directory, and the following variables, being sure to provide your specific static authentication token and project URL:
 
 ```
 VITE_DIRECTUS_API_TOKEN = XXXXX
-VITE__DIRECTUS_API_URL = https://linksshortener.directus.app/
+VITE__DIRECTUS_API_URL = https://your-amazing.directus.app/
 ```
 
-To create a Static Token for [authentication](https://docs.directus.io/reference/authentication.html) do the following:
-
-1. On the Directus dashboard, navigate to **User Directory > Administrator**
-2. Click on the **Admin User** icon.
-3. Scroll down to the **Admin Options** section
-4. Click on the + icon in the **Token** field to generate token.
-5. Copy the generated token and paste it in `VITE_DIRECTUS_API_TOKEN`.
-
-![Admin_Token](<Directus Tokens and Environment Variables_1.PNG>)
-
-For the project URL, copy the URL from your browser.
-
-![App_URL](<Directus Tokens and Environment Variables_2.PNG>)
-
-## Integrating the Directus SDK with React
-
-Install the SDK using the command:
-
-```
-npm install @directus/sdk
-```
-
-### Import the SDK Composables
-
-In the _src_ directory create a sub-directory called _utils_, in _utils_ create a _directus.ts_ file.
+In the `src` directory create a sub-directory called `utils`, and within it, a `directus.ts` file.
 
 Add the following code to _directus.ts_:
 
@@ -158,10 +118,6 @@ export const directus = createDirectus(directusUrl)
   .with(staticToken(directusToken))
   .with(rest());
 ```
-
-- `staticToken`: is used to authenticate the client we'll create.
-- `createDirectus`: is a function that initializes a Directus client.
-- `rest()`: enables the `.request(...)` method to query the collection.
 
 ### Creating the Dynamic Route
 
