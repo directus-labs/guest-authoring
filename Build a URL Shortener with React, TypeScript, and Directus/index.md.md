@@ -44,20 +44,12 @@ Create a new `contributor` role will have the following privileges:
 
 ![Contributor Privileges](<Customizing Roles and Permissions_3.PNG>)
 
-### Creating Sample Short Links
-
-To create content, navigate to **Content > short_link**, and click the **Create Item** button to create a new item.
-
-![Creating Short Link Items](<Creating Sample Short Links_1.PNG>)
-
-We will create two items(short links), one for the Directus website, and the other for the twitter(X) page.
+Finally, create some sample data in your `short_link` collection. 
 
 | Slug       | URL                    |
 | ---------- | ---------------------- |
 | website    | https://directus.io/   |
-| X(twitter) | https://x.com/directus |
-
-![Creating Short Link Items](<Creating Sample Short Links_2.PNG>)
+| x          | https://x.com/directus |
 
 ## React(Vite) Project Setup with Typescript
 
