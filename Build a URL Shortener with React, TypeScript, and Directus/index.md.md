@@ -6,7 +6,7 @@ author:
   avatar_file_name: "profile-photo.jpg"
 ---
 
-In this tutorial, we will build a link shortener by defining a data model (collection) that we'll use to store information about our short links. Then, we'll create a React project that looks for a slug, queries the associated record in Directus, and redirects the user to the route link.
+In this tutorial, we will build a link shortener. Then, we'll create a React project that looks for a slug, queries the associated record in Directus, and redirects the user to the configured link.
 
 ## Before You Start
 
