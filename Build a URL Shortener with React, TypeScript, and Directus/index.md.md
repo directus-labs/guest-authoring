@@ -10,12 +10,12 @@ In this tutorial, we will build a link shortener. Then, we'll create a React pro
 
 ## Before You Start
 
-To follow along with this tutorial, it is important to have the following:
+You will need:
 
-1. A Directus [project](https://directus.cloud/login?__hstc=11036843.2cf80fd4cb0cf8697ea41e55dc8fad7e.1710666413740.1716660343293.1716897283216.19&__hssc=11036843.3.1716897283216&__hsfp=325150612)
-2. Basic knowledge of Javascript and React.js
+1. A Directus project - follow our [quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one.
+2. Some knowledge of Javascript and React.js.
 
-The complete code for this project can be found on _[GitHub](https://github.com/xKachi/Link-Shortener/tree/main)_
+The complete code for this project can be found on [GitHub](https://github.com/xKachi/Link-Shortener/tree/main)
 
 ## Setting up a Directus Collection for Data Storage
 
