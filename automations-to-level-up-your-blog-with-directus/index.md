@@ -130,7 +130,7 @@ Now use the **Condiion** operation with the following Condition rule:
 ```
 This is saying that the flow should go to the next operation if "approved" is equal to "yes". If the condition is met, you can follow this existing docs post on [using Netlify/Vercel build triggers](https://docs.directus.io/guides/headless-cms/trigger-static-builds/netlify.html#configure-netlify-build-hook).
 
-## 3. Configuring Alerts for New Comments
+## Configuring Alerts for New Comments
 
 ![comment alert](comment-alert.png)
 
@@ -210,5 +210,6 @@ Create a **Webhook/Request URL** operation with the POST method and paste in you
 Examples of what you can do with Zapier for social media automation includes posting to Facebook, Instagram, or LinkedIn. 
 
 ## Conclusion
+
 By leveraging the capabilities of Directus, from automated translations to content posting, you have the ability to operate your blog effectively. These five automation strategies not only streamline your workflow but also ensure that you cut down on the actions you need to take between the writing and promotion process.
 
