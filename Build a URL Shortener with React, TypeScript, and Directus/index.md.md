@@ -121,15 +121,7 @@ export const directus = createDirectus(directusUrl)
 
 ### Creating the Dynamic Route
 
-Let's create the route that will be used to redirect the user to the slug URL queried from Directus.
-
-The `react-router-dom` library will be used to handle client-side routing, install the `react-router-dom` library by running the command:
-
-```
-npm install react-router-dom
-```
-
-Next, in the _App.tsx_ file add the following code:
+Let's create the route that will be used to redirect the user to the slug URL queried from Directus. In the `App.tsx` file add the following code:
 
 ```typescript
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -162,10 +154,6 @@ function LinkRoute() {
 
 export default App;
 ```
-
-Browser Output:
-
-![Dynamic URL Output](<Creating the Dynamic Route (1).gif>)
 
 ### Querying Directus
 
