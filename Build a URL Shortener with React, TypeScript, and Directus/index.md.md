@@ -1,5 +1,5 @@
 ---
-title: "Build a URL Shortener with React, TypeScript, and Directus"
+title: "Building a URL Shortener with React, TypeScript, and Directus"
 description: "Learn how to build a simple link shortener with Directus."
 author:
   name: "Onyedikachi Eni"
