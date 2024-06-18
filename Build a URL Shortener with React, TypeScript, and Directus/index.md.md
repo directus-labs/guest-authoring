@@ -1,6 +1,6 @@
 ---
 title: "Building a URL Shortener with React, TypeScript, and Directus"
-description: "Learn how to build a simple link shortener with Directus."
+description: "Learn to build a link shortener using Directus and React! Define data models, customize roles, and dynamically route with ease."
 author:
   name: "Onyedikachi Eni"
   avatar_file_name: "profile-photo.jpg"
