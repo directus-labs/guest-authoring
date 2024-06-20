@@ -412,7 +412,15 @@ import HomeView from "../views/home.vue";
 
 ## Create and Edit Notes
 
+For creating and editing note, we will create only one file named `upsert.vue`.
+
+For creating a new note, route will be `/note/+`
+For editing note, route will be `/note/id` ( id contains unique number )
+
+Based on route parameter, create or edit note logic is used.
+
 ```html
+<!-- upsert.vue -->
 <template>
     <div>
         <textarea
@@ -451,7 +459,7 @@ import HomeView from "../views/home.vue";
         },
         methods: {
             async get() {
-                // Edit mode
+                // Edit Note
                 const { note } = await this.directus.request(
                     readItem("notes", this.id)
                 );
@@ -465,6 +473,7 @@ import HomeView from "../views/home.vue";
                         })
                     );
                 } else {
+                    // Create Note
                     const [tab] = await chrome.tabs.query({
                         active: true,
                         lastFocusedWindow: true,
