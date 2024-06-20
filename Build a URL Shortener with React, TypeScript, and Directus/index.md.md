@@ -157,25 +157,24 @@ export default App;
 
 ### Querying Directus
 
-Now, we will query the associated record for the slug in Directus and redirect the user to the route link, but first let's create an interface for the slug data.
+Query the associated record for the slug in Directus and redirect the user to the route link.
 
-Enter the following code in _App.tsx_:
+Enter the following code in `App.tsx` to define the interface for the data that will be returned from Directus:
 
 ```typescript
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
-interface ShortLink {
-  
-  clicks: number;
-  date_created?: string;
-  date_updated?: string;
-  id: number;
-  slug: string;
-  sort?: null;
-  url: string;
-  user_created?: string;
-  user_updated?: null;
+interface ShortLink { // [!code ++]
+  clicks: number; // [!code ++]
+  date_created: string; // [!code ++]
+  date_updated?: string; // [!code ++]
+  id: number; // [!code ++]
+  slug: string; // [!code ++]
+  sort?: null; // [!code ++]
+  url: string; // [!code ++]
+  user_created?: string; // [!code ++]
+  user_updated?: null; // [!code ++]
 } // [!code ++]
 
 function App() {
@@ -194,11 +193,7 @@ function App() {
 function LinkRoute() {....}
 ```
 
-In the preceding code, the `ShortLink` interface defines the shape of the short link data that the Directus API will return. Also, the single route `//:slug` matches any URL with a slug parameter, and renders the `LinkRoute` component.
-
-Now let's query the slug data from Directus.
-
-Enter the following code in _App.tsx_(after the `App` component):
+Query Directus in `App.tsx`:
 
 ```typescript
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -211,52 +206,53 @@ function App(){...}
 
 function LinkRoute() { // [!code ++]
   const { slug } = useParams();
-  const [slugError, setSlugError] = useState("");
+  const [slugError, setSlugError] = useState(""); // [!code ++]
 
-  useEffect(() => {
-    // Perform data fetching based on slug
-    async function fetchShortLink() {
-      try {
-        const data = await directus.request(readItems("short_link"));
+  useEffect(() => { // [!code ++]
+    async function fetchShortLink() { // [!code ++]
+      try { // [!code ++]
+        const data = await directus.request(readItems("short_link")); // [!code ++]
+// [!code ++]
+        const slug_data = data // [!code ++]
+          .map((y) => y) // [!code ++]
+          .filter((z) => z.slug.toLowerCase().includes(slug)); // [!code ++]
+// [!code ++]
+        if (!slug_data || slug_data?.length === 0) { // [!code ++]
+          setSlugError(`Invalid Slug: Couldn't find the record →→ ${slug}`); // [!code ++]
+          throw new Error("Invalid Slug: Couldn't find that record"); // [!code ++]
+        } // [!code ++]
+        const shortLink = slug_data[0] as ShortLink; // [!code ++]
+// [!code ++]
+        await directus.request( // [!code ++]
+          updateItem("short_link", shortLink.id, { // [!code ++]
+            clicks: shortLink.clicks + 1, // [!code ++]
+          }) // [!code ++]
+        ); // [!code ++]
+// [!code ++]
+        window.location.assign(`${shortLink.url}`);// [!code ++]
+// [!code ++]
+      } catch (error) { // [!code ++]
+        console.log(error); // [!code ++]
+      } // [!code ++]
+    } // [!code ++]
+// [!code ++]
+    fetchShortLink(); // [!code ++]
+  }, [slug]); // [!code ++]
 
-        const slug_data = data
-          .map((y) => y)
-          .filter((z) => z.slug.toLowerCase().includes(slug));
-
-        if (!slug_data || slug_data?.length === 0) {
-          setSlugError(`Invalid Slug: Couldn't find the record →→ ${slug}`);
-          throw new Error("Invalid Slug: Couldn't find that record");
-        }
-        const shortLink = slug_data[0] as ShortLink;
-
-        await directus.request(
-          updateItem("short_link", shortLink.id, {
-            clicks: shortLink.clicks + 1,
-          })
-        );
-
-        window.location.assign(`${shortLink.url}`);
-
-        // error handling
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    fetchShortLink();
-  }, [slug]);
-
-  return <>{slugError && <h1 style={{ color: "red" }}>{slugError}</h1>}</>  // [!code ++]
+  return (
+    <>
+      <h1>{slug}</h1> // [!code --]
+      {slugError && <h1 style={{ color: "red" }}>{slugError}</h1>} // [!code ++]
+    </>
+  );
 }
 
 export default App;
 ```
 
-In the preceding code, `LinkRoute` component uses the `useParams` hook to get the slug parameter from the URL and the `useState` hook to store an error message if the slug is invalid.
+The `LinkRoute` component uses the `useParams` hook to get the `slug` parameter from the URL and the `useState` hook to store an error message if the slug is invalid.
 
 The `useEffect` hook is used to fetch data from the Directus API via the `fetchShortLink` effect function, which performs the following actions:
-
-> The `ShortLink` interface defines the shape of the short link data returned by the Directus API.
 
 1. It makes a request to the Directus API to read all short links via the `readItems` composable.
 2. The response data is filtered to find the short link that matches the current slug.
@@ -265,10 +261,6 @@ The `useEffect` hook is used to fetch data from the Directus API via the `fetchS
 5. Finally, the user is redirected to the URL associated with the short link using the `window.location.assign` method.
 
 Finally, if an error occurs during the data fetching process, the error is caught and logged to the console. The `LinkRoute` component returns the error message if the slug is invalid.
-
-Browser Output:
-
-![Slug URL Output](<Querying Directus.gif>)
 
 ## Conclusion
 
