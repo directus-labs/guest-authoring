@@ -6,3 +6,10 @@ body:
     attributes:
       value: |
         Thanks for your interest in being a Directus guest author. We are not currently accepting new proposals.
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Inactive
+      options:
+        - label: You understand that if you submit this form, your issue will be closed without review.
+          required: true
