@@ -1,6 +1,7 @@
-name: Blog Post Proposal
-description: Submit an idea to write for our developer blog
+name: Blog Post Proposal [Closed]
+description: We are not currently accepting new proposals.
 assignees: phazonoverload
+title: Please Close Me
 body:
   - type: markdown
     attributes:
