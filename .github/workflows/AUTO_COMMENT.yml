@@ -10,16 +10,10 @@ jobs:
       issues: write
     steps:
       - name: Add comment
-        run: gh issue comment "$NUMBER" --body "$BODY"
+        run: gh issue close "$NUMBER" --comment "$BODY" --reason "not planned"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
           NUMBER: ${{ github.event.issue.number }}
           BODY: >
-            Thank you for submitting an idea for our guest blog. <br>
-            
-            We work through new ideas every few weeks as we put together our content schedule. This means you may not get an immediate response as to whether your idea has been accepted, or any follow-up questions we have to clarify your idea.<br>
-
-            If your idea is accepted, we will provide a deadline for first draft and how much we can pay you for the post. You will have a few days to confirm whether you are still able and willing to write the post. <br>
-
-            If you have any questions in the meantime, feel free to add a comment to this issue. 
+            We are not currently accepting new proposals. 
