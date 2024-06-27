@@ -1,12 +1,11 @@
-# Integrating Algolia Indexing and Directus
+---
+title: Integrating Algolia Indexing and Directus
+description: Learn how to maintain an Algolia index from data in your Directus project by building Hook extensions and Flows.
+---
 
-Introduction
-------------
+In this article, we will explore how to index data from Directus in Algolia, enabling you to track created, updated, and deleted data to maintain an up-to-date index which yo ucan then use in your applications.
 
-In this article, we will explore how to index data from Directus in Algolia, enabling you to track created, updated, and deleted data efficiently. This process is straightforward if you understand the [role of Extensions in Directus](https://docs.directus.io/extensions/creating-extensions.html), and this article will simplify it for you.
-
-Getting Started
----------------
+## Getting Started
 
 To follow along with this project, readers will need to:
 
