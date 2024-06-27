@@ -1,6 +1,6 @@
 ---
 title: ' How to Make a Web Scraper Directus Extension'
-description: '120-160 characters'
+description: ''
 author:
   name: 'Nancy Okeke'
   avatar_file_name: 'add-to-directory'
