@@ -8,15 +8,11 @@ author:
     avatar_file_name: "my-avatar.jpg"
 ---
 
-## Introduction
-
 This article will guide you through building a Chrome extension using Vite and Directus. The extension will leverage Directus as the backend to store and manage data.
 
-When a user clicks the extension while browsing a webpage, it will automatically capture the URL of the current webpage and prompt the user to add a `note`. Users will be able to `view`, `edit`, and `delete` their notes directly from the extension.
+When a user clicks the extension while browsing a webpage, it will automatically capture the URL of the current webpage and prompt the user to add a `note`. Users will be able to `view`, `edit`, and `delete` their notes directly from the extension. This tutorial will not cover styling the extension, but light styling has been applied to the screenshots shown.
 
 Before you start, you will need a Directus project. Follow the [Quickstart guide](https://docs.directus.io/getting-started/quickstart) to create one if needed.
-
-This tutorial will not cover styling the extension, but light styling has been applied to the screenshots shown.
 
 ## Set Up Your Directus Project
 
@@ -27,40 +23,19 @@ Create a new collection called `notes` with all optional fields enabled. Create 
 -   `website` - new field with type `string`
 -   `note` - new field with type `string`
 
-![Notes Collection](./images/notes-collection.png)
+![Notes Collection showing all optional fields and the website and note custom fields](./images/notes-collection.png)
 
-![Notes Data Entry](./images/notes-data-entry.png)
+### Set Up Roles
 
-### Setup Roles
-
-In order to create new note, edit note or delete note on behalf of user, we need to create separate role ( except admin ).
-We will create `customer` role for different users.
-
--   Go to `settings` -> `Access Control` Menu
--   Click on `Add New` Role
--   Enter role name, select `App Access` only
--   Save
-
-![Role access](./images/role-access-control.png)
-
-### Setup Permission
-
-Create a `customer` role for new users. In the access control settings for the role, provide
-
--   Go to `Access Control` -> Select `Customer` Role.
--   Set a custom permission for all operations in the `notes` collection: `user_created equals $CURRENT_USER`.
+In order to create new note, edit note or delete note on behalf of user, we need to create separate role. Create a `customer` role for new users. In the access control settings for the role, allow creation on the `notes` collection and custom read, edit, and delete permissions: `user_created equals $CURRENT_USER`.
 
 ![Customer Role Permissions](./images/customer-role-permissions.png)
 
 ![Filter Notes](./images/filter-notes.png)
 
----
-
 ## Initialize Extension
 
 Open your terminal and run the following commands to create a new project, install dependencies, and run the project:
-
--   Open new terminal, execute below command to create new vite + vue project
 
 ```bash
 npm create vite@latest directus-webnote-keeper -- --template vue
@@ -69,8 +44,6 @@ npm install
 npm install @directus/sdk js-cookie vue-router
 npm run dev
 ```
-
-## Setup Extension
 
 Add a `manifest.json` file in root directory of the project:
 
@@ -130,23 +103,18 @@ const directus = createDirectus("your-project-url")
 export default directus;
 ```
 
-Replace `your-project-url` with your Directus Project's URL.
-
-Open `main.js` and import the plugin:
+Replace `your-project-url` with your Directus Project's URL. Then, open `main.js` and import the plugin:
 
 ```js
 import directus from "./plugins/directus.js";
-
 app.provide("directus", directus);
 ```
 
 ## Setup Routing
 
-Create new file `plugins/router.js`
+Create new `plugins/router.js` file:
 
 ```js
-// plugins/router.js
-
 import { createWebHistory, createRouter } from "vue-router";
 import HomeView from "../views/home.vue";
 
@@ -167,6 +135,7 @@ Include the router instance in `main.js`:
 ```js
 import directus from "./plugins/directus.js";
 import router from "./plugins/router.js"; // [!code ++]
+
 app.provide("directus", directus);
 app.use(router); // [!code ++]
 ```
@@ -189,7 +158,7 @@ Open Google Chrome, go to `chrome://extensions`, click on 'Load Unpacked button'
 
 ### Setup Signup
 
-Create new file `src/views/signup.vue`
+Create new `src/views/signup.vue` file:
 
 ```html
 <template>
@@ -303,7 +272,7 @@ Create new file `src/views/login.vue`
 </script>
 ```
 
-### Add login route
+### Add Login Route
 
 ```js
 import LoginView from "../views/login.vue";
@@ -398,29 +367,21 @@ import HomeView from "../views/home.vue";
 ```
 
 ```js
-
-    {
+{
     path: "/",
     name: "home",
     meta: { public: false },
-     component: HomeView
-    },
-
+    component: HomeView
+},
 ```
 
 ![Home Page](./images/homepage.png)
 
 ## Create and Edit Notes
 
-For creating and editing note, we will create only one file named `upsert.vue`.
-
-For creating a new note, route will be `/note/+`
-For editing note, route will be `/note/id` ( id contains unique number )
-
-Based on route parameter, create or edit note logic is used.
+For creating and editing note, we will create only one file named `upsert.vue`. Based on route parameter, create or edit note logic is used. For creating a new note, route will be `/note/+`, and when editing, the route will be `/note/id` (`id` will be a unique number). Create `upsert.vue`:
 
 ```html
-<!-- upsert.vue -->
 <template>
     <div>
         <textarea
@@ -516,7 +477,3 @@ import Upsert from "../views/upsert.vue";
 ## Summary
 
 In this tutorial, you've learnt how to build a Chrome Extension that authenticates with Directus and allows the user to manage data. There's still some more polish and functionality you can build, but a lot of it will be based on the same concepts we've worked through here.
-
-```
-
-```
