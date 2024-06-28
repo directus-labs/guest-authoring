@@ -105,7 +105,7 @@ export default async function Home() {
 ```
 
 This is a Server Component that will fetch all your posts from Directus using the `getPost()` function and render HTML in the server which will then be sent to the client.
-If you navigate to `http://localhost:3000` in your browser you should see the following:
+If you navigate to `http://localhost:3000` in your browser you should see all your posts:
 
 ![All items from the posts collection in your Directus project](all-posts.png)
 
@@ -273,10 +273,10 @@ const PostList = ({ initialPosts, getPosts, limit, totalPostCount }) => {
 
   return (
     <>
-      <ul>
+      <ul className="max-w-[600px] mx-auto grid gap-5 pt-10">
         {posts?.map((post) => (
-          <li key={post.id}>
-            <h2>{post.title}</h2>
+          <li key={post.id} className="p-5 rounded-md bg-gray-200 text-black">
+            <h2 className="uppercase text-lg font-medium">{post.title}</h2>
             <p>{post.body}</p>
           </li>
         ))}
@@ -316,7 +316,7 @@ export default async function Home() {
 }
 ```
 
-Here a Server Action is created which is used to fetch all posts and pass the result as props to the `PostList` component. If you navigate to `http://localhost:3000` in your browser you should see the following:
+Here a Server Action is created which is used to fetch all posts and pass the result as props to the `PostList` component. If you navigate to `http://localhost:3000` in your browser you should see all your posts:
 
 ![All items from the posts collection in your Directus project](all-posts.png)
 
@@ -387,15 +387,19 @@ const PostList = ({ initialPosts, getPosts, limit, totalPostCount }) => {
 
   return (
     <>
-      <ul>
+      <ul className="max-w-[600px] mx-auto grid gap-5 pt-10">
         {posts?.map((post) => (
-          <li key={post.id}>
-            <h2>{post.title}</h2>
+          <li key={post.id} className="p-5 rounded-md bg-gray-200 text-black">
+            <h2 className="uppercase text-lg font-medium">{post.title}</h2>
             <p>{post.body}</p>
           </li>
         ))}
       </ul>
-      {hasMorePosts() ? <span>Loading...</span> : <span>No more posts</span>}
+      {hasMorePosts() ? (
+        <span className="text-center block py-10">Loading...</span>
+      ) : (
+        <span className="text-center block p-10">No more posts</span>
+      )}
     </>
   );
 };
@@ -422,7 +426,7 @@ const observerElem = useRef(null);
 To access the loading indicator element using the ref object, modify the `<span>` tag that display’s the loading indicator to the following:
 
 ```js
-<span ref={observerElem}>
+<span className="text-center block py-10" ref={observerElem}>
 ```
 
 Finally, to start fetching new posts when the loading indicator enters the view post, add the following line code after the `observerElem` ref object:
