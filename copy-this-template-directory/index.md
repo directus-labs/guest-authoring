@@ -446,3 +446,5 @@ Update your `./src/routes/+page.svelte` to the following to add the create testi
 ## Summary
 
 In this guide, we have set up a Testimonial widget in SvelteKit using Directus. It allows for adding new Testimonails data to Directus from Svelte and reading existing Testimonial data and displaying the in a carousel.
+
+If you have any questions or need further assistance, please feel free to drop by our [Discord](https://directus.chat/) server.
