@@ -82,7 +82,7 @@ I want to bring to your attention an issue that has been {{$trigger.body.action}
 | Author's name       | {{$trigger.body.issue.user.login}}    |
 | Author's GitHub URL | {{$trigger.body.issue.user.html_url}} |
 
-You can view the full issue and its details by following this link: [Link to the issue]($trigger.body.issue.html_url).
+You can view the full issue and its details by following this link: [Link to the issue]({{$trigger.body.issue.html_url}}).
 
 Thank you!
 ```
@@ -98,7 +98,7 @@ Issue #{{$trigger.body.issue.number}} has a new comment by [{{$trigger.body.comm
 | :---------- | :----------------------------- |
 | Comment     | {{$trigger.body.comment.body}} |
 
-You can view the issue and join the conversation: [Link to the issue]($trigger.body.issue.html_url).
+You can view the issue and join the conversation: [Link to the issue]({{$trigger.body.issue.html_url}}).
 
 Thank you!
 ```
@@ -116,7 +116,7 @@ I want to bring to your attention a pull request that has been {{$trigger.body.a
 | Author's name       | {{$trigger.body.pull_request.user.login}}    |
 | Author's GitHub URL | {{$trigger.body.pull_request.user.html_url}} |
 
-You can view the pull request and its details by following this link: [Link to pull request]($trigger.body.pull_request.html_url).
+You can view the pull request and its details by following this link: [Link to pull request]({{$trigger.body.pull_request.html_url}}).
 
 Thank you!
 ```
