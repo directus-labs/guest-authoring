@@ -8,7 +8,11 @@ author:
 
 ## Introduction
 
-In this guide, we will setup a testimonial widget using SvelteKit and Directus as a CMS. You will learn how to add data to your Directus collection, retrieve and display data from a Directus collection in your Svelte website.
+In this guide, we will setup a testimonial widget using SvelteKit and Directus as a CMS. By following this tutorial, you will learn how to:
+
+- Create a Directus project and setup a Directus collection.
+- Add data to a Directus collection from a Svelte app.
+- Retrieve and display data from a Directus collection in your Svelte website.
 
 ## Before You Start
 
@@ -45,7 +49,7 @@ This change allows you to add and retrieve testimonials directly from your front
 
 ### Add Initial data to your Directus collection
 
-Navigate to **Content** > **Testimonials** in your Directus app and Click the + icon to add some content to your testimonial collection. Fill the collection fields and and save.
+Navigate to **Content** > **Testimonials** in your Directus app and Click the + icon. Fill the collection fields and and save.
 
 ![Enable testimonail public access](./testimonial_item.png)
 
@@ -84,7 +88,7 @@ const config = {
 export default config;
 ```
 
-Configure your `tailwind.config.js` file to track your template files.
+Configure your `tailwind.config.js` file to track your project files.
 
 ```js
 /** @type {import('tailwindcss').Config} */
@@ -115,7 +119,7 @@ Add a `+layout.svelte` file to your `./src/routes` directory and add the followi
 <slot />
 ```
 
-Type `npm run dev` in your terminal to start the Vite development server and open [http://localhost:5173](http://localhost:5173) in your browser.
+Type `npm run dev` in your terminal to start the Vite development server and open [http://localhost:5173](http://localhost:5173) in your browser to access the Svelte website.
 
 ## Integrate the Directus SDK with Svelte
 
