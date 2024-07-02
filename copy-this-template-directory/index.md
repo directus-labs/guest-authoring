@@ -13,4 +13,3 @@ author:
 <!-- ## Your Sections Here -->
 
 ## Summary
-
