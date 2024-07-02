@@ -41,7 +41,7 @@ Save your settings by clicking the **Add Webhook** button. GitHub will send a pi
 
 ## Creating the Alert System
 
-The final step is to set up an alert system to notify you or others on the project when any of the selected events occur. Depending on your preference, you can use email or in-app notifications available in Directus flow.
+The final step is to set up an alert system to notify you or others on the project when any of the selected events occur. Depending on your preference, you can use email or in-app notifications available as operations in Flows.
 
 Since there are three different events, creating a one-size-fits-all notification template won't be ideal. Instead, we can generate a separate notification template for each event by setting up **Condition** operations to check if the trigger event is an issue, issue comment, or pull request.
 
