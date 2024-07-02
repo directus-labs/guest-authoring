@@ -15,9 +15,9 @@ You will need:
 - A Directus project - Create a project by following this [quickstart guide](https://docs.directus.io/getting-started/quickstart.html). Your project will need to be accessible via a public URL so you'll need to host it or use a tunnel to your local instance.
 - [A GitHub Account](https://github.com/signup) and admin access to the GitHub repo you want to track.
 
-## Creating The Flow
+## Creating a New Flow
 
-In your Directus project, navigate to **Settings** => **Flows** and create a Flow. In the Trigger Setup section, select **Webhook Trigger** so we can listen to events from GitHub. Ensure the Webhook Trigger is set to use the `POST` method with Asynchronous mode enabled. Save the Flow and copy the Trigger URL.
+In your Directus project, navigate to **Settings -> Flows** and create a Flow. In the Trigger Setup section, select **Webhook Trigger** so we can receive events from GitHub. Ensure the Webhook Trigger is set to use the `POST` method with Asynchronous mode enabled. Save the Flow and copy the Trigger URL.
 
 ![A screenshot of the Flow demonstrating where to find the Trigger URL](flow_setup.png)
 
