@@ -87,7 +87,7 @@ You can view the full issue and its details by following this link: [Link to the
 Thank you!
 ```
 
-- For Issue comments:
+For issue comments:
 
 ```md
 Hi name,
