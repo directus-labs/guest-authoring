@@ -69,7 +69,7 @@ Add another condition in the [failure path](https://docs.directus.io/app/flows.h
 
 The next step is to create a custom notification template for each event, generating dynamic content specific to each one.
 
-- For Issues:
+For Issues:
 
 ```md
 Hi name,
