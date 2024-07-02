@@ -43,6 +43,12 @@ Toggle **Create** and **Read** permission from “No Access” to “All Access�
 
 This change allows you to add and retrieve testimonials directly from your frontend with no authentication.
 
+### Add Initial data to your Directus collection
+
+Navigate to **Content** > **Testimonials** in your Directus app and Click the + icon to add some content to your testimonial collection. Fill the collection fields and and save.
+
+![Enable testimonail public access](./testimonial_item.png)
+
 ## Initialize a Svelte project
 
 Initialize a new Svelte project by running the following command:
@@ -282,7 +288,7 @@ Update your `+page.svelte` code to the following.
 
 Your svelte page should change to something similar to the following.
 
-![Svelte Testimonial Carousel](./testimonail_carousel.jpeg)
+![Svelte Testimonial Carousel](./testimonial_carousel.jpeg)
 
 ## Create a Add Testimonial form
 
