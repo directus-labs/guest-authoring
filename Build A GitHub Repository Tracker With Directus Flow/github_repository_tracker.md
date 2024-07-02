@@ -23,21 +23,21 @@ In your Directus project, navigate to **Settings -> Flows** and create a Flow. I
 
 ## Setting Up a Webhook on GitHub
 
-GitHub allows developers to create webhooks for both repositories and organizations using the same process. To create a webhook, navigate to the repository or organization you want to track. Go to the **Settings** tab and select **Webhooks** from the menu.
+GitHub allows developers to create webhooks for both repositories and organizations. A webhook is a web request to an external URL (in this case, Directus) that will be immediately triggered when an event happens such as a new issue being opened in a repository. 
 
-![A screenshot of GitHub setting => Webhooks page](github_webhook_page.png)
+To create a webhook, navigate to the repository or organization you want to track. Go to the **Settings** tab and select **Webhooks** from the menu.
 
 Click on the **Add Webhook** button. Next, paste the Trigger URL from Directus flow into the `Payload URL` field and change the content type to `application/json`.
 
-Select the event(s) that should trigger the webhook. For this tutorial, choose the `Let me select individual events` option and toggle these events:
+Select the events that should trigger the webhook. For this tutorial, choose the `Let me select individual events` option and toggle these events:
 
-- Issues,
-- Issue comments, and
-- Pull requests.
+- Issues
+- Issue comments
+- Pull requests
 
-Save your settings by clicking the **Add Webhook** button. GitHub will send a ping payload to your Directus project. Confirm the webhook is successful by checking the Activity Logs section.
+Save your settings by clicking the **Add Webhook** button. GitHub will send a ping payload to your Directus project. Confirm the webhook is successful by checking the Activity Logs section in your Flow.
 
-![A screenshot of Activity Logs section on](github_ping.png)
+![A screenshot of Activity Logs section in the Flow editor](github_ping.png)
 
 ## Creating the Alert System
 
