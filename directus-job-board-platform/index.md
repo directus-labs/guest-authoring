@@ -1121,6 +1121,6 @@ Click on the **Mananage Applications** button to navigate to the application's r
 
 
 ## Summary
-In this tutorial, you’ve learned how to implement Directus authentication in SolidStart.js, dynamically create, read, update, and delete jobs and applications, and successfully build a job portal application with Directus for the backend and SolidStart.js for the frontend.
+In this tutorial, you’ve learned how to build a job portal with Directus and SolidStart.js, dynamically create, read, update, and delete jobs and applications, and successfully build a job portal application with Directus for the backend and SolidStart.js for the frontend.
 Explore the Directus documentation to discover other amazing features you can add to your SolidStart.js applications.
 
