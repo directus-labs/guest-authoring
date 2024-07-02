@@ -6,28 +6,14 @@ author:
   avatar_file_name: "profile-picture.jpg"
 ---
 
-## Introduction
-
-Keeping tabs on repository activities like issues, comments and pull requests helps to ensure timely responses and manage workflow effectively during project development.
-In this tutorial, you will learn how to track changes in a GitHub repository within your Directus project using Directus flow. By the end of this article, you will have created a repository tracker that sends alerts via email and in-app notifications.
+In this tutorial, you will learn how to track events, such as new issues and pull requests, in a GitHub repository using Directus Automate. By the end of this article, you will have created a repository tracker that sends alerts via email and in-app notifications.
 
 ## Before You Start
 
 You will need:
 
-- A Directus project - Create a project by following this [quickstart guide](https://docs.directus.io/getting-started/quickstart.html)
-
-- [A GitHub Account](https://github.com/signup)
-
-:::warning
-
-To follow this tutorial, ensure you have admin access to the GitHub repository you wish to track.
-
-Note that you won't be able to follow along with this tutorial if your Directus project is running on localhost. GitHub cannot send data to [http://localhost:8055](http://localhost:8055) because it's not a remote location.
-
-For ease, use [Directus Cloud](https://directus.cloud/) or deploy your project to a remote server; you can refer to [this article](https://docs.directus.io/blog/deploying-directus-to-aws-ec2-with-docker.html) for guidance.
-
-:::
+- A Directus project - Create a project by following this [quickstart guide](https://docs.directus.io/getting-started/quickstart.html). Your project will need to be accessible via a public URL so you'll need to host it or use a tunnel to your local instance.
+- [A GitHub Account](https://github.com/signup) and admin access to the GitHub repo you want to track.
 
 ## Creating The Flow
 
