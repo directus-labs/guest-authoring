@@ -1,6 +1,6 @@
 ---
-title: "Build A GitHub Repository Tracker With Directus Flow"
-description: "Learn how to keep track of changes in a GitHub repository in your Directus project."
+title: "Tracking GitHub Issues and Pull Requests with Directus Automate"
+description: "Learn how to use Directus Automate to keep track of new issues, pull requests, and comments in a GitHub repository."
 author:
   name: "Erinle Samuel"
   avatar_file_name: "profile-picture.jpg"
