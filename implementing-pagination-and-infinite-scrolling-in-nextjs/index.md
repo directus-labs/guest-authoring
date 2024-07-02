@@ -6,9 +6,7 @@ author:
   avatar_file_name: "profile-pic.jpeg"
 ---
 
-## Introduction
-
-When working with a large set of data fetching and rendering them at once could cause performance issues, especially for devices with poor internet connections. To prevent this, several techniques are used which deal with fetching and rendering data in chunks. Two of the most common ones are pagination and infinite scrolling.
+When working with a large set of data fetching and rendering them at once can cause performance issues for your application, especially for devices with poor internet connections. To prevent this, several techniques are used to fetch and render data in chunks. Two of the most common ones are pagination and infinite scrolling.
 
 In this tutorial, you will learn how to implement pagination and infinite scrolling in Next.js with the Directus SDK, and understand benefits and drawbacks of both approaches.
 
@@ -17,7 +15,7 @@ In this tutorial, you will learn how to implement pagination and infinite scroll
 You will need:
 
 - A Directus project - follow the [quickstart](https://docs.directus.io/getting-started/quickstart.html) guide to create a project if you don’t have one already.
-- Knowledge of Next.js
+- Knowledge of Next.js.
 
 ## Adding Data to Directus
 
@@ -58,7 +56,7 @@ const directus = createDirectus("<your-directus-project-url>").with(
 export default directus;
 ```
 
-Make sure to modify `<your-directus-project-url>` with the correct URL.
+Make sure to modify `<your-directus-project-url>` with your project's URL.
 
 ## Fetching Data in Chunks
 
@@ -67,12 +65,11 @@ To fetch data in chunks using an API, usually, two parameters are required. The 
 In Directus the second parameter can be either [offset](https://docs.directus.io/reference/query.html#offset) and [page](https://docs.directus.io/reference/query.html#page) which are associated with offset-based and page-based pagination respectively.
 
 - Offset-based pagination: This deals with specifying a value (or offset) that indicates the number of items to skip or where the items being fetched should start from. It works hand-in-hand with the `limit` parameter to return a fixed number of items. For example, for a dataset of 200 items, if `offset=20` and `limit=10`, items 21-30 will be returned.
-
 - Page-based pagination: This is an abstraction of the offset-based pagination where a page number is specified (e.g. 1, 2, 3) which will be used under the hood to calculate the offset.
 
 For this tutorial, the `page` parameter will be used to implement both the pagination and infinite scrolling.
 
-## Implementing Pagination with Directus
+## Implementing Pagination
 
 Modify the `app/page.js` file to the following:
 
@@ -257,7 +254,7 @@ With this, you can now navigate between pages from the UI:
 
 ![Demonstrates how the pagination functionality works by navigating between different pages using the pagination navs at the bottom of the page](directus-pagination.gif)
 
-## Implementing Infinite scrolling with Directus
+## Implementing Infinite Scrolling
 
 Infinite scrolling requires browser events or the Intersection observer JavaScript API to be implemented so it needs to be done on the client side but one way we can improve this is to load the initial HTML from the server. For that, we will be using [Serve Actions](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations).
 
@@ -367,6 +364,7 @@ export default async function Home() {
 ```
 
 The `getPosts()` function will now return a maximum of 6 posts at a time. The set of posts returned is based on the page number passed to it. Increasing the page number will get the next set of posts.
+
 Using the Directus `aggregate()` function, a `getTotalPostCount()` function was created to calculate and get the total number of posts. The result of the function along with the limit and `getPosts()` is then passed to the `PostList` component where they will be used.
 
 Modify the `components/PostList.js` file to the following:
@@ -463,46 +461,12 @@ With this, the infinite scrolling should now be working:
 
 ![Demonstrates the infinte scrolling functionality. When the page is scrolled down to the bottom, the loading indicator is displayed, and new posts are displayed afterwards. Finally, when the bottom of the page is reached again the text No more posts is displayed.](infinite-scrolling-directus.gif)
 
-## When to choose between Pagination and Infinite scrolling
+## Which To Use
 
-Before implementing infinite scrolling and pagination several important factors need to be considered. Below are some of the major ones.
+As with most topics, the answer is "it depends". Paginated lists tend to have better performance Search Engine Optimization (SEO) as all page content (typically smaller) is initially loaded on the page. Infinite scrolling is better at maintaining attention and exploration
 
-### Search Engine Optimization (SEO)
-
-Pagination is great for SEO, particularly server-side pagination where the content is fetched and rendered on the server before being sent to the client. This is because search engines are not great at JavaScript-rendered sites.
-
-Infinite scrolling is not good for SEO mainly because search engine crawlers cannot yet perfectly emulate manual user behaviors like scrolling which is essential for infinite scrolling, so commonly, most of the site content won’t be accessed which affects the site ranking.
-An alternative to this is to implement pagination along with infinite scrolling as described in the [Google Search Central Blog](https://developers.google.com/search/blog/2014/02/infinite-scroll-search-friendly).
-
-### User Engagement
-
-Pagination enables users to quickly find specific content. It is better for sites where users visit when they have specific content in mind like e-commerce, blogs etc. With pagination, it is harder to keep the user's attention due to less content accessibility since the user needs to click and wait for the page to load before seeing new content.
-
-Infinite scrolling is best for freeform exploration, where users have no specific content in mind but looking for find something interesting. Infinite scrolling is known to boost user engagement by enabling them to explore and find relevant content without worrying about clicking on a button or link.
-
-### Navigation
-
-Pagination enables users to quickly locate content, bookmark pages to be viewed later and share page links with others, simplifying navigation.
-
-Locating content is harder with infinite scrolling, Bookmarking a page or sharing its link is of little to no use because users will be taken back to the top of the page whenever the site is refreshed.
-
-Additionally, pagination gives users a sense of control while browsing, as they can deduce the number of content available, enabling them to make more informed decisions. The same can't be said about infinite scrolling.
-
-### Site Footer
-
-With pagination, the footer can be placed right where it ought to be — at the bottom of the page.
-
-However, with infinite scrolling, it is not appropriate to place a footer at the bottom of the page since it can be overwhelming for users to scroll all the way to the bottom.
-Some alternatives to this included placing the footer links in the sidebar or adding a load more button for users to click to fetch more content rather than fetching at scroll.
-
-### Performance
-
-With pagination, typically, only a specific number of content is loaded into the user's device at a time. However, with infinite scrolling as users scroll, more and more content is loaded into the user's device which could potentially cause performance issues for outdated low-end mobile and tablet devices.
+You can read more on how to implement SEO-friendly pagination amd infinite scrolling in the [Google Search Central Blog](https://developers.google.com/search/blog/2014/02/infinite-scroll-search-friendly).
 
 ## Summary
 
 With this tutorial, you’ve learned how to implement pagination and infinite scrolling with Directus in Next.js, and also about important factors that will help you make the choice between infinite scrolling and pagination for your app.
-The Directus JavasScript SDK was used for sending requests in this tutorial, but if you prefer using REST API or GraphQL, you can check out the following pages in the Directus API docs to duplicate the sent request:
-
-- [Accessing Items](https://docs.directus.io/reference/items.html)
-- [Global Query Parameters](https://docs.directus.io/reference/query.html)
