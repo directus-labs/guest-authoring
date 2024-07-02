@@ -103,7 +103,7 @@ You can view the issue and join the conversation: [Link to the issue]($trigger.b
 Thank you!
 ```
 
-- For pull requests:
+For pull requests:
 
 ```md
 Hi Sam,
