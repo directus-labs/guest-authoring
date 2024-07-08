@@ -11,7 +11,7 @@ In this tutorial, you'll learn to build a job board portal using Directus and So
 ## Before You Start
 You will need:
 
-- [Node.js v18](https://nodejs.org/) and above installed on your computer.
+- [Node.js v18](https://nodejs.org/) or above installed on your computer.
 - A Directus project - follow our [quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one.
 - Some experience with Typescript and SolidStart.js.
 
