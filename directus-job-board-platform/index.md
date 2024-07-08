@@ -398,7 +398,7 @@ export default function App() {
 ```
 This setup enables automatic routing based on your file structure while providing authentication context throughout the app.
 
-## Creating components for displaying job listings
+## Creating Job Listings Components
 To use the `getDirectusInstance` to get data from Directus, create a `components` folder, inside the components folder create a `JobList.tsx` file and add the following:
 
 ```jsx
