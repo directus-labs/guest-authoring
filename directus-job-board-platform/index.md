@@ -17,21 +17,20 @@ You will need:
 
 The code for this tutorial is available on this [GitHub repository](https://github.com/preshenv/directus-solidstart-job-board).
 
-## Configuring Directus Data Collections
-You need to create a `job`, and `application` collections in your Directus Data Model (**Settings > Data Model**). The `job` will store a list available jobs with the following fields:
+## Configuring Directus Data Models
 
-- `id`: Autocomplete Input
-- `title`: input field;
+Create a `job`, and `application` collection in your project. The `job` will store a list available jobs with the following fields:
+
+- `id`: autocomplete input
+- `title`: input field
 - `location`: input field
 - `type`: input field
 - `salary`: input field
 
-Then `application` collection will store job applications with the following fields:
+The `application` collection will store job applications with the following fields:
 
 - `id:` Autocomplete Input
 - `status`: input field
-
-## Creating relationships in Directus
 
 To link a new job with its creator:
 
