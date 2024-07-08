@@ -72,7 +72,7 @@ The next step is to create a custom notification template for each event, genera
 For Issues:
 
 ```md
-Hi name,
+Hi,
 
 I want to bring to your attention an issue that has been {{$trigger.body.action}} on the GitHub repository.
 
@@ -90,7 +90,7 @@ Thank you!
 For issue comments:
 
 ```md
-Hi name,
+Hi,
 
 Issue #{{$trigger.body.issue.number}} has a new comment by [{{$trigger.body.comment.user.login}}]({{$trigger.body.comment.user.html_url}})
 
@@ -106,7 +106,7 @@ Thank you!
 For pull requests:
 
 ```md
-Hi Sam,
+Hi,
 
 I want to bring to your attention a pull request that has been {{$trigger.body.action}} on the GitHub repository.
 
