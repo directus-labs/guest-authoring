@@ -6,7 +6,7 @@ author:
   avatar_file_name: './ndoma-precious.png'
 ---
 
-In this tutorial, you'll learn to build a job board portal using Directus and SolidStart.js. We'll cover user registration, login, and CRUD operations with Directus. You'll create a complete job board with listing, application, and management features for both jobs and applications. This guide will provide you with the skills to combine Directus's backend capabilities with SolidStart.js's reactive frontend, to build a job portal web application.
+In this tutorial, you'll learn to build a job board portal using Directus and SolidStart.js. We'll cover user registration, login, and working with data in Directus. You'll create a complete job board with listing, application, and management features for both jobs and applications. This guide will provide you with the skills to combine Directus's backend capabilities with SolidStart.js's reactive frontend, to build a job portal web application.
 
 ## Before You Start
 You will need:
