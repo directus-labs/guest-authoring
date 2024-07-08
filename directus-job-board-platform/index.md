@@ -761,7 +761,7 @@ Log in with admin credentials, and click on the **Add New Job** button to create
 
 ![Add new job modal](<Screenshot 2024-07-02 at 12.01.27.png>)
 
-## Implementing search and filtering functionality
+## Implementing Search and Filters
 To implement job searching and filtering functionalities, update the code in your `components/JobList.tsx` file with the following:
 
 ```jsx
