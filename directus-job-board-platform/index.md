@@ -58,15 +58,16 @@ Open the public role, find `directus_users` under system collections, and then o
 
 Give public view access to the `job` collection to allow users to see available jobs even when they are not logged in. Also, ensure the admin role retains full permissions across all collections.
 
-## Initializing the SolidStart.js project
+## Initializing a SolidStart.js project
+
 Create a new SolidStart project by running the command:
 
 ```env
- npm init solid@latest
+npm init solid@latest
 ```
+
 Choose the **bare** template, enable Server-side rendering from the prompt, and Typescript in the prompts.
 
-## Setting up Directus instance
 In your SolidStart project's `src` directory, create a `lib` directory. Inside it, create a `directus.js` file:
 
 ```jsx
@@ -85,6 +86,7 @@ function getDirectusInstance() {
 }
 export default getDirectusInstance;
 ```
+
 Add your Directus URL to the `.env` file:
 
 ```env
