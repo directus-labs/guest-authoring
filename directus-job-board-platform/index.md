@@ -59,6 +59,7 @@ By default, the Directus registration feature is disabled. To allow users regist
 - Select the `Job Applicant` role for new users who register through this interface.
 
 ![Enabling Directus user registration](<Screenshot 2024-07-09 at 09.22.52.png>)
+
 ## Initializing a SolidStart.js project
 Create a new SolidStart project by running the command:
 
