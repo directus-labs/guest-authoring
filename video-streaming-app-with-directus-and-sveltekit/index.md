@@ -129,8 +129,9 @@ Then add the following code to the `VideoGrid.svelte` file:
 
 Those two files are reusable components created to render your video data and organize the videos in a grid layout.
 
-## Fetching video data
-In your `src/libs folder`, create a new folder named services. Inside this folder, create a file named `index.ts`. Add the following code to this file to use the Directus helper function to fetch all the videos from your Directus `videos` collection:
+## Fetching Videos
+
+In your `src/libs folder`, create a new folder named `services`. Inside this folder, create a file named `index.ts`. Add the following code to this file to use the Directus helper function to fetch all the videos from your Directus `videos` collection:
 
 ```ts
 import getDirectusClient from "$lib/directus";
