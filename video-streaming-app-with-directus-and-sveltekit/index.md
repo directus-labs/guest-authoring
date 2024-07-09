@@ -65,7 +65,8 @@ Give the Public role read access on the `videos` and `directus_files` collection
 
 Create 3 videos in the collection to test with.
 
-## Creating Video Listing Page
+## Creating the Video Listing Page
+
 In your SvelteKit application, create a `types.ts` file in the `src/lib` folder to define the structure of your video data and ensure type safety throughout your application.
 
 ```ts
@@ -102,15 +103,8 @@ Create a new `components` folder inside the `src/libs` folder. Within this new f
 </a>
 
 <style>
-  .video-card {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-  }
-  img {
-    width: 100%;
-    height: auto;
-  }
+  .video-card { display: block; text-decoration: none; color: inherit; }
+  img { width: 100%; height: auto; }
 </style>
 ```
 Then add the following code to the `VideoGrid.svelte` file:
@@ -119,7 +113,6 @@ Then add the following code to the `VideoGrid.svelte` file:
 <script lang="ts">
   import type { Video } from "$lib/types";
   import VideoCard from "./VideoCard.svelte";
-
   export let videos: Video[];
 </script>
 
@@ -130,13 +123,10 @@ Then add the following code to the `VideoGrid.svelte` file:
 </div>
 
 <style>
-  .video-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
-  }
+  .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
 </style>
 ```
+
 Those two files are reusable components created to render your video data and organize the videos in a grid layout.
 
 ## Fetching video data
