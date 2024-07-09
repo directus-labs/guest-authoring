@@ -150,7 +150,6 @@ export const useAuth = () => useContext(AuthContext)!;
 Update the `AuthContext.tsx` file to implement user login. First, add the following functions to save, retrieve, and delete user sessions:
 
 ```ts
-+
 //...
 const setCookie = (name: string, value: string, days: number = 7) => {
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
@@ -173,7 +172,6 @@ const deleteCookie = (name: string) => {
 Then implement the login functionality with the following code:
 
 ```ts
-+
 //...
 import { createUser, readMe, withToken } from "@directus/sdk";
 
@@ -210,7 +208,6 @@ export function AuthProvider(props: { children: JSX.Element }) {
 Update the `AuthContext.tsx` file to add user logout functionality:
 
 ```ts
-+
 //...
 
 export function AuthProvider(props: { children: JSX.Element }) {
@@ -246,7 +243,6 @@ export function AuthProvider(props: { children: JSX.Element }) {
 ### Getting Active User Data
 Add the following code to the `AuthContext` to fetch the details of the actively logged-in user:
 ```ts
-+
 //...
 export function AuthProvider(props: { children: JSX.Element }) {
   // ...
