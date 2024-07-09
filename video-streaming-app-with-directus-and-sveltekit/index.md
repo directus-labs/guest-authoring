@@ -148,7 +148,8 @@ export async function getVideos(params = {}): Promise<Video[]> {
 ## Displaying thumbnails and titles
 Update the your `routes/+page.svelte` file to use the `getVideos` function to fetch video data and display it using the `VideoGrid` component. This will display the thumbnails, titles, views and dates of the videos.
 ```svelte
-+
+
+// [!code ++]
 <script lang="ts">
   import { onMount } from "svelte";
   import { getVideos } from "$lib/services/index";
@@ -162,7 +163,11 @@ Update the your `routes/+page.svelte` file to use the `getVideos` function to fe
       videos = await getVideos({
         sort: ["-upload_date"],
         limit: 20,
-        fields: ["*", "thumbnail.*", "video_file.*"],
+        fields: [
+          "*",
+          { thumbnail: ["*"] },
+          { video_file: ["*"] }
+        ],
       });
     } catch (error) {
       console.error("Error fetching videos:", error);
@@ -184,16 +189,11 @@ Directus stores file metadata in the `directus_files` collection. When using fil
 ![Video Listing](<Screenshot 2024-07-04 at 11.53.25.png>)
 
 ## Video Player Page
-Install the Svelte video player component to play the videos with the command.
-
-```shell
-npm install svelte-video-player
-```
-
 Update your `services/index.ts` file to add new functions that will fetch a video by its ID and update the `videos` collection to increment the video's views field.
 ```ts
-+
 // your other imports
+
+// [!code ++]
 import { readItems, readItem, updateItem } from "@directus/sdk";
 
 export async function getVideo(id: string): Promise<Video> {
@@ -281,7 +281,7 @@ Now click on any of the videos to stream it.
 In your `services/index.ts`, add a new funtion that implements search functionality to find videos by title or description.
 
 ```ts
-+
+// [!code ++]
 export async function searchVideos(query: string): Promise<Video[]> {
   const directus = getDirectusClient();
   const response = await directus.request(
@@ -298,7 +298,8 @@ This function uses the `search` parameter from Directus to perform a search on `
 Update the code in your `routes/+page.svelte` file to use the `searchVideos` function to add search functionality to your page.
 
 ```svelte
-+
+
+// [!code ++]
 <script lang="ts">
   import { onMount } from "svelte";
   import { getVideos, searchVideos } from "$lib/services/index";
