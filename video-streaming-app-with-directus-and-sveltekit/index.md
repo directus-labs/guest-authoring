@@ -371,5 +371,5 @@ You can now search and stream any video of your choice.
 ![Search videos](<Screenshot 2024-07-04 at 12.48.17.png>)
 
 ## Summary
-In this tutorial, you've learned how to build a Sveltekit video streaming application that uses data from a Directus project. You started by creating a new project, set up environment variables and everything you need to call Directus. You then created a videos collections in Directus and integrated them with the your Sveltekit project.
+In this tutorial, you've learned how to build a SvelteKit video streaming application that uses data from a Directus project, tracking views when rendering data into pages.
 
