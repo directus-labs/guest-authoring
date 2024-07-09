@@ -50,16 +50,16 @@ These fields connect each application to its corresponding applicant and job. Ad
 ## Creating a New User Role
 In your access control settings, create a new role called `Job Applicant`. For the `application` collection, enable `create` and `read` permissions. Use custom rules for the `application` collection to ensure users can only read and update their own applications. Set a filter like: `user -> id Equals $CURRENT_USER.id`. This allows users to view all jobs, create new applications, and view or update only their own applications. 
 
-## Allowing Public Registration
-Open the public role, find `directus_users` under system collections, and then open custom permissions for the `create` operation. 
-1. In field permissions, enable only `first_name`, `last_name`, `email`, and `password` options. If you want users to provide other data at the time of registration, enable the respective field.
-2. In field validation, require `first_name`, `last_name`, `email`, and `password` to not be empty.
-3. In field presets, set the new user's `role` to the `Job Applicant` role id. 
+Give public read access to the `job` collection to allow users to see available jobs even when they are not logged in. Also, ensure the admin role retains full permissions across all collections.
 
-Give public view access to the `job` collection to allow users to see available jobs even when they are not logged in. Also, ensure the admin role retains full permissions across all collections.
+## Enable User Registration
+By default, the Directus registration feature is disabled. To allow users register directly from your application. Follow the steps below to enable it:
+- Navigate to Settings > Settings.
+- Check the **Enable User Registration** box.
+- Select the `Job Applicant` role for new users who register through this interface.
 
+![Enabling Directus user registration](<Screenshot 2024-07-09 at 09.22.52.png>)
 ## Initializing a SolidStart.js project
-
 Create a new SolidStart project by running the command:
 
 ```env
@@ -94,7 +94,11 @@ VITE_PUBLIC_DIRECTUS_API_URL='https://directus.example.com'
 ```
 
 ## Implementing User Authentication
-To implement user authentication to grant users access to the application, create a **context**, and inside that folder create an `AuthContext.tsx` file and add the following code:
+
+To implement user authentication and grant users access to the application, create a **context** directory and inside it, create an `AuthContext.tsx` file.
+
+### Creating User Registration
+In the `AuthContext.tsx`, add the following code to implement user registration using Directus Authentication:
 
 ```jsx
 import {
@@ -106,8 +110,48 @@ import {
 } from "solid-js";
 import { User } from "../types";
 import getDirectusInstance from "~/lib/directus";
-import { createUser, readMe, withToken } from "@directus/sdk";
+import { createUser } from "@directus/sdk";
 
+interface AuthContextType {
+  register: (user: Omit<User, "id">) => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextType>();
+const directus = getDirectusInstance();
+
+export function AuthProvider(props: { children: JSX.Element }) {
+  const register = async (newUser: Omit<User, "id">) => {
+    try {
+      await directus.request(
+        registerUser({
+          email: newUser.email,
+          password: newUser.password,
+          first_name: newUser.name.split(" ")[0],
+          last_name: newUser.name.split(" ")[1],
+          role: "Job Applicant",
+        })
+      );
+    } catch (error) {
+      throw new Error("Registration failed");
+    }
+  };
+
+  return (
+    <AuthContext.Provider value={{ register }}>
+      {props.children}
+    </AuthContext.Provider>
+  );
+}
+
+export const useAuth = () => useContext(AuthContext)!;
+```
+
+### Creating User Login
+Update the `AuthContext.tsx` file to implement user login. First, add the following functions to save, retrieve, and delete user sessions:
+
+```ts
++
+//...
 const setCookie = (name: string, value: string, days: number = 7) => {
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
   document.cookie = `${name}=${encodeURIComponent(
@@ -125,21 +169,87 @@ const getCookie = (name: string): string | null => {
 const deleteCookie = (name: string) => {
   setCookie(name, "", -1);
 };
+```
+Then implement the login functionality with the following code:
+
+```ts
++
+//...
+import { createUser, readMe, withToken } from "@directus/sdk";
 
 interface AuthContextType {
+  register: (user: Omit<User, "id">) => Promise<void>;
   user: () => User | null;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-  register: (user: Omit<User, "id">) => Promise<void>;
 }
-
-const AuthContext = createContext<AuthContextType>();
-const directus = getDirectusInstance();
 
 export function AuthProvider(props: { children: JSX.Element }) {
   const [user, setUser] = createSignal<User | null>(null);
   const getToken = () => getCookie("auth_token") || "";
 
+  const login = async (email: string, password: string) => {
+    try {
+      const result = await directus.login(email, password);
+      setCookie("auth_token", result.access_token as string);
+      directus.setToken(result.access_token);
+      await fetchUser();
+    } catch (error) {
+      throw new Error("Invalid credentials");
+    }
+  };
+
+
+   return (
+    <AuthContext.Provider value={{ register, login, user }}>
+      {props.children}
+    </AuthContext.Provider>
+  );
+}
+```
+### Creating User Logout
+Update the `AuthContext.tsx` file to add user logout functionality:
+
+```ts
++
+//...
+
+export function AuthProvider(props: { children: JSX.Element }) {
+  // ...
+
+  interface AuthContextType {
+    register: (user: Omit<User, "id">) => Promise<void>;
+    user: () => User | null;
+    login: (email: string, password: string) => Promise<void>;
+    logout: () => Promise<void>;
+  }
+  
+  const logout = async () => {
+    try {
+      await directus.logout();
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setUser(null);
+      deleteCookie("auth_token");
+      directus.setToken(null);
+    }
+  };
+
+  return (
+    <AuthContext.Provider value={{ register, login, user, logout }}>
+      {props.children}
+    </AuthContext.Provider>
+  );
+}
+```
+
+### Getting Active User Data
+Add the following code to the `AuthContext` to fetch the details of the actively logged-in user:
+```ts
++
+//...
+export function AuthProvider(props: { children: JSX.Element }) {
+  // ...
   createEffect(() => {
     const token = getToken();
     if (token) {
@@ -169,57 +279,12 @@ export function AuthProvider(props: { children: JSX.Element }) {
     }
   };
 
-  const login = async (email: string, password: string) => {
-    try {
-      const result = await directus.login(email, password);
-      setCookie("auth_token", result.access_token as string);
-      directus.setToken(result.access_token);
-      await fetchUser();
-    } catch (error) {
-      throw new Error("Invalid credentials");
-    }
-  };
-
-  const logout = async () => {
-    try {
-      await directus.logout();
-    } catch (error) {
-      console.error("Logout error:", error);
-    } finally {
-      setUser(null);
-      deleteCookie("auth_token");
-      directus.setToken(null);
-    }
-  };
-
-  const register = async (newUser: Omit<User, "id">) => {
-    try {
-      const result = await directus.request(
-        createUser({
-          email: newUser.email,
-          password: newUser.password,
-          first_name: newUser.name.split(" ")[0],
-          last_name: newUser.name.split(" ")[1],
-          role: "Job Applicant",
-        })
-      );
-    } catch (error) {
-      throw new Error("Registration failed");
-    }
-  };
-
-  return (
-    <AuthContext.Provider value={{ user, login, logout, register }}>
-      {props.children}
-    </AuthContext.Provider>
-  );
+  //...
 }
-
-export const useAuth = () => useContext(AuthContext)!;
 ```
-This `AuthContext` handles the user's registration, login, logout, and session management which retrieves user session information from cookies, including access and refresh tokens, and returns an object containing this information.
+This `AuthContext` handles user registration, login, logout, and session management. It retrieves user session information from cookies, including access and refresh tokens, and returns an object containing this information.
 
-In your **src** folder, create a new **types** directory. Add an index.ts file inside it to define the `User` interface used in `AuthContext` and other interfaces you'll be using throughout your application. This centralizes your TypeScript type definitions.
+In your **src** folder, create a new **types** directory. Add an `index.ts` file inside it to define the `User` interface used in `AuthContext` and other interfaces you'll be using throughout your application. This centralizes your TypeScript type definitions.
 
 ```jsx
 export interface User {
@@ -517,54 +582,36 @@ export default HomePage;
 ![Job Listing Portal](<Screenshot 2024-07-02 at 10.43.05.png>)
 
 ## Creating, updating, and deleting job listings
-Add the following functions to the `HomePage` component:
-- `addJob`- Allows admins to list new jobs
-- `updateJob`: Allows admins to edit job listings
-- `deleteJob`: Enables admins to remove job listings
+Update the job `HomePage` component to implement job listing management functionalities.
 
-These functions will manage the respective actions when triggered by user interactions in the job list. Your `routes/index.tsx` file should have this updated code:
+### Crreating Job Listing
+Add the following `addJob` function to the `HomePage` component to enable administrators to create new job listings:
 
-```jsx
+```tsx
 import { createSignal, createResource, Show } from "solid-js";
 import JobList from "~/components/JobList";
 import JobForm from "~/components/JobForm";
-import { Job, Jobs } from "../types";
+import { Job } from "../types";
 import Modal from "~/components/Modal";
 import { useAuth } from "../context/AuthContext";
-import {
-  readItems,
-  createItem,
-  updateItem,
-  deleteItem,
-} from "@directus/sdk";
+import { createItem } from "@directus/sdk";
 import getDirectusInstance from "~/lib/directus";
 import { useNavigate } from "@solidjs/router";
 
 function HomePage() {
-  const  directus  = getDirectusInstance();
-  const [editingJob, setEditingJob] = createSignal<Job | null>(null);
   const [isModalOpen, setIsModalOpen] = createSignal(false);
   const [modalContent, setModalContent] = createSignal<"jobForm">("jobForm");
+  const [editingJob, setEditingJob] = createSignal<Job | null>(null);
   const auth = useAuth();
+  const directus = getDirectusInstance();
   const navigate = useNavigate();
-
-  const fetchJobs = async () => {
-    try {
-      const fetchedJobs = await directus.request(readItems("job"));
-      return fetchedJobs as Jobs;
-    } catch (error) {
-      console.error("Error fetching jobs:", error);
-    }
-  };
-
-  const [jobs, { refetch: refetchJobs }] = createResource(fetchJobs);
 
   const addJob = async (job: Omit<Job, "id">) => {
     try {
       if (!auth.user()) {
-        throw new Error("You need to login to create a job");
+        throw new Error("You must be logged in to create a job");
       }
-      job.employerId = auth.user()?.id as unknown as string;
+      job.employerId = auth.user()?.id as string;
       const response = await directus.request(createItem("job", job));
 
       if (response) {
@@ -579,10 +626,21 @@ function HomePage() {
     }
   };
 
+   // ... rest of your component code
+}
+```
+### Updating Job Listing
+Implement the `updateJob` function in the `HomePage` component to allow administrators to edit existing job listings:
+
+```ts
++
+function HomePage() {
+  // ... existing code
+
   const updateJob = async (updatedJob: Job, id: string) => {
     try {
       if (!auth.user()) {
-        throw new Error("You need to login to create a job");
+        throw new Error("You must be logged in to update a job");
       }
       await directus.request(updateItem("job", id, updatedJob));
       setEditingJob(null);
@@ -594,6 +652,19 @@ function HomePage() {
     }
   };
 
+  // ... rest of your component code
+}
+```
+### Deleting Job Listing
+Add the `deleteJob` function to the `HomePage` component to enable administrators to remove job listings:
+
+```ts
++
+import { deleteItem } from "@directus/sdk";
+
+function HomePage() {
+  // ... existing code
+
   const deleteJob = async (id: number) => {
     try {
       await directus.request(deleteItem("job", id));
@@ -604,62 +675,60 @@ function HomePage() {
     }
   };
 
-  const openModal = (job?: Job) => {
-    setEditingJob(job || null);
-    setIsModalOpen(true);
-  };
+  // ... rest of your component code
+}
+```
 
-  return (
-    <div>
-      <h1>Job Management System</h1>
-      <Show
-        when={auth.user()}
-        fallback={
-          <nav>
-            <button onClick={() => navigate("/login")}>Login</button>
-            <button onClick={() => navigate("/register")}>Register</button>
-          </nav>
-        }
-      >
-        <button onClick={auth.logout}>Logout</button>
-        <Show when={auth.user()?.email === "admin@example.com"}>
-        <button
-          onClick={() => {
-            setModalContent("jobForm");
-            setIsModalOpen(true);
-          }}
-        >
+## Integrating Management Functions
+Update the `HomePage` component's return statement to incorporate these management functions:
+
+```tsx
+return (
+  <div>
+    <h1>Job Portal</h1>
+    <Show
+      when={auth.user()}
+      fallback={
+        <nav>
+          <button onClick={() => navigate("/login")}>Login</button>
+          <button onClick={() => navigate("/register")}>Register</button>
+        </nav>
+      }
+    >
+      <button onClick={auth.logout}>Logout</button>
+      <Show when={auth.user()?.email === "admin@example.com"}>
+        <button onClick={() => { setModalContent("jobForm"); setIsModalOpen(true); }}>
           Add New Job
         </button>
         <button onClick={() => navigate("/applications")}>Manage Applications</button>
-        </Show>
       </Show>
-      <Show when={jobs.loading}>Loading jobs...</Show>
-      <Show when={jobs.error}>Error loading jobs: {jobs.error}</Show>
-      <Show
-        when={!jobs.error}
-        fallback={<div>Error loading jobs: {jobs.error?.message}</div>}
-      >
-        <JobList
-          jobs={jobs() || []}
-          onEdit={auth.user()?.email === "admin@example.com"? openModal : undefined}
-          onDelete={auth.user()?.email === "admin@example.com" ? deleteJob : undefined}
+    </Show>
+    <Show when={jobs.loading}>Loading jobs...</Show>
+    <Show when={jobs.error}>Error loading jobs: {jobs.error}</Show>
+    <Show
+      when={!jobs.error}
+      fallback={<div>Error loading jobs: {jobs.error?.message}</div>}
+    >
+      <JobList
+        jobs={jobs() || []}
+        onEdit={auth.user()?.email === "admin@example.com" ? openModal : undefined}
+        onDelete={auth.user()?.email === "admin@example.com" ? deleteJob : undefined}
+        onApply={auth.user()?.email !== "admin@example.com" ? applyForJob : undefined}
+      />
+    </Show>
+    <Modal isOpen={isModalOpen()} onClose={() => setIsModalOpen(false)}>
+      <Show when={modalContent() === "jobForm"}>
+        <JobForm
+          onSubmit={editingJob() ? updateJob : addJob}
+          job={editingJob() as Job}
         />
       </Show>
-      <Modal isOpen={isModalOpen()} onClose={() => setIsModalOpen(false)}>
-        <Show when={modalContent() === "jobForm"}>
-          <JobForm
-            onSubmit={editingJob() ? updateJob : addJob}
-            job={editingJob() as Job}
-          />
-        </Show>
-      </Modal>
-    </div>
-  );
-}
-
-export default HomePage;
+    </Modal>
+  </div>
+);
 ```
+These functions will handle the respective actions when triggered by user interactions in the job list. Ensure your routes/index.tsx file contains this updated code.
+
 In the `components` folder, create two new files for the `JobForm.tsx` and `Modal.tsx` components that were used in your `HomePage` component. Add the following code to your `components/JobForm.tsx` file: 
 
 ```jsx
