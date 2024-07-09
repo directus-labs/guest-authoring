@@ -20,12 +20,11 @@ The code for this tutorial is available on my [GitHub repository](https://github
 
 
 ## Setting Up A Laravel Project
-Start by setting up a new Laravel project move into the project directory and install the Directus PHP SDK by running the following commands:
+Start by setting up a new Laravel project move into the project directory by running the following commands:
 
 ```shell
 composer create-project laravel/laravel directus-laravel-blog
 cd directus-laravel-blog
-composer require alantillery/directus-php-sdk
 ```
 
 ## Using Global Metadata and Settings
@@ -52,22 +51,36 @@ Update the `app/Providers/DirectusServiceProvider.php` file with the following c
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Slations\DirectusSdk\Directus;
+use Illuminate\Support\Facades\Http;
 
 class DirectusServiceProvider extends ServiceProvider
 {
     public function register()
     {
         $this->app->singleton('directus', function ($app) {
-            return new Directus(
-                env('DIRECTUS_URL'),
-                env('DIRECTUS_PROJECT', '_'),
-            );
+            return new class {
+                protected $baseUrl;
+                
+                public function __construct()
+                {
+                    $this->baseUrl = rtrim(env('DIRECTUS_URL'), '/');                }
+
+                public function request($method, $endpoint, $data = [])
+                {
+                    $url = "{$this->baseUrl}/items/{$endpoint}";
+                    return Http::$method($url, $data);
+                }
+
+                public function get($endpoint, $params = [])
+                {
+                    return $this->request('get', $endpoint, $params);
+                }
+            };
         });
     }
 }
 ```
-The above code sets up a `DirectusServiceProvider` class which creates a new instance of the Directus SDK making it accessible across your project.
+The code defines a `DirectusServiceProvider` class which creates a singleton instance for interacting with a Directus API. It provides methods to make HTTP requests to the API, with the base URL set from environment variables.
 
 ## Rendering the Home Page
 Create a `HomeController` with the command:
@@ -96,7 +109,7 @@ class HomeController extends Controller
     }
 }
 ```
-Here the `DirectusServiceProvider` registers a singleton instance of the Directus SDK, which can be accessed throughout the application using `app('directus')`. The `HomeController` uses this instance to fetch global settings from the Directus backend and pass them to the view.
+Here the `DirectusServiceProvider` registers a singleton instance of Directus API, which can be accessed throughout the application using `app('directus')`. The `HomeController` uses this instance to fetch global settings from the Directus backend and pass them to the view.
 
 Now create a `home.blade.php` file in `resources/views` directory and add the following code to render the global metadata settings:
 
