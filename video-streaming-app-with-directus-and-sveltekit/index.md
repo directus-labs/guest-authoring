@@ -48,8 +48,9 @@ Create a `.env` file in the root folder of your project and add your Directus AP
 VITE_DIRECTUS_URL='https://directus.example.com';
 ```
 
-## Creating Collections
-Navigate to Settings -> Data Model in your Directus Data Model, and create a new collection named `videos`. Create the following fields for this collection:
+## Creating a Directus Collection
+
+Create a new `videos` collection with the following fields:
 
 - `id` (Primary Key Field, Type: Manually entered string)
 - `title` (Type: String, Interface: Input)
@@ -60,9 +61,9 @@ Navigate to Settings -> Data Model in your Directus Data Model, and create a new
 - `views` (Type: String, Interface: Input)
 - `upload_date` (Type: Datetime Field)
 
-Go to Settings -> Access Control -> Public and give the Public role a read access for the `videos` collection to allow unauthenticated read access collection from your frontend. Also you need to grant the Public role read access to the `directus_files` collection in the System Collections to access the images and videos saved in your `videos` collection.
+Give the Public role read access on the `videos` and `directus_files` collections.
 
-Add 3 items in the `videos` collection.
+Create 3 videos in the collection to test with.
 
 ## Creating Video Listing Page
 In your SvelteKit application, create a `types.ts` file in the `src/lib` folder to define the structure of your video data and ensure type safety throughout your application.
