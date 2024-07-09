@@ -6,21 +6,20 @@ author:
   avatar_file_name: './clara-ekekenta.avif'
 ---
 
-## Introduction
-SvelteKit is a framework built on top of the Svelte framework, designed to facilitate building fast and efficient web applications. In this tutorial, you will learn how to build an application using Directus as a Headless CMS. You will store, and retrieve video metadata in Directus CMS and use them to build a video streaming application.
+In this tutorial, you will learn how to build an application using Directus as a backend. You will store and retrieve video metadata in Directus CMS and use them to build a video streaming application that tracks views.
 
 ## Before You Start
+
 You will need:
 
 - [Node.js v20.11.1](https://nodejs.org/) or later.
 - A code editor on your computer.
 - A Directus project - follow our [quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one.
-- Some knowledge of React and Sveltekit.
+- Some knowledge of SvelteKit.
 
 You can find the code for this tutorial on my [GitHub repository](https://github.com/Claradev32/directus_sveltekit).
 
-
-## Setting up a new project.
+## Creating a Svelte Project
 
 Setting up a new Sveltekit project and install the required dependencies including the Directus SDK:
 
@@ -28,21 +27,18 @@ Setting up a new Sveltekit project and install the required dependencies includi
 npm create svelte@latest video-streaming-app #
 cd video-streaming-app
 npm install
-npm install @directus/sdk
+npm install @directus/sdk svelte-video-player
 ```
 
-## Create a Directus Helper
 In your `src/libs` folder, create a new `directus.ts` file to create a Directus SDK instance helper function:
 
-```
+```js
 import { createDirectus, rest } from "@directus/sdk";
-
 export const DIRECTUS_API_URL = import.meta.env.VITE_DIRECTUS_URL;
-
 function getDirectusClient() {
   const directus = createDirectus(DIRECTUS_API_URL).with(rest());
   return directus;
-}
+};
 export default getDirectusClient;
 ```
 
