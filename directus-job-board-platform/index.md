@@ -127,9 +127,6 @@ export function AuthProvider(props: { children: JSX.Element }) {
         registerUser({
           email: newUser.email,
           password: newUser.password,
-          first_name: newUser.name.split(" ")[0],
-          last_name: newUser.name.split(" ")[1],
-          role: "Job Applicant",
         })
       );
     } catch (error) {
@@ -285,11 +282,11 @@ In your **src** folder, create a new **types** directory. Add an `index.ts` file
 
 ```jsx
 export interface User {
-  id: number;
+  id?: number;
   email: string;
   password: string;
-  first_name: string;
-  last_name: string;
+  first_name?: string;
+  last_name?: string;
   role?: string;
 }
 
@@ -323,8 +320,6 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "@solidjs/router";
 
 export default function RegisterPage() {
-  const [first_name, setFirstName] = createSignal("");
-  const [last_name, setLastName] = createSignal("");
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
   const [role, setRole] = createSignal<"applicant" | "employer">("applicant");
@@ -335,8 +330,6 @@ export default function RegisterPage() {
     e.preventDefault();
     try {
      const res = await auth.register({
-        first_name: first_name(),
-        last_name: last_name(),
         email: email(),
         password: password(),
       });
@@ -350,20 +343,6 @@ export default function RegisterPage() {
 
   return (
     <form onSubmit={handleRegister}>
-      <input
-        type="text"
-        placeholder="First Name"
-        value={first_name()}
-        onInput={(e) => setFirstName(e.currentTarget.value)}
-        required
-      />
-       <input
-        type="text"
-        placeholder="Last Name"
-        value={last_name()}
-        onInput={(e) => setLastName(e.currentTarget.value)}
-        required
-      />
       <input
         type="email"
         placeholder="Email"
