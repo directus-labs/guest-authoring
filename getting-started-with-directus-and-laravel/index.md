@@ -103,7 +103,7 @@ class HomeController extends Controller
     public function index()
     {
         $directus = app('directus');
-        $settingsResponse = $directus->get_items('global');
+        $settingsResponse = $directus->get('global');
         $settings = $settingsResponse['data'];
         return view('home', compact('settings'));
     }
@@ -163,7 +163,7 @@ class PageController extends Controller
     public function show($slug)
     {
         $directus = app('directus');
-        $pageResponse = $directus->get_items('pages', [
+        $pageResponse = $directus->get('pages', [
             'filter' => ['slug' => $slug]
         ]);
         $page = $pageResponse['data'][0];
@@ -235,7 +235,7 @@ class PostController extends Controller
     public function index()
     {
         $directus = app('directus');
-        $postsResponse = $directus->get_items('posts', [
+        $postsResponse = $directus->get('posts', [
             'sort' => ['-date_created'],
             'limit' => 10
         ]);
@@ -247,7 +247,7 @@ class PostController extends Controller
     public function show($id)
     {
         $directus = app('directus');
-        $postResponse = $directus->get_items('posts', $id);
+        $postResponse = $directus->get('posts', $id);
         $post = $postResponse['data'];
         return view('posts.show', compact('post'));
     }
