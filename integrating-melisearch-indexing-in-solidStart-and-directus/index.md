@@ -8,6 +8,15 @@ author:
 
 In this tutorial, you will learn how to integrate Meilisearch indexing with a SolidStart frontend and a Directus backend. You'll focus on setting up Directus, creating a SolidStart project, and implementing Meilisearch indexing to keep your search data up-to-date.
 
+
+## Before You Start
+
+You will need:
+
+- [Node.js v20.11.1](https://nodejs.org/) or later.
+- A code editor on your computer.
+- Some knowledge of SolidStart.
+
 ## Setting Up Directus
 First, ensure you have a local Directus project running. Once your project is set up, create a collection called `articles` with fields such as `title`, `content`, and `author`.
 
