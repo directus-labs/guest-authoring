@@ -200,7 +200,11 @@ export async function getVideo(id: string): Promise<Video> {
   const directus = getDirectusClient();
   const response = await directus.request(
     readItem("videos", id, {
-      fields: ["*", "thumbnail.*", "video_file.*"],
+      fields: [
+          "*",
+          { thumbnail: ["*"] },
+          { video_file: ["*"] }
+        ]
     })
   );
   return response as Video;
