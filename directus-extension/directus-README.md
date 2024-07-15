@@ -1,9 +1,9 @@
 ---
-title: ' How to Make a Web Scraper Directus Extension'
-description: ''
+title: " How to Make a Web Scraper Directus Extension"
+description: ""
 author:
-  name: 'Nancy Okeke'
-  avatar_file_name: 'add-to-directory'
+  name: "Nancy Okeke"
+  avatar_file_name: "add-to-directory"
 ---
 
 ## What is Directus
@@ -30,7 +30,7 @@ The easiest and fastest way to get started with Directus is through Directus Clo
 
 ## What is Webscraping
 
-Webscraping is one of the efficient way to extract data in a website. Now, imagine if you need some information from a website. You can manually copy it down and save it somewhere. But what if you need a large amount of data from a website, maybe for a project that has a tight deadline. In this case, copying it manaually will not be efficient and will slow you down. What you need is a webscraper. Webscraper is a process of  extracting a large amount of data in a smaller amount of time.
+Webscraping is one of the efficient way to extract data in a website. Now, imagine if you need some information from a website. You can manually copy it down and save it somewhere. But what if you need a large amount of data from a website, maybe for a project that has a tight deadline. In this case, copying it manaually will not be efficient and will slow you down. What you need is a webscraper. Webscraper is a process of extracting a large amount of data in a smaller amount of time.
 
 ## How Does a Webscraper Function Work?
 
@@ -76,7 +76,7 @@ To create a new directus project, open your command prompt and type the followin
 
 ```bash
  // to navigate to desktop directory
- cd desktop 
+ cd desktop
 
 ```
 
@@ -100,14 +100,14 @@ Our custom operation does not require any extra arguments so the app will be pla
 ```ts
 import { defineOperationApp } from "@directus/extensions-sdk";
 
-export default defineOperationApp({ 
-  id: "web_scraper_extension", 
-  name: "Web Scraper Extension", 
-  icon: "box", 
-  description: "Web Scraper Extension", 
-  overview: [], 
+export default defineOperationApp({
+  id: "web_scraper_extension",
+  name: "Web Scraper Extension",
+  icon: "box",
+  description: "Web Scraper Extension",
+  overview: [],
   options: [],
- }); 
+});
 ```
 
 To open your Vscode Terminal
@@ -117,7 +117,7 @@ code .
 
 ```
 
-The *api* for our custom operation is where all the processing and web scraping will happen.
+The _api_ for our custom operation is where all the processing and web scraping will happen.
 
 ```ts
 import { defineOperationApi } from "@directus/extensions-sdk";
@@ -126,20 +126,25 @@ import WebScraperService from "./webscraper";
 export default defineOperationApi({
   id: "web_scraper_extension",
   handler: async (_, { data, database }) => {
-    const trigger = data["$trigger"] as { payload: { website_url: string }; collection: string; };
+    const trigger = data["$trigger"] as {
+      payload: { website_url: string };
+      collection: string;
+    };
     const webScraperService = new WebScraperService();
-    const siteData = await webScraperService.getCompanySiteData(trigger.payload.website_url);
+    const siteData = await webScraperService.getCompanySiteData(
+      trigger.payload.website_url
+    );
     await database(trigger.collection)
       .where({ website_url: trigger.payload.url })
       .update({ website_data: siteData });
     return { success: true };
   },
- }); 
+});
 ```
 
-Aside from ensuring the `id` property in the *app* and *api* are the same, we need to pay close attention to the `handler` property, this is where all the extension logic lives. It receives two parameters: `options`, and `context`.
+Aside from ensuring the `id` property in the _app_ and _api_ are the same, we need to pay close attention to the `handler` property, this is where all the extension logic lives. It receives two parameters: `options`, and `context`.
 
-Since the *app* of our operation does not take any options, we can ignore the `options` parameter. The second parameter which is the `context` parameter is where all the important information is.
+Since the _app_ of our operation does not take any options, we can ignore the `options` parameter. The second parameter which is the `context` parameter is where all the important information is.
 Per the [docs](https://docs.directus.io/extensions/operations.html#handler-function), the context parameter has several properties, two of which we will take advantage of: `data`, and `database`.
 
 The data property contains the raw data from the previous operations, which in this case will be the trigger. This part of the [docs](https://docs.directus.io/app/flows/triggers.html#actions), provides some insight into the data property in the `handler` context. We're particularly interested in the `”$trigger”` property, as it contains the `payload` (containing the data from the newly created item) and the name of the collection. We can then pass the `URL` from the newly created item into our web scraping service.
@@ -154,16 +159,15 @@ npx create-directus-project webscraper
 
 You will be prompted to choose any database of your choice, we will use MYSQL database, but feel free to choose any database of your choice.
 
-Check your *.env* file and make sure it has the following environmental variables
+Check your _.env_ file and make sure it has the following environmental variables
 
 ```javascript
-DB_CLIENT="your database client"
-DB_HOST="your database host"
-DB_PORT="your database port"
-DB_DATABASE="your database title"
-DB_USER="your database username"
-DB_PASSWORD="your database password"
-
+DB_CLIENT = "your database client";
+DB_HOST = "your database host";
+DB_PORT = "your database port";
+DB_DATABASE = "your database title";
+DB_USER = "your database username";
+DB_PASSWORD = "your database password";
 ```
 
 ### Building and Starting Your Directus Server
@@ -236,13 +240,15 @@ Now whenever a new item is created in our collection, the flow will be triggered
 
 ### Installing Cheerio npm package
 
-- Cheerio:  Cheerio is an npm package used for manipulating data.Cheerio does not provide a visua rendering, apply CSS, load external resources, execute Javascript which is common for Single Page Application(SPA). This makes Cheerio much, much faster that other solutions. Some of the amazing features of cheerio includes:
+- Cheerio: Cheerio is an npm package used for manipulating data.Cheerio does not provide a visua rendering, apply CSS, load external resources, execute Javascript which is common for Single Page Application(SPA). This makes Cheerio much, much faster that other solutions. Some of the amazing features of cheerio includes:
 
 1. Familiar syntax: Cheerio implements a subset of core jQuery. Cheerio removes all the DOM inconsistencies and browser cruft from the jQuery library, revealing its truly gorgeous API.
 
 2. Blazingly fast: Cheerio works with a very simple, consistent DOM model. As a result parsing, manipulating, and rendering are incredibly efficient.
 
 3. Incredibly flexible: Cheerio wraps around parse5 parser and can optionally use @FB55's forgiving htmlparser2. Cheerio can parse nearly any HTML or XML document.
+
+- Playwright: Playwright just like cheerio is an npm package and an open-source automation library for browser testing and web scraping. It was developed by Microsoft aand has become a popular automation library for web developers. Playwright provides the ability to automate browser tasks in Chromium, Firefox and WebKit with a single API.
 
 ```bash=
 npm i playwright cheerio
@@ -253,57 +259,116 @@ npm i playwright cheerio
 The final piece of our extension is the web scraper itself, which takes the URL and parses the website at the URL for any relevant data.
 
 ```javascript
-
+import { chromium, type Browser, type Page } from "playwright";
 import * as cheerio from "cheerio";
 
 export default class WebScraperService {
-  constructor() {}
+  browser: Browser | null;
+  constructor() {
+    this.browser = null;
+  }
 
-  async validatePage(url: string) {
-try {
-    
-   new URL(url);
- } catch (error) {
-   throw new PageLoadError("Invalid URL");
- }
+  async initializeBrowser() {
+    if (!this.browser) {
+      this.browser = await chromium.launch();
+    }
+  }
+
+  async validateAndLoadPage(url: string, page: Page) {
+    // Validate URL
+    try {
+      new URL(url);
+    } catch (error) {
+      throw new PageLoadError("Invalid URL");
+    }
+
+    let loadedPage;
+    try {
+      loadedPage = await page.goto(url, {
+        waitUntil: "domcontentloaded",
+      });
+    } catch (error) {
+      throw new PageLoadError("Failed to load page");
+    }
+
+    if (!loadedPage) {
+      throw new PageLoadError("Failed to load page");
+    }
   }
 
   async getCompanySiteData(url: string) {
- console.log(`Crawling ${url}`);
- try {
-   await this.validatePage(url);
-   const html = await fetch(url).then((res) => res.text());
+    console.log(`Crawling ${url}`);
+    try {
+      await this.initializeBrowser();
+      if (!this.browser) throw new Error("Browser not initialized");
+      const context = await this.browser.newContext();
+      const page = await context.newPage();
 
-   const $ = cheerio.load(html);
-   const tagsToExtract = [
-     "span",
-     "div",
-     "p",
-     "h1",
-     "h2",
-     "h3",
-     "h4",
-     "h5",
-     "h6",
-     "li",
-     "a",
-     "ol",
-     "ul",
-   ];
-   let content = "";
-   tagsToExtract.forEach((tag) => {
-     $(tag).each((_, element) => {
-       content = content + " " + $(element).text();
-     });
-   });
+      await this.validateAndLoadPage(url, page);
+      const html = await page.content();
 
+      const $ = cheerio.load(html);
+      const tagsToExtract = [
+        "span",
+        "div",
+        "p",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "li",
+        "a",
+        "ol",
+        "ul",
+      ];
+      let content = "";
+      tagsToExtract.forEach((tag) => {
+        $(tag).each((_, element) => {
+          content += $(element).text() + " ";
+        });
+      });
+
+      content = content.slice(0, 5000);
+      content = content
+        .replace(/\.\w+/g, "")
+        .replace(/#\S/g, "")
+        .replace(/-\w+/g, "")
+        .replace(/\s+/g, " ");
+
+      await context.close();
+      console.log("Done crawling", url);
+      return content;
+    } catch (error) {
+      console.error("Error in getCompanySiteData:", error);
+      throw error;
+    }
+  }
+
+  async closeBrowser() {
+    if (this.browser) {
+      await this.browser.close();
+      this.browser = null;
+    }
+  }
+}
+
+class PageLoadError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "PageLoadError";
+  }
+}
 ```
 
 Explanation:
 
-The web scraping service uses the cheerio library for parsing HTML. The main component is the WebScraperService class, which has methods for validating URLs and extracting content from web pages.
+The main component is the WebScraperService class, which has methods for validating URLs and extracting content from web pages. The web scraping service uses the playwright and cheerio library for loading and parsing the HTML.
 
-The getCompanySiteData method is responsible for fetching and extracting text content from a web page. It fetches the HTML content of the web page and uses cheerio to parse this HTML. The method extracts text content from specific HTML tags (span, div, p, h1, h2, h3, h4, h5, h6, li, a, ol, ul) and concatenates this text into a single string. The text is then trimmed to the first 5000 characters and cleaned by removing certain patterns (such as periods followed by a word, repeated characters, hashtags, hyphenated words, and extra whitespace). Finally, the cleaned-up text content is returned and saved in the Directus database.
+The getCompanySiteData method is responsible for fetching and extracting text content from a web page. It fetches the HTML content of the web page and loads it using playwright then uses cheerio to parse the HTML from the loaded page. Loading the page with playwright allows the content to load as if the page was opened by an actual user and ensures the scraped content is the actual web page content.
+
+It then extracts text content from specific HTML tags (span, div, p, h1, h2, h3, h4, h5, h6, li, a, ol, ul) and concatenates this text into a single string. The text is then trimmed to the first 5000 characters and cleaned by removing certain patterns (such as periods followed by a word, repeated characters, hashtags, hyphenated words, and extra whitespace). Finally, the cleaned-up text content is returned and saved in the Directus database.
 
 ![Webscraper Extension](webscraper.jpg)
 
