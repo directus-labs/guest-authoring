@@ -1,12 +1,12 @@
 ---
-title: 'Build a Video streaming app with Directus and Sveltekit #199'
-description: 'Learn how to integrate Directus with SvelteKit. You will store, and retrieve video metadata in Directus CMS and use them to build a video streaming application.'
+title: 'Build a Video streaming app with Directus and SvelteKit'
+description: 'Learn how to integrate Directus with SvelteKit to build a video streaming application. You will store, and retrieve video metadata in Directus as a content management system.'
 author:
   name: 'Clara Ekekenta'
   avatar_file_name: './clara-ekekenta.avif'
 ---
 
-In this tutorial, you will learn how to build an application using Directus as a backend. You will store and retrieve video metadata in Directus CMS and use them to build a video streaming application that tracks views.
+In this tutorial, you will learn how to build an application using Directus as a backend. You will store and retrieve video metadata in a Directus project as a content management system, and use them to build a video streaming application that tracks views.
 
 ## Before You Start
 
@@ -19,9 +19,9 @@ You will need:
 
 You can find the code for this tutorial on my [GitHub repository](https://github.com/Claradev32/directus_sveltekit).
 
-## Creating a Svelte Project
+## Creating a SvelteKit Project
 
-Setting up a new Sveltekit project and install the required dependencies including the Directus SDK:
+Create a new SvelteKit project and install the required dependencies including the Directus SDK:
 
 ```
 npm create svelte@latest video-streaming-app #
@@ -83,7 +83,7 @@ export interface Video {
 }
 ```
 
-Create a new `components` folder inside the `src/libs` folder. Within this new folder, create two component files: `VideoCard.svelte` and `VideoGrid.svelte`. Add the following code snippet to the `VideoCard.svelte` file:
+Create a new `components` folder inside the `src/libs` folder. Within this new folder, create two component files: `VideoCard.svelte` and `VideoGrid.svelte`. Add the following code to the `VideoCard.svelte` file:
 
 ```svelte
 <script lang="ts">
@@ -145,11 +145,11 @@ export async function getVideos(params = {}): Promise<Video[]> {
 }
 ```
 
-## Displaying thumbnails and titles
-Update the your `routes/+page.svelte` file to use the `getVideos` function to fetch video data and display it using the `VideoGrid` component. This will display the thumbnails, titles, views and dates of the videos.
-```svelte
+## Displaying Thumbnails and Titles
 
-// [!code ++]
+Update the your `routes/+page.svelte` file to use the `getVideos` function to fetch video data and display it using the `VideoGrid` component. This will display the thumbnails, titles, views and dates of the videos.
+
+```svelte
 <script lang="ts">
   import { onMount } from "svelte";
   import { getVideos } from "$lib/services/index";
@@ -175,7 +175,7 @@ Update the your `routes/+page.svelte` file to use the `getVideos` function to fe
   });
 </script>
 
-<h1>Stream your favourite vidoes</h1>
+<h1>Stream your favorite vidoes</h1>
 
 
 {#if videos.length > 0}
@@ -184,16 +184,18 @@ Update the your `routes/+page.svelte` file to use the `getVideos` function to fe
   <p>Loading videos...</p>
 {/if}
 ```
-Directus stores file metadata in the `directus_files` collection. When using file fields in other collections, Directus creates a one-to-many relationship. To include file data when fetching items, you use dot notation in the fields parameter, like `thumbnail.*` and `video_file.*`. This tells Directus to populate the file information from the `directus_files` collection.
+
+Directus stores file metadata in the `directus_files` collection. 
 
 ![Video Listing](<Screenshot 2024-07-04 at 11.53.25.png>)
 
-## Video Player Page
+## Building the Video Player Page
+
 Update your `services/index.ts` file to add new functions that will fetch a video by its ID and update the `videos` collection to increment the video's views field.
+
 ```ts
 // your other imports
 
-// [!code ++]
 import { readItems, readItem, updateItem } from "@directus/sdk";
 
 export async function getVideo(id: string): Promise<Video> {
@@ -219,7 +221,7 @@ export async function incrementViews(id: string) {
 }
 ```
 
-Create a nested route in your **routes** folder in the format `video/[id]/+page.svelte` to create a page to play selected videos. Update this file with the following code:
+Create a nested route in your `routes` folder in the format `video/[id]/+page.svelte` to create a page to play selected videos. Update this file with the following code:
 
 ```svelte
 <script lang="ts">
@@ -281,11 +283,11 @@ Now click on any of the videos to stream it.
 
 ![Video Player](<Screenshot 2024-07-04 at 12.27.56.png>)
 
-## Search Functionality
+## Creating Search Functionality
+
 In your `services/index.ts`, add a new funtion that implements search functionality to find videos by title or description.
 
 ```ts
-// [!code ++]
 export async function searchVideos(query: string): Promise<Video[]> {
   const directus = getDirectusClient();
   const response = await directus.request(
@@ -297,13 +299,12 @@ export async function searchVideos(query: string): Promise<Video[]> {
   return response as Video[];
 }
 ```
+
 This function uses the `search` parameter from Directus to perform a search on `videos` collection.
 
 Update the code in your `routes/+page.svelte` file to use the `searchVideos` function to add search functionality to your page.
 
 ```svelte
-
-// [!code ++]
 <script lang="ts">
   import { onMount } from "svelte";
   import { getVideos, searchVideos } from "$lib/services/index";
@@ -348,7 +349,7 @@ Update the code in your `routes/+page.svelte` file to use the `searchVideos` fun
   }
 </script>
 
-<h1>Stream your favourite vidoes</h1>
+<h1>Stream your favorite vidoes</h1>
 
 <form on:submit|preventDefault={handleSearch}>
   <input type="text" bind:value={searchQuery} placeholder="Search for videos" />
@@ -376,5 +377,6 @@ You can now search and stream any video of your choice.
 ![Search videos](<Screenshot 2024-07-04 at 12.48.17.png>)
 
 ## Summary
+
 In this tutorial, you've learned how to build a SvelteKit video streaming application that uses data from a Directus project, tracking views when rendering data into pages.
 
