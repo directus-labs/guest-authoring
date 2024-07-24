@@ -1,14 +1,15 @@
 ---
 title: 'Building a Job Board Platform with Directus and SolidStart.js'
-description: 'Learn how to build a job board portal with Directus and SolidStart.js. You'll learn how to register new users, login, and perform create, read, update, and delete operations (CRUD) on Directus.'
+description: 'Learn how to build a job board platform with Directus and SolidStart.js. You'll learn how to register new users, login, and perform operations on your data.'
 author:
   name: 'Ndoma Precious'
   avatar_file_name: './ndoma-precious.png'
 ---
 
-In this tutorial, you'll learn to build a job board portal using Directus and SolidStart.js. We'll cover user registration, login, and working with data in Directus. You'll create a complete job board with listing, application, and management features for both jobs and applications. This guide will provide you with the skills to combine Directus's backend capabilities with SolidStart.js's reactive frontend, to build a job portal web application.
+In this tutorial, you'll learn to build a job board portal using Directus and SolidStart.js. We'll cover user registration, login, and working with data in Directus. You'll create a complete job board with listing, application, and management features for both jobs and applications. This guide will provide you with the skills to combine Directus's backend capabilities with SolidStart.js' reactive frontend.
 
 ## Before You Start
+
 You will need:
 
 - [Node.js v18](https://nodejs.org/) or above installed on your computer.
@@ -48,26 +49,22 @@ In the `application` collection, add two Many-to-One fields:
 These fields connect each application to its corresponding applicant and job. Add 3 items in the `job` collection - [here's some sample data](https://raw.githubusercontent.com/preshenv/directus-solidstart-job-board/main/src/components/jobs.md).
 
 ## Creating a New User Role
-In your access control settings, create a new role called `Job Applicant`. For the `application` collection, enable `create` and `read` permissions. Use custom rules for the `application` collection to ensure users can only read and update their own applications. Set a filter like: `user -> id Equals $CURRENT_USER.id`. This allows users to view all jobs, create new applications, and view or update only their own applications. 
 
-Give public read access to the `job` collection to allow users to see available jobs even when they are not logged in. Also, ensure the admin role retains full permissions across all collections.
+In your Access Control settings, create a new role called `Job Applicant`. For the `application` collection, enable `create` and `read` permissions. Use custom rules for the `application` collection to ensure users can only read and update their own applications. Set a filter like: `user -> id Equals $CURRENT_USER.id`. This allows users to view all jobs, create new applications, and view or update only their own applications. 
 
-## Enable User Registration
-By default, the Directus registration feature is disabled. To allow users register directly from your application. Follow the steps below to enable it:
-- Navigate to Settings > Settings.
-- Check the **Enable User Registration** box.
-- Select the `Job Applicant` role for new users who register through this interface.
+Enable public read access for the `job` collection to allow users to see available jobs even when they are not logged in.
 
-![Enabling Directus user registration](<Screenshot 2024-07-09 at 09.22.52.png>)
+Enable user registration in your project settings, and select `Job Applicant` aas the role for new users.
 
 ## Initializing a SolidStart.js project
+
 Create a new SolidStart project by running the command:
 
 ```env
 npm init solid@latest
 ```
 
-Choose the **bare** template, enable Server-side rendering from the prompt, and Typescript in the prompts.
+Choose the bare template, enable server-side rendering, annd use TypeScript.
 
 In your SolidStart project's `src` directory, create a `lib` directory. Inside it, create a `directus.js` file:
 
@@ -96,10 +93,11 @@ VITE_PUBLIC_DIRECTUS_API_URL='https://directus.example.com'
 
 ## Implementing User Authentication
 
-To implement user authentication and grant users access to the application, create a **context** directory and inside it, create an `AuthContext.tsx` file.
+To implement user authentication and grant users access to the application, create a `context` directory and, inside it, an `AuthContext.tsx` file.
 
 ### Creating User Registration
-In the `AuthContext.tsx`, add the following code to implement user registration using Directus Authentication:
+
+In the `AuthContext.tsx`, implement user registration:
 
 ```jsx
 import {
@@ -145,7 +143,8 @@ export const useAuth = () => useContext(AuthContext)!;
 ```
 
 ### Creating User Login
-Update the `AuthContext.tsx` file to implement user login. First, add the following functions to save, retrieve, and delete user sessions:
+
+Update the `AuthContext.tsx` file, first adding functions to save, retrieve, and delete user sessions:
 
 ```ts
 //...
@@ -167,7 +166,8 @@ const deleteCookie = (name: string) => {
   setCookie(name, "", -1);
 };
 ```
-Then implement the login functionality with the following code:
+
+Then implement the login functionality:
 
 ```ts
 //...
@@ -202,7 +202,9 @@ export function AuthProvider(props: { children: JSX.Element }) {
   );
 }
 ```
+
 ### Creating User Logout
+
 Update the `AuthContext.tsx` file to add user logout functionality:
 
 ```ts
@@ -239,7 +241,9 @@ export function AuthProvider(props: { children: JSX.Element }) {
 ```
 
 ### Getting Active User Data
-Add the following code to the `AuthContext` to fetch the details of the actively logged-in user:
+
+Update `AuthContext.tsx` to fetch the details of the actively logged-in user:
+
 ```ts
 //...
 export function AuthProvider(props: { children: JSX.Element }) {
@@ -276,9 +280,10 @@ export function AuthProvider(props: { children: JSX.Element }) {
   //...
 }
 ```
+
 This `AuthContext` handles user registration, login, logout, and session management. It retrieves user session information from cookies, including access and refresh tokens, and returns an object containing this information.
 
-In your **src** folder, create a new **types** directory. Add an `index.ts` file inside it to define the `User` interface used in `AuthContext` and other interfaces you'll be using throughout your application. This centralizes your TypeScript type definitions.
+In your `src` directory, create a new `types` directory. Add an `index.ts` file inside it to define the `User` interface used in `AuthContext` and other interfaces you'll be using throughout your application. This centralizes your TypeScript type definitions.
 
 ```jsx
 export interface User {
@@ -312,7 +317,7 @@ export type Jobs = Job[];
 export type Applications = Application[];
 ```
 
-Create two new files, `register.tsx` and `login.tsx`, in your routes directory to implement the user registration and login forms. Add the following code to the `register.tsx` file.
+Create two new files, `register.tsx` and `login.tsx`, in your routes directory to implement the user registration and login forms. Add the following to `register.tsx`:
 
 ```jsx
 import { createSignal } from "solid-js";
@@ -371,6 +376,7 @@ export default function RegisterPage() {
   );
 }
 ```
+
 Then add the code snippets below to the `login.tsx` file.
 
 ```jsx
@@ -415,14 +421,17 @@ export default function LoginPage() {
   );
 }
 ```
+
 ## Adding Navigation
+
 SolidStart uses a file-based routing system, so all the files in your `src/routes` directory are automatically routes. To set up navigation:
 
 1. Use the `<FileRoutes />` component from SolidStart.
 2. Wrap it with `<Router>`from `@solidjs/router`.
 3. Enclose everything in `<AuthProvider>` for app-wide authentication context.
 
-Your App component should look like this:
+Your `App` component should look like this:
+
 ```jsx
 import { Router } from "@solidjs/router";
 import { AuthProvider } from "./context/AuthContext";
@@ -439,10 +448,12 @@ export default function App() {
   );
 }
 ```
+
 This setup enables automatic routing based on your file structure while providing authentication context throughout the app.
 
-## Creating Job Listings Components
-To use the `getDirectusInstance` to get data from Directus, create a `components` folder, inside the components folder create a `JobList.tsx` file and add the following:
+## Creating Job Listing Components
+
+To use the `getDirectusInstance` to get data from Directus, create a `components` directory, inside the components directory, create `JobList.tsx`:
 
 ```jsx
 import { For, Show } from "solid-js";
@@ -485,15 +496,15 @@ function JobList(props: JobListProps) {
 
 export default JobList;
 ```
-The JobList component takes four props:
+
+The `JobList` component takes four props:
+
 - `jobs`: An array of job objects to display
 - `onEdit`: A function to handle job editing
 - `onDelete`: A function to handle job deletion
 - `onApply`: A function to handle job applications
 
-These props allow the component to display jobs and respond to user actions for editing, deleting, and applying to jobs.
-
-In the `routes/index.tsx` file use **JobList** component to display the job listings with the code:
+In the `routes/index.tsx` file use the `JobList` component to display the job listings:
 
 ```jsx
 import { createResource, Show } from "solid-js";
@@ -555,12 +566,15 @@ function HomePage() {
 
 export default HomePage;
 ```
+
 ![Job Listing Portal](<Screenshot 2024-07-02 at 10.43.05.png>)
 
-## Creating, updating, and deleting job listings
+## Creating, Updating, and Deleting Job Listings
+
 Update the job `HomePage` component to implement job listing management functionalities.
 
-### Crreating Job Listing
+### Creating Job Listings
+
 Add the following `addJob` function to the `HomePage` component to enable administrators to create new job listings:
 
 ```tsx
@@ -605,7 +619,9 @@ function HomePage() {
    // ... rest of your component code
 }
 ```
-### Updating Job Listing
+
+### Updating Job Listings
+
 Implement the `updateJob` function in the `HomePage` component to allow administrators to edit existing job listings:
 
 ```ts
@@ -631,7 +647,9 @@ function HomePage() {
   // ... rest of your component code
 }
 ```
-### Deleting Job Listing
+
+### Deleting Job Listings
+
 Add the `deleteJob` function to the `HomePage` component to enable administrators to remove job listings:
 
 ```ts
@@ -656,6 +674,7 @@ function HomePage() {
 ```
 
 ## Integrating Management Functions
+
 Update the `HomePage` component's return statement to incorporate these management functions:
 
 ```tsx
@@ -703,9 +722,10 @@ return (
   </div>
 );
 ```
+
 These functions will handle the respective actions when triggered by user interactions in the job list. Ensure your routes/index.tsx file contains this updated code.
 
-In the `components` folder, create two new files for the `JobForm.tsx` and `Modal.tsx` components that were used in your `HomePage` component. Add the following code to your `components/JobForm.tsx` file: 
+In the `components` directory, create two new files for the `JobForm.tsx` and `Modal.tsx` components that were used in your `HomePage` component. Add the following code to your `components/JobForm.tsx` file: 
 
 ```jsx
 import { createSignal } from "solid-js";
@@ -775,7 +795,8 @@ export default function JobForm(props: JobFormProps) {
   );
 }
 ```
-Then add the following code in your `components/Modal.tsx` file.
+
+Add the following code in your `components/Modal.tsx` file:
 
 ```jsx
 import { Show, JSX } from "solid-js";
@@ -800,14 +821,16 @@ export default function Modal(props: ModalProps) {
   );
 }
 ```
-Create a new file named `Modal.css` in your **components** and copy the CSS styles [here](https://github.com/preshenv/directus-solidstart-job-board/blob/main/src/components/Modal.css)to it.
 
-Log in with admin credentials, and click on the **Add New Job** button to create a new job, you can also edit and delete a job by clicking on the edit and delete buttons respectively
+Create a new file named `Modal.css` in your `components` directory and copy the CSS styles [here](https://github.com/preshenv/directus-solidstart-job-board/blob/main/src/components/Modal.css) to it.
+
+Log in with admin credentials, and click on the **Add New Job** button to create a new job, you can also edit and delete a job by clicking on the edit and delete buttons respectively.
 
 ![Add new job modal](<Screenshot 2024-07-02 at 12.01.27.png>)
 
 ## Implementing Search and Filters
-To implement job searching and filtering functionalities, update the code in your `components/JobList.tsx` file with the following:
+
+Update the code in your `components/JobList.tsx` file:
 
 ```jsx
 import { For, Show, createMemo, createSignal } from "solid-js";
@@ -898,16 +921,19 @@ function JobList(props: JobListProps) {
 
 export default JobList;
 ```
+
 The update implements the following features:
 
 - Search functionality: Users can search jobs by title, description, or location using the search input.
 - Job type filtering: A dropdown allows users to filter jobs by type (Full-time, Part-time, Contract, or All).
 - Salary range filtering: Users can set minimum and maximum salary ranges.
 - Reactive filtering: The `createMemo` function creates a reactive filtered job list based on the search query and filter criteria.
+- 
 ![Job listing with search and filter](<Screenshot 2024-07-02 at 11.55.27.png>)
 
-## Implementing job application functionality
-Create a new file named `ResumeForm.tsx` in your components folder and add the code snippets below for the resume url inputs.
+## Implementing Job Applications
+
+Create a new file named `ResumeForm.tsx` in your `components` directory and add the code snippets below for the Resume URL form inputs.
 
 ```jsx
 import { createSignal } from "solid-js";
@@ -944,11 +970,12 @@ function ResumeForm({ onSubmit }: ResumeFormProps) {
 
 export default ResumeForm;
 ```
-Update the code in your `src/routes/index.tsx` file to add the job application functionality with the following code.
+
+Update the code in your `src/routes/index.tsx` file to add the job application functionality:
 
 ```jsx
 +
-//...  //...(your existing imports
+//...  //... (your existing imports)
 import ResumeForm from "~/components/ResumeForm";
 
 function HomePage() {
@@ -1023,11 +1050,14 @@ function HomePage() {
 
 export default HomePage;
 ```
-Register as an applicant, click on the Apply button to show the resume URL modal, enter a resume URL, and click on Submit to apply for a job.
+
+Register as an applicant, click on the Apply button to show the Resume URL modal, enter a Resume URL, and click on **Submit** to apply for a job.
+
 ![job application functionality](<Screenshot 2024-07-02 at 13.07.04.png>)
 
-## Managing applicant profiles and resumes
-To allow the admin to view, accept, or decline job applications, create a new file named `applications.tsx` in your `src/routes` folder and add the following code:
+## Managing Applicant Profiles and Resumes
+
+To allow the admin to view, accept, or decline job applications, create a new file named `applications.tsx` in your `src/routes` directory and add the following code:
 
 ```jsx
 import { createSignal, createEffect, For, Show } from "solid-js";
@@ -1151,7 +1181,8 @@ const ManageApplicationsPage = () => {
 
 export default ManageApplicationsPage;
 ```
-Here we implemented the following:
+
+Here, we implemented the following:
 
 - `fetchApplications()`: Retrieves all job applications from the Directus backend, including related user and job information.
 - `fetchJobs()`: Fetches all available jobs from the Directus backend.
@@ -1167,6 +1198,5 @@ Click on the **Mananage Applications** button to navigate to the application's r
 
 
 ## Summary
-In this tutorial, you’ve learned how to build a job portal with Directus and SolidStart.js, dynamically create, read, update, and delete jobs and applications, and successfully build a job portal application with Directus for the backend and SolidStart.js for the frontend.
-Explore the Directus documentation to discover other amazing features you can add to your SolidStart.js applications.
 
+In this tutorial, you’ve learned how to build a job portal with Directus and SolidStart.js, dynamically create, read, update, and delete jobs and applications, and successfully build a job portal application with Directus for the backend and SolidStart.js for the frontend.
