@@ -115,4 +115,4 @@ Now add 3 items to your articles collection.
 
 
 ## Summary
-In this tutorial, you've learned how to integrate Meilisearch indexing with Directus and SolidStart. You've built a SolidStart application that automatically indexes data created, updated, or deleted from a Directus project in Meilisearch.
+In this tutorial, you've learned how to integrate Meilisearch indexing with Directus and SolidStart. You've learned how to setup the Directus hooks that automatically indexes data created, updated, or deleted from a Directus project in Meilisearch.
