@@ -1,10 +1,12 @@
 ---
 title: "Getting Started with Directus and Laravel"
-description: "Learn how to integrate Directus with Laravel. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items"
+description: "Learn how to integrate Directus with Laravel. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on data in a Directus project."
 author:
   name: "Ekekenta Clinton"
   avatar_file_name: "./ekekenta-clinton.png"
 ---
+
+In this tutorial, you will learn how to build a website using Directus as a Headless CMS. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items, and build a blog.
 
 ## Before You Start
 
@@ -18,25 +20,15 @@ You will need:
 
 The code for this tutorial is available on my [GitHub repository](https://github.com/icode247/laravel-directus).
 
-
-## Setting Up A Laravel Project
-Start by setting up a new Laravel project move into the project directory by running the following commands:
+Set up a new Laravel project move into the project directory by running the following commands:
 
 ```shell
 composer create-project laravel/laravel directus-laravel-blog
 cd directus-laravel-blog
 ```
 
-## Using Global Metadata and Settings
-Create a new collection named `global` in your Directus project by navigating to **Settings -> Data Model**. Choose 'Treat as a single object' under the Singleton option since this collection will have just one item with global website metadata in it.
-
-Create two text input fields, one with the key `title` and the other with `description`.
-
-Go to the `global` collection in the content module. Collections launch straight into the one-item form, however as a singleton, they will often show a list of objects. Enter information in the fields for the `title` and `description`, and click save.
-
-By default, new collections are not accessible to the public. Navigate to Settings -> Access Control -> Public and give Read access to the `global` collection.
-
 ## Creating a Directus Module
+
 Create a new service provider with the following command:
 
 ```shell
@@ -80,9 +72,19 @@ class DirectusServiceProvider extends ServiceProvider
     }
 }
 ```
-The code defines a `DirectusServiceProvider` class which creates a singleton instance for interacting with a Directus API. It provides methods to make HTTP requests to the API, with the base URL set from environment variables.
 
-## Rendering the Home Page
+This defines a `DirectusServiceProvider` class which creates a singleton instance for interacting with a Directus API. It provides methods to make HTTP requests to the API, with the base URL set from environment variables.
+
+## Using Global Metadata and Settings
+
+Create a new collection named `global` in your Directus project by navigating to **Settings -> Data Model**. Choose 'Treat as a single object' under the Singleton option since this collection will have just one item with global website metadata in it.
+
+Create two text input fields, one with the key `title` and the other with `description`.
+
+Navigate to the content module and enter the global collection. Collections will generally display a list of items, but as a singleton, it will launch directly into the one-item form. Enter information in the title and description field and hit save.
+
+By default, new collections are not accessible to the public. Navigate to Settings -> Access Control -> Public and give Read access to the `global` collection.
+
 Create a `HomeController` with the command:
 
 ```shell
@@ -109,9 +111,10 @@ class HomeController extends Controller
     }
 }
 ```
-Here the `DirectusServiceProvider` registers a singleton instance of Directus API, which can be accessed throughout the application using `app('directus')`. The `HomeController` uses this instance to fetch global settings from the Directus backend and pass them to the view.
 
-Now create a `home.blade.php` file in `resources/views` directory and add the following code to render the global metadata settings:
+The `DirectusServiceProvider` registers a singleton instance of Directus API, which can be accessed throughout the application using `app('directus')`. The `HomeController` uses this instance to fetch global settings from the Directus backend and pass them to the view.
+
+Create a `home.blade.php` file in the `resources/views` directory and add the following code to render the global metadata settings:
 
 ```html
 <!DOCTYPE html>
@@ -127,6 +130,7 @@ Now create a `home.blade.php` file in `resources/views` directory and add the fo
 </body>
 </html>
 ```
+
 Edit the code in your `routes/web.php` file to add a new route for the `HomeController` view:
 
 ```php
@@ -141,7 +145,8 @@ Route::get('/', [HomeController::class, 'index']);
 ![Home page with global metedata  settings](<Screenshot 2024-07-03 at 06.10.39.png>)
 
 ## Creating Pages With Directus
-Create a new collection named `pages`, and in the Primary ID Field, enter a "Manually Entered String" (named `slug`) that corresponds to the page's URL. For instance, the page `localhost:3000/about` will thereafter correspond to the about page.
+
+Create a new collection named `pages`, and in the Primary ID Field, enter a "Manually Entered String" (named `slug`) that corresponds to the page's URL. For instance, the page `localhost:3000/about` will correspond to the about page.
 
 Create a `WYSIWYG` input field named `content` and a text input field named `title`. In Access Control, give the Public role read access to the new collection. Create 3 items in the new collection - [here's some sample data](https://github.com/directus-labs/getting-started-demo-data).
 
@@ -150,7 +155,9 @@ In your project terminal, create a `PageController` with the command:
 ```shell
 php artisan make:controller PageController
 ```
+
 Open the `app/Http/Controllers/PageController.php` file created with the above command and add the following code:
+
 ```
 <?php
 
@@ -189,7 +196,8 @@ Create a new blade view file named `page.blade.php` in your `resources/views` di
 </body>
 </html>
 ```
-Edit the code in your `routes/web.php` file to add a new route for the `PageController` view:
+
+Edit the `routes/web.php` file to add a new route for the `PageController` view:
 
 ```php
 use Illuminate\Support\Facades\Route;
@@ -199,15 +207,17 @@ use App\Http\Controllers\PostController;
 Route::get('/page/{slug}', [PageController::class, 'show']);
 Route::get('/', [HomeController::class, 'index']);
 ```
-Now navigate to `http://127.0.0.1:8000/page/about` to view the About page.
+
+Navigate to `http://127.0.0.1:8000/page/about` to view the About page.
 
 ![dynamic about page](<Screenshot 2024-07-03 at 06.12.59.png>)
 
 ### Creating Blog Posts With Directus
 
-Directus CMS allows you to create and manage blog entries. Create a new collection called `authors` and include a single `name` text input field. Add some author's data to the collection.
+Create a new collection called `authors` and include a single `name` text input field. Create one or more authors.
 
 Create another collection called `posts` and add the following fields:
+
 - title (Type: String)
 - slug (Type: String)
 - content (Type: WYSIWYG)
@@ -223,6 +233,7 @@ php artisan make:controller PageController
 ```
 
 Update the `app/Http/Controllers/PageController.php` file with the following code:
+
 ```php
 <?php
 
@@ -278,7 +289,7 @@ Create a `resources/views/page.blade.php` file for the page blade view and add t
 </html>
 ```
 
-Then create another view file `resources/views/posts/show.blade.php` for the blog single page:
+Create another view file `resources/views/posts/show.blade.php` for the blog single page:
 
 ```html
 <!DOCTYPE html>
@@ -296,6 +307,7 @@ Then create another view file `resources/views/posts/show.blade.php` for the blo
 </body>
 </html>
 ```
+
 Add the following routes to your `routes/web.php` file:
 
 ```php
@@ -316,7 +328,9 @@ Navigate to `http://127.0.0.1:8000/blog` to access the blogs page.
 ![blog list page](<Screenshot 2024-07-03 at 06.15.34.png>)
 
 ## Add Navigation
+
 Run the commmand below to create a new service provider:
+
 ```shell
 php artisan make:provider ViewServiceProvider
 ```
@@ -339,7 +353,6 @@ class ViewServiceProvider extends ServiceProvider
             ['url' => '/', 'label' => 'Home'],
             ['url' => '/blog', 'label' => 'Blog Posts'],
             ['url' => '/page/about', 'label' => 'About'],
-
         ];
 
         View::composer('*', function ($view) use ($navigation) {
@@ -348,26 +361,26 @@ class ViewServiceProvider extends ServiceProvider
     }
 }
 ```
-Here the `ViewServiceProvider` provider service class registers an array of navigations for your application and will be used across your views to allow your users to navigate throughout the application.
 
-Now update all your views files in the **views** directory to add the navigation:
+The `ViewServiceProvider` provider service class registers an array of navigations for your application and will be used across your views to allow your users to navigate throughout the application.
+
+Update all your views files in the **views** directory to add the navigation:
 
 ```html
-+
 <!-- put this after the <body> tag in all your views file -->
- <nav>
-        @foreach($navigation as $item)
-            @if(isset($item['url']) && isset($item['label']))
-                <a href="{{ $item['url'] }}">{{ $item['label'] }}</a>
-            @else
-                <p>Invalid navigation item</p>
-            @endif
-        @endforeach
-    </nav>
+<nav>
+    @foreach($navigation as $item)
+        @if(isset($item['url']) && isset($item['label']))
+            <a href="{{ $item['url'] }}">{{ $item['label'] }}</a>
+        @else
+            <p>Invalid navigation item</p>
+        @endif
+    @endforeach
+</nav>
 ```
-![alt text](<Screenshot 2024-07-03 at 06.17.20.png>)
-You can now easily navigate between the pages by clicking on the nav links.
 
+![A content page with three navigation links at the top.](<Screenshot 2024-07-03 at 06.17.20.png>)
 
 ## Summary
+
 Throughout this tutorial, you've learned how to build a Laravel application that uses data from a Directus project. You started by creating a new project, setting up environment variables, and everything you need to call Directus. You then created pages and post collections in Directus and integrated them with the Laravel project.
