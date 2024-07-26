@@ -85,7 +85,9 @@ export default ({ action }, { env }) => {
 };
 ```
 
-Because Elasticsearch is a CommonJs package, the `require()` function is constructed using the `createRequire()` node utility method and used to import it to avoid errors. The Elasticsearch JavaScript client has been instantiated in the exported register function using the Cloud ID and API key defined within the `.env` file and accessed using the `env` argument. Along with `env` the `action` hook is also been accessed.
+Because Elasticsearch is a CommonJS package, the `require()` function is constructed using the `createRequire()` Node utility method and used to import it to avoid errors. 
+
+The Elasticsearch JavaScript client has been instantiated in the exported register function using the Cloud ID and API key defined within your environment variables and accessed using the `env` argument. 
 
 ## Saving Items to Index
 
