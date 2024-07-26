@@ -109,7 +109,7 @@ When executed a document will be created in an Elasticsearch `books` index conta
 
 Although the `books` index was not explicitly created, that will be done automatically if doesn’t exist and a new document is been created which is the default behavior.
 
-## Updating Items in Index
+## Updating Items in an Elasticsearch Index
 
 Add the following lines of code below the existing action:
 
@@ -130,9 +130,9 @@ action("books.items.update", async (meta) => {
 
 For an update event, the `meta` object will includes an array of `keys` along with the updated fields even when only a single item is updated. So to modify the corresponding document or documents in `books` index, the array of keys is iterated over to send multiple update requests.
 
-## Deleting Items in Index
+## Deleting Items in an Elasticsearch Index
 
-For a delete event, the `meta` object includes an array of keys (ID) of the of the deleted items. Fields are not included. Add the following lines of code after the `books.items.update` action:
+For a delete event, the `meta` object includes an array of keys of the of the deleted items. Fields are not included. Add the following lines of code after the `books.items.update` action:
 
 ```javascript
 action("books.items.delete", async (meta) => {
