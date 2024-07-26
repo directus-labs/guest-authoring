@@ -20,7 +20,7 @@ You will need:
 
 ## Getting Elasticsearch Connection Details
 
-To connect to Elasticsearch the Cloud ID and API key credentials will be used. You can in Kibana of your Elastic Cloud deployment, click on **Setup guides** at the right of the header. On the navigated page, click on **Connect to the Elasticsearch API** card and you will see your Cloud ID.
+To connect to Elasticsearch the Cloud ID and API key credentials will be used. In your Elastic Cloud deployment, click on **Setup guides -> Connect to the Elasticsearch API** card and you will see your Cloud ID.
 
 ![A modal showing the Elasticsearch endpoint and Cloud ID which has been obscured](elastic-cloud-id.png)
 
@@ -28,7 +28,7 @@ Now to get an API key, click on **Create and manage API keys,** then at the top-
 
 ![A sidebar to create an API key in Elastic Cloud. It includes a name field with the value diectus-integration](create-elastic-api-key.png)
 
-Copy the displayed API key as well as the Cloud ID and paste them into the `api/.env` file in your Directus project.
+Copy the displayed API key as well as the Cloud ID and add them to your environment variables:
 
 ```shell
 ELASTIC_API_KEY=<your-api-key>
