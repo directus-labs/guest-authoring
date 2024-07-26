@@ -6,19 +6,17 @@ author:
   avatar_file_name: "profile-pic.jpeg"
 ---
 
-# Introduction
+Directus' built-in search endpoints are suitable for a many projects, but sometimes you might need more. Elasticsearch is a powerful and flexible search system which uses an index of data to perform searches. 
 
-An important step required to harness enhanced search functionality with Elasticsearch is creating an index, which typically always needs to be in sync with the original data. While this feature is not available out-of-the-box in Directus, its flexibility through extensions allows this to be possible.
-
-In this tutorial, you will learn how to use a [Custom API Hooks](https://docs.directus.io/extensions/hooks.html) extension to integrate Eleasticsearch indexing and Directus.
+In this tutorial, you will learn how to build a [Custom API Hooks](https://docs.directus.io/extensions/hooks.html) extension to integrate Elasticsearch and keep an index up to date.
 
 ## Before You Start
 
 You will need:
 
 - Node >=18.19.0 installed on your system.
-- A Directus Dev environment - follow the [Running Dev Environment](https://docs.directus.io/contributing/running-locally.html) guide to spin up a project if you don’t have one already.
-- A running instance of Elasticsearch. For this tutorial, [Elastic Cloud](https://www.elastic.co/cloud/elasticsearch-service/signup?page=docs&placement=docs-body) will be used. [Create an account](https://cloud.elastic.co/registration?elektra=en-elasticsearch-page) if you don't have one already.
+- A Directus project running locally - follow the [self-hosting quickstart](https://docs.directus.io/self-hosted/quickstart) if you don’t have one already. Make sure you have a mounted `extensions` directory.
+- A running instance of Elasticsearch. For this tutorial, [Elastic Cloud](https://www.elastic.co/cloud/elasticsearch-service/signup) will be used.
 
 ## Getting Elasticsearch Connection Details
 
