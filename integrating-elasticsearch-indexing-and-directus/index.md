@@ -89,7 +89,7 @@ Because Elasticsearch is a CommonJS package, the `require()` function is constru
 
 The Elasticsearch JavaScript client has been instantiated in the exported register function using the Cloud ID and API key defined within your environment variables and accessed using the `env` argument. 
 
-## Saving Items to Index
+## Saving Items to an Elasticsearch Index
 
 Add the following lines of code after the `client` variable:
 
@@ -103,7 +103,7 @@ action("books.items.create", async (meta) => {
 });
 ```
 
-This `action` hook will execute when an item is created in `books` collection. This is achieved by specifying `books.items.create` as the event name. The `action` hooks can listen to several other events, you can look them up in the [Available Events](https://docs.directus.io/extensions/hooks.html#available-events) table.
+This `action` hook will be triggered when an item is created in `books` collection. This is achieved by specifying `books.items.create` as the event name. 
 
 When executed a document will be created in an Elasticsearch `books` index containing the newly created item fields which was accessed from the `meta` object. The `meta` object includes the ID of the newly created item in the `key` property and the item fields in the `payload` property.
 
