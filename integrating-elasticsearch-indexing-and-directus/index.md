@@ -148,17 +148,15 @@ action("books.items.delete", async (meta) => {
 });
 ```
 
-## Adding your Custom API Hook to Directus
+## Adding Your Custom Hook to Directus
 
-To get the hook working, navigate to the hook directory in the terminal and build it with the following command:
+To get the hook working, navigate to the extension directory in the terminal and build it with the following command:
 
 ```shell
 npm run build
 ```
 
-In the `api` directory, create an `extensions` directory and copy and paste the hook directory (`directus-extension-elasticsearch`) into it. Then restart your project.
-
-Now when you create, update, and delete items in the `books` collection, the changes will reflect in your Elasticsearch `books` index.
+Restart your Directus project and when you create, update, or delete items in the `books` collection, the changes will reflect in your Elasticsearch `books` index.
 
 ## Summary
 
