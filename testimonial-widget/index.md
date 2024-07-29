@@ -6,7 +6,8 @@ author:
   avatar_file_name: './avatar.jpg'
 ---
 
-In this tutorial, we will setup a testimonial widget using SvelteKit and Directus as a backend. 
+In this tutorial, we will setup a testimonial widget using SvelteKit and Directus as a backend.
+
 ## Before You Start
 
 You will need:
@@ -14,7 +15,7 @@ You will need:
 - To install Node.js and a code editor on your computer.
 - A Directus project - follow our [quickstart guide](https://docs.directus.io/getting-started/quickstart.html) if you don't already have one.
 - Some knowledge of Svelte.
-- 
+  
 ## Setting Up Your Directus Project
 
 Create a `Testimonials` collection with the following fields:
@@ -325,7 +326,6 @@ Add a `TestimonialCreate.svelte` file your `./src/lib` folder and add the follow
   let loading = false;
   const directus = getDirectusInstance(fetch);
   async function createTestimonial() {
-    console.log(full_name, email_address, review);
     var item = {
       full_name: full_name,
       email_address: email_address,
