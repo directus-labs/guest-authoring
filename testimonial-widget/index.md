@@ -1,6 +1,6 @@
 ---
 title: 'Build a testimonial widget for your website with Directus and Svelte'
-description: 'Create a testimonial widget using Directus and Svelte.'
+description: 'In this guide, you'll build a testimonial widget wit.'
 author:
   name: 'Quadri Sheriff'
   avatar_file_name: 'add-to-directory'
