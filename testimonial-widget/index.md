@@ -51,7 +51,7 @@ This change allows you to add and retrieve testimonials directly from your front
 
 Navigate to **Content** > **Testimonials** in your Directus app and Click the + icon. Fill the collection fields and and save.
 
-![Enable testimonail public access](./testimonial_item.png)
+![add initial data](./testimonial_item.png)
 
 ## Initialize a Svelte project
 
@@ -62,61 +62,6 @@ npm create svelte@latest testimonial-frontend # Choose Skeleton project
 cd testimonial-frontend 
 npm install
 npm install @directus/sdk
-```
-
-Add Tailwind CSS to your Svelte project.
-
-```bash
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
-```
-
-Change your `svelte.config.js` to enable processing style blocks as PostCSS.
-
-```js
-import adapter from '@sveltejs/adapter-auto';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-
-/** @type {import('@sveltejs/kit').Config} */
-const config = {
- kit: {
-   adapter: adapter()
- },
- preprocess: vitePreprocess()
-};
-
-export default config;
-```
-
-Configure your `tailwind.config.js` file to track your project files.
-
-```js
-/** @type {import('tailwindcss').Config} */
-export default {
- content: ['./src/**/*.{html,js,svelte,ts}'],
- theme: {
-   extend: {}
- },
- plugins: []
-};
-```
-
-Add an `app.css` file to your project’s src directory and add the following to the `./src/app.css` file.
-
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
-Add a `+layout.svelte` file to your `./src/routes` directory and add the following code to the `./src/routes/+layout.svelte` file.
-
-```js
-<script>
-  import "../app.css";
-</script>
-
-<slot />
 ```
 
 Type `npm run dev` in your terminal to start the Vite development server and open [http://localhost:5173](http://localhost:5173) in your browser to access the Svelte website.
@@ -140,7 +85,7 @@ function getDirectusInstance(fetch) {
 export default getDirectusInstance;
 ```
 
-Also, add a `hook.server.js` in your `./src` directory, and add the following to the file.
+Also, add a `hooks.server.js` in your `./src` directory, and add the following to the file.
 
 ```js
 export async function handle({ event, resolve }) {
@@ -162,7 +107,7 @@ Change `directus_server_url` to the URL of your Directus server.
 
 ### Fetch data with the Directus SDK
 
-Add a `page.js` file to the `./src/routes` directory and add the following content to the file.
+Add a `+page.js` file to the `./src/routes` directory and add the following content to the file.
 
 ```js
 /** @type {import('./$types').PageLoad} */
@@ -211,88 +156,174 @@ Add a `TestimonialCard.svelte` and `TestimonialCarousel.svelte` file to your `./
 
 ```js
 <script>
- export let id;
- export let full_name;
- export let email_address;
- export let review;
+  export let id;
+  export let full_name;
+  export let email_address;
+  export let review;
 </script>
 
+<div {id} class="card-li">
+  <blockquote class="card-article">{review}</blockquote>
+  <div class="card-div1">
+    <h5 class="card-h5">
+      {full_name}<span class="card-span"> {email_address}</span>
+    </h5>
+  </div>
+</div>
 
-<li {id} class="relative shrink-0 snap-center shadow-lg">
- <div>
-   <article
-     class="border-gray/20 relative mx-auto border p-4 shadow-lg grid w-fit grid-flow-row-dense grid-cols-2 place-items-center py-12"
-   >
-     <div
-       class="relative z-20 mt-5 pb-9 pt-3 lg:col-start-1 lg:col-end-1 lg:translate-x-20"
-     >
-       <div
-         class="mt-4 px-4 text-center text-sm lg:px-2 lg:text-left lg:text-base"
-       >
-         <p class="font-light">
-           {full_name}
-         </p>
-         <p class="font-bold">{email_address}</p>
-         <div class="mt-5">
-           <p class="text-gray">{review}</p>
-         </div>
-       </div>
-     </div>
-   </article>
- </div>
-</li>
+<style>
+  .card-li {
+    font-family: sans-serif;
+    position: relative;
+    overflow-x: auto;
+    padding: 50px 50px;
+	text-align: center;
+    min-width: 310px;
+    width: 100%;
+    text-align: center;
+    box-shadow: none !important;
+  }
+
+  .card-li * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+  .card-article {
+    margin: 1;
+    display: block;
+    border-radius: 8px;
+    position: relative;
+    background-color: #fafafa;
+    padding: 50px 30px 70px 50px;
+    font-size: 1em;
+    font-weight: 500;
+    margin: 0 0 -50px;
+    line-height: 1.6em;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+  }
+  .card-article:before,
+  .card-article:after {
+    font-family: "FontAwesome";
+    content: "\201C";
+    position: absolute;
+    font-size: 50px;
+    opacity: 0.3;
+    font-style: normal;
+  }
+  .card-article:before {
+    top: 35px;
+    left: 20px;
+  }
+  .card-article:after {
+    content: "\201D";
+    right: 20px;
+    bottom: 35px;
+  }
+  .card-div1 {
+    position: relative;
+    z-index: 20;
+    margin-top: 10;
+    padding-bottom: 9;
+    padding-top: 10;
+  }
+
+  .card-h5 {
+    opacity: 0.8;
+    margin: 0;
+    font-weight: 800;
+    text-align: center;
+  }
+  .card-span {
+    font-weight: 400;
+    text-transform: none;
+    display: block;
+    text-align: center;
+  }
+</style>
 ```
 
 This code displays individual testimonial data in a Card. Add the following to your `TestimonialCarousel.svelte` file to implement the testimonial Carousel.
 
 ```js
 <script context="module">
- import TestimonialCard from '$lib/TestimonialCard.svelte'
- export const getCarouselId = (index, carouselName = "carousel") =>
-   `${carouselName}-item-${index}`;
-</script>
+  import TestimonialCard from "$lib/TestimonialCard.svelte";
 
+  export const getCarouselId = (index, carouselName = "carousel") =>
+    `${carouselName}-item-${index}`;
+</script>
 
 <script>
- export let data;
+  export let data;
+
 </script>
 
-
-<ul
- class="flex w-full py-5 px-5 snap-x snap-mandatory gap-6 overflow-x-auto pb-6 before:w-[30vw] before:shrink-0 after:w-[30vw] after:shrink-0"
+<ul class="carousel-ul"
 >
- {#each data.testimonials as testimonial, index}
-   <svelte:component this={TestimonialCard} id={getCarouselId(index)} {...testimonial} />
- {/each}
+  {#each data.testimonials as testimonial, index}
+    <svelte:component
+      this={TestimonialCard}
+      id={getCarouselId(index)}
+      {...testimonial}
+    />
+  {/each}
 </ul>
+
+<style>
+	.carousel-ul{
+		display: flex;
+		padding: 20;
+		scroll-snap-type: x mandatory;
+		gap: 2;
+		overflow-x: auto;
+	}
+
+	.carousel-ul:before{
+		width: 30vw;
+	}
+	.carousel-ul::after{
+		width: 30vw;
+	}
+</style>
 ```
 
 Update your `+page.svelte` code to the following.
 
 ```js
 <script>
- /** @type {import('./$types').PageData} */
- export let data;
- import Carousel from "$lib/TestimonialCarousel.svelte";
+  /** @type {import('./$types').PageData} */
+  export let data;
+  import Carousel from "$lib/TestimonialCarousel.svelte";
 </script>
 
-
-<div class="mt-2">
- <h1 class="text-4xl text-center font-bold">Product testimonials</h1>
+<div>
+  <h1 class="page-h1">Product testimonials</h1>
 </div>
 
+<section class="page-section">
+  <Carousel {data} />
+</section>
 
- <section
-   class="grid min-h-screen grid-rows-[auto_1fr] place-items-center overflow-x-hidden"
- >
-   <Carousel {data} />
- </section>
 <!-- {/if} -->
+
+<style>
+  .page-h1 {
+    text-align: center;
+  }
+  .page-section {
+    display: grid;
+    min-height: 100%;
+	padding-left: 200px;
+	margin: 10px;
+    grid-template-rows: auto;
+    place-items: center;
+    overflow-x: scroll;
+  }
+</style>
 ```
 
 Your svelte page should change to something similar to the following.
 
-![Svelte Testimonial Carousel](./testimonial_carousel.jpeg)
+![Svelte Testimonial Carousel](./testimonial_carousel.png)
 
 ## Create a Add Testimonial form
 
@@ -302,94 +333,157 @@ Add a `TestimonialCreate.svelte` file your `./src/lib` folder and add the follow
 
 ```js
 <script>
- import getDirectusInstance from "$lib/directus";
- import { error } from "@sveltejs/kit";
- import { createItem } from "@directus/sdk";
- export let full_name;
- export let email_address;
- export let review;
- export let addTestimonial;
- let loading = false;
- const directus = getDirectusInstance(fetch);
- async function createTestimonial() {
-   console.log(full_name, email_address, review);
-   var item = {
-     full_name: full_name,
-     email_address: email_address,
-     review: review,
-   };
-   try {
-     loading = true;
-     await directus.request(createItem("Testimonials", item));
-     loading = false;
-     addTestimonial = false;
-    
-   } catch (err) {
-     console.log(err);
-     loading = false;
-     addTestimonial = false;
-     error(err);
-   }
- }
+  import getDirectusInstance from "$lib/directus";
+  import { error } from "@sveltejs/kit";
+  import { createItem } from "@directus/sdk";
+  export let full_name;
+  export let email_address;
+  export let review;
+  export let addTestimonial;
+  let loading = false;
+  const directus = getDirectusInstance(fetch);
+  async function createTestimonial() {
+    console.log(full_name, email_address, review);
+    var item = {
+      full_name: full_name,
+      email_address: email_address,
+      review: review,
+    };
+    try {
+      loading = true;
+      await directus.request(createItem("Testimonials", item));
+      loading = false;
+      addTestimonial = false;
+    } catch (err) {
+      console.log(err);
+      loading = false;
+      addTestimonial = false;
+      error(err);
+    }
+  }
 </script>
 
-
-<div class="flex flex-col justify-center items-center text-gray-700">
- <form class="flex flex-col bg-white rounded shadow-lg p-8">
-   <h1 class="font-bold text-md py-3">Add your Testimonial</h1>
-   <label class="font-semibold text-xs mt-3" for="email">Full Name</label>
-   <input
-     class="flex items-center px-2 py-2 w-64 text-xs bg-gray-200 mt-2 rounded-lg focus:outline-none focus:ring-2"
-     name="full_name"
-     required
-     bind:value={full_name}
-   />
-   <label class="font-semibold text-xs mt-2" for="password">Email</label>
-   <input
-     class="flex items-center px-2 py-2 w-64 text-xs bg-gray-200 mt-2 rounded-lg focus:outline-none focus:ring-2"
-     name="email_address"
-     type="email"
-     required
-     bind:value={email_address}
-   />
-   <label class="font-semibold text-xs mt-2" for="email"
-     >Enter your testimonial</label
-   >
-   <textarea
-     rows="5"
-     class="flex items-center px-2 py-2 w-64 text-xs bg-gray-200 mt-2 rounded-lg focus:outline-none focus:ring-2"
-     name="review"
-     required
-     bind:value={review}
-   />
-   <button
-     on:click={createTestimonial}
-     class="flex items-center justify-center py-2 text-xs px-6 w-64 bg-blue-600 mt-8 rounded font-semibold text-blue-100 hover:bg-blue-700"
-   >
-     {#if loading}
-       <svg
-         aria-hidden="true"
-         role="status"
-         class="inline w-4 h-4 animate-spin"
-         viewBox="0 0 100 101"
-         fill="none"
-         xmlns="http://www.w3.org/2000/svg"
-       >
-         <path
-           d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-           fill="#E5E7EB"
-         />
-         <path
-           d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-           fill="currentColor"
-         />
-       </svg>
-     {:else}
-       <div>Add a review</div>
-     {/if}
-   </button>
- </form>
+<div class="create-div">
+  <form class="create-form">
+    <h1 class="create-h1">Add your Testimonial</h1>
+    <label class="create-label" for="email">Full Name</label>
+    <input
+      class="create-input"
+      name="full_name"
+      required
+      bind:value={full_name}
+    />
+    <label class="create-label" for="password">Email</label>
+    <input
+      class="create-input"
+      name="email_address"
+      type="email"
+      required
+      bind:value={email_address}
+    />
+    <label class="create-label" for="email">Enter your testimonial</label>
+    <textarea
+      rows="5"
+      class="create-input"
+      name="review"
+      required
+      bind:value={review}
+    />
+    <button on:click={createTestimonial} class="create-button">
+      {#if loading}
+        <svg
+          aria-hidden="true"
+          role="status"
+          class="create-spinner"
+          viewBox="0 0 100 101"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+            fill="#E5E7EB"
+          />
+          <path
+            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+            fill="currentColor"
+          />
+        </svg>
+      {:else}
+        <div class="create-button-text">Add a review</div>
+      {/if}
+    </button>
+  </form>
 </div>
+
+<style>
+  .create-input {
+    display: flex;
+    align-items: center;
+    padding: 2px 2px 2px 2px;
+    width: 400px;
+    min-height: 30px;
+    font-size: small;
+    margin-top: 2px;
+    border-radius: 5px;
+  }
+
+  .create-input:focus {
+    outline: none;
+  }
+  .create-label {
+    font: bold;
+    font-size: small;
+    margin-top: 10px;
+  }
+  .create-h1 {
+    padding-top: 3px;
+    font: bolder;
+    font-size: medium;
+  }
+  .create-form {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 8px 8px 8px;
+    background-color: white;
+    border-radius: 20px;
+  }
+  .create-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+  }
+  .create-button {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    font-size: small;
+    padding: 10px 20px 10px 20px;
+    width: 80;
+    background-color: blue;
+    border-color: white;
+    margin-top: 8px;
+    font: bold;
+    border-radius: 25px;
+    color: white;
+    
+  }
+  .create-button-text {
+	text-align: center;
+	justify-content: center;
+	justify-self: center;
+  }
+  .create-spinner {
+    height: 8px;
+    width: 8px;
+    display: inline;
+	justify-self: center;
+    animation-name: spin;
+    animation-duration: 5000ms;
+    animation-iteration-count: infinite;
+  }
+</style>
 ```
 
 This code implements a form that accepts user inputs like `full_name`, `email_address`, and `review` and adds the input to your Testimonial collection in Directus.
@@ -398,50 +492,99 @@ Update your `./src/routes/+page.svelte` to the following to add the create testi
 
 ```js
 <script>
- /** @type {import('./$types').PageData} */
- export let data;
- let addTestimonial = false;
- import Carousel from "$lib/TestimonialCarousel.svelte";
- import TestimonialCreate from "../lib/TestimonialCreate.svelte";
- async function createTestimonial() {
-   addTestimonial = true;
- }
- async function cancelTestimonial() {
-   addTestimonial = false;
- }
+  /** @type {import('./$types').PageData} */
+  export let data;
+  let addTestimonial = false;
+  import Carousel from "$lib/TestimonialCarousel.svelte";
+  import TestimonialCreate from "../lib/TestimonialCreate.svelte";
+  async function createTestimonial() {
+    addTestimonial = true;
+  }
+  async function cancelTestimonial() {
+    addTestimonial = false;
+  }
 </script>
 
-
-<div class="mt-2">
- <h1 class="text-4xl text-center font-bold">Product testimonials</h1>
- <div class="flex justify-center">
-   {#if addTestimonial}
-     <button
-       on:click={cancelTestimonial}
-       class="flex items-center justify-center py-2 text-xs px-6 w-64 bg-red-600 mt-8 rounded font-semibold text-blue-100 hover:bg-red-700"
-       >Cancel</button
-     >
-   {:else}
-     <button
-       on:click={createTestimonial}
-       class="flex items-center justify-center py-2 text-xs px-6 w-64 bg-blue-600 mt-8 rounded font-semibold text-blue-100 hover:bg-blue-700"
-       >Add your testimonial</button
-     >
-   {/if}
- </div>
-</div>
+<div class="page-div1">
+	<h1 class="page-h1">Product testimonials</h1>
+	<div class="page-div2">
+	  {#if addTestimonial}
+		<button
+		  on:click={cancelTestimonial}
+		  class="page-button1"
+		  >Cancel</button
+		>
+	  {:else}
+		<button
+		  on:click={createTestimonial}
+		  class="page-button2"
+		  >Add your testimonial</button
+		>
+	  {/if}
+	</div>
+   </div>
 
 
 {#if addTestimonial}
- <TestimonialCreate {addTestimonial} />
+  <TestimonialCreate {addTestimonial} />
 {:else}
- <section
-   class="grid min-h-screen grid-rows-[auto_1fr] place-items-center overflow-x-hidden"
- >
-   <Carousel {data} />
- </section>
+  <section class="page-section">
+    <Carousel {data} />
+  </section>
 {/if}
+
+<style>
+  .page-h1 {
+    text-align: center;
+  }
+  .page-div1{
+	margin-top: 2px;
+  }
+  .page-div2{
+	display: flex;
+	justify-content: center;
+  }
+  .page-section {
+    display: grid;
+    min-height: 100%;
+    padding-left: 1000px;
+    margin: 10px;
+    grid-template-rows: auto;
+    place-items: center;
+    overflow-x: scroll;
+  }
+  .page-button1{
+	display: flex;
+		justify-items: center;
+		align-items: center;
+		font-size: small;
+		padding: 10px 20px 10px 20px;
+		width: 80;
+		background-color: red;
+		border-color: white;
+		margin-top: 8px;
+		font: bold;
+		border-radius: 25px;
+		color: white;
+	}
+	.page-button2{
+		display: flex;
+		justify-items: center;
+		align-items: center;
+		font-size: small;
+		padding: 10px 20px 10px 20px;
+		width: 80;
+		background-color: blue;
+		border-color: white;
+		margin-top: 8px;
+		font: bold;
+		border-radius: 25px;
+		color: white;
+	}
+</style>
 ```
+
+![Svelte Testimonial Carousel](./create-testimonial.gif)
 
 ## Summary
 
