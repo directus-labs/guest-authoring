@@ -68,7 +68,9 @@ Type `npm run dev` in your terminal to start the Vite development server and ope
 
 ## Integrate the Directus SDK with Svelte
 
-To make the Directus SDK available to our project, we need to setup a wrapper for the directus SDK. Add a `directus.js` file to the `./src/lib` directory and add the following to the file.
+To make the Directus SDK available to your project, you need to setup a wrapper for the Directus SDK.
+
+Add a `directus.js` file to the `./src/lib` directory and add the following to the file.
 
 ```js
 import { createDirectus, rest } from '@directus/sdk';
@@ -85,7 +87,7 @@ function getDirectusInstance(fetch) {
 export default getDirectusInstance;
 ```
 
-Also, add a `hooks.server.js` in your `./src` directory, and add the following to the file.
+Also, add a `hooks.server.js` to your `./src` directory, and add the following to the file.
 
 ```js
 export async function handle({ event, resolve }) {
@@ -97,7 +99,9 @@ export async function handle({ event, resolve }) {
 }
 ```
 
-The `hooks.server.js` ensures that the required headers are added to every request sent from your frontend to the Directus server. Create a `.env` file in your project’s root directory and add the following to the file
+The `hooks.server.js` ensures that request headers required by the Directus backend are added to every request sent from your frontend to the Directus server.
+
+Create a `.env` file in your project’s root directory and add the following to the file
 
 ```bash
 PUBLIC_APIURL='directus_server_url'
@@ -107,7 +111,7 @@ Change `directus_server_url` to the URL of your Directus server.
 
 ### Fetch data with the Directus SDK
 
-Add a `+page.js` file to the `./src/routes` directory and add the following content to the file.
+Add a `+page.js` file to your `./src/routes` directory, and add the following content to the file.
 
 ```js
 /** @type {import('./$types').PageLoad} */
@@ -128,7 +132,7 @@ export async function load({ fetch }) {
 }
 ```
 
-The load function will fetch data from your Testimonials collection on every page load.
+The `load` function fetch data from your Testimonials collection on every page load.
 
 Update your `+page.svelte` file to the following.
 
@@ -152,7 +156,9 @@ Your page should look like the following depending on the data that you added to
 
 ## Create a Testimonial Carousel
 
-Add a `TestimonialCard.svelte` and `TestimonialCarousel.svelte` file to your `./src/lib` folder. Add the following to your `TestiomonialCard.svelte` file.
+Add a `TestimonialCard.svelte` and `TestimonialCarousel.svelte` file to your `./src/lib` folder.
+
+Add the following to your `TestiomonialCard.svelte` file.
 
 ```js
 <script>
@@ -242,7 +248,9 @@ Add a `TestimonialCard.svelte` and `TestimonialCarousel.svelte` file to your `./
 </style>
 ```
 
-This code displays individual testimonial data in a Card. Add the following to your `TestimonialCarousel.svelte` file to implement the testimonial Carousel.
+This code displays individual testimonial data in a Card.
+
+Add the following to your `TestimonialCarousel.svelte` file to implement the testimonial Carousel.
 
 ```js
 <script context="module">
@@ -327,7 +335,7 @@ Your svelte page should change to something similar to the following.
 
 ## Create a Add Testimonial form
 
-The final step is to implement your Add Testimonial form. This form will allow users add data to your Directus Testimonials collection directly from your svelte website.
+The final step is to implement your Add Testimonial form. This form will allow users add data to your Testimonials collection directly from your svelte website.
 
 Add a `TestimonialCreate.svelte` file your `./src/lib` folder and add the following code to the file.
 
@@ -584,10 +592,11 @@ Update your `./src/routes/+page.svelte` to the following to add the create testi
 </style>
 ```
 
+
 ![Svelte Testimonial Carousel](./create-testimonial.gif)
 
 ## Summary
 
-In this guide, we have set up a Testimonial widget in SvelteKit using Directus. It allows for adding new Testimonails data to Directus from Svelte and reading existing Testimonial data and displaying the in a carousel.
+In this guide, you have set up a Testimonial widget in SvelteKit using Directus. It allows for adding new Testimonails data to Directus from Svelte and reading existing Testimonial data and displaying the in a carousel.
 
 If you have any questions or need further assistance, please feel free to drop by our [Discord](https://directus.chat/) server.
