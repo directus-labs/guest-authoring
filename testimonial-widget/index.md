@@ -6,14 +6,7 @@ author:
   avatar_file_name: './avatar.jpg'
 ---
 
-## Introduction
-
-In this guide, we will setup a testimonial widget using SvelteKit and Directus as a CMS. By following this tutorial, you will learn how to:
-
-- Create a Directus project and setup a Directus collection.
-- Add data to a Directus collection from a Svelte app.
-- Retrieve and display data from a Directus collection in your Svelte website.
-
+In this tutorial, we will setup a testimonial widget using SvelteKit and Directus as a backend. 
 ## Before You Start
 
 You will need:
@@ -21,37 +14,18 @@ You will need:
 - To install Node.js and a code editor on your computer.
 - A Directus project - follow our [quickstart guide](https://docs.directus.io/getting-started/quickstart.html) if you don't already have one.
 - Some knowledge of Svelte.
+- 
+## Setting Up Your Directus Project
 
-<!-- ## Your Sections Here -->
-## Setup a Directus collection for data storage
-
-To begin, we need to setup a Directus collection for storing our Testimonial data. Login to your Directus app and navigate to **Settings** > **Data Model**.
-
-Click the + icon and create a new collection called `Testimonials`.
-
-Add the following fields to the `Testimonials` collection and save:
+Create a `Testimonials` collection with the following fields:
 
 - `full_name` (Type: String, Interface: Input): To capture the user's full name.
 - `email_address` (Type: String, Interface: Input): To store the user's email address.
 - `review` (Type: Text, Interface: TextArea): To store the user's testimonials.
   
-![Add testimonial fields](./testimonial_fields.png)
+Then give the public role full access to create and read items in the `Testimonials` collection.
 
-### Enable Public Access to your Directus collection
-
-The next step in this tutorial is to enable public access to the Testimonials collection. Head over to **Settings** > **Access Control** > **Public role**.
-
-Toggle **Create** and **Read** permission from “No Access” to “All Access”.
-
-![Enable testimonail public access](./testimonial_public_access.png)
-
-This change allows you to add and retrieve testimonials directly from your frontend with no authentication.
-
-### Add Initial data to your Directus collection
-
-Navigate to **Content** > **Testimonials** in your Directus app and Click the + icon. Fill the collection fields and and save.
-
-![add initial data](./testimonial_item.png)
+Create 3 example testimonials from the content module.
 
 ## Initialize a Svelte project
 
