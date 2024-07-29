@@ -1,9 +1,9 @@
 ---
-title: 'Build a testimonial widget for your website with Directus and Svelte'
-description: 'In this guide, you'll build a testimonial widget wit.'
+title: 'Build a Testimonial Widget with SvelteKit and Directus'
+description: 'In this guide, you will build a Testimonial widget with Directus and SvelteKit. You will learn how to query and add data to Directus directly from your SvelteKit app.'
 author:
   name: 'Quadri Sheriff'
-  avatar_file_name: 'add-to-directory'
+  avatar_file_name: './avatar.jpg'
 ---
 
 ## Introduction
