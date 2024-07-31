@@ -1,5 +1,5 @@
 > [!WARNING]
-> Do not open PRs without an approved issue first. It will be closed without review.
+> The Directus Guest Author Program is currently closed for contributions while we revise the program.
 
 # Directus Guest Author Program
 
@@ -7,7 +7,7 @@ Become a Directus Guest Author and get paid to write about your favorite tech to
 
 [Check out the Directus Developer Blog](https://docs.directus.io/blog/)
 
-## How Does It Work? 
+<!--## How Does It Work? 
 
 This process ensures that we work with you to create the best possible content, while also ensuring that the content fits within our publication guidelines.
 
@@ -83,3 +83,4 @@ the Guest Author program, we only work with individuals.</p>
 <summary>I’m under 18 - can I take part?</summary>
 <p>You must be aged 18 over to be a Directus Guest Author.</p>
 </details>
+-->
