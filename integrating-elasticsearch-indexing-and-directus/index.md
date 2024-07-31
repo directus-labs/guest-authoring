@@ -1,72 +1,34 @@
 ---
-title: "Integrating Elasticsearch indexing and Directus"
-description: "Learn how to synchronize a Directus collection with an Elasticsearch index by developing a Custom API Hook"
+title: "Integrating Elasticsearch Indexing and Directus"
+description: "Learn how to maintain an Elasticsearch index from data in your Directus project by building a custom hook extension"
 author:
   name: "Taminoturoko Briggs"
   avatar_file_name: "profile-pic.jpeg"
 ---
 
-Directus' built-in search endpoints are suitable for a many projects, but sometimes you might need more. Elasticsearch is a powerful and flexible search system which uses an index of data to perform searches. 
+In this article, we will explore how to index data from Directus in Elasticsearch through a custom hook extension, enabling you to track created, updated, and deleted data to maintain an up-to-date index which you can then use in your external applications.
 
-In this tutorial, you will learn how to build a [Custom API Hooks](https://docs.directus.io/extensions/hooks.html) extension to integrate Elasticsearch and keep an index up to date.
+## Setting Up Directus
 
-## Before You Start
+You will need to have a [local Directus project running](https://docs.directus.io/self-hosted/quickstart) to develop extensions. 
 
-You will need:
+In your new project, create a collection called `books` with a `title` and a `description` field.
 
-- Node >=18.19.0 installed on your system.
-- A Directus project running locally - follow the [self-hosting quickstart](https://docs.directus.io/self-hosted/quickstart) if you don’t have one already. Make sure you have a mounted `extensions` directory.
-- A running instance of Elasticsearch. For this tutorial, [Elastic Cloud](https://www.elastic.co/cloud/elasticsearch-service/signup) will be used.
+## Initializing Your Extension
 
-## Getting Elasticsearch Connection Details
+In your `docker-compose.yml` file, set an `EXTENSIONS_AUTO_RELOAD` environment variable to `true` so that Directus will automatically watch and reload extensions as you save your code. Restart your project once your new environment variable is added.
 
-To connect to Elasticsearch the Cloud ID and API key credentials will be used. In your Elastic Cloud deployment, click on **Setup guides -> Connect to the Elasticsearch API** card and you will see your Cloud ID.
+In your terminal, navigate to your `extensions` directory and run `npx create-directus-extension@latest`. Name your extension `elasticsearch-indexing` and choose a `hook` type and create the extension with `JavaScript`. Allow Directus to automatically install dependencies and wait for them to install.
 
-![A modal showing the Elasticsearch endpoint and Cloud ID which has been obscured](elastic-cloud-id.png)
+## Seting Up Elasticsearch
 
-Now to get an API key, click on **Create and manage API keys,** then at the top-right of the navigated page click **Create API key.** Enter the name and click **Create API key** at the bottom-right of the sidebar.
+To integrate Directus and Elasticsearch, you will need a running instance of both. For this tutorial, [Elastic Cloud](https://www.elastic.co/cloud/elasticsearch-service/signup) will be used. You will need both the Cloud ID and an API Key, which you can generate from your deployment dashboard.
 
-![A sidebar to create an API key in Elastic Cloud. It includes a name field with the value diectus-integration](create-elastic-api-key.png)
+In your `docker-compose.yml` file, create an `ELASTIC_API_KEY` and `ELASTIC_CLOUD_ID` environment variable and set them to the value from your Elasticsearch dashboard. Restart your project as you have changed your environment variables.
 
-Copy the displayed API key as well as the Cloud ID and add them to your environment variables:
+Navigate into your new extension directory, run `npm install @elastic/elasticsearch`, and then `npm run dev` to start the automatic extension building.
 
-```shell
-ELASTIC_API_KEY=<your-api-key>
-ELASTIC_CLOUD_ID=<your-cloud-id>
-```
-
-## Creating a Collection in Directus
-
-The collection to be created is the one that needs to be in sync with an Elasticsearch index. In your Directus Admin App, navigate to **Settings -> Data Model** and create a new collection called `books` with a text input called `title` and a textarea field called `description`.
-
-![The data model of the books collection in Directus Admin app.](books-collection.png)
-
-## Creating a Custom Hook Extension
-
-Custom hook extensions allow running custom logic triggered by an event emitted by Directus. These events includes key database events like item creation and deletion.
-
-For this use case where an Elasticsearch index is to be updated when an item is created, updated, or deleted in a Directus collection to keep the index and collection in sync, you will use an `action` hook, which will run after an event has occurred.
-
-In the terminal, enter the following command in the your mounted extensions directory:
-
-```shell
-npx create-directus-extension@latest
-? Choose the extension type: hook
-? Choose a name for the extension: elasticsearch-sync
-? Choose the language to use: JavaScript
-? Auto install dependencies? (Y/n) y
-```
-
-After that, navigate into the created hook directory and install the Elasticsearch JavaScript Client:
-
-```shell
-cd elasticsearch-sync
-npm install @elastic/elasticsearch
-```
-
-## Connecting to Elasticsearch
-
-To connect to Elasticsearch, modify the `api/src/index.js` file to the following:
+At the top of your extension's `src/index.js` file, initialize the Elasticsearch client:
 
 ```javascript
 import { createRequire } from "module";
@@ -75,21 +37,15 @@ const { Client } = require("@elastic/elasticsearch");
 
 export default ({ action }, { env }) => {
   const client = new Client({
-    cloud: {
-      id: env.ELASTIC_CLOUD_ID,
-    },
-    auth: {
-      apiKey: env.ELASTIC_API_KEY,
-    },
+    cloud: { id: env.ELASTIC_CLOUD_ID },
+    auth: { apiKey: env.ELASTIC_API_KEY },
   });
 };
 ```
 
 Because Elasticsearch is a CommonJS package, the `require()` function is constructed using the `createRequire()` Node utility method and used to import it to avoid errors. 
 
-The Elasticsearch JavaScript client has been instantiated in the exported register function using the Cloud ID and API key defined within your environment variables and accessed using the `env` argument. 
-
-## Saving Items to an Elasticsearch Index
+## Saving Items to Index
 
 Add the following lines of code after the `client` variable:
 
@@ -109,7 +65,7 @@ When executed a document will be created in an Elasticsearch `books` index conta
 
 Although the `books` index was not explicitly created, that will be done automatically if doesn’t exist and a new document is been created which is the default behavior.
 
-## Updating Items in an Elasticsearch Index
+## Updating Items in Index
 
 Add the following lines of code below the existing action:
 
@@ -130,7 +86,7 @@ action("books.items.update", async (meta) => {
 
 For an update event, the `meta` object will includes an array of `keys` along with the updated fields even when only a single item is updated. So to modify the corresponding document or documents in `books` index, the array of keys is iterated over to send multiple update requests.
 
-## Deleting Items in an Elasticsearch Index
+## Deleting Items in Index
 
 For a delete event, the `meta` object includes an array of keys of the of the deleted items. Fields are not included. Add the following lines of code after the `books.items.update` action:
 
@@ -148,16 +104,10 @@ action("books.items.delete", async (meta) => {
 });
 ```
 
-## Adding Your Custom Hook to Directus
+## Testing Extension
 
-To get the hook working, navigate to the extension directory in the terminal and build it with the following command:
-
-```shell
-npm run build
-```
-
-Restart your Directus project and when you create, update, or delete items in the `books` collection, the changes will reflect in your Elasticsearch `books` index.
+When you create, update, or delete items in the `books` collection, the changes should reflect in your Elasticsearch `books` index.
 
 ## Summary
 
-With this tutorial, you’ve learned how to synchronize a Dierctus collection with an Elasticsearch index by developing a custom API Hooks extension. You can now go ahead to tweak this for your use case, add error handling, and integrate Elasticsearch with your app.
+By following this guide, you have learned how to set up extensions in Directus. You also saw how to test the extension by creating, updating, and deleting data in Directus, with changes being reflected in your Elasticsearch index. This setup ensures that our data remains synchronized across both platforms.
