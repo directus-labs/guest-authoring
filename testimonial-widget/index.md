@@ -1,5 +1,5 @@
 ---
-title: 'Build a Testimonial Widget with SvelteKit and Directus'
+title: 'Building a Testimonial Widget with SvelteKit and Directus'
 description: 'In this guide, you will build a Testimonial widget with Directus and SvelteKit. You will learn how to query and add data to Directus directly from your SvelteKit app.'
 author:
   name: 'Quadri Sheriff'
