@@ -1,6 +1,6 @@
 ---
-title: 'Integrating Melisearch Indexing in SolidStart and Directus'
-description: 'Learn how to integrate Meilisearch indexing with a SolidStart frontend and a Directus backend. You will set up Directus, create a SolidStart project, and implement Meilisearch indexing to keep your search data up-to-date.'
+title: 'Integrating Melisearch Indexing with Directus'
+description: 'Learn how to maintain a Melisearch index from data in your Directus project by building a custom hook extension.'
 author:
   name: 'Clara Ekekenta'
   avatar_file_name: './clara-ekekenta.avif'
