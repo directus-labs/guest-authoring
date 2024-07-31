@@ -15,15 +15,11 @@ You will need to have a [local Directus project running](https://docs.directus.i
 
 In your new project, create a collection called `articles` with a `title`, `content`, and `author` field.
 
-## Initializing Directus Extension
-In your `docker-compose.yml`` file, add the environment variable EXTENSIONS_AUTO_RELOAD: "true"` to enable automatic extension reloading.
+## Initializing Your Extension
 
-Navigate to your extensions directory and run:
+In your `docker-compose.yml` file, set an `EXTENSIONS_AUTO_RELOAD` environment variable to `true` so that Directus will automatically watch and reload extensions as you save your code. Restart your project once your new environment variable is added.
 
-```shell
-npx create-directus-extension@latest
-```
-Name your extension `meilisearch-indexing`, choose the `hook` type, and create it with `JavaScript`. Allow Directus to install dependencies automatically.
+In your terminal, navigate to your `extensions` directory and run `npx create-directus-extension@latest`. Name your extension `melisearch-indexing` and choose a `hook` type and create the extension with `JavaScript`. Allow Directus to automatically install dependencies and wait for them to install.
 
 ## Setting Up Meilisearch
 Sign up for a Meilisearch account if you haven't already. Once you have your Meilisearch instance details, you will be able to copy your credentials in your dashboard. 
