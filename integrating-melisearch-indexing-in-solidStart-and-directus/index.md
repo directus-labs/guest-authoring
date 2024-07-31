@@ -79,21 +79,19 @@ action('articles.items.update', async (meta) => {
 
 The `articles.items.update` action hook triggers when articles are updated. It receives `meta.keys` (an array of updated item IDs) and `meta.payload` (changed values). The hook updates each document in Meilisearch.
 
-### On data deletion
+### Deleting Items in Index
 
 Add an action hook to remove items from Meilisearch when they're deleted in Directus:
 
 ```javascript
-export default ({ action }) => {
-  //...
-   action('articles.items.delete', async (meta) => {
-    await index.deleteDocuments(meta.keys)
-  })
-}
+action('articles.items.delete', async (meta) => {
+  await index.deleteDocuments(meta.keys)
+})
 ```
+
 The `articles.items.delete` action hook triggers when articles are deleted. It receives `meta.keys`, an array of deleted item IDs. The hook uses these keys to remove the corresponding documents from the Meilisearch index.
 
-Now add 3 items to your articles collection.
+Now add 3 items to your articles collection and you should see them in your Meilisearch index.
 
 ![Melisearch with data from Directus](<Screenshot 2024-07-11 at 06.58.04.png>)
 
