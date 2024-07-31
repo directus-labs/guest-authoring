@@ -14,21 +14,21 @@ You will need:
 
 - To install Node.js and a code editor on your computer.
 - A Directus project - follow our [quickstart guide](https://docs.directus.io/getting-started/quickstart.html) if you don't already have one.
-- Some knowledge of Svelte.
+- Some knowledge of Svelte and SvelteKit.
   
 ## Setting Up Your Directus Project
 
-Create a `Testimonials` collection with the following fields:
+Create a `testimonials` collection with the following fields:
 
 - `full_name` (Type: String, Interface: Input): To capture the user's full name.
 - `email_address` (Type: String, Interface: Input): To store the user's email address.
 - `review` (Type: Text, Interface: TextArea): To store the user's testimonials.
   
-Then give the public role full access to create and read items in the `Testimonials` collection.
+Then give the public role full access to create and read items in the `testimonials` collection.
 
 Create 3 example testimonials from the content module.
 
-## Initialize a Svelte project
+## Initializing a Svelte project
 
 Initialize a new Svelte project by running the following command:
 
@@ -41,7 +41,7 @@ npm install @directus/sdk
 
 Type `npm run dev` in your terminal to start the Vite development server and open [http://localhost:5173](http://localhost:5173) in your browser to access the Svelte website.
 
-## Integrate the Directus SDK with Svelte
+## Setting Up the Directus SDK
 
 To make the Directus SDK available to your project, you need to setup a wrapper for the Directus SDK.
 
@@ -49,20 +49,19 @@ Add a `directus.js` file to the `./src/lib` directory and add the following to t
 
 ```js
 import { createDirectus, rest } from '@directus/sdk';
-import { PUBLIC_APIURL } from '$env/static/public';
+import { PUBLIC_API_URL } from '$env/static/public';
 
 
 function getDirectusInstance(fetch) {
    const options = fetch ? { globals: { fetch } } : {};
-   const directus = createDirectus(PUBLIC_APIURL, options ).with(rest());
+   const directus = createDirectus(PUBLIC_API_URL, options).with(rest());
    return directus;
 }
-
 
 export default getDirectusInstance;
 ```
 
-Also, add a `hooks.server.js` to your `./src` directory, and add the following to the file.
+Add a `hooks.server.js` file to your `./src` directory, and add the following to the file.
 
 ```js
 export async function handle({ event, resolve }) {
@@ -79,12 +78,12 @@ The `hooks.server.js` ensures that request headers required by the Directus back
 Create a `.env` file in your project’s root directory and add the following to the file
 
 ```bash
-PUBLIC_APIURL='directus_server_url'
+PUBLIC_API_URL='directus_server_url'
 ```
 
-Change `directus_server_url` to the URL of your Directus server.
+Change `directus_server_url` to the URL of your Directus project.
 
-### Fetch data with the Directus SDK
+### Fetching Data From Directus
 
 Add a `+page.js` file to your `./src/routes` directory, and add the following content to the file.
 
@@ -94,12 +93,11 @@ import getDirectusInstance from "$lib/directus";
 import { error } from "@sveltejs/kit";
 import { readItems } from "@directus/sdk";
 
-
 export async function load({ fetch }) {
  const directus = getDirectusInstance(fetch);
  try {
    return {
-     testimonials: await directus.request(readItems("Testimonials")),
+     testimonials: await directus.request(readItems("testimonials")),
    };
  } catch (err) {
   error(err);
@@ -107,16 +105,13 @@ export async function load({ fetch }) {
 }
 ```
 
-The `load` function fetch data from your Testimonials collection on every page load.
-
-Update your `+page.svelte` file to the following.
+The `load` function fetch data from your testimonials collection on every page load. Update your `+page.svelte` file to the following.
 
 ```js
 <script>
  /** @type {import('./$types').PageData} */
  export let data;
 </script>
-
 
 <div>
    <div>{data.testimonials[0].full_name}</div>
@@ -125,15 +120,11 @@ Update your `+page.svelte` file to the following.
 </div>
 ```
 
-Your page should look like the following depending on the data that you added to your Testimonial collection in Directus.
-
-![Fetch data from directus](./fetch_with_directus_sdk.jpeg)
+Your page should contain information from your testimonials collection.
 
 ## Create a Testimonial Carousel
 
-Add a `TestimonialCard.svelte` and `TestimonialCarousel.svelte` file to your `./src/lib` folder.
-
-Add the following to your `TestiomonialCard.svelte` file.
+Add a `TestimonialCard.svelte` and `TestimonialCarousel.svelte` file to your `./src/lib` directory. Add the following to your `TestiomonialCard.svelte` file:
 
 ```js
 <script>
@@ -153,79 +144,76 @@ Add the following to your `TestiomonialCard.svelte` file.
 </div>
 
 <style>
-  .card-li {
-    font-family: sans-serif;
-    position: relative;
-    overflow-x: auto;
-    padding: 50px 50px;
+.card-li {
+	font-family: sans-serif;
+	position: relative;
+	overflow-x: auto;
+	padding: 50px 50px;
 	text-align: center;
-    min-width: 310px;
-    width: 100%;
-    text-align: center;
-    box-shadow: none !important;
-  }
+	min-width: 310px;
+	width: 100%;
+	text-align: center;
+	box-shadow: none !important;
+}
 
-  .card-li * {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-  }
-  .card-article {
-    margin: 1;
-    display: block;
-    border-radius: 8px;
-    position: relative;
-    background-color: #fafafa;
-    padding: 50px 30px 70px 50px;
-    font-size: 1em;
-    font-weight: 500;
-    margin: 0 0 -50px;
-    line-height: 1.6em;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-  }
-  .card-article:before,
-  .card-article:after {
-    font-family: "FontAwesome";
-    content: "\201C";
-    position: absolute;
-    font-size: 50px;
-    opacity: 0.3;
-    font-style: normal;
-  }
-  .card-article:before {
-    top: 35px;
-    left: 20px;
-  }
-  .card-article:after {
-    content: "\201D";
-    right: 20px;
-    bottom: 35px;
-  }
-  .card-div1 {
-    position: relative;
-    z-index: 20;
-    margin-top: 10;
-    padding-bottom: 9;
-    padding-top: 10;
-  }
-
-  .card-h5 {
-    opacity: 0.8;
-    margin: 0;
-    font-weight: 800;
-    text-align: center;
-  }
-  .card-span {
-    font-weight: 400;
-    text-transform: none;
-    display: block;
-    text-align: center;
-  }
+.card-li * {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.card-article {
+	margin: 1;
+	display: block;
+	border-radius: 8px;
+	position: relative;
+	background-color: #fafafa;
+	padding: 50px 30px 70px 50px;
+	font-size: 1em;
+	font-weight: 500;
+	margin: 0 0 -50px;
+	line-height: 1.6em;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+}
+.card-article:before,
+.card-article:after {
+	font-family: "FontAwesome";
+	content: "\201C";
+	position: absolute;
+	font-size: 50px;
+	opacity: 0.3;
+	font-style: normal;
+}
+.card-article:before {
+	top: 35px;
+	left: 20px;
+}
+.card-article:after {
+	content: "\201D";
+	right: 20px;
+	bottom: 35px;
+}
+.card-div1 {
+	position: relative;
+	z-index: 20;
+	margin-top: 10;
+	padding-bottom: 9;
+	padding-top: 10;
+}
+.card-h5 {
+	opacity: 0.8;
+	margin: 0;
+	font-weight: 800;
+	text-align: center;
+}
+.card-span {
+	font-weight: 400;
+	text-transform: none;
+	display: block;
+	text-align: center;
+}
 </style>
 ```
 
-This code displays individual testimonial data in a Card.
-
-Add the following to your `TestimonialCarousel.svelte` file to implement the testimonial Carousel.
+This code displays individual testimonial data in a Card. Add the following to your `TestimonialCarousel.svelte` file to implement the testimonial carousel:
 
 ```js
 <script context="module">
@@ -237,11 +225,9 @@ Add the following to your `TestimonialCarousel.svelte` file to implement the tes
 
 <script>
   export let data;
-
 </script>
 
-<ul class="carousel-ul"
->
+<ul class="carousel-ul">
   {#each data.testimonials as testimonial, index}
     <svelte:component
       this={TestimonialCard}
@@ -252,24 +238,23 @@ Add the following to your `TestimonialCarousel.svelte` file to implement the tes
 </ul>
 
 <style>
-	.carousel-ul{
-		display: flex;
-		padding: 20;
-		scroll-snap-type: x mandatory;
-		gap: 2;
-		overflow-x: auto;
-	}
-
-	.carousel-ul:before{
-		width: 30vw;
-	}
-	.carousel-ul::after{
-		width: 30vw;
-	}
+.carousel-ul {
+	display: flex;
+	padding: 20;
+	scroll-snap-type: x mandatory;
+	gap: 2;
+	overflow-x: auto;
+}
+.carousel-ul:before {
+	width: 30vw;
+}
+.carousel-ul::after {
+	width: 30vw;
+}
 </style>
 ```
 
-Update your `+page.svelte` code to the following.
+Update your `+page.svelte` file:
 
 ```js
 <script>
@@ -286,63 +271,63 @@ Update your `+page.svelte` code to the following.
   <Carousel {data} />
 </section>
 
-<!-- {/if} -->
-
 <style>
-  .page-h1 {
-    text-align: center;
-  }
-  .page-section {
-    display: grid;
-    min-height: 100%;
+.page-h1 {
+	text-align: center;
+}
+.page-section {
+	display: grid;
+	min-height: 100%;
 	padding-left: 200px;
 	margin: 10px;
-    grid-template-rows: auto;
-    place-items: center;
-    overflow-x: scroll;
-  }
+	grid-template-rows: auto;
+	place-items: center;
+	overflow-x: scroll;
+}
 </style>
 ```
 
-Your svelte page should change to something similar to the following.
+Your page should change to something similar to the following.
 
 ![Svelte Testimonial Carousel](./testimonial_carousel.png)
 
-## Create a Add Testimonial form
+## Creating the Add Testimonial Form
 
 The final step is to implement your Add Testimonial form. This form will allow users add data to your Testimonials collection directly from your svelte website.
 
-Add a `TestimonialCreate.svelte` file your `./src/lib` folder and add the following code to the file.
+Add a `TestimonialCreate.svelte` file your `./src/lib` directory and add the following code to the file.
 
 ```js
 <script>
-  import getDirectusInstance from "$lib/directus";
-  import { error } from "@sveltejs/kit";
-  import { createItem } from "@directus/sdk";
-  export let full_name;
-  export let email_address;
-  export let review;
-  export let addTestimonial;
-  let loading = false;
-  const directus = getDirectusInstance(fetch);
-  async function createTestimonial() {
-    var item = {
-      full_name: full_name,
-      email_address: email_address,
-      review: review,
-    };
-    try {
-      loading = true;
-      await directus.request(createItem("Testimonials", item));
-      loading = false;
-      addTestimonial = false;
-    } catch (err) {
-      console.log(err);
-      loading = false;
-      addTestimonial = false;
-      error(err);
-    }
-  }
+import getDirectusInstance from "$lib/directus";
+import { error } from "@sveltejs/kit";
+import { createItem } from "@directus/sdk";
+export let full_name;
+export let email_address;
+export let review;
+export let addTestimonial;
+let loading = false;
+const directus = getDirectusInstance(fetch);
+
+async function createTestimonial() {
+	var item = {
+		full_name: full_name,
+		email_address: email_address,
+		review: review,
+	};
+
+	try {
+		loading = true;
+		await directus.request(createItem("testimonials", item));
+		loading = false;
+		addTestimonial = false;
+	} catch (err) {
+		console.log(err);
+		loading = false;
+		addTestimonial = false;
+		error(err);
+	}
+}
 </script>
 
 <div class="create-div">
@@ -398,79 +383,77 @@ Add a `TestimonialCreate.svelte` file your `./src/lib` folder and add the follow
 </div>
 
 <style>
-  .create-input {
-    display: flex;
-    align-items: center;
-    padding: 2px 2px 2px 2px;
-    width: 400px;
-    min-height: 30px;
-    font-size: small;
-    margin-top: 2px;
-    border-radius: 5px;
-  }
-
-  .create-input:focus {
-    outline: none;
-  }
-  .create-label {
-    font: bold;
-    font-size: small;
-    margin-top: 10px;
-  }
-  .create-h1 {
-    padding-top: 3px;
-    font: bolder;
-    font-size: medium;
-  }
-  .create-form {
-    display: flex;
-    flex-direction: column;
-    padding: 8px 8px 8px 8px;
-    background-color: white;
-    border-radius: 20px;
-  }
-  .create-div {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    justify-items: center;
-    align-items: center;
-  }
-  .create-button {
-    display: flex;
-    justify-items: center;
-    align-items: center;
-    font-size: small;
-    padding: 10px 20px 10px 20px;
-    width: 80;
-    background-color: blue;
-    border-color: white;
-    margin-top: 8px;
-    font: bold;
-    border-radius: 25px;
-    color: white;
-    
-  }
-  .create-button-text {
+.create-input {
+	display: flex;
+	align-items: center;
+	padding: 2px 2px 2px 2px;
+	width: 400px;
+	min-height: 30px;
+	font-size: small;
+	margin-top: 2px;
+	border-radius: 5px;
+}
+.create-input:focus {
+	outline: none;
+}
+.create-label {
+	font: bold;
+	font-size: small;
+	margin-top: 10px;
+}
+.create-h1 {
+	padding-top: 3px;
+	font: bolder;
+	font-size: medium;
+}
+.create-form {
+	display: flex;
+	flex-direction: column;
+	padding: 8px 8px 8px 8px;
+	background-color: white;
+	border-radius: 20px;
+}
+.create-div {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	justify-items: center;
+	align-items: center;
+}
+.create-button {
+	display: flex;
+	justify-items: center;
+	align-items: center;
+	font-size: small;
+	padding: 10px 20px 10px 20px;
+	width: 80;
+	background-color: blue;
+	border-color: white;
+	margin-top: 8px;
+	font: bold;
+	border-radius: 25px;
+	color: white;
+}
+.create-button-text {
 	text-align: center;
 	justify-content: center;
 	justify-self: center;
-  }
-  .create-spinner {
-    height: 8px;
-    width: 8px;
-    display: inline;
+}
+.create-spinner {
+	height: 8px;
+	width: 8px;
+	display: inline;
 	justify-self: center;
-    animation-name: spin;
-    animation-duration: 5000ms;
-    animation-iteration-count: infinite;
-  }
+	animation-name: spin;
+	animation-duration: 5000ms;
+	animation-iteration-count: infinite;
+}
 </style>
 ```
 
-This code implements a form that accepts user inputs like `full_name`, `email_address`, and `review` and adds the input to your Testimonial collection in Directus.
+This implements a form that accepts user inputs like `full_name`, `email_address`, and `review` and adds the input to your `testimonial` collection in Directus.
 
-Update your `./src/routes/+page.svelte` to the following to add the create testimonial form
+Update your `./src/routes/+page.svelte` to the following to add the create testimonial form:
 
 ```js
 <script>
@@ -504,7 +487,7 @@ Update your `./src/routes/+page.svelte` to the following to add the create testi
 		>
 	  {/if}
 	</div>
-   </div>
+</div>
 
 
 {#if addTestimonial}
@@ -516,61 +499,60 @@ Update your `./src/routes/+page.svelte` to the following to add the create testi
 {/if}
 
 <style>
-  .page-h1 {
-    text-align: center;
-  }
-  .page-div1{
+.page-h1 {
+	text-align: center;
+}
+.page-div1{
 	margin-top: 2px;
-  }
-  .page-div2{
+}
+.page-div2{
 	display: flex;
 	justify-content: center;
-  }
-  .page-section {
-    display: grid;
-    min-height: 100%;
-    padding-left: 1000px;
-    margin: 10px;
-    grid-template-rows: auto;
-    place-items: center;
-    overflow-x: scroll;
-  }
-  .page-button1{
+}
+.page-section {
+	display: grid;
+	min-height: 100%;
+	padding-left: 1000px;
+	margin: 10px;
+	grid-template-rows: auto;
+	place-items: center;
+	overflow-x: scroll;
+}
+.page-button1 {
 	display: flex;
-		justify-items: center;
-		align-items: center;
-		font-size: small;
-		padding: 10px 20px 10px 20px;
-		width: 80;
-		background-color: red;
-		border-color: white;
-		margin-top: 8px;
-		font: bold;
-		border-radius: 25px;
-		color: white;
-	}
-	.page-button2{
-		display: flex;
-		justify-items: center;
-		align-items: center;
-		font-size: small;
-		padding: 10px 20px 10px 20px;
-		width: 80;
-		background-color: blue;
-		border-color: white;
-		margin-top: 8px;
-		font: bold;
-		border-radius: 25px;
-		color: white;
-	}
+	justify-items: center;
+	align-items: center;
+	font-size: small;
+	padding: 10px 20px 10px 20px;
+	width: 80;
+	background-color: red;
+	border-color: white;
+	margin-top: 8px;
+	font: bold;
+	border-radius: 25px;
+	color: white;
+}
+.page-button2 {
+	display: flex;
+	justify-items: center;
+	align-items: center;
+	font-size: small;
+	padding: 10px 20px 10px 20px;
+	width: 80;
+	background-color: blue;
+	border-color: white;
+	margin-top: 8px;
+	font: bold;
+	border-radius: 25px;
+	color: white;
+}
 </style>
 ```
-
 
 ![Svelte Testimonial Carousel](./create-testimonial.gif)
 
 ## Summary
 
-In this guide, you have set up a Testimonial widget in SvelteKit using Directus. It allows for adding new Testimonails data to Directus from Svelte and reading existing Testimonial data and displaying the in a carousel.
+In this guide, you have set up a testimonial widget in SvelteKit using Directus. It allows for adding new testimonials to Directus and displaying existing testimonials in a carousel.
 
-If you have any questions or need further assistance, please feel free to drop by our [Discord](https://directus.chat/) server.
+If you have any questions, feel free to drop by our [Discord](https://directus.chat/) server.
