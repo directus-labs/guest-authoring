@@ -22,28 +22,21 @@ In your `docker-compose.yml` file, set an `EXTENSIONS_AUTO_RELOAD` environment v
 In your terminal, navigate to your `extensions` directory and run `npx create-directus-extension@latest`. Name your extension `melisearch-indexing` and choose a `hook` type and create the extension with `JavaScript`. Allow Directus to automatically install dependencies and wait for them to install.
 
 ## Setting Up Meilisearch
+
 Sign up for a Meilisearch account if you haven't already. Once you have your Meilisearch instance details, you will be able to copy your credentials in your dashboard. 
 
 ![Melisearch dashboard](<Screenshot 2024-07-11 at 06.45.38.png>)
 
-Copy the URL and API key to your `docker-compose.yml` file:
+Add the following environment variables to your project: 
 
 ```docker-compose
 MEILISEARCH_HOST=your_meilisearch_host
 MEILISEARCH_API_KEY=your_meilisearch_api_key
 ```
 
-Restart your Directus project to apply the new environment variables.
+Navigate into your new extension directory, run `npm install meilisearch`, and then `npm run dev` to start the automatic extension building.
 
-In your **extension** directory, install the Meilisearch client:
-
-```
-npm install meilisearch
-```
-
-Run `npm run dev` to start the automatic extension building.
-
-In your extension's `src/index.js` file, initialize the Meilisearch client:
+At the top of your extension's `src/index.js` file, initialize the Meilisearch client:
 
 ```javascript
 import { MeiliSearch } from 'meilisearch'
@@ -52,7 +45,7 @@ const client = new MeiliSearch({
   host: process.env.MEILISEARCH_HOST,
   apiKey: process.env.MEILISEARCH_API_KEY
 })
-const index = client.index('articles')
+const index = client.index('directus_index')
 ```
 
 ## Writing Directus hooks to send data to Meilisearch
