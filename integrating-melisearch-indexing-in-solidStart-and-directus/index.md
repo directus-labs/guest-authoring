@@ -48,10 +48,8 @@ const client = new MeiliSearch({
 const index = client.index('directus_index')
 ```
 
-## Writing Directus hooks to send data to Meilisearch
-Use Directus hooks to automatically update your Meilisearch index when content is created, changed, or deleted in Directus.
+## Saving New Items to Index
 
-### On data creation
 Update your extension's exported function to process create events when a new `article` is added to the collection:
 
 ```javascript
@@ -61,7 +59,8 @@ export default ({ action }) => {
   })
 }
 ```
-The `articles.items.create` action hook triggers after item creation. The `meta` object contains the new item's key (ID) and other fields in its payload property. By setting the `objectID` to the Directus item id, we ensure accurate referencing and management in Meilisearch.
+
+The `articles.items.create` action hook triggers after item creation. The `meta` object contains the new item's `key` (ID) and other fields in its `payload` property. By setting the `objectID` to the Directus item `id`, we ensure accurate referencing and management in Meilisearch.
 
 ### Updating Items in Index
 
