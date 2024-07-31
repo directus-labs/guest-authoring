@@ -63,21 +63,21 @@ export default ({ action }) => {
 ```
 The `articles.items.create` action hook triggers after item creation. The `meta` object contains the new item's key (ID) and other fields in its payload property. By setting the `objectID` to the Directus item id, we ensure accurate referencing and management in Meilisearch.
 
-### On data update
+### Updating Items in Index
+
 Add another action hook to process updates when one or more articles are modified:
+
 ```javascript
-export default ({ action }) => {
-  //...
-  action('articles.items.update', async (meta) => {
-    await Promise.all(
-      meta.keys.map(async (key) => 
-        await index.updateDocuments([{ id: key, ...meta.payload }])
-      )
+action('articles.items.update', async (meta) => {
+  await Promise.all(
+    meta.keys.map(async (key) => 
+      await index.updateDocuments([{ id: key, ...meta.payload }])
     )
-  })
-}
+  )
+})
 ```
-The `articles.items.update` action hook triggers when articles are updated. It receives `meta.keys` (an array of updated item IDs) and `meta.payload` (changed values). The hook updates each modified document in Meilisearch using `Promise.all` for efficient processing.
+
+The `articles.items.update` action hook triggers when articles are updated. It receives `meta.keys` (an array of updated item IDs) and `meta.payload` (changed values). The hook updates each document in Meilisearch.
 
 ### On data deletion
 
