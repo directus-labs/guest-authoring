@@ -41,26 +41,26 @@ The collection to be created is the one that needs to be in sync with an Elastic
 
 ![The data model of the books collection in Directus Admin app.](books-collection.png)
 
-## Creating a Custom API Hooks Extension
+## Creating a Custom Hook Extension
 
-As stated in the [docs](https://docs.directus.io/extensions/hooks.html) Custom API Hooks allow running custom logic when a specified event occurs within your project. These events include item creation, deletion, etc.
+Custom hook extensions allow running custom logic triggered by an event emitted by Directus. These events includes key database events like item creation and deletion.
 
-There are several types of hooks used to define the custom logic, such as [action](https://docs.directus.io/extensions/hooks.html#action), [filter](https://docs.directus.io/extensions/hooks.html#init), [init](https://docs.directus.io/extensions/hooks.html#schedule), etc. The specific hooks to use depend on the operation to be carried out. For this use case where an Elasticsearch index is to be updated when an item is created, updated, and deleted in a Directus collection to keep the index and collection in sync, the `action` hook will do the trick.
+For this use case where an Elasticsearch index is to be updated when an item is created, updated, or deleted in a Directus collection to keep the index and collection in sync, you will use an `action` hook, which will run after an event has occurred.
 
-To create the hook extension boilerplate, in the terminal, enter the following command in the root directory of your Directus project with the following options:
+In the terminal, enter the following command in the your mounted extensions directory:
 
 ```shell
 npx create-directus-extension@latest
 ? Choose the extension type: hook
-? Choose a name for the extension: directus-extension-elasticsearch
-? Choose the language to use: javascript
+? Choose a name for the extension: elasticsearch-sync
+? Choose the language to use: JavaScript
 ? Auto install dependencies? (Y/n) y
 ```
 
-After that, navigate into the created hook directory and install the Elasticsearch Javascript Client:
+After that, navigate into the created hook directory and install the Elasticsearch JavaScript Client:
 
 ```shell
-cd directus-extension-elasticsearch
+cd elasticsearch-sync
 npm install @elastic/elasticsearch
 ```
 
