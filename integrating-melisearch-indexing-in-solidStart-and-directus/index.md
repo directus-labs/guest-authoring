@@ -1,12 +1,12 @@
 ---
-title: 'Integrating Melisearch Indexing with Directus'
-description: 'Learn how to maintain a Melisearch index from data in your Directus project by building a custom hook extension.'
+title: 'Integrating Meilisearch Indexing with Directus'
+description: 'Learn how to maintain a Meilisearch index from data in your Directus project by building a custom hook extension.'
 author:
   name: 'Clara Ekekenta'
   avatar_file_name: './clara-ekekenta.avif'
 ---
 
-In this tutorial, you will learn how to integrate Meilisearch indexing with a SolidStart frontend and a Directus backend. You'll focus on setting up Directus, creating a SolidStart project, and implementing Meilisearch indexing to keep your search data up-to-date.
+In this article, we will explore how to index data from Directus in Meilisearch by building a custom hook extension, enabling you to track created, updated, and deleted data to maintain an up-to-date index which you can then use in your external applications.
 
 
 ## Setting Up Directus
@@ -96,4 +96,5 @@ Now add 3 items to your articles collection and you should see them in your Meil
 
 
 ## Summary
+
 In this tutorial, you've learned how to integrate Meilisearch with Directus. You've learned how to setup the Directus hooks that automatically indexes data created, updated, or deleted from a Directus project in Meilisearch.
